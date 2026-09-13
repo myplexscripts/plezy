@@ -80,8 +80,8 @@ jobs:
       - name: Verify icon consistency
         run: dart run scripts/checks/check_icon_consistency.dart
 
-      - name: Analyze
-        run: dart run scripts/checks/check_analyzer.dart
+      - name: Analyze production app
+        run: flutter analyze --no-pub lib
 
       - name: Run focused TV tests
         run: |
