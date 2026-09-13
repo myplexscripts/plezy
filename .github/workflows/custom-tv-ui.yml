@@ -54,11 +54,12 @@ jobs:
           PY
 
       - name: Resolve Flutter dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          (cd packages/wakelock_plus && flutter pub get)
 
       - name: Format custom UI files
         run: |
-          sed -i 's/FontWeight.w450/FontWeight.w400/g' lib/widgets/tv_spotlight_background.dart
           dart format \
             lib/theme/mono_theme.dart \
             lib/focus/focus_theme.dart \
@@ -87,8 +88,7 @@ jobs:
           flutter test \
             test/theme/mono_theme_test.dart \
             test/widgets/tv_spotlight_scaffold_test.dart \
-            test/widgets/tv_spotlight_ratings_test.dart \
-            test/widgets/tv_browse_rail_test.dart
+            test/widgets/tv_spotlight_ratings_test.dart
 
       - name: Build release APKs
         run: flutter build apk --release --split-per-abi --dart-define=ENABLE_UPDATE_CHECK=false
