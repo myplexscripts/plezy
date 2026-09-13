@@ -33,7 +33,6 @@ class TvSpotlightBackground extends StatelessWidget {
   final String? Function(String? artworkPath)? localArtworkPathResolver;
   final bool allowNetwork;
 
-  /// Optional caller-owned fact appended to the existing metadata line.
   final Widget? metadataTrailing;
 
   const TvSpotlightBackground({
@@ -57,19 +56,16 @@ class TvSpotlightBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = item;
     final bgColor = Theme.of(context).scaffoldBackgroundColor;
-
-    // The gradients never differ between spotlight items, so only the artwork
-    // cross-fades by image paint alpha. Keeping the gradients outside the
-    // rotating layer avoids full-screen saveLayers on low-end TVs.
     final size = MediaQuery.sizeOf(context);
     final containerAspect = size.width / size.height;
     final fallbackPaths = media == null
         ? const <String>[]
         : <String>[...media.heroArtCandidates(containerAspectRatio: containerAspect), ?media.thumbPath];
+
     return SettingValueBuilder<bool>(
       pref: SettingsService.tvCornerSpotlightBackdrop,
       builder: (context, cornerBackdrop, _) {
-        final backdropSize = cornerBackdrop ? Size(size.width * 0.68, size.height * 0.72) : size;
+        final backdropSize = cornerBackdrop ? Size(size.width * 0.72, size.height * 0.76) : size;
         final backdrop = CyclingMediaBackdrop(
           mediaKey: media?.globalKey,
           imagePaths: media?.heroRotationPaths(containerAspectRatio: containerAspect) ?? const [],
@@ -77,13 +73,11 @@ class TvSpotlightBackground extends StatelessWidget {
           client: client,
           localArtworkPathResolver: localArtworkPathResolver == null ? null : (path) => localArtworkPathResolver!(path),
           allowNetwork: allowNetwork,
-          // Always request at full-screen size: the corner box only crops the
-          // layout. A mode-dependent size would change the transcode URL and
-          // cold-start every cached backdrop when the setting is toggled.
           width: size.width,
           height: size.height,
           fallbackColor: media == null ? bgColor : Theme.of(context).colorScheme.surfaceContainerHighest,
         );
+
         return Stack(
           fit: StackFit.expand,
           children: [
@@ -95,24 +89,20 @@ class TvSpotlightBackground extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black.withValues(alpha: 0.45), Colors.transparent, bgColor.withValues(alpha: 0.96)],
-                stops: const [0.0, 0.38, 1.0],
+                colors: [Colors.black.withValues(alpha: 0.26), Colors.transparent, bgColor.withValues(alpha: 0.94)],
+                stops: const [0.0, 0.44, 1.0],
               ),
             ),
             if (media != null && showInfo)
               Positioned(
                 left: contentLeft ?? TvLayoutConstants.horizontalInset,
-                right: MediaQuery.sizeOf(context).width * 0.43,
+                right: MediaQuery.sizeOf(context).width * 0.42,
                 top: contentTop,
                 bottom: contentBottom,
-                // The info block still cross-fades via AnimatedSwitcher, but its
-                // saveLayers are bounded to the text region, not the screen.
                 child: AnimatedSwitcher(
-                  duration: DevicePerformance.reducedDuration(const Duration(milliseconds: 280)),
+                  duration: DevicePerformance.reducedDuration(const Duration(milliseconds: 320)),
                   switchInCurve: Curves.easeOutCubic,
                   switchOutCurve: Curves.easeOutCubic,
-                  // Expand instead of the default loose centered Stack so the
-                  // info keeps filling the region and bottom-left aligning.
                   layoutBuilder: (currentChild, previousChildren) =>
                       Stack(fit: StackFit.expand, children: [...previousChildren, ?currentChild]),
                   child: KeyedSubtree(
@@ -120,14 +110,14 @@ class TvSpotlightBackground extends StatelessWidget {
                     child: LayoutBuilder(
                       builder: (context, constraints) {
                         if (!constraints.hasBoundedHeight || constraints.maxHeight <= 0 || constraints.maxWidth <= 0) {
-                          return Align(alignment: .bottomLeft, child: _buildInfo(context, media));
+                          return Align(alignment: Alignment.bottomLeft, child: _buildInfo(context, media));
                         }
 
                         return Align(
-                          alignment: .bottomLeft,
+                          alignment: Alignment.bottomLeft,
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
-                            alignment: .bottomLeft,
+                            alignment: Alignment.bottomLeft,
                             child: SizedBox(width: constraints.maxWidth, child: _buildInfo(context, media)),
                           ),
                         );
@@ -142,9 +132,6 @@ class TvSpotlightBackground extends StatelessWidget {
     );
   }
 
-  /// Corner spotlight: artwork pinned to the top-right corner, left and
-  /// bottom edges feathered into the scaffold background so the info block
-  /// sits on a calm surface instead of the image.
   Widget _buildCornerBackdrop(Size backdropSize, Widget backdrop) {
     return Align(
       alignment: Alignment.topRight,
@@ -152,15 +139,17 @@ class TvSpotlightBackground extends StatelessWidget {
         width: backdropSize.width,
         height: backdropSize.height,
         child: ShaderMask(
-          shaderCallback: (rect) =>
-              const LinearGradient(colors: [Colors.transparent, Colors.white], stops: [0.0, 0.35]).createShader(rect),
+          shaderCallback: (rect) => const LinearGradient(
+            colors: [Colors.transparent, Colors.white],
+            stops: [0.0, 0.32],
+          ).createShader(rect),
           blendMode: BlendMode.dstIn,
           child: ShaderMask(
             shaderCallback: (rect) => const LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [Colors.white, Colors.white, Colors.transparent],
-              stops: [0.0, 0.55, 1.0],
+              stops: [0.0, 0.60, 1.0],
             ).createShader(rect),
             blendMode: BlendMode.dstIn,
             child: backdrop,
@@ -175,8 +164,8 @@ class TvSpotlightBackground extends StatelessWidget {
       gradient: LinearGradient(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [bgColor.withValues(alpha: 0.86), bgColor.withValues(alpha: 0.32), Colors.transparent],
-        stops: const [0.0, 0.56, 1.0],
+        colors: [bgColor.withValues(alpha: 0.92), bgColor.withValues(alpha: 0.48), Colors.transparent],
+        stops: const [0.0, 0.43, 0.82],
       ),
     );
   }
@@ -189,8 +178,8 @@ class TvSpotlightBackground extends StatelessWidget {
     final title = media.grandparentTitle ?? media.displayTitle;
 
     return Column(
-      crossAxisAlignment: .start,
-      mainAxisSize: .min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         _buildLogoOrTitle(context, media, title),
         SizedBox(height: _sectionGap(scale)),
@@ -199,12 +188,14 @@ class TvSpotlightBackground extends StatelessWidget {
           SizedBox(height: _sectionGap(scale)),
           Text(
             summary,
-            maxLines: compact ? 3 : 4,
-            overflow: .ellipsis,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: colorScheme.onSurface.withValues(alpha: 0.78),
+              color: colorScheme.onSurface.withValues(alpha: 0.86),
               fontSize: _summaryFontSize(scale),
-              height: compact ? 1.34 : 1.45,
+              fontWeight: FontWeight.w450,
+              height: 1.42,
+              letterSpacing: -0.2,
             ),
           ),
         ] else if (shouldHideSpoiler && media.isEpisode) ...[
@@ -212,11 +203,11 @@ class TvSpotlightBackground extends StatelessWidget {
           Text(
             media.title ?? '',
             maxLines: 2,
-            overflow: .ellipsis,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: colorScheme.onSurface.withValues(alpha: 0.72),
+              color: colorScheme.onSurface.withValues(alpha: 0.82),
               fontSize: _summaryFontSize(scale),
-              height: compact ? 1.34 : 1.45,
+              height: 1.42,
             ),
           ),
         ],
@@ -226,8 +217,6 @@ class TvSpotlightBackground extends StatelessWidget {
 
   Widget _buildLogoOrTitle(BuildContext context, MediaItem media, String title) {
     final theme = Theme.of(context);
-    // The spotlight scrim washes artwork toward the scaffold background, so
-    // light themes recolor light-toned logos to stay visible.
     final logoToneTarget = logoToneTargetFor(
       surface: theme.scaffoldBackgroundColor,
       foreground: theme.colorScheme.onSurface,
@@ -263,7 +252,7 @@ class TvSpotlightBackground extends StatelessWidget {
                 : ToneMappedLogoImage(bounded, target: logoToneTarget, remapMixed: false),
             fit: BoxFit.contain,
             filterQuality: MediaImageHelper.artworkFilterQuality(context, ImageType.heroLogo),
-            alignment: .centerLeft,
+            alignment: Alignment.centerLeft,
             errorBuilder: (context, error, stackTrace) => _buildTitle(context, title),
           ),
           sigma: 10,
@@ -277,7 +266,7 @@ class TvSpotlightBackground extends StatelessWidget {
       logoPath: logoPath,
       width: logoWidth,
       height: logoHeight,
-      fadeInDuration: DevicePerformance.reducedDuration(const Duration(milliseconds: 200)),
+      fadeInDuration: DevicePerformance.reducedDuration(const Duration(milliseconds: 220)),
       logoToneTarget: logoToneTarget,
       fallbackBuilder: (context) => _buildTitle(context, title),
     );
@@ -288,11 +277,13 @@ class TvSpotlightBackground extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return FittingTitleText(
       title,
-      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+      style: Theme.of(context).textTheme.displayMedium?.copyWith(
         color: colorScheme.onSurface,
         fontSize: _titleFontSize(scale),
-        fontWeight: .w800,
-        shadows: [Shadow(color: colorScheme.surface.withValues(alpha: 0.8), blurRadius: 12)],
+        fontWeight: FontWeight.w800,
+        letterSpacing: -1.35,
+        height: 1.02,
+        shadows: [Shadow(color: colorScheme.surface.withValues(alpha: 0.62), blurRadius: 18)],
       ),
     );
   }
@@ -302,10 +293,11 @@ class TvSpotlightBackground extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final episodeLabel = formatSeasonEpisodeLabel(media.parentIndex, media.index);
     final textStyle = TextStyle(
-      color: colorScheme.onSurface,
+      color: colorScheme.onSurface.withValues(alpha: 0.92),
+      fontFamily: 'Inter',
       fontSize: _metadataFontSize(scale),
-      fontWeight: .w700,
-      letterSpacing: 0.1,
+      fontWeight: FontWeight.w600,
+      letterSpacing: -0.12,
     );
 
     final parts = <MetadataLinePart>[];
@@ -315,9 +307,6 @@ class TvSpotlightBackground extends StatelessWidget {
     } else if (media.isShow) {
       parts.add(MetadataLineText(t.discover.tvShow, dropPriority: 3));
     }
-    // Hub listings carry the scalar rating pair, so the dashboard spotlight
-    // shows every score the shelf request already returned — no per-item
-    // hydration to lengthen it.
     final ratings = mediaRatingsFor(media);
     if (ratings.isNotEmpty) parts.add(MetadataLineRatings(ratings, dropPriority: 4));
     if (media.contentRating != null) {
@@ -344,10 +333,8 @@ class TvSpotlightBackground extends StatelessWidget {
     final trailing = metadataTrailing;
     if (trailing == null) return line ?? const SizedBox.shrink();
     if (line == null) return trailing;
-    // The trailing fact is caller-owned and always shown; the line fits
-    // itself into whatever width the trailing widget leaves over.
     return Row(
-      mainAxisSize: .min,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Flexible(child: line),
         Text(FittedMetadataLine.separator, maxLines: 1, style: textStyle),
@@ -356,17 +343,17 @@ class TvSpotlightBackground extends StatelessWidget {
     );
   }
 
-  double _sectionGap(double scale) => (compact ? 10 : 16) * scale;
+  double _sectionGap(double scale) => (compact ? 12 : 18) * scale;
 
   double _logoWidth(double scale) =>
-      (compact ? TvLayoutConstants.compactHeroLogoWidth : TvLayoutConstants.heroLogoWidth) * scale;
+      (compact ? TvLayoutConstants.compactHeroLogoWidth : TvLayoutConstants.heroLogoWidth) * scale * 1.10;
 
   double _logoHeight(double scale) =>
-      (compact ? TvLayoutConstants.compactHeroLogoHeight : TvLayoutConstants.heroLogoHeight) * scale;
+      (compact ? TvLayoutConstants.compactHeroLogoHeight : TvLayoutConstants.heroLogoHeight) * scale * 1.10;
 
-  double _titleFontSize(double scale) => (compact ? 44 : 54) * scale;
+  double _titleFontSize(double scale) => (compact ? 58 : 70) * scale;
 
   double _metadataFontSize(double scale) => (compact ? 16 : 18) * scale;
 
-  double _summaryFontSize(double scale) => (compact ? 18 : 20) * scale;
+  double _summaryFontSize(double scale) => (compact ? 19 : 22) * scale;
 }
