@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../i18n/strings.g.dart';
 import '../utils/platform_detector.dart';
 
-/// Navigation tab identifiers
 enum NavigationTabId { discover, explore, libraries, liveTv, search, downloads, settings }
 
-/// Represents a navigation tab with its configuration
 class NavigationTab {
   final NavigationTabId id;
   final bool onlineOnly;
@@ -17,30 +15,19 @@ class NavigationTab {
 
   const NavigationTab({required this.id, required this.onlineOnly, required this.icon, required this.getLabel});
 
-  /// A bottom-bar destination whose label is pinned to one line.
-  ///
-  /// [NavigationDestination] paints a bare [Text] that fills the destination's
-  /// share of the bar with no horizontal padding, so a long localized label or
-  /// an enlarged system font wraps and the wrapped destination's icon rides up
-  /// out of line with its siblings (#2316, #2281). The clamp has to sit here,
-  /// on the destination: [NavigationBar]'s own [Material] reinstalls the
-  /// ambient text style, so a [DefaultTextStyle] wrapped around the whole bar
-  /// never reaches the labels. [NavigationLabelScale] shrinks the text so the
-  /// full word usually still fits before this ellipsis applies.
   Widget toDestination() {
     return DefaultTextStyle.merge(
       maxLines: 1,
       softWrap: false,
       overflow: TextOverflow.ellipsis,
       child: NavigationDestination(
-        icon: AppIcon(icon, fill: 1),
-        selectedIcon: AppIcon(icon, fill: 1),
+        icon: AppIcon(icon),
+        selectedIcon: AppIcon(icon),
         label: getLabel(),
       ),
     );
   }
 
-  /// Get tabs filtered by offline mode and feature availability
   static List<NavigationTab> getVisibleTabs({
     required bool isOffline,
     bool hasLiveTv = false,
@@ -55,11 +42,6 @@ class NavigationTab {
     }).toList();
   }
 
-  /// Resolve which tab the app should open to on launch.
-  ///
-  /// Offline mode prefers Downloads when available. Online, honours the user's
-  /// [preferredStartup] section when it is currently visible, otherwise falls
-  /// back to the first visible tab (Home).
   static NavigationTabId resolveDefaultTab({
     required bool isOffline,
     required bool hasLiveTv,
@@ -77,7 +59,6 @@ class NavigationTab {
   }
 }
 
-// Label getters (must be top-level for const constructor)
 String _getHomeLabel() => t.common.home;
 String _getExploreLabel() => t.navigation.explore;
 String _getLibrariesLabel() => t.navigation.libraries;
@@ -86,33 +67,32 @@ String _getSearchLabel() => t.common.search;
 String _getDownloadsLabel() => t.navigation.downloads;
 String _getSettingsLabel() => t.common.settings;
 
-/// All navigation tabs in display order
 const allNavigationTabs = [
-  NavigationTab(id: NavigationTabId.discover, onlineOnly: true, icon: Symbols.home_rounded, getLabel: _getHomeLabel),
+  NavigationTab(id: NavigationTabId.discover, onlineOnly: true, icon: LucideIcons.house, getLabel: _getHomeLabel),
   NavigationTab(
     id: NavigationTabId.libraries,
     onlineOnly: true,
-    icon: Symbols.video_library_rounded,
+    icon: LucideIcons.library_big,
     getLabel: _getLibrariesLabel,
   ),
-  NavigationTab(id: NavigationTabId.liveTv, onlineOnly: true, icon: Symbols.live_tv_rounded, getLabel: _getLiveTvLabel),
+  NavigationTab(id: NavigationTabId.liveTv, onlineOnly: true, icon: LucideIcons.tv, getLabel: _getLiveTvLabel),
   NavigationTab(
     id: NavigationTabId.explore,
     onlineOnly: true,
-    icon: Symbols.explore_rounded,
+    icon: LucideIcons.compass,
     getLabel: _getExploreLabel,
   ),
-  NavigationTab(id: NavigationTabId.search, onlineOnly: true, icon: Symbols.search_rounded, getLabel: _getSearchLabel),
+  NavigationTab(id: NavigationTabId.search, onlineOnly: true, icon: LucideIcons.search, getLabel: _getSearchLabel),
   NavigationTab(
     id: NavigationTabId.downloads,
     onlineOnly: false,
-    icon: Symbols.download_rounded,
+    icon: LucideIcons.download,
     getLabel: _getDownloadsLabel,
   ),
   NavigationTab(
     id: NavigationTabId.settings,
     onlineOnly: false,
-    icon: Symbols.settings_rounded,
+    icon: LucideIcons.settings,
     getLabel: _getSettingsLabel,
   ),
 ];
