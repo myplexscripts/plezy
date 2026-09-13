@@ -1,0 +1,77 @@
+name: Windows TV Preview PR
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: "3.47.1"
+
+jobs:
+  build-windows-preview:
+    name: Windows TV Preview
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+          pub-cache: false
+
+      - name: Resolve Flutter dependencies
+        shell: pwsh
+        run: flutter pub get --enforce-lockfile --no-example
+
+      - name: Force TV interface for this preview build
+        shell: pwsh
+        run: |
+          $path = "lib/utils/platform_detector.dart"
+          $source = Get-Content -LiteralPath $path -Raw
+          $needle = "static bool isTVSync() => _debugAppleTVOverride ?? _singleton.instance?._isTV ?? false;"
+          if (-not $source.Contains($needle)) {
+            throw "TV detection hook changed; refusing to build a preview that might use the desktop UI."
+          }
+          $source = $source.Replace($needle, "static bool isTVSync() => true;")
+          Set-Content -LiteralPath $path -Value $source -NoNewline
+
+      - name: Prepare patched Windows playback engine
+        shell: pwsh
+        run: |
+          flutter precache --windows
+          .\windows\tool\install-patched-engine.ps1
+
+      - name: Build Windows TV preview
+        shell: pwsh
+        run: flutter build windows --release --dart-define=ENABLE_UPDATE_CHECK=false
+
+      - name: Verify preview executable
+        shell: pwsh
+        run: |
+          $exe = "build/windows/x64/runner/Release/plezy.exe"
+          if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) {
+            throw "Preview executable was not produced: $exe"
+          }
+
+      - name: Package Windows TV preview
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath "plezy-tv-preview-windows-x64.zip" -Force
+
+      - name: Upload Windows TV preview
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: plezy-tv-preview-windows-x64
+          path: plezy-tv-preview-windows-x64.zip
+          if-no-files-found: error
