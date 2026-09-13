@@ -54,9 +54,7 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
     elevation: const WidgetStatePropertyAll(0),
     backgroundColor: WidgetStatePropertyAll(c.text),
     foregroundColor: WidgetStatePropertyAll(isDark ? c.bg : Colors.white),
-    shape: const WidgetStatePropertyAll(
-      RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
-    ),
+    shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14)))),
   );
 
   final textTheme = Typography.englishLike2021

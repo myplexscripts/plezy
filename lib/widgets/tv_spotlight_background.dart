@@ -139,10 +139,8 @@ class TvSpotlightBackground extends StatelessWidget {
         width: backdropSize.width,
         height: backdropSize.height,
         child: ShaderMask(
-          shaderCallback: (rect) => const LinearGradient(
-            colors: [Colors.transparent, Colors.white],
-            stops: [0.0, 0.32],
-          ).createShader(rect),
+          shaderCallback: (rect) =>
+              const LinearGradient(colors: [Colors.transparent, Colors.white], stops: [0.0, 0.32]).createShader(rect),
           blendMode: BlendMode.dstIn,
           child: ShaderMask(
             shaderCallback: (rect) => const LinearGradient(
@@ -193,7 +191,7 @@ class TvSpotlightBackground extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: colorScheme.onSurface.withValues(alpha: 0.86),
               fontSize: _summaryFontSize(scale),
-              fontWeight: FontWeight.w450,
+              fontWeight: FontWeight.w400,
               height: 1.42,
               letterSpacing: -0.2,
             ),

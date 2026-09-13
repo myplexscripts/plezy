@@ -20,11 +20,7 @@ class NavigationTab {
       maxLines: 1,
       softWrap: false,
       overflow: TextOverflow.ellipsis,
-      child: NavigationDestination(
-        icon: AppIcon(icon),
-        selectedIcon: AppIcon(icon),
-        label: getLabel(),
-      ),
+      child: NavigationDestination(icon: AppIcon(icon), selectedIcon: AppIcon(icon), label: getLabel()),
     );
   }
 
@@ -76,12 +72,7 @@ const allNavigationTabs = [
     getLabel: _getLibrariesLabel,
   ),
   NavigationTab(id: NavigationTabId.liveTv, onlineOnly: true, icon: LucideIcons.tv, getLabel: _getLiveTvLabel),
-  NavigationTab(
-    id: NavigationTabId.explore,
-    onlineOnly: true,
-    icon: LucideIcons.compass,
-    getLabel: _getExploreLabel,
-  ),
+  NavigationTab(id: NavigationTabId.explore, onlineOnly: true, icon: LucideIcons.compass, getLabel: _getExploreLabel),
   NavigationTab(id: NavigationTabId.search, onlineOnly: true, icon: LucideIcons.search, getLabel: _getSearchLabel),
   NavigationTab(
     id: NavigationTabId.downloads,

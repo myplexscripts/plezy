@@ -449,6 +449,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_lucide:
+    dependency: "direct main"
+    description:
+      name: flutter_lucide
+      sha256: "721d066bee656962cd3b7522f13fae8d0f00ae4107c1ac713b1ba12534968423"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.45.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -1060,7 +1068,7 @@ packages:
     source: hosted
     version: "2.5.6"
   shared_preferences_linux:
-    dependency: "direct dev"
+    dependency: "direct overridden"
     description:
       path: "packages/shared_preferences_linux"
       relative: true
@@ -1083,7 +1091,7 @@ packages:
     source: hosted
     version: "2.4.3"
   shared_preferences_windows:
-    dependency: "direct dev"
+    dependency: "direct overridden"
     description:
       path: "packages/shared_preferences_windows"
       relative: true
