@@ -6,7 +6,6 @@ import 'mono_tokens.dart';
 final Map<({bool dark, bool oled, TargetPlatform platform}), ThemeData> _monoThemeCache = {};
 
 ThemeData monoTheme({required bool dark, bool oled = false}) {
-  // ThemeData derives several defaults from defaultTargetPlatform.
   final key = (dark: dark || oled, oled: oled, platform: defaultTargetPlatform);
   final cached = _monoThemeCache[key];
   if (cached != null) return cached;
@@ -17,31 +16,30 @@ ThemeData monoTheme({required bool dark, bool oled = false}) {
 }
 
 ThemeData _buildMonoTheme({required bool dark, required bool oled, required TargetPlatform platform}) {
-  // neutral greys tuned for crisp contrast
   final ({Color bg, Color surface, Color outline, Color text, Color textMuted}) c;
   if (oled) {
     c = (
-      bg: const Color(0xFF000000), // Pure black for OLED
-      surface: const Color(0xFF0A0A0A), // Very dark gray
-      outline: const Color(0x1FFFFFFF),
-      text: const Color(0xFFEDEDED),
-      textMuted: const Color(0x99EDEDED),
+      bg: const Color(0xFF000000),
+      surface: const Color(0xFF0B0B0D),
+      outline: const Color(0x20FFFFFF),
+      text: const Color(0xFFF5F5F7),
+      textMuted: const Color(0xA6F5F5F7),
     );
   } else if (dark) {
     c = (
-      bg: const Color(0xFF0E0F12),
-      surface: const Color(0xFF15171C),
-      outline: const Color(0x1FFFFFFF),
-      text: const Color(0xFFEDEDED),
-      textMuted: const Color(0x99EDEDED),
+      bg: const Color(0xFF050506),
+      surface: const Color(0xFF111113),
+      outline: const Color(0x20FFFFFF),
+      text: const Color(0xFFF5F5F7),
+      textMuted: const Color(0xA6F5F5F7),
     );
   } else {
     c = (
-      bg: const Color(0xFFF7F7F8),
+      bg: const Color(0xFFF5F5F7),
       surface: const Color(0xFFFFFFFF),
-      outline: const Color(0x19000000),
-      text: const Color(0xFF111111),
-      textMuted: const Color(0x99111111),
+      outline: const Color(0x18000000),
+      text: const Color(0xFF111113),
+      textMuted: const Color(0x99111113),
     );
   }
 
@@ -52,16 +50,97 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
 
   final buttonStyle = ButtonStyle(
     mouseCursor: clickableCursor,
-    padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 18, vertical: 14)),
+    padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 20, vertical: 14)),
     elevation: const WidgetStatePropertyAll(0),
     backgroundColor: WidgetStatePropertyAll(c.text),
     foregroundColor: WidgetStatePropertyAll(isDark ? c.bg : Colors.white),
-    shape: const WidgetStatePropertyAll(StadiumBorder()),
+    shape: const WidgetStatePropertyAll(
+      RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
+    ),
   );
+
+  final textTheme = Typography.englishLike2021
+      .apply(fontFamily: 'Inter', bodyColor: c.text, displayColor: c.text)
+      .copyWith(
+        displayLarge: TextStyle(
+          color: c.text,
+          fontFamily: 'Inter',
+          fontSize: 56,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -1.5,
+          height: 1.02,
+        ),
+        displayMedium: TextStyle(
+          color: c.text,
+          fontFamily: 'Inter',
+          fontSize: 46,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -1.15,
+          height: 1.04,
+        ),
+        displaySmall: TextStyle(
+          color: c.text,
+          fontFamily: 'Inter',
+          fontSize: 36,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.9,
+          height: 1.06,
+        ),
+        headlineLarge: TextStyle(
+          color: c.text,
+          fontFamily: 'Inter',
+          fontSize: 32,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.7,
+        ),
+        headlineMedium: TextStyle(
+          color: c.text,
+          fontFamily: 'Inter',
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.55,
+        ),
+        titleLarge: TextStyle(
+          color: c.text,
+          fontFamily: 'Inter',
+          fontSize: 24,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.4,
+        ),
+        titleMedium: TextStyle(
+          color: c.text,
+          fontFamily: 'Inter',
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.2,
+        ),
+        bodyLarge: TextStyle(
+          color: c.text,
+          fontFamily: 'Inter',
+          fontSize: 18,
+          fontWeight: FontWeight.w400,
+          height: 1.4,
+        ),
+        bodyMedium: TextStyle(
+          color: c.text,
+          fontFamily: 'Inter',
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          height: 1.4,
+        ),
+        bodySmall: TextStyle(
+          color: c.textMuted,
+          fontFamily: 'Inter',
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          height: 1.35,
+        ),
+      );
 
   final base = ThemeData(
     platform: platform,
     useMaterial3: true,
+    fontFamily: 'Inter',
     brightness: isDark ? Brightness.dark : Brightness.light,
     colorScheme: ColorScheme(
       brightness: isDark ? Brightness.dark : Brightness.light,
@@ -90,13 +169,10 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       onInverseSurface: c.bg,
       inversePrimary: c.bg,
     ),
-    // remove "Material feel"
     splashFactory: NoSplash.splashFactory,
     highlightColor: Colors.transparent,
-    // Explicit mono-derived tile highlights: ListTile's native focus/hover
-    // fill is the dpad focus visual inside M3E grouped-list cards.
-    focusColor: c.text.withValues(alpha: 0.12),
-    hoverColor: c.text.withValues(alpha: 0.05),
+    focusColor: c.text.withValues(alpha: 0.14),
+    hoverColor: c.text.withValues(alpha: 0.06),
     dividerColor: c.outline,
     scaffoldBackgroundColor: c.bg,
     appBarTheme: AppBarTheme(
@@ -105,21 +181,20 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       scrolledUnderElevation: 0,
       centerTitle: false,
       foregroundColor: c.text,
-      titleTextStyle: TextStyle(color: c.text, fontSize: 18, fontWeight: .w700, letterSpacing: -0.2),
+      titleTextStyle: TextStyle(
+        color: c.text,
+        fontFamily: 'Inter',
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.45,
+      ),
     ),
-    textTheme: Typography.englishLike2021
-        .apply(bodyColor: c.text, displayColor: c.text)
-        .copyWith(
-          displayLarge: const TextStyle(fontWeight: .w700, letterSpacing: -0.5),
-          titleMedium: const TextStyle(fontWeight: .w600),
-          bodyMedium: TextStyle(color: c.text),
-          bodySmall: TextStyle(color: c.textMuted),
-        ),
+    textTheme: textTheme,
     cardTheme: CardThemeData(
       color: c.surface,
       elevation: 0,
-      margin: .zero,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
+      margin: EdgeInsets.zero,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18))),
     ),
     inputDecorationTheme: _inputDecorationTheme(c.text, c.textMuted),
     elevatedButtonTheme: ElevatedButtonThemeData(style: buttonStyle),
@@ -128,9 +203,6 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
     outlinedButtonTheme: OutlinedButtonThemeData(style: ButtonStyle(mouseCursor: clickableCursor)),
     iconButtonTheme: IconButtonThemeData(style: ButtonStyle(mouseCursor: clickableCursor)),
     sliderTheme: SliderThemeData(
-      // The mono scheme maps surfaceContainerHighest (the M3 default inactive
-      // track) to the same color as surface cards, which makes the inactive
-      // track invisible inside grouped-list items.
       inactiveTrackColor: c.text.withValues(alpha: 0.12),
       trackHeight: 16,
       trackGap: 6,
@@ -138,7 +210,6 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       thumbShape: const HandleThumbShape(),
       trackShape: const GappedTrackShape(),
       tickMarkShape: const RoundSliderTickMarkShape(tickMarkRadius: 2),
-      // ignore: deprecated_member_use — opting into the 2024 slider appearance until the default flips
       year2023: false,
     ),
     dividerTheme: DividerThemeData(space: 0, thickness: 1, color: c.outline),
@@ -152,22 +223,19 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       backgroundColor: c.bg,
       elevation: 0,
       indicatorColor: Colors.transparent,
-      labelTextStyle: WidgetStatePropertyAll(TextStyle(color: c.textMuted, fontSize: 11)),
+      labelTextStyle: WidgetStatePropertyAll(TextStyle(color: c.textMuted, fontFamily: 'Inter', fontSize: 12)),
       iconTheme: WidgetStateProperty.resolveWith((states) {
         final active = states.contains(WidgetState.selected);
-        return IconThemeData(opacity: active ? 1 : 0.6, size: 22, color: c.text);
+        return IconThemeData(opacity: active ? 1 : 0.62, size: 22, color: c.text);
       }),
     ),
-    // Floating snackbars auto-offset above the Scaffold's bottom NavigationBar,
-    // so they don't cover it on mobile. Background color tracks the theme to
-    // avoid jarring brightness on HDR playback / dark mode.
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
       backgroundColor: c.surface,
-      contentTextStyle: TextStyle(color: c.text),
+      contentTextStyle: TextStyle(color: c.text, fontFamily: 'Inter'),
       actionTextColor: c.text,
       elevation: 6,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
       insetPadding: const EdgeInsets.all(16),
     ),
   );
@@ -175,16 +243,16 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
   return base.copyWith(
     extensions: [
       MonoTokens(
-        radiusSm: 8,
-        radiusMd: 12,
-        radiusLg: 20,
-        radiusXs: 5,
-        groupGap: 2,
-        space: 12,
-        fast: const Duration(milliseconds: 120),
-        normal: const Duration(milliseconds: 200),
-        slow: const Duration(milliseconds: 300),
-        expressive: const Duration(milliseconds: 350),
+        radiusSm: 10,
+        radiusMd: 16,
+        radiusLg: 24,
+        radiusXs: 6,
+        groupGap: 3,
+        space: 16,
+        fast: const Duration(milliseconds: 160),
+        normal: const Duration(milliseconds: 220),
+        slow: const Duration(milliseconds: 320),
+        expressive: const Duration(milliseconds: 380),
         bg: c.bg,
         surface: c.surface,
         outline: c.outline,
@@ -195,11 +263,10 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
   );
 }
 
-/// Brighter fill on focus so input focus is visible inside TV overscan.
 InputDecorationTheme _inputDecorationTheme(Color text, Color textMuted) {
   final unfocusedFill = text.withValues(alpha: 0.08);
-  final focusedFill = text.withValues(alpha: 0.18);
-  const border = OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide.none);
+  final focusedFill = text.withValues(alpha: 0.16);
+  const border = OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(14)), borderSide: BorderSide.none);
   return InputDecorationTheme(
     filled: true,
     fillColor: WidgetStateColor.resolveWith(
@@ -210,6 +277,6 @@ InputDecorationTheme _inputDecorationTheme(Color text, Color textMuted) {
     border: border,
     enabledBorder: border,
     focusedBorder: border,
-    hintStyle: TextStyle(color: textMuted),
+    hintStyle: TextStyle(color: textMuted, fontFamily: 'Inter'),
   );
 }
