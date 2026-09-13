@@ -1,0 +1,101 @@
+name: Custom TV UI Build
+
+on:
+  push:
+    branches:
+      - custom-tv-ui
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: "3.47.1"
+
+jobs:
+  build-android:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Setup Java
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+          pub-cache: false
+
+      - name: Bundle Inter
+        run: |
+          mkdir -p assets/fonts
+          python3 - <<'PY'
+          import base64
+          import json
+          import urllib.request
+          from pathlib import Path
+
+          files = {
+              "assets/fonts/Inter.ttf": "https://api.github.com/repos/google/fonts/git/blobs/047c92f6e2212473dc436020afed689527076d44",
+              "assets/fonts/OFL-Inter.txt": "https://api.github.com/repos/google/fonts/git/blobs/21f6aff961064c2e429f570995e446bcdd555422",
+          }
+          for target, url in files.items():
+              with urllib.request.urlopen(url) as response:
+                  payload = json.load(response)
+              Path(target).write_bytes(base64.b64decode(payload["content"]))
+          PY
+
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+
+      - name: Format custom UI files
+        run: |
+          sed -i 's/FontWeight.w450/FontWeight.w400/g' lib/widgets/tv_spotlight_background.dart
+          dart format \
+            lib/theme/mono_theme.dart \
+            lib/focus/focus_theme.dart \
+            lib/navigation/navigation_tabs.dart \
+            lib/utils/hub_icons.dart \
+            lib/widgets/tv_spotlight_background.dart
+
+      - name: Commit generated lockfile and bundled font
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pubspec.lock assets/fonts lib/theme/mono_theme.dart lib/focus/focus_theme.dart lib/navigation/navigation_tabs.dart lib/utils/hub_icons.dart lib/widgets/tv_spotlight_background.dart
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(tv): lock UI dependencies and bundle Inter"
+            git push origin HEAD:custom-tv-ui
+          fi
+
+      - name: Verify icon consistency
+        run: dart run scripts/checks/check_icon_consistency.dart
+
+      - name: Analyze
+        run: dart run scripts/checks/check_analyzer.dart
+
+      - name: Run focused TV tests
+        run: |
+          flutter test \
+            test/theme/mono_theme_test.dart \
+            test/widgets/tv_spotlight_scaffold_test.dart \
+            test/widgets/tv_spotlight_ratings_test.dart \
+            test/widgets/tv_browse_rail_test.dart
+
+      - name: Build release APKs
+        run: flutter build apk --release --split-per-abi --dart-define=ENABLE_UPDATE_CHECK=false
+
+      - name: Upload Android APKs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: custom-tv-ui-apks
+          path: build/app/outputs/flutter-apk/*-release.apk
+          if-no-files-found: error
