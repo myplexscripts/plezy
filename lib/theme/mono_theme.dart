@@ -208,6 +208,7 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       thumbShape: const HandleThumbShape(),
       trackShape: const GappedTrackShape(),
       tickMarkShape: const RoundSliderTickMarkShape(tickMarkRadius: 2),
+      // ignore: deprecated_member_use — preserve Plezy's explicit 2024 slider appearance until Flutter flips the default
       year2023: false,
     ),
     dividerTheme: DividerThemeData(space: 0, thickness: 1, color: c.outline),
