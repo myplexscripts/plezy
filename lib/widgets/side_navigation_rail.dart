@@ -34,6 +34,10 @@ import '../theme/mono_tokens.dart';
 import '../widgets/backend_badge.dart';
 import '../i18n/strings.g.dart';
 import '../theme/plezzant/plezzant_glass.dart';
+import '../theme/plezzant/plezzant_typography.dart';
+import '../profiles/active_profile_provider.dart';
+import '../profiles/profile_avatar.dart';
+import 'system_clock.dart';
 
 enum _LibraryNavSection { visible, hidden }
 
@@ -171,6 +175,8 @@ class NavigationRailItem extends StatelessWidget {
     // The collapsed TV rail is a transparent overlay strip; a persistent
     // active pill over artwork is noise there, so it shows focus only.
     final showSelected = isSelected && !suppressSelectedBackground && !(collapsedLayout && PlatformDetector.isTV());
+    // TV (Apple TV style): the focused destination is a solid white pill.
+    if (focused && PlatformDetector.isTV() && !collapsedLayout) return Colors.white;
     if (focused) return t.text.withValues(alpha: showSelected ? selectedFocusAlpha : focusAlpha);
     if (showSelected) return t.text.withValues(alpha: 0.1);
     return null;
@@ -184,13 +190,13 @@ class NavigationRailItem extends StatelessWidget {
     );
   }
 
-  Widget _leadingIcon(MonoTokens t) =>
+  Widget _leadingIcon(MonoTokens t, {bool onWhitePill = false}) =>
       iconWidget ??
       AppIcon(
         isSelected && selectedIcon != null ? selectedIcon! : icon,
         fill: 1,
         size: iconSize,
-        color: isSelected ? t.text : t.textMuted,
+        color: onWhitePill ? Colors.black : (isSelected ? t.text : t.textMuted),
       );
 
   static double _collapsedItemWidth(BuildContext context) =>
@@ -222,9 +228,18 @@ class NavigationRailItem extends StatelessWidget {
   }
 
   /// M3E expanded destination: full-width stadium indicator behind the row.
-  Widget _labelAtOpacity(BuildContext context, double opacity) {
+  Widget _labelAtOpacity(BuildContext context, double opacity, {bool onWhitePill = false}) {
     final builder = labelBuilder;
     if (builder != null) return builder(opacity);
+    if (onWhitePill && label is Text) {
+      final text = label as Text;
+      return Text(
+        text.data ?? '',
+        maxLines: text.maxLines,
+        overflow: text.overflow,
+        style: (text.style ?? const TextStyle()).copyWith(color: Colors.black, fontWeight: FontWeight.w600),
+      );
+    }
 
     final textStyle = label is Text ? (label as Text).style : null;
     final inheritsTextColor =
@@ -255,14 +270,20 @@ class NavigationRailItem extends StatelessWidget {
     MonoTokens t, {
     required double labelOpacity,
     required bool showLeading,
+    bool onWhitePill = false,
   }) {
-    return Row(
+    final row = Row(
       children: [
-        if (showLeading) _leadingIcon(t) else SizedBox(width: iconSize, height: iconSize),
+        if (showLeading) _leadingIcon(t, onWhitePill: onWhitePill) else SizedBox(width: iconSize, height: iconSize),
         const SizedBox(width: 11),
-        Expanded(child: _labelAtOpacity(context, labelOpacity)),
+        Expanded(child: _labelAtOpacity(context, labelOpacity, onWhitePill: onWhitePill)),
         ?_trailingAtOpacity(labelOpacity),
       ],
+    );
+    if (!onWhitePill) return row;
+    return DefaultTextStyle.merge(
+      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+      child: row,
     );
   }
 
@@ -275,7 +296,13 @@ class NavigationRailItem extends StatelessWidget {
         color: _indicatorColor(t, focused: focused, expansion: 1),
         borderRadius: BorderRadius.circular(MonoTokens.radiusFull),
       ),
-      child: _buildExpandedContent(context, t, labelOpacity: 1, showLeading: true),
+      child: _buildExpandedContent(
+        context,
+        t,
+        labelOpacity: 1,
+        showLeading: true,
+        onWhitePill: focused && PlatformDetector.isTV(),
+      ),
     );
   }
 
@@ -360,8 +387,11 @@ class NavigationRailItem extends StatelessWidget {
                 tween: Tween(end: isCollapsed ? 0.0 : 1.0),
                 duration: SideNavigationRailState.expandDuration,
                 curve: SideNavigationRailState.expandCurve,
-                builder: (context, expansion, _) =>
-                    _buildMorphingLayouts(context, t, focused: focused, expansion: expansion),
+                builder: (context, expansion, _) {
+                  final layout = _buildMorphingLayouts(context, t, focused: focused, expansion: expansion);
+                  // TV: no icon strip while collapsed; items fade in with the panel.
+                  return PlatformDetector.isTV() ? Opacity(opacity: expansion.clamp(0.0, 1.0), child: layout) : layout;
+                },
               );
         return Focus(
           focusNode: focusNode,
@@ -460,9 +490,19 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
 
   static double collapsedWidthForContext(BuildContext _) => PlatformDetector.isTV() ? tvCollapsedWidth : collapsedWidth;
 
+  /// TV opens the rail as a floating glass panel inset from the screen edge
+  /// (Apple TV style), so it needs room for the inset around the items.
+  static const double tvExpandedWidth = 268.0;
+
+  /// Inset of the floating TV panel from the screen edges.
+  static const double tvPanelInset = 16.0;
+
+  static double expandedWidthForContext(BuildContext _) => PlatformDetector.isTV() ? tvExpandedWidth : expandedWidth;
+
   /// Edge padding around the item column; collapsed rails center their items
   /// (72px in the 80px desktop strip, 40px in the 48px TV strip).
   static double horizontalPaddingForContext(BuildContext _, {required bool isCollapsed}) {
+    if (!isCollapsed && PlatformDetector.isTV()) return (tvExpandedWidth - (expandedWidth - 24)) / 2;
     return isCollapsed ? _collapsedHorizontalPadding : _horizontalPadding;
   }
 
@@ -945,7 +985,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
               child: AnimatedContainer(
                 duration: expandDuration,
                 curve: expandCurve,
-                width: isCollapsed ? effectiveCollapsedWidth : expandedWidth,
+                width: isCollapsed ? effectiveCollapsedWidth : expandedWidthForContext(context),
                 clipBehavior: Clip.hardEdge,
                 decoration: const BoxDecoration(),
                 child: Stack(
@@ -957,19 +997,22 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                     // platform (#2079).
                     Positioned.fill(
                       child: AnimatedOpacity(
-                        opacity: PlatformDetector.isTV() && !_isFloatingPanel ? 0.0 : 1.0,
+                        // TV: the panel only exists while open; collapsed, the
+                        // shell shows a small section pill instead of a strip.
+                        opacity: PlatformDetector.isTV() ? (isCollapsed ? 0.0 : 1.0) : 1.0,
                         // Shares the width morph's duration/curve: a shorter
                         // fade strands a fully grown, fully transparent panel
                         // over the content part-way through the collapse.
                         duration: expandDuration,
                         curve: expandCurve,
                         child: PlatformDetector.isTV()
-                            ? PlezzantGlass(
-                                style: PlezzantGlassStyle.chrome,
-                                borderRadius: isCollapsed
-                                    ? BorderRadius.zero
-                                    : BorderRadius.horizontal(right: Radius.circular(overlayCornerRadius)),
-                                child: const SizedBox.expand(),
+                            ? const Padding(
+                                padding: EdgeInsets.all(tvPanelInset),
+                                child: PlezzantGlass(
+                                  style: PlezzantGlassStyle.panel,
+                                  borderRadius: BorderRadius.all(Radius.circular(28)),
+                                  child: SizedBox.expand(),
+                                ),
                               )
                             : AnimatedContainer(
                                 duration: expandDuration,
@@ -1000,7 +1043,26 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                         onKeyEvent: (node, event) => _handleVerticalNavigation(node, event, focusOrder),
                         child: Column(
                           children: [
-                            SizedBox(height: _getTopPadding(context)),
+                            SizedBox(height: _getTopPadding(context) + (PlatformDetector.isTV() ? 22 : 0)),
+                            if (PlatformDetector.isTV() && !isCollapsed) ...[
+                              // Laid out at full panel width throughout the
+                              // open morph, so it never squeezes mid-animation.
+                              ClipRect(
+                                child: SizedBox(
+                                  height: 40,
+                                  child: OverflowBox(
+                                    alignment: Alignment.centerLeft,
+                                    minWidth: 0,
+                                    maxWidth: tvExpandedWidth,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                                      child: const _TvPanelHeader(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
                             Expanded(
                               child: AnimatedPadding(
                                 padding: .symmetric(horizontal: horizontalPadding),
@@ -1537,6 +1599,42 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
       expandedHeight: 40,
       suppressSelectedBackground: widget.isSidebarFocused,
       onNavigateRight: widget.onNavigateToContent,
+    );
+  }
+}
+
+/// Top of the floating TV panel: who is watching and the time, like the
+/// Apple TV sidebar header.
+class _TvPanelHeader extends StatelessWidget {
+  const _TvPanelHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = tokens(context);
+    final profiles = context.watch<ActiveProfileProvider?>();
+    final profile = profiles?.active;
+    return Row(
+      children: [
+        if (profile != null) ...[
+          ProfileAvatar(
+            profile: profile,
+            size: 32,
+            showLockBadge: false,
+            avatarUrl: profiles?.avatarUrlFor(profile.id),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              profile.displayName,
+              style: PlezzantType.labelLarge.copyWith(color: t.text),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ] else
+          const Spacer(),
+        SystemClock(style: PlezzantType.labelMedium.copyWith(color: t.textMuted)),
+      ],
     );
   }
 }

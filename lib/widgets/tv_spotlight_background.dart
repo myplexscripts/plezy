@@ -309,13 +309,17 @@ class TvSpotlightBackground extends StatelessWidget {
     final textStyle = TextStyle(
       color: colorScheme.onSurface,
       fontSize: _metadataFontSize(scale),
-      fontWeight: .w700,
+      fontWeight: .w600,
       letterSpacing: 0.1,
     );
 
     final parts = <MetadataLinePart>[];
     if (media.isEpisode && episodeLabel != null) parts.add(MetadataLineText(episodeLabel, dropPriority: 0));
-    if (media.isMovie) {
+    // Apple TV style: lead with the genre when the listing carries one.
+    final genre = media.genres?.firstOrNull;
+    if (genre != null && genre.isNotEmpty && !media.isEpisode) {
+      parts.add(MetadataLineText(genre, dropPriority: 3));
+    } else if (media.isMovie) {
       parts.add(MetadataLineText(t.discover.movie, dropPriority: 3));
     } else if (media.isShow) {
       parts.add(MetadataLineText(t.discover.tvShow, dropPriority: 3));
@@ -325,9 +329,6 @@ class TvSpotlightBackground extends StatelessWidget {
     // hydration to lengthen it.
     final ratings = mediaRatingsFor(media);
     if (ratings.isNotEmpty) parts.add(MetadataLineRatings(ratings, dropPriority: 4));
-    if (media.contentRating != null) {
-      parts.add(MetadataLineText(formatContentRating(media.contentRating!), dropPriority: 2));
-    }
     if (media.durationMs != null) {
       parts.add(MetadataLineText(formatDurationTextual(media.durationMs!), dropPriority: 1));
     }
@@ -346,17 +347,36 @@ class TvSpotlightBackground extends StatelessWidget {
             ratingSpacing: 4 * scale,
             ratingEntrySpacing: 12 * scale,
           );
+    // The content rating sits in an outlined badge after the line.
+    final rating = media.contentRating;
+    final badge = rating == null || rating.isEmpty
+        ? null
+        : Container(
+            margin: EdgeInsets.only(left: 10 * scale),
+            padding: EdgeInsets.symmetric(horizontal: 5 * scale, vertical: 1 * scale),
+            decoration: BoxDecoration(
+              border: Border.all(color: colorScheme.onSurface.withValues(alpha: 0.7), width: 1.2),
+              borderRadius: BorderRadius.circular(4 * scale),
+            ),
+            child: Text(
+              formatContentRating(rating),
+              maxLines: 1,
+              style: textStyle.copyWith(fontSize: textStyle.fontSize! * 0.78, height: 1.2),
+            ),
+          );
     final trailing = metadataTrailing;
-    if (trailing == null) return line ?? const SizedBox.shrink();
-    if (line == null) return trailing;
-    // The trailing fact is caller-owned and always shown; the line fits
-    // itself into whatever width the trailing widget leaves over.
+    if (trailing == null && badge == null) return line ?? const SizedBox.shrink();
     return Row(
       mainAxisSize: .min,
       children: [
-        Flexible(child: line),
-        Text(FittedMetadataLine.separator, maxLines: 1, style: textStyle),
-        trailing,
+        if (line != null) Flexible(child: line),
+        ?badge,
+        if (trailing != null) ...[
+          // The trailing fact is caller-owned and always shown; the line fits
+          // itself into whatever width the trailing widget leaves over.
+          Text(FittedMetadataLine.separator, maxLines: 1, style: textStyle),
+          trailing,
+        ],
       ],
     );
   }

@@ -21,6 +21,9 @@ import '../services/update_service.dart';
 import '../utils/app_logger.dart';
 import '../widgets/auth_error_banner.dart';
 import '../widgets/app_icon.dart';
+import '../theme/plezzant/plezzant_glass.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
+import '../theme/plezzant/plezzant_typography.dart';
 import '../utils/platform_detector.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/update_dialog.dart';
@@ -1458,9 +1461,12 @@ class _MainScreenState extends State<MainScreen>
   }
 
   double _sideNavigationWidth(BuildContext context, {required bool alwaysExpanded}) {
+    // TV (Apple TV style): the rail floats over the content and never pushes
+    // it aside; the content keeps a fixed margin (backdrops still bleed under).
+    if (PlatformDetector.isTV() && !alwaysExpanded) return SideNavigationRailState.collapsedWidthForContext(context);
     final isExpanded = alwaysExpanded || _isSidebarFocused;
     return isExpanded
-        ? SideNavigationRailState.expandedWidth
+        ? SideNavigationRailState.expandedWidthForContext(context)
         : SideNavigationRailState.collapsedWidthForContext(context);
   }
 
@@ -1901,6 +1907,31 @@ class _MainScreenState extends State<MainScreen>
   bool get _hasLiveTv => _lastHasLiveTv;
 
   /// Get navigation tabs filtered by offline mode
+  /// Height of the band the TV section pill sits in above non-home content.
+  static const double _tvSectionPillBand = 76;
+
+  NavigationTab? get _currentNavigationTab {
+    for (final tab in _getVisibleTabs(_isOffline)) {
+      if (tab.id == _currentTab) return tab;
+    }
+    return null;
+  }
+
+  IconData _currentSectionIcon() => _currentNavigationTab?.icon ?? LucideIcons.house;
+
+  /// The pill names where the viewer is: the open library inside Libraries.
+  String _currentSectionLabel() {
+    if (_currentTab == NavigationTabId.libraries) {
+      final key = _selectedLibraryGlobalKey;
+      if (key != null) {
+        for (final library in context.read<LibrariesProvider>().libraries) {
+          if (library.globalKey == key) return library.title;
+        }
+      }
+    }
+    return _currentNavigationTab?.getLabel() ?? '';
+  }
+
   List<NavigationTab> _getVisibleTabs(bool isOffline) {
     return NavigationTab.getVisibleTabs(isOffline: isOffline, hasLiveTv: _hasLiveTv, hasExplore: _lastHasExplore);
   }
@@ -2030,9 +2061,15 @@ class _MainScreenState extends State<MainScreen>
         pref: SettingsService.alwaysKeepSidebarOpen,
         builder: (context, alwaysExpanded, _) {
           final targetContentOffset = _sideNavigationWidth(context, alwaysExpanded: alwaysExpanded);
-          final reservedContentOffset = alwaysExpanded
-              ? SideNavigationRailState.expandedWidth
+          final tvFloatingRail = PlatformDetector.isTV() && !alwaysExpanded;
+          final reservedContentOffset = tvFloatingRail
+              ? SideNavigationRailState.collapsedWidthForContext(context)
+              : alwaysExpanded
+              ? SideNavigationRailState.expandedWidthForContext(context)
               : SideNavigationRailState.collapsedWidthForContext(context);
+          // Home's hero runs full-bleed under the section pill; other tabs
+          // start their content below it.
+          final contentTop = tvFloatingRail && _currentTab != NavigationTabId.discover ? _tvSectionPillBand : 0.0;
 
           return OverlaySheetHost(
             onOpenChanged: _handleOverlaySheetOpenChanged,
@@ -2082,7 +2119,7 @@ class _MainScreenState extends State<MainScreen>
                         children: [
                           Positioned.fill(child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor)),
                           Positioned(
-                            top: 0,
+                            top: contentTop,
                             bottom: 0,
                             left: contentLayout.left,
                             width: contentLayout.width,
@@ -2120,6 +2157,19 @@ class _MainScreenState extends State<MainScreen>
                               ),
                             ),
                           ),
+                          if (tvFloatingRail)
+                            Positioned(
+                              top: 24,
+                              left: 28,
+                              child: IgnorePointer(
+                                child: AnimatedOpacity(
+                                  opacity: _isSidebarFocused ? 0.0 : 1.0,
+                                  duration: SideNavigationRailState.expandDuration,
+                                  curve: SideNavigationRailState.expandCurve,
+                                  child: _TvSectionPill(icon: _currentSectionIcon(), label: _currentSectionLabel()),
+                                ),
+                              ),
+                            ),
                           Positioned(
                             top: 0,
                             bottom: 0,
@@ -2279,6 +2329,42 @@ class _MainScreenState extends State<MainScreen>
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Apple TV style section pill: shows where the viewer is while the sidebar
+/// is closed; LEFT opens the sidebar.
+class _TvSectionPill extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _TvSectionPill({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AppIcon(LucideIcons.chevronLeft, fill: 1, size: 16, color: Colors.white.withValues(alpha: 0.55)),
+        const SizedBox(width: 4),
+        PlezzantGlass(
+          style: PlezzantGlassStyle.chrome,
+          borderRadius: const BorderRadius.all(Radius.circular(PlezzantRadius.pill)),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppIcon(icon, fill: 1, size: 16, color: Colors.white),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: PlezzantType.labelLarge.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1443,8 +1443,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
           alignment: .centerLeft,
           child: Row(
             children: [
-              AppIcon(widget.iconForHub(hub, hubIndex), fill: 1, size: 20 * scale, color: iconColor),
-              SizedBox(width: 8 * scale),
+              // Apple TV style: plain bold shelf titles, no leading glyph.
               Expanded(
                 child: Row(
                   children: [
@@ -1455,9 +1454,10 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                         overflow: .ellipsis,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: titleColor,
-                          fontSize: 18 * scale,
+                          fontSize: 21 * scale,
                           height: 1,
-                          fontWeight: isActive ? FontWeight.w800 : FontWeight.w700,
+                          letterSpacing: -0.2,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),

@@ -4,6 +4,7 @@ import 'package:plezy/media/ids.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/focus/input_mode_tracker.dart';
 import 'package:plezy/i18n/strings.g.dart';
@@ -67,7 +68,12 @@ AnimatedOpacity _railSurfaceOpacity(WidgetTester tester) {
       )
       // TV paints the rail surface as Plezzant glass; other platforms keep the
       // animated solid panel.
-      .singleWhere((widget) => widget.child is AnimatedContainer || widget.child is PlezzantGlass);
+      .singleWhere(
+        (widget) =>
+            widget.child is AnimatedContainer ||
+            widget.child is PlezzantGlass ||
+            (widget.child is Padding && (widget.child! as Padding).child is PlezzantGlass),
+      );
 }
 
 /// The Libraries header's expand/collapse chevron, matched by the symbol that
@@ -135,6 +141,11 @@ Future<void> _pumpBasicRail(
 }
 
 void main() {
+  setUpAll(() async {
+    // The open TV panel header shows the clock.
+    await initializeDateFormatting('en');
+  });
+
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
@@ -246,7 +257,7 @@ void main() {
     expect(_railItemDecoration(tester, homeItem)?.borderRadius, BorderRadius.circular(MonoTokens.radiusFull));
   });
 
-  testWidgets('expanded TV rail keeps a transparent surface', (tester) async {
+  testWidgets('expanded TV rail opens as a floating glass panel', (tester) async {
     TvDetectionService.debugSetAppleTVOverride(true);
     addTearDown(() => TvDetectionService.debugSetAppleTVOverride(null));
     await SettingsService.getInstance();
@@ -288,9 +299,9 @@ void main() {
     await tester.pumpAndSettle();
 
     final rail = find.descendant(of: find.byType(SideNavigationRail), matching: find.byType(AnimatedContainer)).first;
-    expect(tester.getSize(rail).width, SideNavigationRailState.expandedWidth);
+    expect(tester.getSize(rail).width, SideNavigationRailState.tvExpandedWidth);
 
-    expect(_railSurfaceOpacity(tester).opacity, 0.0);
+    expect(_railSurfaceOpacity(tester).opacity, 1.0);
   });
 
   testWidgets('expanded rail keeps selected background outside sidebar keyboard focus', (tester) async {
@@ -603,10 +614,11 @@ void main() {
     await gesture.moveTo(tester.getCenter(rail));
     await tester.pumpAndSettle();
 
-    expect(tester.getSize(rail).width, SideNavigationRailState.expandedWidth);
+    expect(tester.getSize(rail).width, SideNavigationRailState.tvExpandedWidth);
     expect(_railSurfaceOpacity(tester).opacity, 1.0);
 
-    await gesture.moveTo(tester.getBottomRight(rail) + const Offset(100, -10));
+    await gesture.moveTo(const Offset(760, 300));
+    await tester.pump(const Duration(milliseconds: 200));
     await tester.pumpAndSettle();
 
     expect(tester.getSize(rail).width, SideNavigationRailState.tvCollapsedWidth);
@@ -635,15 +647,15 @@ void main() {
     expect(surface.curve, SideNavigationRailState.expandCurve);
   });
 
-  testWidgets('TV always-open rail stays transparent', (tester) async {
+  testWidgets('TV always-open rail shows the floating panel', (tester) async {
     await TvDetectionService.getInstance();
     TvDetectionService.setForceTVSync(true);
 
     await _pumpBasicRail(tester, alwaysExpanded: true);
 
     final rail = find.descendant(of: find.byType(SideNavigationRail), matching: find.byType(AnimatedContainer)).first;
-    expect(tester.getSize(rail).width, SideNavigationRailState.expandedWidth);
-    expect(_railSurfaceOpacity(tester).opacity, 0.0);
+    expect(tester.getSize(rail).width, SideNavigationRailState.tvExpandedWidth);
+    expect(_railSurfaceOpacity(tester).opacity, 1.0);
   });
 
   testWidgets('Apple TV D-pad focus skips hidden downloads item', (tester) async {
