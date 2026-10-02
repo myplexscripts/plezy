@@ -862,8 +862,15 @@ class _PlexVideoControlsState extends State<PlexVideoControls>
   // Position subscription for marker tracking
   StreamSubscription<Duration>? _positionSubscription;
   // Skip-marker state
-  SkipMarkerMode _skipModeFor(MediaMarker marker) =>
-      _settings.read(marker.isCredits ? SettingsService.skipCreditsMode : SettingsService.skipIntroMode);
+  // Marker kinds without a skip preference (bookmarks, unrecognised server
+  // types) play through instead of borrowing the intro prompt.
+  SkipMarkerMode _skipModeFor(MediaMarker marker) {
+    if (marker.isCredits) return _settings.read(SettingsService.skipCreditsMode);
+    if (marker.isCommercial) return _settings.read(SettingsService.skipCommercialsMode);
+    if (marker.isIntro) return _settings.read(SettingsService.skipIntroMode);
+    return SkipMarkerMode.off;
+  }
+
   int get _autoSkipDelay => _settings.read(SettingsService.autoSkipDelay);
   Timer? _autoSkipTimer;
   final ValueNotifier<double> _autoSkipProgress = ValueNotifier<double>(0.0);
@@ -953,6 +960,7 @@ class _PlexVideoControlsState extends State<PlexVideoControls>
       SettingsService.rotationLocked,
       SettingsService.skipIntroMode,
       SettingsService.skipCreditsMode,
+      SettingsService.skipCommercialsMode,
       SettingsService.autoSkipDelay,
       SettingsService.videoPlayerNavigationEnabled,
       SettingsService.showPerformanceOverlay,
@@ -964,6 +972,11 @@ class _PlexVideoControlsState extends State<PlexVideoControls>
     // prompt now, not on the next position tick (paused playback never ticks).
     bindEffect(SettingsService.skipIntroMode, (_) => _syncCurrentMarkerForCurrentPosition(), fireImmediately: false);
     bindEffect(SettingsService.skipCreditsMode, (_) => _syncCurrentMarkerForCurrentPosition(), fireImmediately: false);
+    bindEffect(
+      SettingsService.skipCommercialsMode,
+      (_) => _syncCurrentMarkerForCurrentPosition(),
+      fireImmediately: false,
+    );
     widget.chromeController.addListener(_onChromeChanged);
     _configureChromeController();
     widget.chromeController.setPlaying(widget.player.state.playing);

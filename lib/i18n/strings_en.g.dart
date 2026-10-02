@@ -639,6 +639,9 @@ class Translations$settings$en {
 	/// en: 'Same as Default Quality'
 	String get cellularQualitySameAsDefault => 'Same as Default Quality';
 
+	/// en: 'Default Quality Away From Home'
+	String get remoteQualityTitle => 'Default Quality Away From Home';
+
 	/// en: 'Play Smaller Videos at Original Quality'
 	String get directPlayCoveredQuality => 'Play Smaller Videos at Original Quality';
 
@@ -887,6 +890,18 @@ class Translations$settings$en {
 
 	/// en: 'Skip credits automatically and play the next episode'
 	String get skipCreditsModeAutoDescription => 'Skip credits automatically and play the next episode';
+
+	/// en: 'Skip Commercials'
+	String get skipCommercialsMode => 'Skip Commercials';
+
+	/// en: 'Play ad breaks in recordings normally'
+	String get skipCommercialsModeOffDescription => 'Play ad breaks in recordings normally';
+
+	/// en: 'Show a skip button when an ad break starts'
+	String get skipCommercialsModeButtonDescription => 'Show a skip button when an ad break starts';
+
+	/// en: 'Skip ad breaks in recordings automatically'
+	String get skipCommercialsModeAutoDescription => 'Skip ad breaks in recordings automatically';
 
 	/// en: 'Off'
 	String get skipMarkerModeOff => 'Off';
@@ -2217,6 +2232,9 @@ class Translations$videoControls$en {
 
 	/// en: 'Skip Credits'
 	String get skipCredits => 'Skip Credits';
+
+	/// en: 'Skip Commercial'
+	String get skipCommercial => 'Skip Commercial';
 
 	/// en: 'Next Episode'
 	String get nextEpisode => 'Next Episode';
@@ -7265,6 +7283,7 @@ extension on Translations {
 			'settings.defaultQualityTitle' => 'Default Quality',
 			'settings.cellularQualityTitle' => 'Default Quality on Cellular',
 			'settings.cellularQualitySameAsDefault' => 'Same as Default Quality',
+			'settings.remoteQualityTitle' => 'Default Quality Away From Home',
 			'settings.directPlayCoveredQuality' => 'Play Smaller Videos at Original Quality',
 			'settings.directPlayCoveredQualityDescription' => 'Direct play videos already within the quality limit instead of transcoding them',
 			'settings.musicQualityTitle' => 'Music Quality',
@@ -7348,6 +7367,10 @@ extension on Translations {
 			'settings.skipCreditsModeOffDescription' => 'Play credits normally without a skip button',
 			'settings.skipCreditsModeButtonDescription' => 'Show a skip button when credits start',
 			'settings.skipCreditsModeAutoDescription' => 'Skip credits automatically and play the next episode',
+			'settings.skipCommercialsMode' => 'Skip Commercials',
+			'settings.skipCommercialsModeOffDescription' => 'Play ad breaks in recordings normally',
+			'settings.skipCommercialsModeButtonDescription' => 'Show a skip button when an ad break starts',
+			'settings.skipCommercialsModeAutoDescription' => 'Skip ad breaks in recordings automatically',
 			'settings.skipMarkerModeOff' => 'Off',
 			'settings.skipMarkerModeButton' => 'Show button',
 			'settings.skipMarkerModeAuto' => 'Automatic',
@@ -7586,13 +7609,13 @@ extension on Translations {
 			'fileInfo.languageCode' => 'Language Code',
 			'fileInfo.streamTitle' => 'Track Title',
 			'fileInfo.channels' => 'Channels',
+			_ => null,
+		} ?? switch (path) {
 			'fileInfo.sampleRate' => 'Sample Rate',
 			'fileInfo.spatialAudio' => 'Spatial Audio',
 			'fileInfo.textBased' => 'Text Based',
 			'fileInfo.subtitleFormat' => 'Sidecar Format',
 			'fileInfo.provider' => 'Provider',
-			_ => null,
-		} ?? switch (path) {
 			'fileInfo.matchScore' => 'Match Score',
 			'fileInfo.externalDelivery' => 'Can Be Served Separately',
 			'fileInfo.sidecarPath' => 'Sidecar Path',
@@ -7795,6 +7818,7 @@ extension on Translations {
 			'videoControls.searchLanguages' => 'Search languages...',
 			'videoControls.skipIntro' => 'Skip Intro',
 			'videoControls.skipCredits' => 'Skip Credits',
+			'videoControls.skipCommercial' => 'Skip Commercial',
 			'videoControls.nextEpisode' => 'Next Episode',
 			'videoControls.subtitleTrack' => ({required Object n}) => 'Track ${n}',
 			'videoControls.subtitleFile' => ({required Object name}) => 'Subtitle ${name}',
@@ -8099,14 +8123,14 @@ extension on Translations {
 			'libraries.all' => 'All',
 			'libraries.clearAll' => 'Clear All',
 			'libraries.scanLibraryConfirm' => ({required Object title}) => 'Are you sure you want to scan "${title}"?',
+			_ => null,
+		} ?? switch (path) {
 			'libraries.analyzeLibraryConfirm' => ({required Object title}) => 'Are you sure you want to analyze "${title}"?',
 			'libraries.refreshMetadataConfirm' => ({required Object title}) => 'Are you sure you want to refresh metadata for "${title}"?',
 			'libraries.emptyTrashConfirm' => ({required Object title}) => 'Are you sure you want to empty trash for "${title}"?',
 			'libraries.manageLibraries' => 'Manage Libraries',
 			'libraries.sort' => 'Sort',
 			'libraries.sortBy' => 'Sort By',
-			_ => null,
-		} ?? switch (path) {
 			'libraries.filters' => 'Filters',
 			'libraries.confirmActionMessage' => 'Are you sure you want to perform this action?',
 			'libraries.showLibrary' => 'Show library',
@@ -8613,14 +8637,14 @@ extension on Translations {
 			'downloads.downloadQueued' => 'Download queued',
 			'downloads.downloadResumed' => 'Download resumed',
 			'downloads.serverErrorBitrate' => 'Server error: file may exceed the remote bitrate limit',
+			_ => null,
+		} ?? switch (path) {
 			'downloads.storageFull' => 'Downloads stopped because device storage is full. Free some space, then retry.',
 			'downloads.episodesQueued' => ({required Object count}) => '${count} episodes queued for download',
 			'downloads.downloadDeleted' => 'Download deleted',
 			'downloads.deleteConfirm' => ({required Object title}) => 'Delete "${title}" from this device?',
 			'downloads.cancelledDownloadTitle' => 'Canceled Download',
 			'downloads.cancelledDownloadMessage' => 'This download was canceled. What would you like to do?',
-			_ => null,
-		} ?? switch (path) {
 			'downloads.allEpisodesAlreadyDownloaded' => 'All episodes already downloaded',
 			'downloads.resumeDownload' => 'Resume download',
 			'downloads.cancelledDownload' => 'Canceled download',

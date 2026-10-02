@@ -1164,6 +1164,7 @@ void main() {
       expect(client.config.baseUrl, remote.uri);
       expect(storage.getServerEndpoint(ServerId('demoted-server')), remote.uri);
       expect(server.discoveryCalls, 1);
+      expect(manager.isOnRemoteConnection(ServerId('demoted-server')), isTrue);
 
       await manager.reoptimizeDemotedServers(reason: 'resume');
       await pumpEventQueue(times: 20);
@@ -1171,6 +1172,7 @@ void main() {
       expect(server.discoveryCalls, 2);
       expect(client.config.baseUrl, local.uri);
       expect(storage.getServerEndpoint(ServerId('demoted-server')), local.uri);
+      expect(manager.isOnRemoteConnection(ServerId('demoted-server')), isFalse);
 
       // Back on local: a second resume is a no-op.
       await manager.reoptimizeDemotedServers(reason: 'resume');

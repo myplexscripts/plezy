@@ -179,4 +179,27 @@ void main() {
       expect(urls, contains(localPlexDirect));
     });
   });
+
+  group('PlexServer.isLocalOrPrivateHostName', () {
+    test('private, loopback and LAN-only names are local', () {
+      for (final host in [
+        '192.168.1.20',
+        '10.0.0.5',
+        '172.16.4.1',
+        'localhost',
+        'nas.local',
+        'media.home.arpa',
+        'fe80::1',
+        '[::1]',
+      ]) {
+        expect(PlexServer.isLocalOrPrivateHostName(host), isTrue, reason: host);
+      }
+    });
+
+    test('public addresses and hostnames are not local', () {
+      for (final host in ['203.0.113.7', '8.8.8.8', 'media.example.com', '2001:db8::1']) {
+        expect(PlexServer.isLocalOrPrivateHostName(host), isFalse, reason: host);
+      }
+    });
+  });
 }

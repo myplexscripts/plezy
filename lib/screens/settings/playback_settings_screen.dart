@@ -100,10 +100,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
                 // Only a phone/tablet has a cellular radio; desktop and TV
                 // never report a cellular-only connection.
                 if (isMobile) _cellularQualityTile(),
-                // TODO: "Remote streaming quality" selector (#2064) goes here,
-                // mirroring cellularQualityPreset's nullable "same as default"
-                // pattern; needs local/remote connection detection in the
-                // failover client.
+                _remoteQualityTile(),
                 _directPlayCoveredQualityTile(),
                 _musicQualityTile(),
               ],
@@ -305,6 +302,13 @@ class PlaybackSettingsScreen extends StatelessWidget {
         subtitleBuilder: (mode) => '${_skipMarkerModeLabel(mode)} · ${_skipCreditsModeDescription(mode)}',
         options: SkipMarkerMode.values.map((m) => DialogOption(value: m, title: _skipMarkerModeLabel(m))).toList(),
       ),
+      SettingSelectionTile<SkipMarkerMode>(
+        pref: SettingsService.skipCommercialsMode,
+        icon: LucideIcons.tv,
+        title: t.settings.skipCommercialsMode,
+        subtitleBuilder: (mode) => '${_skipMarkerModeLabel(mode)} · ${_skipCommercialsModeDescription(mode)}',
+        options: SkipMarkerMode.values.map((m) => DialogOption(value: m, title: _skipMarkerModeLabel(m))).toList(),
+      ),
       SettingSwitchTile(
         pref: SettingsService.forceSkipMarkerFallback,
         icon: LucideIcons.slidersHorizontal,
@@ -346,6 +350,12 @@ class PlaybackSettingsScreen extends StatelessWidget {
     SkipMarkerMode.off => t.settings.skipIntroModeOffDescription,
     SkipMarkerMode.button => t.settings.skipIntroModeButtonDescription,
     SkipMarkerMode.auto => t.settings.skipIntroModeAutoDescription,
+  };
+
+  String _skipCommercialsModeDescription(SkipMarkerMode mode) => switch (mode) {
+    SkipMarkerMode.off => t.settings.skipCommercialsModeOffDescription,
+    SkipMarkerMode.button => t.settings.skipCommercialsModeButtonDescription,
+    SkipMarkerMode.auto => t.settings.skipCommercialsModeAutoDescription,
   };
 
   String _skipCreditsModeDescription(SkipMarkerMode mode) => switch (mode) {
@@ -572,6 +582,19 @@ class PlaybackSettingsScreen extends StatelessWidget {
     pref: SettingsService.cellularQualityPreset,
     icon: LucideIcons.signalHigh,
     title: t.settings.cellularQualityTitle,
+    subtitleBuilder: (p) => p == null ? t.settings.cellularQualitySameAsDefault : qualityPresetLabel(p),
+    options: [
+      DialogOption<TranscodeQualityPreset?>(value: null, title: t.settings.cellularQualitySameAsDefault),
+      ...TranscodeQualityPreset.displayOrder.map(
+        (p) => DialogOption<TranscodeQualityPreset?>(value: p, title: qualityPresetLabel(p)),
+      ),
+    ],
+  );
+
+  Widget _remoteQualityTile() => SettingSelectionTile<TranscodeQualityPreset?>(
+    pref: SettingsService.remoteQualityPreset,
+    icon: LucideIcons.globe,
+    title: t.settings.remoteQualityTitle,
     subtitleBuilder: (p) => p == null ? t.settings.cellularQualitySameAsDefault : qualityPresetLabel(p),
     options: [
       DialogOption<TranscodeQualityPreset?>(value: null, title: t.settings.cellularQualitySameAsDefault),

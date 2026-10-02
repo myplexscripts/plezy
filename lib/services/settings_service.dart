@@ -582,6 +582,14 @@ class SettingsService extends BaseSharedPreferencesService {
   static const skipIntroMode = _SkipMarkerModePref('skip_intro_mode', legacyKey: _legacyAutoSkipIntroKey);
   static const skipCreditsMode = _SkipMarkerModePref('skip_credits_mode', legacyKey: _legacyAutoSkipCreditsKey);
 
+  /// Commercial markers on DVR recordings. Newer than the boolean-era prefs,
+  /// so it has no legacy key to migrate.
+  static const skipCommercialsMode = EnumPref<SkipMarkerMode>(
+    'skip_commercials_mode',
+    values: SkipMarkerMode.values,
+    defaultValue: SkipMarkerMode.button,
+  );
+
   /// Previous format-v1 representations of these logical preferences.
   /// Shared by the typed migration and portable settings codec.
   static const legacySkipMarkerPrefs = {
@@ -630,6 +638,15 @@ class SettingsService extends BaseSharedPreferencesService {
   /// [defaultQualityPreset].
   static const cellularQualityPreset = NullableEnumPref<TranscodeQualityPreset>(
     'cellular_quality_preset',
+    values: TranscodeQualityPreset.values,
+  );
+
+  /// Startup quality cap applied instead of [defaultQualityPreset] while the
+  /// server is reached from outside the local network (a remote or relay
+  /// endpoint). Null = follow [defaultQualityPreset]. A cellular-only
+  /// connection's [cellularQualityPreset] still wins over this one.
+  static const remoteQualityPreset = NullableEnumPref<TranscodeQualityPreset>(
+    'remote_quality_preset',
     values: TranscodeQualityPreset.values,
   );
 
@@ -1411,6 +1428,7 @@ class SettingsService extends BaseSharedPreferencesService {
     clickVideoTogglesPlayback,
     skipIntroMode,
     skipCreditsMode,
+    skipCommercialsMode,
     forceSkipMarkerFallback,
     autoSkipDelay,
     introPattern,
@@ -1418,6 +1436,7 @@ class SettingsService extends BaseSharedPreferencesService {
     autoRemoveWatchedDownloads,
     defaultQualityPreset,
     cellularQualityPreset,
+    remoteQualityPreset,
     musicQualityPreset,
     liveTvDefaultFavorites,
     matchRefreshRate,

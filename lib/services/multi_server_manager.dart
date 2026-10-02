@@ -1124,6 +1124,37 @@ class MultiServerManager {
     }
   }
 
+  /// Whether [serverId]'s registered client currently reaches its server
+  /// from outside the local network, i.e. the "away from home" quality
+  /// applies. Plex endpoints are classified from the server's published
+  /// connections (remote and relay count as away); anything the classifier
+  /// can't place, and every other backend, falls back to the host: private,
+  /// loopback and LAN-only names are local, everything else is away.
+  bool isOnRemoteConnection(ServerId serverId) {
+    final client = _clients[serverId];
+    if (client == null) return false;
+    final String baseUrl;
+    if (client is PlexClient) {
+      baseUrl = client.config.baseUrl;
+      final server = _plexServers[serverId];
+      switch (server?.networkClassForUrl(baseUrl)) {
+        case PlexNetworkClass.remote || PlexNetworkClass.relay:
+          return true;
+        case PlexNetworkClass.local:
+          return false;
+        case PlexNetworkClass.unknown || null:
+          break;
+      }
+    } else if (client is JellyfinClient) {
+      baseUrl = client.connection.baseUrl;
+    } else {
+      return false;
+    }
+    final host = Uri.tryParse(baseUrl)?.host ?? '';
+    if (host.isEmpty) return false;
+    return !PlexServer.isLocalOrPrivateHostName(host);
+  }
+
   /// Whether [serverId]'s registered client is currently talking to a Plex
   /// relay endpoint.
   bool _isOnRelay(ServerId serverId) {

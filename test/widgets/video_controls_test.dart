@@ -1109,6 +1109,22 @@ void main() {
       expect(activateCount, 1);
     });
 
+    testWidgets('a commercial marker offers to skip the commercial', (tester) async {
+      final focusNode = FocusNode();
+      addTearDown(focusNode.dispose);
+
+      await _pumpSkipMarkerButton(
+        tester,
+        focusNode: focusNode,
+        isAutoSkipActive: false,
+        onActivate: () {},
+        markerType: 'commercial',
+      );
+
+      expect(find.text(t.videoControls.skipCommercial), findsOneWidget);
+      expect(find.text(t.videoControls.skipIntro), findsNothing);
+    });
+
     testWidgets('uses the localized marker label', (tester) async {
       await tester.runAsync(() => LocaleSettings.setLocale(AppLocale.pt));
       addTearDown(() => LocaleSettings.setLocaleSync(AppLocale.en));
@@ -2289,6 +2305,7 @@ Future<void> _pumpSkipMarkerButton(
   required bool isAutoSkipActive,
   required VoidCallback onActivate,
   VoidCallback? onFocusDown,
+  String markerType = 'intro',
 }) {
   return tester.pumpWidget(
     MaterialApp(
@@ -2296,7 +2313,7 @@ Future<void> _pumpSkipMarkerButton(
       home: Scaffold(
         body: Center(
           child: SkipMarkerButton(
-            marker: MediaMarker(id: 1, type: 'intro', startTimeOffset: 10000, endTimeOffset: 45000),
+            marker: MediaMarker(id: 1, type: markerType, startTimeOffset: 10000, endTimeOffset: 45000),
             playerDuration: const Duration(minutes: 20),
             hasNextEpisode: false,
             isAutoSkipActive: isAutoSkipActive,

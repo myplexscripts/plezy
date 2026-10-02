@@ -46,6 +46,56 @@ void main() {
 
       expect(preset, TranscodeQualityPreset.original);
     });
+
+    test('a remote connection applies the away-from-home default when one is set', () {
+      final preset = TranscodeQualityPreset.resolveStartupDefault(
+        serverSupportsTranscoding: true,
+        onCellularOnly: false,
+        cellularDefault: null,
+        generalDefault: TranscodeQualityPreset.original,
+        onRemoteConnection: true,
+        remoteDefault: TranscodeQualityPreset.p1080_8mbps,
+      );
+
+      expect(preset, TranscodeQualityPreset.p1080_8mbps);
+    });
+
+    test('a remote connection without an away default follows the general default', () {
+      final preset = TranscodeQualityPreset.resolveStartupDefault(
+        serverSupportsTranscoding: true,
+        onCellularOnly: false,
+        cellularDefault: null,
+        generalDefault: TranscodeQualityPreset.p720_2mbps,
+        onRemoteConnection: true,
+      );
+
+      expect(preset, TranscodeQualityPreset.p720_2mbps);
+    });
+
+    test('a local connection ignores the away-from-home default', () {
+      final preset = TranscodeQualityPreset.resolveStartupDefault(
+        serverSupportsTranscoding: true,
+        onCellularOnly: false,
+        cellularDefault: null,
+        generalDefault: TranscodeQualityPreset.original,
+        remoteDefault: TranscodeQualityPreset.p240_320,
+      );
+
+      expect(preset, TranscodeQualityPreset.original);
+    });
+
+    test('cellular wins over the away-from-home default', () {
+      final preset = TranscodeQualityPreset.resolveStartupDefault(
+        serverSupportsTranscoding: true,
+        onCellularOnly: true,
+        cellularDefault: TranscodeQualityPreset.p240_320,
+        generalDefault: TranscodeQualityPreset.original,
+        onRemoteConnection: true,
+        remoteDefault: TranscodeQualityPreset.p1080_8mbps,
+      );
+
+      expect(preset, TranscodeQualityPreset.p240_320);
+    });
   });
 
   group('TranscodeQualityPreset.coversSource', () {

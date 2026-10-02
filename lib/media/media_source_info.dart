@@ -351,7 +351,12 @@ class MediaMarker {
   Duration get startTime => Duration(milliseconds: startTimeOffset);
   Duration get endTime => Duration(milliseconds: endTimeOffset);
 
+  bool get isIntro => type == 'intro';
   bool get isCredits => type == 'credits';
+
+  /// An ad break in a DVR recording (Plex commercial detection, Jellyfin
+  /// "Commercial" media segments).
+  bool get isCommercial => type == 'commercial';
 
   bool containsPosition(Duration position) {
     final posMs = position.inMilliseconds;

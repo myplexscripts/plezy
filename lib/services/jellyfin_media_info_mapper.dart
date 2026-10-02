@@ -164,6 +164,8 @@ String? _jellyfinSegmentMarkerType(String? value) {
     case 'outro':
     case 'credits':
       return 'credits';
+    case 'commercial':
+      return 'commercial';
   }
   return null;
 }

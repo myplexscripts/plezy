@@ -884,6 +884,10 @@ class PlexServer {
     return address.isNotEmpty && uri.host.toLowerCase() == address;
   }
 
+  /// Whether [host] names this device, a private/link-local/CGNAT address or
+  /// a LAN-only hostname (`.local`, `.lan`, `.home.arpa`, ...).
+  static bool isLocalOrPrivateHostName(String host) => _isLocalOrPrivateHost(_normalizedHost(host));
+
   static String _normalizedHost(String host) {
     final bare = host.startsWith('[') && host.endsWith(']') ? host.substring(1, host.length - 1) : host;
     return bare.toLowerCase();

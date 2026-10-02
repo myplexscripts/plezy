@@ -49,7 +49,7 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Movie libraries / TV libraries | ✅ 🎨 | Paged fetch with abort for large libraries |
 | Seasons / episodes | ✅ 🎨 | |
 | Filters, sorts, first-letter jump | ✅ | |
-| Collections | ✅ 🎨 | |
+| Collections | ✅ 🎨 | Library → Collections tab (`/library/sections/{id}/collections`, paged), collection detail via `/library/collections/{id}/children`. Hidden on libraries shared from another account |
 | Playlists (video + audio) | ✅ 🎨 | |
 | Search (cross-server) | ✅ 🎨 | Debounced; TV virtual keyboard |
 | Media details: metadata, ratings, cast & crew | ✅ 🎨 | |
@@ -67,8 +67,8 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Direct Stream | ✅ 🆕 | The Plex HLS decision allows video copy. Plezzant now **reports** Direct Stream separately from Transcode, using the decision's per-stream `decision` |
 | Transcode (HLS fMP4, TS fallback) | ✅ | Container-honoured guard (#1859) |
 | Playback method shown to the viewer | 🆕 | Player → Settings → *Performance overlay*, first row "Playback" |
-| Quality presets | ✅ | `defaultQualityPreset`, `cellularQualityPreset`, "play smaller videos at original quality" |
-| Separate local vs remote quality | ⛔ | One preset plus a cellular override today. Needs connection-locality plumbing from `PlexClient` endpoint classification |
+| Quality presets | ✅ | `defaultQualityPreset`, `cellularQualityPreset`, `remoteQualityPreset`, "play smaller videos at original quality" |
+| Separate local vs remote quality | 🆕 | Settings → Playback → *Default Quality Away From Home*. Applies while the server is reached over a remote or relay endpoint (classified from the server's published connections; other backends by private-address check). Cellular override still wins |
 | Bandwidth cap | 🟡 | Expressed through quality presets (bitrate ceilings) |
 | Audio track selection | ✅ | Language and codec scoring; persisted per part (`selectStreams`) |
 | Subtitle selection (embedded, sidecar, burn) | ✅ | Burn selects the stream on the part first |
@@ -79,7 +79,7 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Chapters | ✅ | Chapter sheet, timeline markers |
 | Intro markers / skip intro | ✅ ⭐ 🖥 | Marker detection is a Plex Pass server feature; chapter-title fallback |
 | Credits markers / skip credits | ✅ ⭐ 🖥 | |
-| Commercial markers (DVR) | ⛔ | Not parsed or skippable yet |
+| Commercial markers (DVR) | 🆕 🖥 | "Skip Commercial" button, with its own Off / Button / Automatic setting (Settings → Playback → *Skip Commercials*). Needs the server's commercial detection (Plex DVR) or Jellyfin "Commercial" media segments. Unknown marker types no longer borrow the Skip Intro prompt |
 | Resume position | ✅ | |
 | Timeline reporting / sessions | ✅ | `PlaybackReportSession` start→progress→stop |
 | Auto-play next episode, countdown | ✅ | |

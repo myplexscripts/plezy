@@ -660,10 +660,12 @@ void main() {
           {'Type': 'Intro', 'StartTicks': _ticks(5000), 'EndTicks': _ticks(45000)},
           {'Type': 'Outro', 'StartTicks': _ticks(90000), 'EndTicks': _ticks(100000)},
           {'Type': 'Recap', 'StartTicks': _ticks(0), 'EndTicks': _ticks(4000)},
+          {'Type': 'Commercial', 'StartTicks': _ticks(60000), 'EndTicks': _ticks(75000)},
         ],
       });
 
-      expect(markers.map((m) => m.type), ['intro', 'credits']);
+      expect(markers.map((m) => m.type), ['intro', 'credits', 'commercial']);
+      expect(markers[2].isCommercial, isTrue);
       expect(markers[0].startTimeOffset, 5000);
       expect(markers[0].endTimeOffset, 45000);
       expect(markers[1].startTimeOffset, 90000);

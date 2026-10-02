@@ -60,15 +60,19 @@ enum TranscodeQualityPreset {
   ///
   /// Backends that cannot transcode start at [original] regardless of any
   /// saved default. Otherwise the cellular default applies on a cellular-only
-  /// connection when set, else the general default.
+  /// connection when set, then the away-from-home default while the server is
+  /// reached over a remote endpoint when set, else the general default.
   static TranscodeQualityPreset resolveStartupDefault({
     required bool serverSupportsTranscoding,
     required bool onCellularOnly,
     required TranscodeQualityPreset? cellularDefault,
     required TranscodeQualityPreset generalDefault,
+    bool onRemoteConnection = false,
+    TranscodeQualityPreset? remoteDefault,
   }) {
     if (!serverSupportsTranscoding) return original;
     if (onCellularOnly && cellularDefault != null) return cellularDefault;
+    if (onRemoteConnection && remoteDefault != null) return remoteDefault;
     return generalDefault;
   }
 }

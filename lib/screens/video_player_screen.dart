@@ -850,6 +850,14 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindin
     return context.read<MultiServerProvider>().serverManager.getClient(ServerId(id));
   }
 
+  /// Whether the current item's server is reached from outside the local
+  /// network, selecting the away-from-home startup quality.
+  bool _isOnRemoteConnection(BuildContext context) {
+    final id = _currentMetadata.serverId;
+    if (id == null) return false;
+    return context.read<MultiServerProvider>().serverManager.isOnRemoteConnection(ServerId(id));
+  }
+
   MediaServerClient? _getOnlineMediaServerClient(BuildContext context) {
     final id = _currentMetadata.serverId;
     if (id == null) return null;
@@ -1461,7 +1469,7 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindin
         // Single source of truth for showing quality controls and applying the
         // saved startup quality. An explicit per-play pick wins; otherwise the
         // saved default applies, which on a cellular-only connection is the
-        // cellular one when set. The connection type piggybacks on the app's
+        // cellular one when set, and away from home the remote one when set. The connection type piggybacks on the app's
         // single connectivity subscription in OfflineModeProvider.
         _serverSupportsTranscoding = genericClient.capabilities.videoTranscoding;
         _selectedQualityPreset =
@@ -1471,6 +1479,8 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindin
               onCellularOnly: context.read<OfflineModeProvider>().isCellularOnly,
               cellularDefault: settingsService.read(SettingsService.cellularQualityPreset),
               generalDefault: settingsService.read(SettingsService.defaultQualityPreset),
+              onRemoteConnection: _isOnRemoteConnection(context),
+              remoteDefault: settingsService.read(SettingsService.remoteQualityPreset),
             );
         final playbackResolver = PlaybackSourceResolver(
           serverManager: context.read<MultiServerProvider>().serverManager,
@@ -1508,6 +1518,8 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindin
               onCellularOnly: context.read<OfflineModeProvider>().isCellularOnly,
               cellularDefault: settingsService.read(SettingsService.cellularQualityPreset),
               generalDefault: settingsService.read(SettingsService.defaultQualityPreset),
+              onRemoteConnection: _isOnRemoteConnection(context),
+              remoteDefault: settingsService.read(SettingsService.remoteQualityPreset),
             );
       }
 
