@@ -895,6 +895,8 @@
   },
   "profiles": {
     "addPlezzantProfile": "Add Plezzant profile",
+    "addProfileShort": "Add Profile",
+    "whoIsWatching": "Who's watching?",
     "switchingProfile": "Switching profile…",
     "deleteThisProfileTitle": "Delete this profile?",
     "deleteThisProfileMessage": "Remove ${displayName}. Connections aren't affected.",

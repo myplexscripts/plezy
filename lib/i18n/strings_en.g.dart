@@ -2632,6 +2632,12 @@ class Translations$profiles$en {
 	/// en: 'Add Plezzant profile'
 	String get addPlezzantProfile => 'Add Plezzant profile';
 
+	/// en: 'Add Profile'
+	String get addProfileShort => 'Add Profile';
+
+	/// en: 'Who's watching?'
+	String get whoIsWatching => 'Who\'s watching?';
+
 	/// en: 'Switching profile…'
 	String get switchingProfile => 'Switching profile…';
 
@@ -7941,6 +7947,8 @@ extension on Translations {
 			'mpvConfig.embeddedVoHint' => 'vo, gpu-context and gpu-api are ignored on Linux: embedded video always renders through vo=libmpv on the video plane, and gpu-next (which compute shaders like ArtCNN need) cannot run embedded.',
 			'dialog.confirmAction' => 'Confirm Action',
 			'profiles.addPlezzantProfile' => 'Add Plezzant profile',
+			'profiles.addProfileShort' => 'Add Profile',
+			'profiles.whoIsWatching' => 'Who\'s watching?',
 			'profiles.switchingProfile' => 'Switching profile…',
 			'profiles.deleteThisProfileTitle' => 'Delete this profile?',
 			'profiles.deleteThisProfileMessage' => ({required Object displayName}) => 'Remove ${displayName}. Connections aren\'t affected.',
@@ -8127,10 +8135,10 @@ extension on Translations {
 			'libraries.hiddenLibrariesCount' => ({required Object count}) => 'Hidden libraries (${count})',
 			'libraries.thisLibraryIsEmpty' => 'This library is empty',
 			'libraries.noItemsMatchFilters' => 'No items match the active filters',
-			'libraries.resetFilters' => 'Reset filters',
-			'libraries.all' => 'All',
 			_ => null,
 		} ?? switch (path) {
+			'libraries.resetFilters' => 'Reset filters',
+			'libraries.all' => 'All',
 			'libraries.clearAll' => 'Clear All',
 			'libraries.scanLibraryConfirm' => ({required Object title}) => 'Are you sure you want to scan "${title}"?',
 			'libraries.analyzeLibraryConfirm' => ({required Object title}) => 'Are you sure you want to analyze "${title}"?',
@@ -8641,10 +8649,10 @@ extension on Translations {
 			'downloads.noDownloadsDescription' => 'Downloaded content will appear here for offline viewing',
 			'downloads.downloadNow' => 'Download',
 			'downloads.deleteDownload' => 'Delete download',
-			'downloads.retryDownload' => 'Retry download',
-			'downloads.downloadQueued' => 'Download queued',
 			_ => null,
 		} ?? switch (path) {
+			'downloads.retryDownload' => 'Retry download',
+			'downloads.downloadQueued' => 'Download queued',
 			'downloads.downloadResumed' => 'Download resumed',
 			'downloads.serverErrorBitrate' => 'Server error: file may exceed the remote bitrate limit',
 			'downloads.storageFull' => 'Downloads stopped because device storage is full. Free some space, then retry.',

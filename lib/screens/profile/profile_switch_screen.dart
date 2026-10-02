@@ -16,7 +16,10 @@ import '../../profiles/profile_avatar.dart';
 import '../../profiles/profile_connection.dart';
 import '../../profiles/profile_merge.dart';
 import '../../services/app_exit_service.dart';
+import '../../theme/plezzant/plezzant_typography.dart';
 import '../../theme/mono_tokens.dart';
+import '../../utils/layout_constants.dart';
+import '../../utils/platform_detector.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/app_menu.dart';
 import '../../widgets/backend_badge.dart';
@@ -83,42 +86,51 @@ class _ProfileSwitchScreenState extends State<ProfileSwitchScreen> with MountedS
       },
       child: Stack(
         children: [
-          FocusedScrollScaffold(
-            title: Text(t.screens.switchProfile),
-            automaticallyImplyLeading: !widget.requireSelection,
-            onBackPressed: widget.requireSelection ? () => unawaited(AppExitService.requestExit()) : null,
-            slivers: [
-              if (profiles.isEmpty)
-                SliverFillRemaining(
-                  child: loading
-                      ? const Center(child: CircularProgressIndicator())
-                      : EmptyStateWidget(
-                          message: t.messages.noProfilesAvailable,
-                          subtitle: t.messages.contactAdminForProfiles,
-                          icon: LucideIcons.userX,
-                        ),
-                )
-              else
-                ..._buildSections(activeProvider, activeId),
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                sliver: SliverToBoxAdapter(
-                  child: FocusableWrapper(
-                    disableScale: true,
-                    borderRadius: 100,
-                    useBackgroundFocus: true,
-                    descendantsAreFocusable: false,
-                    onSelect: _switching ? null : _addLocalProfile,
-                    child: OutlinedButton.icon(
-                      onPressed: _switching ? null : _addLocalProfile,
-                      icon: const AppIcon(LucideIcons.userPlus, fill: 1),
-                      label: Text(t.profiles.addPlezzantProfile),
+          if (PlatformDetector.isTV() && widget.requireSelection && profiles.isNotEmpty)
+            _TvWhoIsWatching(
+              profiles: profiles,
+              avatarUrlFor: activeProvider.avatarUrlFor,
+              focusNodeFor: _profileFocusNode,
+              onSelect: _switching ? null : _switchTo,
+              onAdd: _switching ? null : _addLocalProfile,
+            )
+          else
+            FocusedScrollScaffold(
+              title: Text(t.screens.switchProfile),
+              automaticallyImplyLeading: !widget.requireSelection,
+              onBackPressed: widget.requireSelection ? () => unawaited(AppExitService.requestExit()) : null,
+              slivers: [
+                if (profiles.isEmpty)
+                  SliverFillRemaining(
+                    child: loading
+                        ? const Center(child: CircularProgressIndicator())
+                        : EmptyStateWidget(
+                            message: t.messages.noProfilesAvailable,
+                            subtitle: t.messages.contactAdminForProfiles,
+                            icon: LucideIcons.userX,
+                          ),
+                  )
+                else
+                  ..._buildSections(activeProvider, activeId),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                  sliver: SliverToBoxAdapter(
+                    child: FocusableWrapper(
+                      disableScale: true,
+                      borderRadius: 100,
+                      useBackgroundFocus: true,
+                      descendantsAreFocusable: false,
+                      onSelect: _switching ? null : _addLocalProfile,
+                      child: OutlinedButton.icon(
+                        onPressed: _switching ? null : _addLocalProfile,
+                        icon: const AppIcon(LucideIcons.userPlus, fill: 1),
+                        label: Text(t.profiles.addPlezzantProfile),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           if (_switching) const ProfileSwitchingOverlay(),
         ],
       ),
@@ -600,4 +612,191 @@ class _ChipData {
   final MediaBackend backend;
   final String label;
   const _ChipData({required this.backend, required this.label});
+}
+
+/// Apple TV style "who's watching": round avatars centred on a soft gradient,
+/// the focused one lifted with a white ring, and an add tile at the end.
+class _TvWhoIsWatching extends StatelessWidget {
+  final List<Profile> profiles;
+  final String? Function(String profileId) avatarUrlFor;
+  final FocusNode Function(Profile profile) focusNodeFor;
+  final Future<void> Function(Profile profile)? onSelect;
+  final Future<void> Function()? onAdd;
+
+  const _TvWhoIsWatching({
+    required this.profiles,
+    required this.avatarUrlFor,
+    required this.focusNodeFor,
+    required this.onSelect,
+    required this.onAdd,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scale = TvLayoutConstants.scaleOf(context);
+    final avatarSize = 132.0 * scale;
+    return Scaffold(
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF8A5A63), Color(0xFF3F5F86), Color(0xFF1B3550)],
+            stops: [0.0, 0.5, 1.0],
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              t.profiles.whoIsWatching,
+              textAlign: TextAlign.center,
+              style: PlezzantType.headlineMedium.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                shadows: const [Shadow(color: Color(0x55000000), blurRadius: 16)],
+              ),
+            ),
+            SizedBox(height: 24 * scale),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 64 * scale, vertical: 48 * scale),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final (index, profile) in profiles.indexed)
+                    _TvProfileTile(
+                      focusNode: focusNodeFor(profile),
+                      autofocus: index == 0,
+                      size: avatarSize,
+                      label: profile.displayName,
+                      onSelect: onSelect == null ? null : () => onSelect!(profile),
+                      builder: (_) =>
+                          ProfileAvatar(profile: profile, size: avatarSize, avatarUrl: avatarUrlFor(profile.id)),
+                    ),
+                  _TvProfileTile(
+                    size: avatarSize,
+                    label: t.profiles.addProfileShort,
+                    onSelect: onAdd,
+                    builder: (focused) => AnimatedContainer(
+                      duration: const Duration(milliseconds: 160),
+                      width: avatarSize,
+                      height: avatarSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: focused ? Colors.white : Colors.white.withValues(alpha: 0.18),
+                      ),
+                      child: Center(
+                        child: AppIcon(
+                          LucideIcons.plus,
+                          fill: 1,
+                          size: avatarSize * 0.32,
+                          color: focused ? Colors.black : Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TvProfileTile extends StatefulWidget {
+  final FocusNode? focusNode;
+  final bool autofocus;
+  final double size;
+  final String label;
+  final VoidCallback? onSelect;
+  final Widget Function(bool focused) builder;
+
+  const _TvProfileTile({
+    this.focusNode,
+    this.autofocus = false,
+    required this.size,
+    required this.label,
+    required this.onSelect,
+    required this.builder,
+  });
+
+  @override
+  State<_TvProfileTile> createState() => _TvProfileTileState();
+}
+
+class _TvProfileTileState extends State<_TvProfileTile> {
+  FocusNode? _ownNode;
+
+  FocusNode get _node => widget.focusNode ?? (_ownNode ??= FocusNode(debugLabel: 'tv_profile_tile'));
+
+  @override
+  void dispose() {
+    _ownNode?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = widget.size;
+    final onSelect = widget.onSelect;
+    final ring = size * 0.045;
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: size * 0.16),
+      child: FocusableWrapper(
+        focusNode: _node,
+        autofocus: widget.autofocus,
+        onSelect: onSelect,
+        delegateFocusBorder: true,
+        focusScale: 1.1,
+        autoScroll: true,
+        borderRadius: size,
+        semanticLabel: widget.label,
+        child: ListenableBuilder(
+          listenable: _node,
+          builder: (context, _) {
+            final focused = _node.hasFocus;
+            return GestureDetector(
+              onTap: onSelect,
+              child: SizedBox(
+                width: size + ring * 2,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 160),
+                      padding: EdgeInsets.all(ring),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: focused ? Colors.white : Colors.transparent,
+                        boxShadow: focused
+                            ? [BoxShadow(color: Colors.black.withValues(alpha: 0.35), blurRadius: size * 0.2)]
+                            : const [],
+                      ),
+                      child: widget.builder(focused),
+                    ),
+                    SizedBox(height: size * 0.12),
+                    Text(
+                      widget.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: PlezzantType.titleSmall.copyWith(
+                        color: Colors.white.withValues(alpha: focused ? 1 : 0.78),
+                        fontWeight: focused ? FontWeight.w700 : FontWeight.w600,
+                        shadows: const [Shadow(color: Color(0x66000000), blurRadius: 8)],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 }
