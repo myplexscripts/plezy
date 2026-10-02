@@ -153,7 +153,8 @@ void main() {
 
   testWidgets('focusable list tile variants use standard density only on automotive', (tester) async {
     await _pumpListTiles(tester, automotive: false);
-    _expectListTileDensities(tester, dense: true, visualDensity: const VisualDensity(vertical: -3));
+    // Plezzant rows are never dense (14px text floor); compactness is visual density.
+    _expectListTileDensities(tester, dense: false, visualDensity: const VisualDensity(vertical: -3));
 
     await _pumpListTiles(tester, automotive: true);
     _expectListTileDensities(tester, dense: false, visualDensity: VisualDensity.standard);
