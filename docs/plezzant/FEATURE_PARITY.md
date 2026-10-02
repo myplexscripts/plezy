@@ -88,7 +88,7 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | ExoPlayer ↔ mpv fallback | ✅ | Automatic native fallback |
 | Dolby Vision conversion paths | ✅ | |
 | Performance / diagnostics overlay | ✅ 🆕 | Playback method row added |
-| Player chrome | 🟡 🎨 | Typography, icons and palette colours updated; full glass redesign of the control bar still pending |
+| Player chrome | 🟡 🎨 | TV control bar floats on glass. Timeline accent follows the playing title's palette colour; Manrope and Lucide throughout. Post-play screen and chapter strip are restyled only through the shared tokens |
 
 ## Live TV & DVR
 
@@ -108,8 +108,8 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Lucide icons | 🆕 | All ~300 Material Symbols migrated; `material_symbols_icons` removed |
 | Fixed palette (26 × 3) | 🆕 | `PlezzantPalette`; semantic `PlezzantColors` |
 | Perceptual palette matching (CIELAB + CIEDE2000) | 🆕 | `PlezzantColorMatcher`, unit-tested against published reference pairs |
-| Artwork ambience | 🆕 | Spotlight focus → palette ambience → ambient glow and focus halo |
-| Glass surfaces | 🆕 🟡 | `PlezzantGlass` with a performance-aware solid fallback; applied to the nav rail and dialogs (more surfaces pending) |
+| Artwork ambience | 🆕 | Spotlight focus or the playing title → palette ambience → ambient glow, focus halo, player timeline |
+| Glass surfaces | 🆕 🟡 | `PlezzantGlass` with a performance-aware solid fallback. Applied to the floating TV navigation panel, overlay sheets (player menus, pickers) and the TV player control bar. Alert dialogs and context menus still use solid surfaces |
 | Ambience and glass intensity settings | 🆕 | Settings → Appearance |
 | Focus system (scale, luminance, tinted halo) | 🎨 | Thinner neutral edge, palette-tinted glow |
 | Reduced-performance tier (weak TVs) | ✅ | Animations and blur drop out |
