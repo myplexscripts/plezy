@@ -1,7 +1,7 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/profiles/profile.dart';
 import 'package:plezy/profiles/profile_avatar.dart';
 import 'package:plezy/utils/initials_palette.dart';
@@ -138,6 +138,6 @@ void main() {
     );
 
     expect(find.byType(Image), findsOneWidget);
-    expect(find.byIcon(Symbols.lock_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.lock), findsOneWidget);
   });
 }

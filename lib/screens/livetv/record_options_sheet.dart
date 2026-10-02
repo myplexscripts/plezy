@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../exceptions/media_server_exceptions.dart';
 import '../../focus/focusable_button.dart';
@@ -368,7 +368,7 @@ class _RecordOptionsContentState extends State<_RecordOptionsContent> {
                   onPressed: _saving ? null : _save,
                   icon: _saving
                       ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                      : AppIcon(widget.isEdit ? Symbols.save_rounded : Symbols.fiber_manual_record_rounded),
+                      : AppIcon(widget.isEdit ? LucideIcons.save : LucideIcons.circle),
                   label: Text(widget.isEdit ? t.common.save : t.liveTv.record),
                 ),
               ),
@@ -594,7 +594,7 @@ class _PickerRow extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Text(value, style: theme.textTheme.bodyMedium),
-          if (onTap != null) ...[const SizedBox(width: 4), const AppIcon(Symbols.chevron_right_rounded)],
+          if (onTap != null) ...[const SizedBox(width: 4), const AppIcon(LucideIcons.chevronRight)],
         ],
       ),
     );

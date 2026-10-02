@@ -52,7 +52,7 @@ Widget buildFocusChrome(
     card = FocusGlowOverlay(
       isFocused: showGlow ?? showFocus,
       borderRadius: borderRadius,
-      color: focusColor ?? FocusTheme.getFocusBorderColor(context),
+      color: focusColor ?? FocusTheme.getFocusGlowColor(context),
       glowSize: glowSize,
       child: card,
     );

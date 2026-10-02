@@ -4,7 +4,7 @@ import 'dart:ui' show Tristate;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/i18n/strings.g.dart';
 import 'package:plezy/media/media_source_info.dart';
 import 'package:plezy/mpv/mpv.dart';
@@ -675,7 +675,7 @@ void main() {
 /// The selection tick on the row whose primary label is [label].
 Finder _rowCheck(String label) => find.descendant(
   of: find.ancestor(of: find.text(label), matching: find.byType(ListTile)).first,
-  matching: find.byIcon(Symbols.check_rounded),
+  matching: find.byIcon(LucideIcons.check),
 );
 
 Future<void> _pumpTrackSheet(

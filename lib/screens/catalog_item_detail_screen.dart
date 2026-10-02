@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -56,6 +56,7 @@ import '../widgets/overlay_sheet.dart';
 import '../widgets/seerr_request_sheet.dart';
 import '../widgets/settings_section.dart';
 import '../widgets/stat_chip.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Detail screen for a catalog item (Explore tab). Renders from provider
 /// data — no media server required — and resolves library availability in
@@ -659,7 +660,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
       leading: BackendBadge(backend: match.backend, size: 24),
       title: Text(match.libraryTitle ?? match.serverName ?? match.backend.dialect?.productName ?? 'Plex'),
       subtitle: details.isEmpty ? null : Text(details.join(' • ')),
-      trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+      trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
       onTap: () => unawaited(navigateToMediaItemDetails(context, match)),
     );
   }
@@ -697,8 +698,8 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
 
     if (matches.isEmpty) {
       return unchecked == 0
-          ? note(t.explore.notInLibrary, icon: Symbols.info_rounded)
-          : note(t.explore.libraryCheckFailed(n: unchecked), icon: Symbols.cloud_off_rounded);
+          ? note(t.explore.notInLibrary, icon: LucideIcons.info)
+          : note(t.explore.libraryCheckFailed(n: unchecked), icon: LucideIcons.cloudOff);
     }
 
     return Column(
@@ -716,7 +717,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
         ),
         if (unchecked > 0) ...[
           const SizedBox(height: 8),
-          note(t.explore.libraryCheckFailed(n: unchecked), icon: Symbols.cloud_off_rounded),
+          note(t.explore.libraryCheckFailed(n: unchecked), icon: LucideIcons.cloudOff),
         ],
       ],
     );
@@ -763,7 +764,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
       if (item.votes case final votes?) {
         score = '$score (${t.explore.stats.votes(n: compact.format(votes))})';
       }
-      add(score, icon: Symbols.star_rounded, iconColor: Colors.amber);
+      add(score, icon: LucideIcons.star, iconColor: PlezzantColors.highlight);
     }
     if (item.airStatus case final status?) add(statusLabel(status));
     if (item.episodeCount case final count?) add(t.explore.episodeCount(n: count));
@@ -842,7 +843,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
       }
       chips.add(
         badge == null
-            ? StatChip(icon: Symbols.star_rounded, iconColor: Colors.amber, label: label)
+            ? StatChip(icon: LucideIcons.star, iconColor: PlezzantColors.highlight, label: label)
             : StatChip(
                 leading: SvgPicture.asset(badge.assetPath, width: 14, height: 14, semanticsLabel: source),
                 label: label,
@@ -1052,7 +1053,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
             onNavigateDown: _linkFocusNodes.isNotEmpty ? () => _requestLinkFocus(0) : _focusSectionBelowDetailActions,
             child: OutlinedButton.icon(
               onPressed: _revealSpoilerTags,
-              icon: const AppIcon(Symbols.visibility_rounded, fill: 1),
+              icon: const AppIcon(LucideIcons.eye, fill: 1),
               label: Text(t.explore.detail.revealSpoilerTags),
             ),
           ),
@@ -1103,7 +1104,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
                 onNavigateDown: () => _focusBelowLinkGroup(endIndex),
                 child: OutlinedButton.icon(
                   onPressed: () => unawaited(_openExternalUrl(links[localIndex].url)),
-                  icon: const AppIcon(Symbols.open_in_new_rounded, fill: 1),
+                  icon: const AppIcon(LucideIcons.externalLink, fill: 1),
                   label: Text(t.explore.detail.openOn(site: links[localIndex].label)),
                 ),
               ),
@@ -1262,7 +1263,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
                 ),
               ),
               AppIcon(
-                Symbols.chevron_right_rounded,
+                LucideIcons.chevronRight,
                 fill: 1,
                 size: 18,
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
@@ -1287,7 +1288,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
         size: related.length,
       ),
       focusMemory: _hubFocusMemory,
-      icon: Symbols.recommend_rounded,
+      icon: LucideIcons.thumbsUp,
       inset: true,
       onNavigateUp: _focusSectionAboveRelated,
       cardSizing: HubCardSizing.grid,
@@ -1435,8 +1436,8 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
                                                   // sources and trailer URL arrive at different times).
                                                   debugLabel: 'catalog_watchlist',
                                                   icon: onWatchlist ?? false
-                                                      ? Symbols.bookmark_added_rounded
-                                                      : Symbols.bookmark_add_rounded,
+                                                      ? LucideIcons.bookmarkCheck
+                                                      : LucideIcons.bookmarkPlus,
                                                   tooltip: onWatchlist ?? false
                                                       ? t.explore.removeFromWatchlist
                                                       : t.explore.addToWatchlist,
@@ -1446,7 +1447,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
                                                   when tmdbId != null)
                                                 FocusableAction(
                                                   debugLabel: 'catalog_request',
-                                                  icon: Symbols.download_rounded,
+                                                  icon: LucideIcons.download,
                                                   tooltip: t.seerr.request,
                                                   onPressed: () => unawaited(
                                                     showSeerrRequestSheet(
@@ -1461,7 +1462,7 @@ class _CatalogItemDetailScreenState extends State<CatalogItemDetailScreen> {
                                               if (item.trailerUrl?.trim() case final trailer? when trailer.isNotEmpty)
                                                 FocusableAction(
                                                   debugLabel: 'catalog_trailer',
-                                                  icon: Symbols.play_circle_rounded,
+                                                  icon: LucideIcons.circlePlay,
                                                   tooltip: t.explore.detail.watchTrailer,
                                                   onPressed: () => unawaited(_openExternalUrl(trailer)),
                                                 ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../media/media_item.dart';
 import '../media/media_kind.dart';
 import '../media/media_server_client.dart';
@@ -87,7 +87,7 @@ Future<int?> showVersionPickerDialog(BuildContext context, List<MediaVersion> ve
     title: title,
     options: List.generate(
       versions.length,
-      (index) => (icon: Symbols.video_file_rounded, label: versions[index].displayLabel, value: index),
+      (index) => (icon: LucideIcons.fileVideo, label: versions[index].displayLabel, value: index),
     ),
   );
 }

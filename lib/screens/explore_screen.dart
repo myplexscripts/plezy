@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../focus/focusable_action_bar.dart';
@@ -190,18 +190,18 @@ class ExploreScreenState extends State<ExploreScreen>
   }
 
   static IconData _rowIcon(CatalogRowId? row) => switch (row) {
-    null => Symbols.thumb_up_rounded,
-    CatalogRowId.watchlist => Symbols.bookmark_rounded,
+    null => LucideIcons.thumbsUp,
+    CatalogRowId.watchlist => LucideIcons.bookmark,
     CatalogRowId.recommendedMovies ||
     CatalogRowId.recommendedShows ||
-    CatalogRowId.suggestedAnime => Symbols.thumb_up_rounded,
+    CatalogRowId.suggestedAnime => LucideIcons.thumbsUp,
     CatalogRowId.trendingMovies ||
     CatalogRowId.trendingShows ||
     CatalogRowId.trendingAnime ||
     CatalogRowId.airingAnime ||
-    CatalogRowId.trending => Symbols.trending_up_rounded,
-    CatalogRowId.popularMovies || CatalogRowId.popularShows || CatalogRowId.popularAnime => Symbols.whatshot_rounded,
-    CatalogRowId.upcomingMovies || CatalogRowId.upcomingShows => Symbols.event_upcoming_rounded,
+    CatalogRowId.trending => LucideIcons.trendingUp,
+    CatalogRowId.popularMovies || CatalogRowId.popularShows || CatalogRowId.popularAnime => LucideIcons.flame,
+    CatalogRowId.upcomingMovies || CatalogRowId.upcomingShows => LucideIcons.calendarClock,
   };
 
   List<AppMenuEntry<CatalogSourceId>> _sourceMenuEntries(CatalogSourcesProvider sources, CatalogSource active) => [
@@ -230,7 +230,7 @@ class ExploreScreenState extends State<ExploreScreen>
           const SizedBox(width: 8),
           Text(active.displayName, style: textStyle ?? Theme.of(context).textTheme.titleLarge),
           const SizedBox(width: 4),
-          const AppIcon(Symbols.arrow_drop_down_rounded, fill: 1, size: 24),
+          const AppIcon(LucideIcons.chevronDown, fill: 1, size: 24),
         ],
       ),
     );
@@ -307,7 +307,7 @@ class ExploreScreenState extends State<ExploreScreen>
           onNavigateDown: searchFocusNode.requestFocus,
           actions: [
             FocusableAction(
-              icon: Symbols.refresh_rounded,
+              icon: LucideIcons.rotateCw,
               tooltip: t.common.refresh,
               onPressed: () => unawaited(_handleRefresh()),
             ),
@@ -348,7 +348,7 @@ class ExploreScreenState extends State<ExploreScreen>
         SliverFillRemaining(
           child: ErrorStateWidget(
             message: explore.errorMessage ?? t.explore.emptyTitle,
-            icon: Symbols.error_outline_rounded,
+            icon: LucideIcons.circleAlert,
             onRetry: () => unawaited(_explore.load()),
           ),
         ),
@@ -358,7 +358,7 @@ class ExploreScreenState extends State<ExploreScreen>
         SliverFillRemaining(
           child: EmptyStateWidget(
             message: t.explore.emptyMessage(source: explore.activeSource?.displayName ?? ''),
-            icon: Symbols.explore_rounded,
+            icon: LucideIcons.compass,
           ),
         ),
       ]);
@@ -402,7 +402,7 @@ class ExploreScreenState extends State<ExploreScreen>
     if (isSearching) return LoadingIndicatorBox.sliver;
     if (lastSearchFailed) {
       return SliverFillRemaining(
-        child: StateMessageWidget(message: t.explore.searchFailed, icon: Symbols.error_rounded, iconSize: 80),
+        child: StateMessageWidget(message: t.explore.searchFailed, icon: LucideIcons.circleAlert, iconSize: 80),
       );
     }
     // The debounce window right after the field goes from empty to typed: no
@@ -412,7 +412,7 @@ class ExploreScreenState extends State<ExploreScreen>
       return SliverFillRemaining(
         child: StateMessageWidget(
           message: t.explore.searchEmpty(query: lastSearchedQuery),
-          icon: Symbols.search_off_rounded,
+          icon: LucideIcons.searchX,
           iconSize: 80,
         ),
       );
@@ -469,7 +469,7 @@ class ExploreScreenState extends State<ExploreScreen>
                 ),
               if (active != null)
                 FocusableAction(
-                  icon: Symbols.search_rounded,
+                  icon: LucideIcons.search,
                   iconColor: foregroundColor,
                   tooltip: t.common.search,
                   onPressed: () => Navigator.of(
@@ -477,7 +477,7 @@ class ExploreScreenState extends State<ExploreScreen>
                   ).push(MaterialPageRoute<void>(builder: (_) => CatalogSearchScreen(source: active))),
                 ),
               FocusableAction(
-                icon: Symbols.refresh_rounded,
+                icon: LucideIcons.rotateCw,
                 iconColor: foregroundColor,
                 tooltip: t.common.refresh,
                 onPressed: () => unawaited(_explore.load()),
@@ -506,7 +506,7 @@ class ExploreScreenState extends State<ExploreScreen>
             Center(
               child: ErrorStateWidget(
                 message: _explore.errorMessage ?? t.explore.emptyTitle,
-                icon: Symbols.error_outline_rounded,
+                icon: LucideIcons.circleAlert,
                 onRetry: () => unawaited(_explore.load()),
               ),
             )
@@ -514,7 +514,7 @@ class ExploreScreenState extends State<ExploreScreen>
             Center(
               child: EmptyStateWidget(
                 message: t.explore.emptyMessage(source: _explore.activeSource?.displayName ?? ''),
-                icon: Symbols.explore_rounded,
+                icon: LucideIcons.compass,
               ),
             ),
           if (tvHubs.isNotEmpty)

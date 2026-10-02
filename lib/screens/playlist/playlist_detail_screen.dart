@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../focus/focusable_action_bar.dart';
 import '../../media/library_query.dart';
 import '../../media/media_item.dart';
@@ -34,6 +34,7 @@ import '../libraries/content_state_builder.dart';
 import '../../mixins/grid_focus_node_mixin.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/system_bottom_inset.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Screen to display the contents of a playlist
 class PlaylistDetailScreen extends StatefulWidget {
@@ -59,7 +60,7 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
   String get emptyMessage => t.playlists.emptyPlaylist;
 
   @override
-  IconData get emptyIcon => Symbols.playlist_play_rounded;
+  IconData get emptyIcon => LucideIcons.listVideo;
 
   @override
   bool get hasItems => items.isNotEmpty;
@@ -111,8 +112,8 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
 
     return [
       if (items.isNotEmpty) ...[
-        FocusableAction(icon: Symbols.play_arrow_rounded, tooltip: t.common.play, onPressed: playItems),
-        FocusableAction(icon: Symbols.shuffle_rounded, tooltip: t.common.shuffle, onPressed: shufflePlayItems),
+        FocusableAction(icon: LucideIcons.play, tooltip: t.common.play, onPressed: playItems),
+        FocusableAction(icon: LucideIcons.shuffle, tooltip: t.common.shuffle, onPressed: shufflePlayItems),
       ],
       ...buildSyncRuleActions(
         context,
@@ -128,10 +129,10 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
       // managed server-side via filter rules, not via DELETE.
       if (!widget.playlist.smart)
         FocusableAction(
-          icon: Symbols.delete_rounded,
+          icon: LucideIcons.trash2,
           tooltip: t.playlists.delete,
           onPressed: _deletePlaylist,
-          iconColor: Colors.red,
+          iconColor: PlezzantColors.danger,
         ),
     ];
   }
@@ -654,16 +655,11 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
                 Row(
                   mainAxisSize: .min,
                   children: [
-                    AppIcon(
-                      Symbols.auto_awesome_rounded,
-                      fill: 1,
-                      size: 12,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    AppIcon(LucideIcons.sparkles, fill: 1, size: 12, color: Theme.of(context).colorScheme.primary),
                     const SizedBox(width: 4),
                     Text(
                       t.playlists.smartPlaylist,
-                      style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.primary, fontWeight: .normal),
+                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.primary, fontWeight: .normal),
                     ),
                   ],
                 ),

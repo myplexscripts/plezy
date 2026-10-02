@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../utils/initials_palette.dart';
 import '../utils/media_image_helper.dart';
@@ -48,7 +48,7 @@ class ProfileAvatar extends StatelessWidget {
                   border: Border.all(color: theme.colorScheme.surface, width: 1),
                 ),
                 child: AppIcon(
-                  Symbols.lock_rounded,
+                  LucideIcons.lock,
                   fill: 1,
                   size: lockBadgeSize * 0.7,
                   color: theme.colorScheme.onSurface,

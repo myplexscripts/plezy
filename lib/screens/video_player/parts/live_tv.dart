@@ -319,8 +319,8 @@ extension _VideoPlayerLiveTvMethods on VideoPlayerScreenState {
       context,
       title: t.liveTv.joinSession,
       options: [
-        (icon: Symbols.replay_rounded, label: t.liveTv.watchFromStart(minutes: minutesAgo), value: true),
-        (icon: Symbols.live_tv_rounded, label: t.liveTv.watchLive, value: false),
+        (icon: LucideIcons.rotateCcw, label: t.liveTv.watchFromStart(minutes: minutesAgo), value: true),
+        (icon: LucideIcons.radioTower, label: t.liveTv.watchLive, value: false),
       ],
     );
   }

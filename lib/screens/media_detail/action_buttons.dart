@@ -13,7 +13,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
     final actionSize = isTv ? _tvDetailActionSize * tvScale : 48.0;
     final playButtonLabel = _getPlayButtonLabel(metadata);
     final playIcon = _getPlayButtonIcon(metadata);
-    final playActionLabel = playIcon == Symbols.resume_rounded ? t.common.resume : t.common.play;
+    final playActionLabel = playIcon == LucideIcons.stepForward ? t.common.resume : t.common.play;
     final playSemanticsLabel = playButtonLabel.isEmpty ? playActionLabel : '$playActionLabel $playButtonLabel';
     final playIconSize = isTv ? 22 * tvScale : 20.0;
     final playTextStyle = TextStyle(fontSize: isTv ? 17 * tvScale : 16, fontWeight: .w700);
@@ -210,7 +210,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
                   borderRadius: BorderRadiusDirectional.horizontal(start: splitInnerRadius, end: splitOuterRadius),
                 ),
               ),
-              child: AppIcon(Symbols.keyboard_arrow_down_rounded, fill: 1, size: playIconSize),
+              child: AppIcon(LucideIcons.chevronDown, fill: 1, size: playIconSize),
             ),
           ),
         ),
@@ -258,7 +258,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
             builder: (context, state) => iconActionButton(
               state,
               onPressed: onPlayTrailer,
-              icon: const AppIcon(Symbols.theaters_rounded, fill: 1),
+              icon: const AppIcon(LucideIcons.clapperboard, fill: 1),
               tooltip: t.tooltips.playTrailer,
             ),
           );
@@ -274,7 +274,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
               onPressed: () async {
                 await _handleShufflePlayWithQueue(context, metadata);
               },
-              icon: const AppIcon(Symbols.shuffle_rounded, fill: 1),
+              icon: const AppIcon(LucideIcons.shuffle, fill: 1),
               tooltip: t.tooltips.shufflePlay,
             ),
           )
@@ -320,10 +320,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
               child: iconActionButton(
                 state,
                 onPressed: onWatchlist == null ? null : () => unawaited(_handleWatchlistTogglePressed(metadata)),
-                icon: AppIcon(
-                  (onWatchlist ?? false) ? Symbols.bookmark_added_rounded : Symbols.bookmark_add_rounded,
-                  fill: 1,
-                ),
+                icon: AppIcon((onWatchlist ?? false) ? LucideIcons.bookmarkCheck : LucideIcons.bookmarkPlus, fill: 1),
                 tooltip: (onWatchlist ?? false) ? t.explore.removeFromWatchlist : t.explore.addToWatchlist,
               ),
             ),
@@ -524,7 +521,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
   }) {
     return IconButton.filledTonal(
       onPressed: () => unawaited(_handleWatchedTogglePressed(metadata)),
-      icon: AppIcon(metadata.isWatched ? Symbols.remove_done_rounded : Symbols.check_rounded, fill: 1),
+      icon: AppIcon(metadata.isWatched ? LucideIcons.listChecks : LucideIcons.check, fill: 1),
       tooltip: metadata.isWatched ? t.tooltips.markAsUnwatched : t.tooltips.markAsWatched,
       iconSize: PlatformDetector.isTV() ? 21 * tvScale : 20,
       style: actionButtonStyle(showFocus: showFocus),
@@ -554,7 +551,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
               _contextMenuKey.currentState?.showContextMenu(buttonContext, position: position);
             }
           },
-          icon: const AppIcon(Symbols.more_vert_rounded, fill: 1),
+          icon: const AppIcon(LucideIcons.ellipsisVertical, fill: 1),
           iconSize: PlatformDetector.isTV() ? 21 * tvScale : 20,
           style: actionButtonStyle(showFocus: showFocus),
         ),
@@ -735,7 +732,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
           return IconButton.filledTonal(
             onPressed: null,
             tooltip: tooltip,
-            icon: const AppIcon(Symbols.schedule_rounded, fill: 1),
+            icon: const AppIcon(LucideIcons.clock, fill: 1),
             iconSize: iconSize,
             style: actionButtonStyle(showFocus: showFocus),
           );
@@ -762,10 +759,10 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
         if (progress?.status == DownloadStatus.paused) {
           return IconButton.filledTonal(
             onPressed: () => unawaited(_handleDownloadButtonPressed(context, metadata)),
-            icon: const AppIcon(Symbols.pause_circle_outline_rounded, fill: 1),
+            icon: const AppIcon(LucideIcons.circlePause, fill: 1),
             tooltip: t.downloads.resumeDownload,
             iconSize: iconSize,
-            style: actionButtonStyle(foregroundColor: Colors.amber, showFocus: showFocus),
+            style: actionButtonStyle(foregroundColor: PlezzantColors.highlight, showFocus: showFocus),
           );
         }
 
@@ -773,10 +770,10 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
         if (progress?.status == DownloadStatus.failed) {
           return IconButton.filledTonal(
             onPressed: () => unawaited(_handleDownloadButtonPressed(context, metadata)),
-            icon: const AppIcon(Symbols.error_outline_rounded, fill: 1),
+            icon: const AppIcon(LucideIcons.circleAlert, fill: 1),
             tooltip: t.downloads.retryDownload,
             iconSize: iconSize,
-            style: actionButtonStyle(foregroundColor: Colors.red, showFocus: showFocus),
+            style: actionButtonStyle(foregroundColor: PlezzantColors.danger, showFocus: showFocus),
           );
         }
 
@@ -784,7 +781,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
         if (progress?.status == DownloadStatus.cancelled) {
           return IconButton.filledTonal(
             onPressed: () => unawaited(_handleDownloadButtonPressed(context, metadata)),
-            icon: const AppIcon(Symbols.cancel_rounded, fill: 1),
+            icon: const AppIcon(LucideIcons.circleX, fill: 1),
             tooltip: t.downloads.cancelledDownload,
             iconSize: iconSize,
             style: actionButtonStyle(foregroundColor: Colors.grey, showFocus: showFocus),
@@ -810,9 +807,12 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
             return IconButton.filledTonal(
               onPressed: () => unawaited(_handleDownloadButtonPressed(context, metadata)),
               tooltip: tooltip,
-              icon: AppIcon(isEnabled ? Symbols.sync_rounded : Symbols.sync_disabled_rounded, fill: 1),
+              icon: AppIcon(isEnabled ? LucideIcons.refreshCw : LucideIcons.refreshCwOff, fill: 1),
               iconSize: iconSize,
-              style: actionButtonStyle(foregroundColor: isEnabled ? Colors.teal : Colors.grey, showFocus: showFocus),
+              style: actionButtonStyle(
+                foregroundColor: isEnabled ? PlezzantColors.automation : Colors.grey,
+                showFocus: showFocus,
+              ),
             );
           }
 
@@ -823,9 +823,9 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
           return IconButton.filledTonal(
             onPressed: () => unawaited(_handleDownloadButtonPressed(context, metadata)),
             tooltip: tooltip,
-            icon: const AppIcon(Symbols.downloading_rounded, fill: 1),
+            icon: const AppIcon(LucideIcons.cloudDownload, fill: 1),
             iconSize: iconSize,
-            style: actionButtonStyle(foregroundColor: Colors.orange, showFocus: showFocus),
+            style: actionButtonStyle(foregroundColor: PlezzantColors.warning, showFocus: showFocus),
           );
         }
 
@@ -839,10 +839,13 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
             final isEnabled = syncRule?.enabled ?? true;
             return IconButton.filledTonal(
               onPressed: () => unawaited(_handleDownloadButtonPressed(context, metadata)),
-              icon: AppIcon(isEnabled ? Symbols.sync_rounded : Symbols.sync_disabled_rounded, fill: 1),
+              icon: AppIcon(isEnabled ? LucideIcons.refreshCw : LucideIcons.refreshCwOff, fill: 1),
               tooltip: t.downloads.keepNUnwatched(count: syncRule?.episodeCount.toString() ?? '?'),
               iconSize: iconSize,
-              style: actionButtonStyle(foregroundColor: isEnabled ? Colors.teal : Colors.grey, showFocus: showFocus),
+              style: actionButtonStyle(
+                foregroundColor: isEnabled ? PlezzantColors.automation : Colors.grey,
+                showFocus: showFocus,
+              ),
             );
           }
 
@@ -851,17 +854,17 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
 
           return IconButton.filledTonal(
             onPressed: () => unawaited(_handleDownloadButtonPressed(context, metadata)),
-            icon: const AppIcon(Symbols.download_rounded, fill: 1),
+            icon: const AppIcon(LucideIcons.download, fill: 1),
             tooltip: canDownloadMore ? t.downloads.manage : t.downloads.deleteDownload,
             iconSize: iconSize,
-            style: actionButtonStyle(foregroundColor: Colors.orange, showFocus: showFocus),
+            style: actionButtonStyle(foregroundColor: PlezzantColors.warning, showFocus: showFocus),
           );
         }
 
         // State 9: Not downloaded (default - can download)
         return IconButton.filledTonal(
           onPressed: () => unawaited(_handleDownloadButtonPressed(context, metadata)),
-          icon: const AppIcon(Symbols.download_rounded, fill: 1),
+          icon: const AppIcon(LucideIcons.download, fill: 1),
           tooltip: t.downloads.downloadNow,
           iconSize: iconSize,
           style: actionButtonStyle(showFocus: showFocus),

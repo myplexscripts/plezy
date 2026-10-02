@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/screens/profile/pin_entry_dialog.dart';
 import 'package:plezy/utils/platform_detector.dart';
 
@@ -226,8 +226,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('1'), findsOneWidget);
-    expect(find.byIcon(Symbols.close_rounded), findsOneWidget);
-    expect(find.byIcon(Symbols.backspace_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.x), findsOneWidget);
+    expect(find.byIcon(LucideIcons.delete), findsOneWidget);
     expect(find.byType(TextField), findsNothing);
     expect(find.widgetWithText(TextButton, 'Cancel'), findsNothing);
     expect(find.byType(FilledButton), findsNothing);

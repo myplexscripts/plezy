@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/mono_tokens.dart';
+import '../theme/plezzant/plezzant_typography.dart';
 import '../utils/platform_detector.dart';
 import 'app_icon.dart';
 import 'expressive_button_group.dart';
@@ -8,12 +9,10 @@ import 'expressive_button_group.dart';
 /// [ListTile] (segmented controls, sliders) and so don't inherit its
 /// typography.
 ///
-/// The app renders every row compactly — [ThemeData.listTileTheme] sets
-/// `dense: true` and the `Focusable*ListTile`s default to it — and Flutter
-/// draws a dense [ListTile] title at 13. Match that so a settings page reads
-/// as one family instead of one size per row type.
+/// Rows use the Plezzant list-title role from [ThemeData.listTileTheme]; match
+/// it so a settings page reads as one family instead of one size per row type.
 TextStyle? settingsOptionTitleStyle(BuildContext context) =>
-    Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 13);
+    Theme.of(context).listTileTheme.titleTextStyle ?? PlezzantType.listTitle;
 
 class SettingsSectionHeader extends StatelessWidget {
   final String title;

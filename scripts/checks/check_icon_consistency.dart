@@ -6,6 +6,10 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/source/line_info.dart';
 
 const _canonicalAppIconPath = 'lib/widgets/app_icon.dart';
+
+/// lucide_icons_flutter exposes per-stroke-weight variants (`house300`,
+/// `house600Dir`). The interface uses one canonical stroke everywhere.
+final _lucideWeightVariant = RegExp(r'[1-6]00(?:Dir)?$');
 const _generatedSuffixes = ['.g.dart', '.freezed.dart', '.gen.dart'];
 final _generatedHeader = RegExp(
   r'^\s*///?\s*(?:auto-)?generated\b.*\bdo not (?:edit|modify)\b',
@@ -158,9 +162,11 @@ class _IconConsistencyVisitor extends RecursiveAstVisitor<void> {
     final prefix = node.prefix.name;
     final member = node.identifier.name;
     if (prefix == 'Icons') {
-      _report(node, 'Icons.$member is forbidden; use a rounded Symbols member');
-    } else if (prefix == 'Symbols' && !member.endsWith('_rounded')) {
-      _report(node, 'Symbols.$member must use its _rounded counterpart');
+      _report(node, 'Icons.$member is forbidden; use a LucideIcons member');
+    } else if (prefix == 'Symbols') {
+      _report(node, 'Symbols.$member is forbidden; Material Symbols are retired, use a LucideIcons member');
+    } else if (prefix == 'LucideIcons' && _lucideWeightVariant.hasMatch(member)) {
+      _report(node, 'LucideIcons.$member is a stroke-weight variant; use the canonical stroke');
     } else if (!allowFlutterIcon && prefix == 'Icon' && member == 'new') {
       _report(node, 'Flutter Icon constructor tear-offs are forbidden; use AppIcon instead');
     }
@@ -175,9 +181,11 @@ class _IconConsistencyVisitor extends RecursiveAstVisitor<void> {
       final typeName = target.identifier.name;
       final member = node.propertyName.name;
       if (typeName == 'Icons' && materialPrefixes.contains(importPrefix)) {
-        _report(node, '$importPrefix.Icons.$member is forbidden; use a rounded Symbols member');
-      } else if (typeName == 'Symbols' && symbolsPrefixes.contains(importPrefix) && !member.endsWith('_rounded')) {
-        _report(node, '$importPrefix.Symbols.$member must use its _rounded counterpart');
+        _report(node, '$importPrefix.Icons.$member is forbidden; use a LucideIcons member');
+      } else if (typeName == 'Symbols' && symbolsPrefixes.contains(importPrefix)) {
+        _report(node, '$importPrefix.Symbols.$member is forbidden; Material Symbols are retired, use a LucideIcons member');
+      } else if (typeName == 'LucideIcons' && _lucideWeightVariant.hasMatch(member)) {
+        _report(node, '$importPrefix.LucideIcons.$member is a stroke-weight variant; use the canonical stroke');
       } else if (!allowFlutterIcon &&
           typeName == 'Icon' &&
           member == 'new' &&

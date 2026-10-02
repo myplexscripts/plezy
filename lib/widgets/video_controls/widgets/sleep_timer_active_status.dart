@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../focus/focusable_button.dart';
 import '../../../services/sleep_timer_service.dart';
 import '../../../i18n/strings.g.dart';
 import '../../../utils/formatters.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Widget displaying active sleep timer status with extend/cancel actions.
 ///
@@ -29,13 +30,13 @@ class SleepTimerActiveStatus extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      color: Colors.amber.withValues(alpha: 0.1),
+      color: PlezzantColors.highlight.withValues(alpha: 0.1),
       child: Column(
         mainAxisSize: .min,
         children: [
           Text(
             t.videoControls.timerActive,
-            style: const TextStyle(color: Colors.amber, fontSize: 16, fontWeight: .bold),
+            style: const TextStyle(color: PlezzantColors.highlight, fontSize: 16, fontWeight: .bold),
           ),
           const SizedBox(height: 8),
           Text(
@@ -53,7 +54,7 @@ class SleepTimerActiveStatus extends StatelessWidget {
                     sleepTimer.extendTimer(const Duration(minutes: 15));
                   },
                   child: OutlinedButton.icon(
-                    icon: const AppIcon(Symbols.add_rounded, fill: 1),
+                    icon: const AppIcon(LucideIcons.plus, fill: 1),
                     label: Text(t.videoControls.addTime(amount: "15", unit: " min")),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Theme.of(context).colorScheme.onSurface,
@@ -73,9 +74,9 @@ class SleepTimerActiveStatus extends StatelessWidget {
                 },
                 useBackgroundFocus: true,
                 child: FilledButton.icon(
-                  icon: const AppIcon(Symbols.cancel_rounded, fill: 1),
+                  icon: const AppIcon(LucideIcons.circleX, fill: 1),
                   label: Text(t.common.cancel),
-                  style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                  style: FilledButton.styleFrom(backgroundColor: PlezzantColors.danger),
                   onPressed: () {
                     sleepTimer.cancelTimer();
                     onCancel?.call();

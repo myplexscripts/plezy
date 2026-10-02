@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_text_field.dart';
@@ -217,7 +217,7 @@ class _GuideSearchSheetState extends State<GuideSearchSheet> with ControllerDisp
     // would slide the field the user is typing in on every result change.
     return Column(
       children: [
-        BottomSheetHeader(title: t.liveTv.searchGuide, icon: Symbols.search_rounded),
+        BottomSheetHeader(title: t.liveTv.searchGuide, icon: LucideIcons.search),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: FocusableTextField(
@@ -229,7 +229,7 @@ class _GuideSearchSheetState extends State<GuideSearchSheet> with ControllerDisp
             decoration: pillInputDecoration(
               context,
               hintText: t.liveTv.searchHint,
-              prefixIcon: const AppIcon(Symbols.search_rounded),
+              prefixIcon: const AppIcon(LucideIcons.search),
             ),
             onChanged: _applyFilter,
             onSubmitted: (_) => _focusFirstResultAfterSubmit(),
@@ -307,7 +307,7 @@ class _GuideSearchSheetState extends State<GuideSearchSheet> with ControllerDisp
                 ),
               )
             : Center(
-                child: AppIcon(Symbols.live_tv_rounded, fill: 1, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                child: AppIcon(LucideIcons.radioTower, fill: 1, color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
       ),
       title: Text(channel.displayName, maxLines: 1, overflow: .ellipsis),
@@ -330,7 +330,7 @@ class _GuideSearchSheetState extends State<GuideSearchSheet> with ControllerDisp
         width: 40,
         height: 40,
         child: Center(
-          child: AppIcon(Symbols.schedule_rounded, fill: 1, color: Theme.of(context).colorScheme.onSurfaceVariant),
+          child: AppIcon(LucideIcons.clock, fill: 1, color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
       ),
       title: Text(entry.program.displayTitle, maxLines: 1, overflow: .ellipsis),

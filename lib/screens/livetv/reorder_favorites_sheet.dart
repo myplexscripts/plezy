@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../media/ids.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/dpad_reorder_mixin.dart';
@@ -103,7 +103,7 @@ class _ReorderFavoritesSheetState extends State<ReorderFavoritesSheet>
 
     return BottomSheetPageScaffold(
       title: t.liveTv.reorderFavorites,
-      icon: Symbols.swap_vert_rounded,
+      icon: LucideIcons.arrowUpDown,
       child: Focus(
         focusNode: _listFocusNode,
         descendantsAreFocusable: false,
@@ -171,7 +171,7 @@ class _ReorderFavoritesSheetState extends State<ReorderFavoritesSheet>
           ReorderableDragStartListener(
             index: index,
             child: AppIcon(
-              isMoving ? Symbols.swap_vert_rounded : Symbols.drag_indicator_rounded,
+              isMoving ? LucideIcons.arrowUpDown : LucideIcons.gripVertical,
               fill: 1,
               color: isMoving ? colorScheme.primary : IconTheme.of(context).color?.withValues(alpha: 0.5),
             ),
@@ -189,7 +189,7 @@ class _ReorderFavoritesSheetState extends State<ReorderFavoritesSheet>
                     fit: BoxFit.contain,
                     logoToneTarget: logoToneTargetFor(surface: colorScheme.surface, foreground: colorScheme.onSurface),
                   )
-                : Center(child: AppIcon(Symbols.live_tv_rounded, fill: 1, color: colorScheme.onSurfaceVariant)),
+                : Center(child: AppIcon(LucideIcons.radioTower, fill: 1, color: colorScheme.onSurfaceVariant)),
           ),
         ],
       ),
@@ -198,17 +198,14 @@ class _ReorderFavoritesSheetState extends State<ReorderFavoritesSheet>
           ? Text(
               channelNumber,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 14,
                 color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
               ),
             )
           : null,
       trailing: Container(
         decoration: FocusTheme.focusBackgroundDecoration(isFocused: isRemoveButtonFocused, borderRadius: 20),
-        child: IconButton(
-          icon: const AppIcon(Symbols.close_rounded, fill: 1, size: 20),
-          onPressed: () => _removeItem(index),
-        ),
+        child: IconButton(icon: const AppIcon(LucideIcons.x, fill: 1, size: 20), onPressed: () => _removeItem(index)),
       ),
     );
   }

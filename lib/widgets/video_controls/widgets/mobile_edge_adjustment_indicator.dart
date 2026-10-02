@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/widgets/app_icon.dart';
 
 import '../helpers/mobile_edge_adjustment_tracker.dart';
@@ -14,7 +14,7 @@ class MobileEdgeAdjustmentIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final clampedValue = value.clamp(0.0, 1.0);
     final isLeft = side == MobileEdgeAdjustmentSide.left;
-    final icon = side == MobileEdgeAdjustmentSide.left ? Symbols.brightness_6_rounded : Symbols.volume_up_rounded;
+    final icon = side == MobileEdgeAdjustmentSide.left ? LucideIcons.sunMoon : LucideIcons.volume2;
     final alignment = isLeft ? Alignment.centerLeft : Alignment.centerRight;
     final margin = isLeft ? const EdgeInsets.only(left: 20) : const EdgeInsets.only(right: 20);
 

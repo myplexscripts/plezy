@@ -7,7 +7,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/database/app_database.dart';
 import 'package:plezy/focus/focusable_action_bar.dart';
 import 'package:plezy/i18n/strings.g.dart';
@@ -1748,7 +1748,7 @@ void main() {
     bool episodeRowWatched(WidgetTester tester, String title) {
       final card = episodeCardFor(title);
       expect(card, findsOneWidget, reason: 'episode row "$title" should be visible');
-      return tester.any(find.descendant(of: card, matching: find.byIcon(Symbols.check_rounded)));
+      return tester.any(find.descendant(of: card, matching: find.byIcon(LucideIcons.check)));
     }
 
     bool episodeRowHasProgress(WidgetTester tester, String title) {
@@ -1865,9 +1865,7 @@ void main() {
       // the following episode as on deck.
       client.onDeckEpisode = episode2;
 
-      await tester.tap(
-        find.descendant(of: find.byType(FocusableActionBar), matching: find.byIcon(Symbols.play_arrow_rounded)),
-      );
+      await tester.tap(find.descendant(of: find.byType(FocusableActionBar), matching: find.byIcon(LucideIcons.play)));
       // Pump the push, the immediate pop, and the refresh round-trip one
       // frame at a time: the old full-reload path swapped in a loading
       // scaffold here and unmounted the episode list.
@@ -1908,7 +1906,7 @@ void main() {
       await pumpPhoneDetail(tester, client, movie, observer: observer);
       observer.pushedRouteNames.clear();
       final play = find.ancestor(
-        of: find.descendant(of: find.byType(FocusableActionBar), matching: find.byIcon(Symbols.play_arrow_rounded)),
+        of: find.descendant(of: find.byType(FocusableActionBar), matching: find.byIcon(LucideIcons.play)),
         matching: find.byType(FilledButton),
       );
       final detail = tester.state(find.byType(MediaDetailScreen)) as DeletionAware;
@@ -2010,7 +2008,7 @@ void main() {
 
       final chevron = find.descendant(
         of: find.byType(FocusableActionBar),
-        matching: find.byIcon(Symbols.keyboard_arrow_down_rounded),
+        matching: find.byIcon(LucideIcons.chevronDown),
       );
       expect(chevron, findsOneWidget);
 
@@ -2055,10 +2053,7 @@ void main() {
       await pumpPhoneDetail(tester, client, movie);
 
       expect(
-        find.descendant(
-          of: find.byType(FocusableActionBar),
-          matching: find.byIcon(Symbols.keyboard_arrow_down_rounded),
-        ),
+        find.descendant(of: find.byType(FocusableActionBar), matching: find.byIcon(LucideIcons.chevronDown)),
         findsNothing,
       );
     });

@@ -118,7 +118,7 @@ class _VirtualKeyView extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(3)),
         boxShadow: <BoxShadow>[BoxShadow(color: Colors.black.withValues(alpha: 0.3), offset: const Offset(0.0, 1.0))],
       ),
-      child: Text(keyLabel, style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12)),
+      child: Text(keyLabel, style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 14)),
     );
   }
 }

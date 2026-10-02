@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/focusable_wrapper.dart';
 import '../i18n/strings.g.dart';
@@ -165,7 +165,7 @@ class _AppBarBackButtonState extends State<AppBarBackButton> with TickerProvider
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(color: currentColor, shape: BoxShape.circle),
-                  child: AppIcon(Symbols.arrow_back_rounded, fill: 1, color: effectiveColor, size: 20),
+                  child: AppIcon(LucideIcons.arrowLeft, fill: 1, color: effectiveColor, size: 20),
                 );
               },
             ),

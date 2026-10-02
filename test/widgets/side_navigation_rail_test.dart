@@ -4,7 +4,7 @@ import 'package:plezy/media/ids.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/focus/input_mode_tracker.dart';
 import 'package:plezy/i18n/strings.g.dart';
 import 'package:plezy/media/media_backend.dart';
@@ -368,11 +368,11 @@ void main() {
     final movies = _library(id: '1', title: 'Movies', serverId: ServerId('server-a'), serverName: 'Server A');
 
     await _pumpBasicRail(tester, alwaysExpanded: true, libraries: [movies]);
-    expect(_librariesChevron(Symbols.expand_less_rounded), findsOneWidget);
+    expect(_librariesChevron(LucideIcons.chevronUp), findsOneWidget);
 
     await tester.tap(find.widgetWithText(NavigationRailItem, 'Libraries'));
     await tester.pumpAndSettle();
-    expect(_librariesChevron(Symbols.expand_more_rounded), findsOneWidget);
+    expect(_librariesChevron(LucideIcons.chevronDown), findsOneWidget);
     expect(SettingsService.instance.read(SettingsService.librariesSectionExpanded), isFalse);
 
     // Tear the rail down so the next pump builds a brand-new State — the app
@@ -381,7 +381,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await _pumpBasicRail(tester, alwaysExpanded: true, libraries: [movies]);
-    expect(_librariesChevron(Symbols.expand_more_rounded), findsOneWidget);
+    expect(_librariesChevron(LucideIcons.chevronDown), findsOneWidget);
   });
 
   testWidgets('a collapsed Libraries section keeps its rows out of D-pad order', (tester) async {
@@ -795,7 +795,7 @@ void main() {
               builder: (context) {
                 parentBuilds++;
                 return NavigationRailItem(
-                  icon: Symbols.home_rounded,
+                  icon: LucideIcons.house,
                   label: const Text('Home'),
                   isSelected: false,
                   onTap: () {},

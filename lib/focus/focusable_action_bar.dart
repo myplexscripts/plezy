@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../widgets/app_icon.dart';
 import '../widgets/clickable_cursor.dart';
@@ -39,7 +39,7 @@ class FocusableAction {
   final double? spacingBefore;
 
   const FocusableAction({
-    this.icon = Symbols.circle_rounded,
+    this.icon = LucideIcons.circle,
     this.iconColor,
     this.iconFill = 1.0,
     this.iconSize = 24,

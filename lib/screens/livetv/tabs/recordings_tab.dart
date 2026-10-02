@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../../exceptions/media_server_exceptions.dart';
@@ -22,6 +22,7 @@ import '../live_tv_refresh_mixin.dart';
 import '../live_tv_server_iteration.dart';
 import '../livetv_recording_actions.dart';
 import '../livetv_styles.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 class RecordingsTab extends StatefulWidget {
   final VoidCallback? onNavigateUp;
@@ -222,8 +223,8 @@ class RecordingsTabState extends State<RecordingsTab> with WidgetsBindingObserve
       context,
       title: entry.rule.title ?? '',
       options: [
-        (icon: Symbols.edit_rounded, label: t.liveTv.editRuleAction, value: _RuleAction.edit),
-        (icon: Symbols.delete_rounded, label: t.common.delete, value: _RuleAction.delete),
+        (icon: LucideIcons.pencil, label: t.liveTv.editRuleAction, value: _RuleAction.edit),
+        (icon: LucideIcons.trash2, label: t.common.delete, value: _RuleAction.delete),
       ],
     );
     if (!mounted) return;
@@ -309,7 +310,7 @@ class _EmptyMessage extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          AppIcon(Symbols.fiber_manual_record_rounded, size: 40, color: theme.colorScheme.onSurfaceVariant),
+          AppIcon(LucideIcons.circle, size: 40, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(height: 12),
           Text(text, textAlign: TextAlign.center, style: theme.textTheme.bodyLarge),
         ],
@@ -390,7 +391,7 @@ class _GrabTile extends StatelessWidget {
                 ),
               ),
               if (isRecording)
-                StatusPill(label: t.liveTv.recordingInProgress, color: Colors.red)
+                StatusPill(label: t.liveTv.recordingInProgress, color: PlezzantColors.danger)
               else if (isError)
                 StatusPill(label: t.common.error, color: theme.colorScheme.error),
             ],

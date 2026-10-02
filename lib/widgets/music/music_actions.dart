@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../focus/focusable_action_bar.dart';
 import '../../i18n/strings.g.dart';
@@ -26,14 +26,14 @@ List<FocusableAction> buildMusicActions({
     ),
     FocusableAction(
       debugLabel: 'music_shuffle',
-      icon: Symbols.shuffle_rounded,
+      icon: LucideIcons.shuffle,
       tooltip: t.common.shuffle,
       onPressed: onShuffle,
     ),
     if (onInstantMix != null)
       FocusableAction(
         debugLabel: 'music_instant_mix',
-        icon: Symbols.wand_stars_rounded,
+        icon: LucideIcons.wandSparkles,
         tooltip: t.music.instantMix,
         onPressed: onInstantMix,
       ),
@@ -61,7 +61,7 @@ class _MusicPlayButton extends StatelessWidget {
               foregroundColor: colorScheme.onInverseSurface,
             )
           : null,
-      icon: const AppIcon(Symbols.play_arrow_rounded, fill: 1, size: 20),
+      icon: const AppIcon(LucideIcons.play, fill: 1, size: 20),
       label: Text(t.common.play, style: const TextStyle(fontWeight: .w700)),
     );
   }

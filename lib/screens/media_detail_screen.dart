@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:plezy/utils/platform_detector.dart';
 import 'package:plezy/widgets/app_icon.dart';
 import 'package:plezy/widgets/background_download_warning_banner.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../widgets/collapsible_text.dart';
 import '../widgets/rating_bottom_sheet.dart';
@@ -103,6 +103,7 @@ import '../widgets/tv_browse_rail.dart';
 import '../widgets/tv_spotlight_background.dart';
 import '../providers/account_preferences_controller.dart';
 import '../services/playback_track_preview.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 part 'media_detail/action_buttons.dart';
 part 'media_detail/playback_tracks_status.dart';
@@ -1134,7 +1135,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
     // Text merges its style over the ambient default, so measuring with the
     // bare chip style would drop the theme's font metrics.
     final ambientStyle = DefaultTextStyle.of(context).style;
-    final chipTextStyle = TextStyle(color: colorScheme.onSecondaryContainer, fontSize: 13, fontWeight: .w600);
+    final chipTextStyle = TextStyle(color: colorScheme.onSecondaryContainer, fontSize: 14, fontWeight: .w600);
     const chipPadding = _HeroChips.paddingH * 2; // _buildMetadataChip: horizontal padding each side
     const chipSpacing = _HeroChips.spacing; // the strip Wrap's spacing
     const iconSize = 16.0;
@@ -1224,7 +1225,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
           chipPadding +
           iconSize +
           iconGap +
-          textWidth(_userRatingChipLabel(metadata), const TextStyle(fontSize: 13, fontWeight: .w500));
+          textWidth(_userRatingChipLabel(metadata), const TextStyle(fontSize: 14, fontWeight: .w500));
     }
 
     final keptUnits = [for (final slot in slots) slot.unitWidths.length];
@@ -1281,8 +1282,8 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
     final hasRating = metadata.userRating != null && metadata.userRating! > 0;
     final active = isNumeric ? hasRating : metadata.isFavorite == true;
 
-    final iconData = isNumeric ? Symbols.star_rounded : Symbols.favorite_rounded;
-    final activeIconColor = isNumeric ? Colors.amber : Colors.redAccent;
+    final iconData = isNumeric ? LucideIcons.star : LucideIcons.heart;
+    final activeIconColor = isNumeric ? PlezzantColors.highlight : PlezzantColors.favorite;
     final label = _userRatingChipLabel(metadata);
 
     return ListenableBuilder(
@@ -1336,7 +1337,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
                     const SizedBox(width: 4),
                     Text(
                       label,
-                      style: TextStyle(color: fgColor, fontSize: 13, fontWeight: .w500),
+                      style: TextStyle(color: fgColor, fontSize: 14, fontWeight: .w500),
                     ),
                   ],
                 ),
@@ -1472,9 +1473,9 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
       context,
       title: t.downloads.manageSyncRule,
       options: [
-        (icon: Symbols.edit_rounded, label: t.downloads.editSyncRule, value: _SyncRuleAction.edit),
-        (icon: Symbols.sync_disabled_rounded, label: t.downloads.removeSyncRule, value: _SyncRuleAction.remove),
-        (icon: Symbols.delete_rounded, label: t.downloads.deleteDownload, value: _SyncRuleAction.delete),
+        (icon: LucideIcons.pencil, label: t.downloads.editSyncRule, value: _SyncRuleAction.edit),
+        (icon: LucideIcons.refreshCwOff, label: t.downloads.removeSyncRule, value: _SyncRuleAction.remove),
+        (icon: LucideIcons.trash2, label: t.downloads.deleteDownload, value: _SyncRuleAction.delete),
       ],
     );
 
@@ -2759,11 +2760,11 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
 
   IconData _getRelatedHubIcon(MediaHub hub) {
     final lower = hub.title.toLowerCase();
-    if (lower.contains('collection')) return Symbols.video_library_rounded;
-    if (lower.contains('similar')) return Symbols.auto_awesome_rounded;
-    if (lower.contains('more from') || lower.contains('more with')) return Symbols.person_rounded;
-    if (lower.contains('genre') || lower.contains('director')) return Symbols.movie_rounded;
-    return Symbols.recommend_rounded;
+    if (lower.contains('collection')) return LucideIcons.libraryBig;
+    if (lower.contains('similar')) return LucideIcons.sparkles;
+    if (lower.contains('more from') || lower.contains('more with')) return LucideIcons.user;
+    if (lower.contains('genre') || lower.contains('director')) return LucideIcons.film;
+    return LucideIcons.thumbsUp;
   }
 
   static const Widget _sectionLoading = Center(
@@ -2787,7 +2788,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
       padding: const EdgeInsets.all(16),
       child: ErrorStateWidget(
         message: message,
-        icon: Symbols.error_outline_rounded,
+        icon: LucideIcons.circleAlert,
         onRetry: onRetry,
         retryLabel: t.common.retry,
       ),
@@ -2904,7 +2905,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
         padding: const EdgeInsets.all(16),
         child: ErrorStateWidget(
           message: t.messages.episodesLoadFailed,
-          icon: Symbols.error_outline_rounded,
+          icon: LucideIcons.circleAlert,
           onRetry: () => unawaited(_loadMoreEpisodeList()),
           retryLabel: t.common.retry,
         ),
@@ -3310,7 +3311,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
     if (_isDeleted) {
       return Scaffold(
         body: SafeArea(
-          child: EmptyStateWidget(message: t.messages.mediaUnavailable, icon: Symbols.block_rounded),
+          child: EmptyStateWidget(message: t.messages.mediaUnavailable, icon: LucideIcons.ban),
         ),
       );
     }
@@ -4503,11 +4504,11 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
   }
 
   IconData _getTvDetailHubIcon(MediaHub hub, int index) {
-    if (hub.id == _tvDetailSeasonsErrorHubId) return Symbols.error_outline_rounded;
-    if (hub.id.startsWith(_tvDetailSeasonHubIdPrefix)) return Symbols.tv_rounded;
-    if (hub.id == 'detail_episodes') return Symbols.tv_rounded;
-    if (hub.id == _tvDetailExtrasHubId) return Symbols.theaters_rounded;
-    if (hub.id == _tvDetailActorsHubId) return Symbols.group_rounded;
+    if (hub.id == _tvDetailSeasonsErrorHubId) return LucideIcons.circleAlert;
+    if (hub.id.startsWith(_tvDetailSeasonHubIdPrefix)) return LucideIcons.tv;
+    if (hub.id == 'detail_episodes') return LucideIcons.tv;
+    if (hub.id == _tvDetailExtrasHubId) return LucideIcons.clapperboard;
+    if (hub.id == _tvDetailActorsHubId) return LucideIcons.users;
     return _getRelatedHubIcon(hub);
   }
 
@@ -4938,16 +4939,16 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
         final fresh = _fresh(episode);
         // Check if episode has been partially watched
         if (fresh.viewOffsetMs != null && fresh.viewOffsetMs! > 0) {
-          return Symbols.resume_rounded; // Resume icon
+          return LucideIcons.stepForward; // Resume icon
         }
       }
     } else {
       // For movies or episodes
       if (metadata.viewOffsetMs != null && metadata.viewOffsetMs! > 0) {
-        return Symbols.resume_rounded; // Resume icon
+        return LucideIcons.stepForward; // Resume icon
       }
     }
 
-    return Symbols.play_arrow_rounded; // Default play icon
+    return LucideIcons.play; // Default play icon
   }
 }

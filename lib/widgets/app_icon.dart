@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
-/// Wrapper around [Icon] that centralizes our Material Symbols defaults.
-/// Defaults: fill=1 (filled) and weight=700 (bold). Update [AppIconDefaults]
-/// to tweak app-wide icon appearance from one place.
+/// The single wrapper every application icon goes through.
+///
+/// Plezzant draws Lucide icons (`package:lucide_icons_flutter`) at Lucide's
+/// canonical 2px stroke. Lucide glyphs are outline-only, so the historical
+/// [fill] parameter now expresses *state* instead of shape: a [fill] below 0.5
+/// renders the icon at reduced emphasis, which keeps "on/off" affordances
+/// (watch-together active, favourite set) distinguishable without a second
+/// icon family. [weight], [grade] and [opticalSize] are accepted for API
+/// compatibility and ignored, because Lucide has no variable axes.
 class AppIcon extends StatelessWidget {
   const AppIcon(
     this.icon, {
@@ -29,17 +35,22 @@ class AppIcon extends StatelessWidget {
   final String? semanticLabel;
   final TextDirection? textDirection;
 
+  /// Emphasis applied to an icon whose [fill] marks it as "off".
+  static const double inactiveEmphasis = 0.55;
+
   @override
   Widget build(BuildContext context) {
     if (icon == null) return const SizedBox.shrink();
+    var effectiveColor = color ?? AppIconDefaults.color;
+    final effectiveFill = fill ?? AppIconDefaults.fill;
+    if (effectiveFill < 0.5) {
+      final base = effectiveColor ?? IconTheme.of(context).color ?? DefaultTextStyle.of(context).style.color;
+      if (base != null) effectiveColor = base.withValues(alpha: base.a * inactiveEmphasis);
+    }
     return Icon(
       icon,
       size: size,
-      color: color,
-      fill: fill ?? AppIconDefaults.fill,
-      weight: weight ?? AppIconDefaults.weight,
-      grade: grade ?? AppIconDefaults.grade,
-      opticalSize: opticalSize ?? AppIconDefaults.opticalSize,
+      color: effectiveColor,
       shadows: shadows ?? AppIconDefaults.shadows,
       semanticLabel: semanticLabel,
       textDirection: textDirection,
@@ -47,10 +58,10 @@ class AppIcon extends StatelessWidget {
   }
 }
 
-/// Central place to adjust default Material Symbol variations.
+/// Central place to adjust default icon presentation.
 class AppIconDefaults {
   static double fill = 1;
-  static double weight = 700;
+  static double weight = 400;
   static double? grade;
   static double? opticalSize;
   static Color? color;

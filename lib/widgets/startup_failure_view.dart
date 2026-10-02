@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/focusable_button.dart';
 import '../i18n/strings.g.dart';
@@ -155,7 +155,7 @@ class _StartupFailureViewState extends State<StartupFailureView> {
             key: startupBootstrapFailureKey,
             mainAxisSize: MainAxisSize.min,
             children: [
-              AppIcon(restartRequired ? Symbols.restart_alt_rounded : Symbols.error_rounded, size: 48),
+              AppIcon(restartRequired ? LucideIcons.rotateCcw : LucideIcons.circleAlert, size: 48),
               const SizedBox(height: 16),
               Text(
                 restartRequired ? t.startup.repairNeedsRestart : t.startup.failedTitle,
@@ -231,7 +231,7 @@ class _StartupFailureViewState extends State<StartupFailureView> {
                       child: FilledButton(
                         key: startupFailureQuitKey,
                         onPressed: enabled ? _quit : null,
-                        child: Text(t.startup.quitPlezy),
+                        child: Text(t.startup.quitPlezzant),
                       ),
                     ),
                   FocusableButton(
@@ -283,7 +283,7 @@ class _StartupFailureViewState extends State<StartupFailureView> {
             child: SingleChildScrollView(
               child: SelectableText(
                 failure.describe(),
-                style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace', fontSize: 12),
+                style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace', fontSize: 14),
               ),
             ),
           ),

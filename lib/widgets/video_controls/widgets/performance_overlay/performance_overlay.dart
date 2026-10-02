@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../i18n/strings.g.dart';
 import '../../../../mpv/mpv.dart';
@@ -70,7 +70,7 @@ class _PlayerPerformanceOverlayState extends State<PlayerPerformanceOverlay> {
     final isMpv = _stats.playerType == 'mpv';
 
     final sections = <Widget>[
-      _buildSection(Symbols.videocam_rounded, t.fileInfo.video, [
+      _buildSection(LucideIcons.video, t.fileInfo.video, [
         _metric(t.fileInfo.codec, _stats.videoCodec ?? t.common.notAvailable),
         _metric(t.fileInfo.resolution, _stats.resolution),
         if (_stats.hasValidVideoFps) _metric(t.performanceOverlay.fps, _stats.videoFpsFormatted),
@@ -85,7 +85,7 @@ class _PlayerPerformanceOverlayState extends State<PlayerPerformanceOverlay> {
         if (_stats.dvPlaybackPath != null) _metric(t.performanceOverlay.dvPath, _stats.dvPlaybackPathFormatted),
         if (_stats.dvConversionActive) _metric(t.performanceOverlay.p7Conversion, _stats.dvConversionFormatted),
       ]),
-      _buildSection(Symbols.volume_up_rounded, t.fileInfo.audio, [
+      _buildSection(LucideIcons.volume2, t.fileInfo.audio, [
         if (_stats.audioCodec != null) _metric(t.fileInfo.codec, _stats.audioCodec!),
         if (_stats.audioPassthrough) _metric(t.performanceOverlay.passthrough, _stats.audioPassthroughFormatted),
         _metric(t.performanceOverlay.sampleRate, _stats.sampleRateFormatted),
@@ -95,7 +95,7 @@ class _PlayerPerformanceOverlayState extends State<PlayerPerformanceOverlay> {
           _metric(t.performanceOverlay.decoder, _stats.audioDecoderFormatted),
       ]),
       if (isMpv)
-        _buildSection(Symbols.palette_rounded, t.performanceOverlay.color, [
+        _buildSection(LucideIcons.palette, t.performanceOverlay.color, [
           _metric(t.performanceOverlay.pixelFormat, _stats.pixelformat ?? t.common.notAvailable),
           if (_stats.hwPixelformat != null && _stats.hwPixelformat != _stats.pixelformat)
             _metric(t.performanceOverlay.hwFormat, _stats.hwPixelformat!),
@@ -103,7 +103,7 @@ class _PlayerPerformanceOverlayState extends State<PlayerPerformanceOverlay> {
           _metric(t.performanceOverlay.primaries, _stats.primaries ?? t.common.notAvailable),
           _metric(t.performanceOverlay.transfer, _stats.gamma ?? t.common.notAvailable),
         ]),
-      _buildSection(Symbols.speed_rounded, t.performanceOverlay.performance, [
+      _buildSection(LucideIcons.gauge, t.performanceOverlay.performance, [
         if (isMpv) _metric(t.performanceOverlay.renderFps, _stats.actualFpsFormatted),
         if (isMpv) _metric(t.performanceOverlay.displayFps, _stats.displayFpsFormatted),
         if (isMpv) _metric(t.performanceOverlay.avSync, _stats.avsyncFormatted),
@@ -114,13 +114,13 @@ class _PlayerPerformanceOverlayState extends State<PlayerPerformanceOverlay> {
           _metric(t.performanceOverlay.dvSampleAverage, _stats.dvAvgSampleProcessingFormatted),
       ]),
       if (_stats.hasHdrMetadata)
-        _buildSection(Symbols.hdr_on_rounded, t.videoSettings.hdr, [
+        _buildSection(LucideIcons.sunMedium, t.videoSettings.hdr, [
           if (_stats.maxLuma != null) _metric(t.performanceOverlay.maxLuma, _stats.maxLumaFormatted),
           if (_stats.minLuma != null) _metric(t.performanceOverlay.minLuma, _stats.minLumaFormatted),
           if (_stats.maxCll != null) _metric(t.performanceOverlay.maxCll, _stats.maxCllFormatted),
           if (_stats.maxFall != null) _metric(t.performanceOverlay.maxFall, _stats.maxFallFormatted),
         ]),
-      _buildSection(Symbols.memory_rounded, t.performanceOverlay.buffer, [
+      _buildSection(LucideIcons.cpu, t.performanceOverlay.buffer, [
         _metric(t.fileInfo.duration, _stats.cacheDurationFormatted),
         if (isMpv) _metric(t.performanceOverlay.cacheUsed, _stats.cacheUsedFormatted),
         if (isMpv) _metric(t.performanceOverlay.cacheLimit, _stats.cacheLimitFormatted),
@@ -128,7 +128,7 @@ class _PlayerPerformanceOverlayState extends State<PlayerPerformanceOverlay> {
           _metric(t.performanceOverlay.cacheLimit, _stats.bufferLimitsFormatted),
         if (isMpv) _metric(t.performanceOverlay.speed, _stats.cacheSpeedFormatted),
       ]),
-      _buildSection(Symbols.apps_rounded, t.performanceOverlay.app, [
+      _buildSection(LucideIcons.layoutGrid, t.performanceOverlay.app, [
         _metric(t.performanceOverlay.player, _stats.playerTypeFormatted),
         _metric(t.performanceOverlay.memory, _stats.appMemoryFormatted),
         _metric(t.performanceOverlay.uiFps, _stats.uiFpsFormatted),
@@ -180,7 +180,7 @@ class _PlayerPerformanceOverlayState extends State<PlayerPerformanceOverlay> {
             const SizedBox(width: 4),
             Text(
               title,
-              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: .w600),
+              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: .w600),
             ),
           ],
         ),
@@ -196,11 +196,11 @@ class _PlayerPerformanceOverlayState extends State<PlayerPerformanceOverlay> {
       child: Row(
         mainAxisSize: .min,
         children: [
-          Text('${metric.label}: ', style: const TextStyle(color: Colors.white60, fontSize: 10)),
+          Text('${metric.label}: ', style: const TextStyle(color: Colors.white60, fontSize: 12)),
           Flexible(
             child: Text(
               metric.value,
-              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: .w500, fontFamily: 'monospace'),
+              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: .w500, fontFamily: 'monospace'),
               overflow: .ellipsis,
             ),
           ),

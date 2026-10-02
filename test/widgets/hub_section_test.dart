@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/focus/input_mode_tracker.dart';
 import 'package:plezy/focus/locked_hub_controller.dart';
 import 'package:plezy/i18n/strings.g.dart';
@@ -50,7 +50,7 @@ void main() {
         child: HubSection(
           hub: _hubWith(item),
           focusMemory: HubFocusMemory(),
-          icon: Symbols.live_tv_rounded,
+          icon: LucideIcons.radioTower,
           onItemTap: (value) => tappedItem = value,
           onItemLongPress: (value) => longPressedItem = value,
         ),
@@ -82,7 +82,7 @@ void main() {
             key: hubKey,
             hub: _hubWith(item),
             focusMemory: HubFocusMemory(),
-            icon: Symbols.live_tv_rounded,
+            icon: LucideIcons.radioTower,
             onItemTap: (value) => tappedItem = value,
             onItemLongPress: (value) => longPressedItem = value,
           ),
@@ -128,7 +128,7 @@ void main() {
                     key: hubKey,
                     hub: _hubWith(item),
                     focusMemory: HubFocusMemory(),
-                    icon: Symbols.live_tv_rounded,
+                    icon: LucideIcons.radioTower,
                   ),
                 ],
               ),
@@ -167,7 +167,7 @@ void main() {
         child: HubSection(
           hub: _hubWith(item),
           focusMemory: HubFocusMemory(),
-          icon: Symbols.live_tv_rounded,
+          icon: LucideIcons.radioTower,
           cardSizing: HubCardSizing.grid,
           episodePosterModeOverride: EpisodePosterMode.seriesPoster,
         ),
@@ -203,7 +203,7 @@ void main() {
         child: HubSection(
           hub: _hubWith(item),
           focusMemory: HubFocusMemory(),
-          icon: Symbols.movie_rounded,
+          icon: LucideIcons.film,
           episodePosterModeOverride: EpisodePosterMode.seriesPoster,
         ),
       ),
@@ -232,7 +232,7 @@ void main() {
 
     await tester.pumpWidget(
       _TestApp(
-        child: HubSection(hub: _hubWith(item), focusMemory: HubFocusMemory(), icon: Symbols.movie_rounded),
+        child: HubSection(hub: _hubWith(item), focusMemory: HubFocusMemory(), icon: LucideIcons.film),
       ),
     );
 
@@ -264,7 +264,7 @@ void main() {
 
     await tester.pumpWidget(
       _TestApp(
-        child: HubSection(hub: hub, focusMemory: HubFocusMemory(), icon: Symbols.movie_rounded),
+        child: HubSection(hub: hub, focusMemory: HubFocusMemory(), icon: LucideIcons.film),
       ),
     );
 
@@ -306,7 +306,7 @@ void main() {
 
     await tester.pumpWidget(
       _TestApp(
-        child: HubSection(hub: _hubWith(item), focusMemory: HubFocusMemory(), icon: Symbols.movie_rounded),
+        child: HubSection(hub: _hubWith(item), focusMemory: HubFocusMemory(), icon: LucideIcons.film),
       ),
     );
 
@@ -338,14 +338,14 @@ void main() {
 
     await tester.pumpWidget(
       _TestApp(
-        child: HubSection(hub: hub, focusMemory: HubFocusMemory(), icon: Symbols.movie_rounded),
+        child: HubSection(hub: hub, focusMemory: HubFocusMemory(), icon: LucideIcons.film),
       ),
     );
     expect(find.text(t.explore.totalResults(n: 237)), findsNothing);
 
     await tester.pumpWidget(
       _TestApp(
-        child: HubSection(hub: hub, focusMemory: HubFocusMemory(), icon: Symbols.movie_rounded, totalResults: 237),
+        child: HubSection(hub: hub, focusMemory: HubFocusMemory(), icon: LucideIcons.film, totalResults: 237),
       ),
     );
     expect(find.text(t.explore.totalResults(n: 237)), findsOneWidget);
@@ -373,7 +373,7 @@ void main() {
             key: key,
             hub: hub(hubId),
             focusMemory: owner,
-            icon: Symbols.movie_rounded,
+            icon: LucideIcons.film,
             onFocusedItemChanged: (item) => focusedItemId = item.id,
           ),
         ),
@@ -439,7 +439,7 @@ void main() {
               key: hubKey,
               hub: hub(hubItems),
               focusMemory: memory,
-              icon: Symbols.play_circle_rounded,
+              icon: LucideIcons.circlePlay,
               isInContinueWatching: true,
               onFocusedItemChanged: (item) => focusedItemId = item.id,
             ),

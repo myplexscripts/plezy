@@ -2,7 +2,7 @@ import 'dart:async';
 import '../media/ids.dart';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../exceptions/media_server_exceptions.dart';
@@ -244,7 +244,7 @@ class ServerActivitiesButtonState extends State<ServerActivitiesButton> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
-          AppIcon(Symbols.monitor_heart_rounded, size: 18, color: theme.colorScheme.onSurface),
+          AppIcon(LucideIcons.heartPulse, size: 18, color: theme.colorScheme.onSurface),
           const SizedBox(width: 8),
           Text(t.serverTasks.title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: .bold)),
         ],
@@ -273,7 +273,7 @@ class ServerActivitiesButtonState extends State<ServerActivitiesButton> {
         child: Column(
           mainAxisSize: .min,
           children: [
-            AppIcon(Symbols.error_outline_rounded, color: theme.colorScheme.error),
+            AppIcon(LucideIcons.circleAlert, color: theme.colorScheme.error),
             const SizedBox(height: 8),
             Text(t.serverTasks.failedToLoad, style: theme.textTheme.bodyMedium),
           ],
@@ -372,7 +372,7 @@ class ServerActivitiesButtonState extends State<ServerActivitiesButton> {
           ),
           if (activity.cancellable)
             IconButton(
-              icon: AppIcon(Symbols.close_rounded, size: 16, color: theme.colorScheme.onSurface),
+              icon: AppIcon(LucideIcons.x, size: 16, color: theme.colorScheme.onSurface),
               onPressed: () => _cancelActivity(serverId, activity.uuid),
               visualDensity: VisualDensity.compact,
               tooltip: t.common.cancel,
@@ -386,7 +386,7 @@ class ServerActivitiesButtonState extends State<ServerActivitiesButton> {
   Widget build(BuildContext context) {
     return IconButton(
       key: _buttonKey,
-      icon: const AppIcon(Symbols.monitor_heart_rounded, color: Colors.white),
+      icon: const AppIcon(LucideIcons.heartPulse, color: Colors.white),
       onPressed: togglePanel,
       tooltip: t.serverTasks.title,
     );

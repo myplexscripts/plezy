@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../media/ids.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_action_bar.dart';
@@ -128,7 +128,7 @@ class _LiveTvShowScheduleScreenState extends State<LiveTvShowScheduleScreen>
                   FocusableActionBar(
                     actions: [
                       FocusableAction(
-                        icon: Symbols.fiber_manual_record_rounded,
+                        icon: LucideIcons.circle,
                         tooltip: t.liveTv.recordShow,
                         onPressed: () => _onRecordShow(hostContext),
                       ),
@@ -259,7 +259,7 @@ class _ScheduleListTile extends StatelessWidget {
                 ),
                 if (isLive) ...[
                   const SizedBox(width: 8),
-                  AppIcon(Symbols.play_circle_rounded, size: 20, color: theme.colorScheme.primary),
+                  AppIcon(LucideIcons.circlePlay, size: 20, color: theme.colorScheme.primary),
                 ],
               ],
             ),

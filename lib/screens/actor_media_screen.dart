@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../media/ids.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../media/library_query.dart';
 import '../media/media_backend.dart';
 import '../media/media_item.dart';
@@ -122,7 +122,7 @@ class _ActorMediaScreenState extends BaseMediaListDetailScreen<ActorMediaScreen>
                 height: 80,
                 fit: BoxFit.cover,
                 imageType: ImageType.avatar,
-                fallbackIcon: Symbols.person_rounded,
+                fallbackIcon: LucideIcons.user,
               ),
             ),
             const SizedBox(width: 16),

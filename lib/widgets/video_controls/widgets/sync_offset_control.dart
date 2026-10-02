@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../focus/focusable_slider.dart';
 import '../../../focus/focusable_wrapper.dart';
@@ -229,7 +229,7 @@ class _SyncOffsetControlState extends State<SyncOffsetControl> {
       child: Row(
         children: [
           _buildStepButton(
-            icon: Symbols.remove_rounded,
+            icon: LucideIcons.minus,
             onTap: _decrementOffset,
             onLongPressStart: _startLongPressDecrement,
           ),
@@ -250,11 +250,7 @@ class _SyncOffsetControlState extends State<SyncOffsetControl> {
               ),
             ),
           ),
-          _buildStepButton(
-            icon: Symbols.add_rounded,
-            onTap: _incrementOffset,
-            onLongPressStart: _startLongPressIncrement,
-          ),
+          _buildStepButton(icon: LucideIcons.plus, onTap: _incrementOffset, onLongPressStart: _startLongPressIncrement),
           const SizedBox(width: 12),
           SizedBox(
             width: 80,
@@ -278,7 +274,7 @@ class _SyncOffsetControlState extends State<SyncOffsetControl> {
                 height: 36,
                 alignment: .center,
                 child: AppIcon(
-                  Symbols.restart_alt_rounded,
+                  LucideIcons.rotateCcw,
                   fill: 1,
                   color: _currentOffset != 0 ? tokens(context).text : tokens(context).textMuted,
                   size: 22,

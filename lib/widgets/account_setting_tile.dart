@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../screens/settings/settings_utils.dart';
 import 'app_icon.dart';
@@ -189,7 +189,7 @@ class _AccountSettingSelectionTileState<T extends Object> extends State<AccountS
       leading: AppIcon(widget.icon, fill: 1),
       title: Text(widget.title),
       subtitle: Text(widget.subtitleBuilder(shownValue)),
-      trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+      trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
       onTap: _pick,
     );
   }

@@ -5,7 +5,7 @@ import '../media/ids.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../focus/card_focus_scope.dart';
 import '../focus/focus_theme.dart';
@@ -676,7 +676,7 @@ class MediaCardState extends State<MediaCard> with ContextMenuTapMixin<MediaCard
               if (widget.onTap == null && item is MediaItem && !_impliesShowTitle(item) && _hasClickableTitle(item))
                 _ClickableText(
                   text: item.displayTitle,
-                  style: const TextStyle(fontWeight: .w600, fontSize: 13, height: 1.1),
+                  style: const TextStyle(fontWeight: .w600, fontSize: 14, height: 1.1),
                   onTap: () => _navigateToFocusedDetail(context, item, isOffline: widget.isOffline),
                 )
               else
@@ -689,7 +689,7 @@ class MediaCardState extends State<MediaCard> with ContextMenuTapMixin<MediaCard
                     },
                     maxLines: 1,
                     overflow: .ellipsis,
-                    style: const TextStyle(fontWeight: .w600, fontSize: 13, height: 1.1),
+                    style: const TextStyle(fontWeight: .w600, fontSize: 14, height: 1.1),
                   ),
                 ),
               if (item is MediaPlaylist)
@@ -1026,11 +1026,11 @@ Widget _buildPosterLoadingPlaceholder(BuildContext context, String _) {
 }
 
 IconData _mediaPosterFallbackIcon(MediaItem item) {
-  if (item.kind == MediaKind.artist) return Symbols.artist_rounded;
-  if (item.kind == MediaKind.album) return Symbols.album_rounded;
-  if (item.kind == MediaKind.track) return Symbols.music_note_rounded;
-  if (item.isShow || item.isSeason || item.isEpisode) return Symbols.tv_rounded;
-  return Symbols.movie_rounded;
+  if (item.kind == MediaKind.artist) return LucideIcons.micVocal;
+  if (item.kind == MediaKind.album) return LucideIcons.disc3;
+  if (item.kind == MediaKind.track) return LucideIcons.music;
+  if (item.isShow || item.isSeason || item.isEpisode) return LucideIcons.tv;
+  return LucideIcons.film;
 }
 
 /// Oversized radius for circular focus borders: [CardFocusBorder] paints a
@@ -1078,7 +1078,7 @@ Widget _buildPosterImage(
       height: knownHeight ?? double.infinity,
       fit: BoxFit.cover,
       placeholder: _buildPosterLoadingPlaceholder,
-      fallbackIcon: Symbols.playlist_play_rounded,
+      fallbackIcon: LucideIcons.listVideo,
       imageType: cardShapeOverride == CardShape.square ? ImageType.square : ImageType.poster,
       localFilePath: localPosterPath,
       artworkDim: artworkDim,
@@ -1177,7 +1177,7 @@ Widget _buildPosterImage(
   }
 
   return SkeletonLoader(
-    child: const Center(child: AppIcon(Symbols.movie_rounded, fill: 1, size: 40, color: Colors.white54)),
+    child: const Center(child: AppIcon(LucideIcons.film, fill: 1, size: 40, color: Colors.white54)),
   );
 }
 
@@ -1191,7 +1191,7 @@ class _MediaCardHelpers {
           overflow: .ellipsis,
           style: Theme.of(
             context,
-          ).textTheme.bodySmall?.copyWith(color: tokens(context).textMuted, fontSize: 11, height: 1.1),
+          ).textTheme.bodySmall?.copyWith(color: tokens(context).textMuted, fontSize: 14, height: 1.1),
         ),
       );
     }
@@ -1209,7 +1209,7 @@ class _MediaCardHelpers {
   }) {
     final subtitleStyle = Theme.of(
       context,
-    ).textTheme.bodySmall?.copyWith(color: tokens(context).textMuted, fontSize: 11, height: 1.1);
+    ).textTheme.bodySmall?.copyWith(color: tokens(context).textMuted, fontSize: 14, height: 1.1);
 
     if (catalogItem != null) {
       final metadata = _buildMediaMetadataLine(mi, catalogItem: catalogItem, compact: true);
@@ -1466,7 +1466,7 @@ class _CatalogBadges extends StatelessWidget {
                   labels[index],
                   maxLines: 1,
                   overflow: .ellipsis,
-                  style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: .w700, height: 1),
+                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: .w700, height: 1),
                 ),
               ),
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_button.dart';
@@ -275,7 +275,7 @@ class _SeerrConnectScreenState extends State<SeerrConnectScreen>
           // URL example — intentionally not localized.
           hintText: 'https://seerr.example.com',
           helperText: t.seerr.serverUrlHelper,
-          prefixIcon: const AppIcon(Symbols.link_rounded, fill: 1),
+          prefixIcon: const AppIcon(LucideIcons.link, fill: 1),
         ),
       ),
       const SizedBox(height: 16),
@@ -286,7 +286,7 @@ class _SeerrConnectScreenState extends State<SeerrConnectScreen>
         onPressed: busy ? null : _probe,
         child: FilledButton.icon(
           onPressed: busy ? null : _probe,
-          icon: busy ? const LoadingIndicatorBox() : const AppIcon(Symbols.travel_explore_rounded, fill: 1),
+          icon: busy ? const LoadingIndicatorBox() : const AppIcon(LucideIcons.earth, fill: 1),
           label: Text(t.seerr.checkServer),
         ),
       ),
@@ -312,7 +312,7 @@ class _SeerrConnectScreenState extends State<SeerrConnectScreen>
             onPressed: busy ? null : _signInWithPlex,
             child: FilledButton.icon(
               onPressed: busy ? null : _signInWithPlex,
-              icon: busy ? const LoadingIndicatorBox() : const AppIcon(Symbols.login_rounded, fill: 1),
+              icon: busy ? const LoadingIndicatorBox() : const AppIcon(LucideIcons.logIn, fill: 1),
               label: Text(t.auth.signInWithPlex),
             ),
           ),
@@ -367,7 +367,7 @@ class _SeerrConnectScreenState extends State<SeerrConnectScreen>
         onFieldSubmitted: busy ? null : (_) => _passwordFocus.requestFocus(),
         decoration: InputDecoration(
           labelText: isLocal ? t.seerr.email : t.addServer.username,
-          prefixIcon: AppIcon(isLocal ? Symbols.mail_rounded : Symbols.person_rounded, fill: 1),
+          prefixIcon: AppIcon(isLocal ? LucideIcons.mail : LucideIcons.user, fill: 1),
         ),
         validator: (v) => v == null || v.trim().isEmpty ? t.addServer.required : null,
       ),
@@ -381,7 +381,7 @@ class _SeerrConnectScreenState extends State<SeerrConnectScreen>
         onFieldSubmitted: busy ? null : (_) => _signInWithCredentials(),
         decoration: InputDecoration(
           labelText: t.addServer.password,
-          prefixIcon: const AppIcon(Symbols.lock_rounded, fill: 1),
+          prefixIcon: const AppIcon(LucideIcons.lock, fill: 1),
         ),
         validator: (v) => v == null || v.isEmpty ? t.addServer.required : null,
       ),
@@ -391,7 +391,7 @@ class _SeerrConnectScreenState extends State<SeerrConnectScreen>
         onPressed: busy ? null : _signInWithCredentials,
         child: FilledButton.icon(
           onPressed: busy ? null : _signInWithCredentials,
-          icon: busy ? const LoadingIndicatorBox() : const AppIcon(Symbols.login_rounded, fill: 1),
+          icon: busy ? const LoadingIndicatorBox() : const AppIcon(LucideIcons.logIn, fill: 1),
           label: Text(t.addServer.signIn),
         ),
       ),
@@ -405,7 +405,7 @@ class _SeerrConnectScreenState extends State<SeerrConnectScreen>
           onPressed: busy ? null : _startQuickConnect,
           child: OutlinedButton.icon(
             onPressed: busy ? null : _startQuickConnect,
-            icon: const AppIcon(Symbols.tap_and_play_rounded, fill: 1),
+            icon: const AppIcon(LucideIcons.cast, fill: 1),
             label: Text(t.auth.useQuickConnect),
           ),
         ),
@@ -423,7 +423,7 @@ class _SeerrConnectScreenState extends State<SeerrConnectScreen>
       ),
       child: Row(
         children: [
-          const AppIcon(Symbols.cloud_done_rounded, fill: 1),
+          const AppIcon(LucideIcons.cloudCheck, fill: 1),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../navigation/profile_navigation_scope.dart';
 import 'layout_constants.dart';
 import 'platform_detector.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Global key for the root ScaffoldMessenger, allowing snackbars to survive navigation.
 final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -62,8 +63,8 @@ double _desktopSnackBarWidth(BuildContext context) {
 
 (Color?, Duration) _snackBarStyle(SnackBarType type) => switch (type) {
   SnackBarType.info => (null, AppDurations.snackBarDefault),
-  SnackBarType.success => (Colors.green, AppDurations.snackBarDefault),
-  SnackBarType.error => (Colors.red, AppDurations.snackBarLong),
+  SnackBarType.success => (PlezzantColors.success, AppDurations.snackBarDefault),
+  SnackBarType.error => (PlezzantColors.danger, AppDurations.snackBarLong),
 };
 
 void showSnackBar(
@@ -106,7 +107,7 @@ void showGlobalErrorSnackBar(String message) {
       messenger.context,
       messenger,
       content: Text(message),
-      backgroundColor: Colors.red,
+      backgroundColor: PlezzantColors.danger,
       duration: AppDurations.snackBarLong,
     ),
   );

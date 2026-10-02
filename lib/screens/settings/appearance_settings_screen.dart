@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../i18n/strings.g.dart';
@@ -48,47 +48,47 @@ class AppearanceSettingsScreen extends StatelessWidget {
             _episodePosterModeSelector(),
             SettingSwitchTile(
               pref: SettingsService.showEpisodeNumberOnCards,
-              icon: Symbols.tag_rounded,
+              icon: LucideIcons.hash,
               title: t.settings.showEpisodeNumberOnCards,
               subtitle: t.settings.showEpisodeNumberOnCardsDescription,
             ),
             if (!PlatformDetector.isTV())
               SettingSwitchTile(
                 pref: SettingsService.showSeasonPostersOnTabs,
-                icon: Symbols.image_rounded,
+                icon: LucideIcons.image,
                 title: t.settings.showSeasonPostersOnTabs,
                 subtitle: t.settings.showSeasonPostersOnTabsDescription,
               ),
             SettingSwitchTile(
               pref: SettingsService.hideSpoilers,
-              icon: Symbols.visibility_off_rounded,
+              icon: LucideIcons.eyeOff,
               title: t.settings.hideSpoilers,
               subtitle: t.settings.hideSpoilersDescription,
             ),
             SettingSwitchTile(
               pref: SettingsService.showWatchedIndicators,
-              icon: Symbols.check_circle_rounded,
+              icon: LucideIcons.circleCheck,
               title: t.settings.showWatchedIndicators,
               subtitle: t.settings.showWatchedIndicatorsDescription,
             ),
             if (PlatformDetector.isTV())
               SettingSwitchTile(
                 pref: SettingsService.tvFullCardLayout,
-                icon: Symbols.image_rounded,
+                icon: LucideIcons.image,
                 title: t.settings.tvFullCardLayout,
                 subtitle: t.settings.tvFullCardLayoutDescription,
               ),
             if (PlatformDetector.isTV())
               SettingSwitchTile(
                 pref: SettingsService.tvCornerSpotlightBackdrop,
-                icon: Symbols.picture_in_picture_alt_rounded,
+                icon: LucideIcons.pictureInPicture2,
                 title: t.settings.tvCornerSpotlightBackdrop,
                 subtitle: t.settings.tvCornerSpotlightBackdropDescription,
               ),
             if (PlatformDetector.isTV())
               SettingSwitchTile(
                 pref: SettingsService.focusGlow,
-                icon: Symbols.lightbulb_rounded,
+                icon: LucideIcons.lightbulb,
                 title: t.settings.focusGlow,
                 subtitle: t.settings.focusGlowDescription,
               ),
@@ -101,7 +101,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
             if (!PlatformDetector.isTV())
               SettingSwitchTile(
                 pref: SettingsService.showHeroSection,
-                icon: Symbols.featured_play_list_rounded,
+                icon: LucideIcons.squarePlay,
                 title: t.settings.showHeroSection,
                 subtitle: t.settings.showHeroSectionDescription,
               ),
@@ -109,13 +109,13 @@ class AppearanceSettingsScreen extends StatelessWidget {
             _episodeActionSelector(),
             SettingSwitchTile(
               pref: SettingsService.useGlobalHubs,
-              icon: Symbols.home_rounded,
+              icon: LucideIcons.house,
               title: t.settings.useGlobalHubs,
               subtitle: t.settings.useGlobalHubsDescription,
             ),
             SettingSwitchTile(
               pref: SettingsService.showServerNameOnHubs,
-              icon: Symbols.dns_rounded,
+              icon: LucideIcons.server,
               title: t.settings.showServerNameOnHubs,
               subtitle: t.settings.showServerNameOnHubsDescription,
             ),
@@ -128,34 +128,34 @@ class AppearanceSettingsScreen extends StatelessWidget {
             if (hasExplore)
               SettingSwitchTile(
                 pref: SettingsService.showExploreTab,
-                icon: Symbols.explore_rounded,
+                icon: LucideIcons.compass,
                 title: t.settings.showExploreTab,
                 subtitle: t.settings.showExploreTabDescription,
               ),
             if (PlatformDetector.shouldUseSideNavigation(context))
               SettingSwitchTile(
                 pref: SettingsService.alwaysKeepSidebarOpen,
-                icon: Symbols.dock_to_left_rounded,
+                icon: LucideIcons.panelLeft,
                 title: t.settings.alwaysKeepSidebarOpen,
                 subtitle: t.settings.alwaysKeepSidebarOpenDescription,
               ),
             if (PlatformDetector.shouldUseSideNavigation(context))
               SettingSwitchTile(
                 pref: SettingsService.groupLibrariesByServer,
-                icon: Symbols.dns_rounded,
+                icon: LucideIcons.server,
                 title: t.settings.groupLibrariesByServer,
                 subtitle: t.settings.groupLibrariesByServerDescription,
               ),
             if (!PlatformDetector.shouldUseSideNavigation(context))
               SettingSwitchTile(
                 pref: SettingsService.showNavBarLabels,
-                icon: Symbols.label_rounded,
+                icon: LucideIcons.tag,
                 title: t.settings.showNavBarLabels,
                 subtitle: t.settings.showNavBarLabelsDescription,
               ),
             SettingSwitchTile(
               pref: SettingsService.showUnwatchedCount,
-              icon: Symbols.counter_1_rounded,
+              icon: LucideIcons.squareDot,
               title: t.settings.showUnwatchedCount,
               subtitle: t.settings.showUnwatchedCountDescription,
             ),
@@ -167,7 +167,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
           children: [
             SettingSwitchTile(
               pref: SettingsService.liveTvDefaultFavorites,
-              icon: Symbols.star_rounded,
+              icon: LucideIcons.star,
               title: t.settings.liveTvDefaultFavorites,
               subtitle: t.settings.liveTvDefaultFavoritesDescription,
             ),
@@ -208,7 +208,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const AppIcon(Symbols.grid_view_rounded, fill: 1),
+                  const AppIcon(LucideIcons.layoutGrid, fill: 1),
                   const SizedBox(width: 16),
                   Text(t.settings.libraryDensity, style: settingsOptionTitleStyle(context)),
                 ],
@@ -246,7 +246,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const AppIcon(Symbols.format_size_rounded, fill: 1),
+                  const AppIcon(LucideIcons.type, fill: 1),
                   const SizedBox(width: 16),
                   Text(t.settings.displayScale, style: settingsOptionTitleStyle(context)),
                   const Spacer(),
@@ -270,7 +270,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
 
   Widget _viewModeSelector() => SettingSegmentedTile<ViewMode>(
     pref: SettingsService.viewMode,
-    icon: Symbols.view_list_rounded,
+    icon: LucideIcons.list,
     title: t.settings.viewMode,
     segments: [
       ButtonSegment(value: ViewMode.grid, label: Text(t.settings.gridView)),
@@ -280,7 +280,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
 
   Widget _gridSpacingSelector() => SettingSegmentedTile<GridSpacing>(
     pref: SettingsService.gridSpacing,
-    icon: Symbols.padding_rounded,
+    icon: LucideIcons.squareDashed,
     title: t.settings.gridSpacing,
     segments: [
       ButtonSegment(value: GridSpacing.tight, label: Text(t.settings.gridSpacingTight)),
@@ -291,7 +291,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
 
   Widget _episodePosterModeSelector() => SettingSegmentedTile<EpisodePosterMode>(
     pref: SettingsService.episodePosterMode,
-    icon: Symbols.image_rounded,
+    icon: LucideIcons.image,
     title: t.settings.episodePosterMode,
     segments: [
       ButtonSegment(value: EpisodePosterMode.seriesPoster, label: Text(t.settings.seriesPoster)),
@@ -302,7 +302,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
 
   Widget _continueWatchingActionSelector() => SettingSegmentedTile<ContinueWatchingAction>(
     pref: SettingsService.continueWatchingAction,
-    icon: Symbols.play_circle_rounded,
+    icon: LucideIcons.circlePlay,
     title: t.settings.continueWatchingAction,
     segments: [
       ButtonSegment(value: ContinueWatchingAction.play, label: Text(t.settings.continueWatchingPlay)),
@@ -312,7 +312,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
 
   Widget _episodeActionSelector() => SettingSegmentedTile<EpisodeAction>(
     pref: SettingsService.episodeAction,
-    icon: Symbols.tv_rounded,
+    icon: LucideIcons.tv,
     title: t.settings.episodeAction,
     segments: [
       ButtonSegment(value: EpisodeAction.play, label: Text(t.settings.episodePlay)),
@@ -328,7 +328,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
 
   Widget _visualEffectsSelector(BuildContext context) => SettingSelectionTile<VisualEffectsSetting>(
     pref: SettingsService.visualEffects,
-    icon: Symbols.animation_rounded,
+    icon: LucideIcons.blend,
     title: t.settings.visualEffects,
     subtitleBuilder: _visualEffectsLabel,
     options: [

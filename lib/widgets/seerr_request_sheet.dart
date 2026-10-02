@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../focus/dpad_navigator.dart';
@@ -622,7 +622,7 @@ class _SeerrRequestSheetState extends State<SeerrRequestSheet> {
                   value: _is4k,
                   onChanged: _submitting ? null : _toggle4k,
                   title: Text(t.seerr.request4k),
-                  secondary: const AppIcon(Symbols.four_k_rounded, fill: 1),
+                  secondary: const AppIcon(LucideIcons.monitor, fill: 1),
                   contentPadding: EdgeInsets.zero,
                 ),
               if (_advancedAllowed && _serversForVariant.isNotEmpty)
@@ -642,7 +642,7 @@ class _SeerrRequestSheetState extends State<SeerrRequestSheet> {
                 onPressed: _canSubmit ? _submit : null,
                 child: FilledButton.icon(
                   onPressed: _canSubmit ? _submit : null,
-                  icon: _submitting ? const LoadingIndicatorBox() : const AppIcon(Symbols.download_rounded, fill: 1),
+                  icon: _submitting ? const LoadingIndicatorBox() : const AppIcon(LucideIcons.download, fill: 1),
                   label: Text(t.seerr.request),
                 ),
               ),
@@ -674,7 +674,7 @@ class _SeerrRequestSheetState extends State<SeerrRequestSheet> {
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         children: [
-          AppIcon(Symbols.check_circle_rounded, fill: 1, color: theme.colorScheme.primary),
+          AppIcon(LucideIcons.circleCheck, fill: 1, color: theme.colorScheme.primary),
           const SizedBox(width: 10),
           Expanded(child: Text(label ?? t.seerr.nothingToRequest, style: theme.textTheme.bodyMedium)),
         ],
@@ -797,7 +797,7 @@ class _SeerrRequestSheetState extends State<SeerrRequestSheet> {
       ),
       if (servers.length > 1)
         _PickerTile<SeerrServiceInstance>(
-          icon: Symbols.dns_rounded,
+          icon: LucideIcons.server,
           label: t.seerr.destinationServer,
           value: _server?.name ?? '',
           options: servers,
@@ -810,7 +810,7 @@ class _SeerrRequestSheetState extends State<SeerrRequestSheet> {
         ),
       if (profiles.isNotEmpty)
         _PickerTile<SeerrServiceProfile>(
-          icon: Symbols.high_quality_rounded,
+          icon: LucideIcons.gem,
           label: t.seerr.qualityProfile,
           value: profiles.where((p) => p.id == _profileId).map(describeProfile).firstOrNull ?? '',
           options: profiles,
@@ -823,7 +823,7 @@ class _SeerrRequestSheetState extends State<SeerrRequestSheet> {
         ),
       if (folders.isNotEmpty)
         _PickerTile<SeerrRootFolder>(
-          icon: Symbols.folder_rounded,
+          icon: LucideIcons.folder,
           label: t.seerr.rootFolder,
           value: folders.where((f) => f.path == _rootFolder).map(describeFolder).firstOrNull ?? _rootFolder ?? '',
           options: folders,
@@ -836,7 +836,7 @@ class _SeerrRequestSheetState extends State<SeerrRequestSheet> {
         ),
       if (languages.isNotEmpty)
         _PickerTile<SeerrServiceProfile>(
-          icon: Symbols.language_rounded,
+          icon: LucideIcons.languages,
           label: t.seerr.languageProfile,
           value: languages.where((p) => p.id == _languageProfileId).map(describeLanguage).firstOrNull ?? '',
           options: languages,
@@ -852,10 +852,10 @@ class _SeerrRequestSheetState extends State<SeerrRequestSheet> {
       // the season/4K/picker selections on the way back.
       if (tags.isNotEmpty) ...[
         FocusableListTile(
-          leading: const AppIcon(Symbols.label_rounded, fill: 1),
+          leading: const AppIcon(LucideIcons.tag, fill: 1),
           title: Text(t.seerr.tags),
           subtitle: Text(_tagsSummary(tags), maxLines: 1, overflow: TextOverflow.ellipsis),
-          trailing: AppIcon(_tagsExpanded ? Symbols.expand_less_rounded : Symbols.expand_more_rounded, fill: 1),
+          trailing: AppIcon(_tagsExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown, fill: 1),
           contentPadding: EdgeInsets.zero,
           enabled: !_submitting,
           onTap: () => setState(() => _tagsExpanded = !_tagsExpanded),
@@ -930,7 +930,7 @@ class _PickerTile<T> extends StatelessWidget {
       leading: AppIcon(icon, fill: 1),
       title: Text(label),
       subtitle: value.isEmpty ? null : Text(value, maxLines: 1, overflow: TextOverflow.ellipsis),
-      trailing: const AppIcon(Symbols.unfold_more_rounded, fill: 1),
+      trailing: const AppIcon(LucideIcons.chevronsUpDown, fill: 1),
       contentPadding: EdgeInsets.zero,
       enabled: enabled,
       onTap: () => unawaited(_open(context)),

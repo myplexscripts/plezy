@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -124,7 +124,7 @@ class _AddLocalProfileScreenState extends State<AddLocalProfileScreen> with Cont
                   onPressed: _setPin,
                   child: OutlinedButton.icon(
                     onPressed: _setPin,
-                    icon: const AppIcon(Symbols.lock_outline_rounded, fill: 1),
+                    icon: const AppIcon(LucideIcons.lock, fill: 1),
                     label: Text(t.profiles.setPin),
                   ),
                 )

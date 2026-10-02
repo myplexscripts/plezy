@@ -7,9 +7,9 @@ String initialOf(String name) {
   return trimmed.characters.first.toUpperCase();
 }
 
-/// Deterministic colour for [name] from a curated palette. The palette is
-/// dark enough that white-on-colour text always meets contrast — callers
-/// can use plain `Colors.white` for the text without per-colour checks.
+/// Deterministic colour for [name] from the darker shades of the Plezzant
+/// palette. They are dark enough that white-on-colour text always meets
+/// contrast — callers can use plain `Colors.white` without per-colour checks.
 Color colorForName(String name, ThemeData theme) {
   if (name.isEmpty) return theme.colorScheme.primary;
   var hash = 0;
@@ -20,12 +20,12 @@ Color colorForName(String name, ThemeData theme) {
 }
 
 const _palette = <Color>[
-  Color(0xFF1565C0), // blue
-  Color(0xFF2E7D32), // green
-  Color(0xFFAD1457), // pink
-  Color(0xFF6A1B9A), // purple
-  Color(0xFF00838F), // teal
-  Color(0xFFE65100), // orange
-  Color(0xFF4527A0), // deep purple
-  Color(0xFFC62828), // red
+  Color.fromARGB(0xFF, 15, 115, 185), // Azure darker
+  Color.fromARGB(0xFF, 55, 145, 40), // Leaf Green darker
+  Color.fromARGB(0xFF, 150, 10, 85), // Magenta darker
+  Color.fromARGB(0xFF, 85, 20, 180), // Violet darker
+  Color.fromARGB(0xFF, 0, 95, 95), // Dark Teal darker
+  Color.fromARGB(0xFF, 165, 45, 25), // Persimmon darker
+  Color.fromARGB(0xFF, 15, 55, 150), // Cobalt darker
+  Color.fromARGB(0xFF, 150, 10, 40), // Crimson darker
 ];

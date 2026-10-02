@@ -18,10 +18,10 @@ void main() {
       final referenceSubtitle = _subtitleFontSize(tester, 'Clear cached data');
       final referenceHeight = tester.getSize(find.byKey(const ValueKey('reference'))).height;
 
-      // The dense ListTile title/subtitle sizes; spelled out so a silent
-      // theme-wide inflation can't make every side of the comparison agree.
-      expect(referenceTitle, 13);
-      expect(referenceSubtitle, 12);
+      // The Plezzant list-row title/subtitle sizes; spelled out so a silent
+      // theme-wide change can't make every side of the comparison agree.
+      expect(referenceTitle, 16);
+      expect(referenceSubtitle, 14);
 
       for (final title in ['View Logs', 'Enable Thing', 'View Mode', 'Account']) {
         expect(_titleFontSize(tester, title), referenceTitle, reason: '$title title size');

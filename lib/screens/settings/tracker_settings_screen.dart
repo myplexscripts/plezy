@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../i18n/strings.g.dart';
@@ -166,7 +166,7 @@ class TrackerSettingsScreen extends StatelessWidget {
           toggles: [
             TrackerSettingsToggle(
               pref: config.scrobblePref,
-              icon: Symbols.auto_timer_rounded,
+              icon: LucideIcons.alarmClock,
               title: t.services.scrobble,
               subtitle: t.services.scrobbleDescription,
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/i18n/strings.g.dart';
 import 'package:plezy/models/transcode_quality_preset.dart';
 import 'package:plezy/screens/settings/settings_utils.dart';
@@ -29,7 +29,7 @@ void main() {
         home: Scaffold(
           body: SettingSelectionTile<TranscodeQualityPreset?>(
             pref: SettingsService.cellularQualityPreset,
-            icon: Symbols.signal_cellular_alt_rounded,
+            icon: LucideIcons.signalHigh,
             title: t.settings.cellularQualityTitle,
             subtitleBuilder: (p) => p == null ? t.settings.cellularQualitySameAsDefault : qualityPresetLabel(p),
             options: [

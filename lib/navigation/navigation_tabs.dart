@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../i18n/strings.g.dart';
 import '../utils/platform_detector.dart';
@@ -88,31 +88,26 @@ String _getSettingsLabel() => t.common.settings;
 
 /// All navigation tabs in display order
 const allNavigationTabs = [
-  NavigationTab(id: NavigationTabId.discover, onlineOnly: true, icon: Symbols.home_rounded, getLabel: _getHomeLabel),
+  NavigationTab(id: NavigationTabId.discover, onlineOnly: true, icon: LucideIcons.house, getLabel: _getHomeLabel),
   NavigationTab(
     id: NavigationTabId.libraries,
     onlineOnly: true,
-    icon: Symbols.video_library_rounded,
+    icon: LucideIcons.libraryBig,
     getLabel: _getLibrariesLabel,
   ),
-  NavigationTab(id: NavigationTabId.liveTv, onlineOnly: true, icon: Symbols.live_tv_rounded, getLabel: _getLiveTvLabel),
-  NavigationTab(
-    id: NavigationTabId.explore,
-    onlineOnly: true,
-    icon: Symbols.explore_rounded,
-    getLabel: _getExploreLabel,
-  ),
-  NavigationTab(id: NavigationTabId.search, onlineOnly: true, icon: Symbols.search_rounded, getLabel: _getSearchLabel),
+  NavigationTab(id: NavigationTabId.liveTv, onlineOnly: true, icon: LucideIcons.radioTower, getLabel: _getLiveTvLabel),
+  NavigationTab(id: NavigationTabId.explore, onlineOnly: true, icon: LucideIcons.compass, getLabel: _getExploreLabel),
+  NavigationTab(id: NavigationTabId.search, onlineOnly: true, icon: LucideIcons.search, getLabel: _getSearchLabel),
   NavigationTab(
     id: NavigationTabId.downloads,
     onlineOnly: false,
-    icon: Symbols.download_rounded,
+    icon: LucideIcons.download,
     getLabel: _getDownloadsLabel,
   ),
   NavigationTab(
     id: NavigationTabId.settings,
     onlineOnly: false,
-    icon: Symbols.settings_rounded,
+    icon: LucideIcons.settings,
     getLabel: _getSettingsLabel,
   ),
 ];

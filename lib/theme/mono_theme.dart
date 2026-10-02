@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'gapped_track_shape.dart';
 import 'mono_tokens.dart';
+import 'plezzant/plezzant_palette.dart';
+import 'plezzant/plezzant_tokens.dart';
+import 'plezzant/plezzant_typography.dart';
 
 final Map<({bool dark, bool oled, TargetPlatform platform}), ThemeData> _monoThemeCache = {};
 
@@ -17,31 +20,32 @@ ThemeData monoTheme({required bool dark, bool oled = false}) {
 }
 
 ThemeData _buildMonoTheme({required bool dark, required bool oled, required TargetPlatform platform}) {
-  // neutral greys tuned for crisp contrast
+  // Plezzant neutrals: structure stays achromatic so palette ambience reads
+  // as light falling on the interface rather than as paint.
   final ({Color bg, Color surface, Color outline, Color text, Color textMuted}) c;
   if (oled) {
     c = (
-      bg: const Color(0xFF000000), // Pure black for OLED
-      surface: const Color(0xFF0A0A0A), // Very dark gray
-      outline: const Color(0x1FFFFFFF),
-      text: const Color(0xFFEDEDED),
-      textMuted: const Color(0x99EDEDED),
+      bg: PlezzantNeutrals.black,
+      surface: const Color(0xFF0C0C0F),
+      outline: PlezzantNeutrals.hairline,
+      text: PlezzantNeutrals.text,
+      textMuted: PlezzantNeutrals.textSecondary,
     );
   } else if (dark) {
     c = (
-      bg: const Color(0xFF0E0F12),
-      surface: const Color(0xFF15171C),
-      outline: const Color(0x1FFFFFFF),
-      text: const Color(0xFFEDEDED),
-      textMuted: const Color(0x99EDEDED),
+      bg: PlezzantNeutrals.canvas,
+      surface: PlezzantNeutrals.surface,
+      outline: PlezzantNeutrals.hairline,
+      text: PlezzantNeutrals.text,
+      textMuted: PlezzantNeutrals.textSecondary,
     );
   } else {
     c = (
-      bg: const Color(0xFFF7F7F8),
-      surface: const Color(0xFFFFFFFF),
+      bg: PlezzantNeutrals.lightCanvas,
+      surface: PlezzantNeutrals.lightSurface,
       outline: const Color(0x19000000),
-      text: const Color(0xFF111111),
-      textMuted: const Color(0x99111111),
+      text: PlezzantNeutrals.lightText,
+      textMuted: const Color(0x99111116),
     );
   }
 
@@ -52,7 +56,8 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
 
   final buttonStyle = ButtonStyle(
     mouseCursor: clickableCursor,
-    padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 18, vertical: 14)),
+    padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 22, vertical: 14)),
+    textStyle: const WidgetStatePropertyAll(PlezzantType.labelLarge),
     elevation: const WidgetStatePropertyAll(0),
     backgroundColor: WidgetStatePropertyAll(c.text),
     foregroundColor: WidgetStatePropertyAll(isDark ? c.bg : Colors.white),
@@ -62,6 +67,7 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
   final base = ThemeData(
     platform: platform,
     useMaterial3: true,
+    fontFamily: PlezzantType.family,
     brightness: isDark ? Brightness.dark : Brightness.light,
     colorScheme: ColorScheme(
       brightness: isDark ? Brightness.dark : Brightness.light,
@@ -71,7 +77,7 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       onSecondary: c.bg,
       surface: c.surface,
       onSurface: c.text,
-      error: const Color(0xFFB00020),
+      error: PlezzantPalette.danger.original,
       onError: Colors.white,
       tertiary: c.text,
       onTertiary: c.bg,
@@ -105,21 +111,14 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       scrolledUnderElevation: 0,
       centerTitle: false,
       foregroundColor: c.text,
-      titleTextStyle: TextStyle(color: c.text, fontSize: 18, fontWeight: .w700, letterSpacing: -0.2),
+      titleTextStyle: PlezzantType.titleLarge.copyWith(color: c.text),
     ),
-    textTheme: Typography.englishLike2021
-        .apply(bodyColor: c.text, displayColor: c.text)
-        .copyWith(
-          displayLarge: const TextStyle(fontWeight: .w700, letterSpacing: -0.5),
-          titleMedium: const TextStyle(fontWeight: .w600),
-          bodyMedium: TextStyle(color: c.text),
-          bodySmall: TextStyle(color: c.textMuted),
-        ),
+    textTheme: PlezzantType.textTheme(text: c.text, muted: c.textMuted),
     cardTheme: CardThemeData(
       color: c.surface,
       elevation: 0,
       margin: .zero,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
+      shape: const RoundedRectangleBorder(borderRadius: PlezzantRadius.cardAll),
     ),
     inputDecorationTheme: _inputDecorationTheme(c.text, c.textMuted),
     elevatedButtonTheme: ElevatedButtonThemeData(style: buttonStyle),
@@ -142,8 +141,13 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       year2023: false,
     ),
     dividerTheme: DividerThemeData(space: 0, thickness: 1, color: c.outline),
+    // Not `dense`: Flutter hard-codes dense rows to 13/12 px text, below the
+    // Plezzant 14 px floor. Compact visual density keeps rows tight instead.
     listTileTheme: ListTileThemeData(
-      dense: true,
+      dense: false,
+      visualDensity: VisualDensity.compact,
+      titleTextStyle: PlezzantType.listTitle.copyWith(color: c.text),
+      subtitleTextStyle: PlezzantType.bodySmall.copyWith(color: c.textMuted),
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       iconColor: c.text,
       textColor: c.text,
@@ -152,7 +156,7 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       backgroundColor: c.bg,
       elevation: 0,
       indicatorColor: Colors.transparent,
-      labelTextStyle: WidgetStatePropertyAll(TextStyle(color: c.textMuted, fontSize: 11)),
+      labelTextStyle: WidgetStatePropertyAll(PlezzantType.labelSmall.copyWith(color: c.textMuted)),
       iconTheme: WidgetStateProperty.resolveWith((states) {
         final active = states.contains(WidgetState.selected);
         return IconThemeData(opacity: active ? 1 : 0.6, size: 22, color: c.text);
@@ -164,10 +168,10 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
       backgroundColor: c.surface,
-      contentTextStyle: TextStyle(color: c.text),
+      contentTextStyle: PlezzantType.bodyMedium.copyWith(color: c.text),
       actionTextColor: c.text,
       elevation: 6,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+      shape: const RoundedRectangleBorder(borderRadius: PlezzantRadius.controlAll),
       insetPadding: const EdgeInsets.all(16),
     ),
   );
@@ -175,16 +179,16 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
   return base.copyWith(
     extensions: [
       MonoTokens(
-        radiusSm: 8,
-        radiusMd: 12,
-        radiusLg: 20,
-        radiusXs: 5,
+        radiusSm: PlezzantRadius.sm,
+        radiusMd: PlezzantRadius.control,
+        radiusLg: PlezzantRadius.panel,
+        radiusXs: PlezzantRadius.xs,
         groupGap: 2,
-        space: 12,
-        fast: const Duration(milliseconds: 120),
-        normal: const Duration(milliseconds: 200),
-        slow: const Duration(milliseconds: 300),
-        expressive: const Duration(milliseconds: 350),
+        space: PlezzantSpace.sm,
+        fast: PlezzantMotion.focus,
+        normal: const Duration(milliseconds: 220),
+        slow: const Duration(milliseconds: 320),
+        expressive: const Duration(milliseconds: 380),
         bg: c.bg,
         surface: c.surface,
         outline: c.outline,
@@ -199,7 +203,7 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
 InputDecorationTheme _inputDecorationTheme(Color text, Color textMuted) {
   final unfocusedFill = text.withValues(alpha: 0.08);
   final focusedFill = text.withValues(alpha: 0.18);
-  const border = OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide.none);
+  const border = OutlineInputBorder(borderRadius: PlezzantRadius.controlAll, borderSide: BorderSide.none);
   return InputDecorationTheme(
     filled: true,
     fillColor: WidgetStateColor.resolveWith(
@@ -210,6 +214,6 @@ InputDecorationTheme _inputDecorationTheme(Color text, Color textMuted) {
     border: border,
     enabledBorder: border,
     focusedBorder: border,
-    hintStyle: TextStyle(color: textMuted),
+    hintStyle: PlezzantType.bodyMedium.copyWith(color: textMuted),
   );
 }

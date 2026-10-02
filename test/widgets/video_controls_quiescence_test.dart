@@ -187,6 +187,10 @@ class _IdlePlayer implements Player {
   @override
   Future<AudioRenderingMode?> getAudioRenderingMode() async => null;
 
+  // The video settings sheet probes HDR output support when it opens.
+  @override
+  Future<bool> isHdrOutputSupported() async => false;
+
   @override
   PlayerState get state => PlayerState(
     playing: true,

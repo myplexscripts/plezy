@@ -345,7 +345,7 @@ class PlexDiscoverClient {
       'Content-Type': 'application/json',
       'X-Plex-Token': session.accessToken,
       'X-Plex-Client-Identifier': session.clientIdentifier,
-      'X-Plex-Product': 'Plezy',
+      'X-Plex-Product': 'Plezzant',
       'X-Plex-Version': '2',
     };
     final request = switch (method) {

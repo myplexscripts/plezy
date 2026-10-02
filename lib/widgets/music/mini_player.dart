@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_action_bar.dart';
@@ -331,7 +331,7 @@ class _MiniPlayerCardState extends State<_MiniPlayerCard> with ContextMenuTapMix
                                 imageType: ImageType.square,
                                 width: 48,
                                 height: 48,
-                                fallbackIcon: Symbols.music_note_rounded,
+                                fallbackIcon: LucideIcons.music,
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -351,7 +351,7 @@ class _MiniPlayerCardState extends State<_MiniPlayerCard> with ContextMenuTapMix
                                       artist,
                                       maxLines: 1,
                                       overflow: .ellipsis,
-                                      style: TextStyle(fontSize: 12, color: tk.textMuted),
+                                      style: TextStyle(fontSize: 14, color: tk.textMuted),
                                     ),
                                 ],
                               ),
@@ -366,26 +366,26 @@ class _MiniPlayerCardState extends State<_MiniPlayerCard> with ContextMenuTapMix
                       actions: [
                         if (widget.desktop)
                           FocusableAction(
-                            icon: Symbols.skip_previous_rounded,
+                            icon: LucideIcons.skipBack,
                             iconColor: tk.text,
                             tooltip: t.music.previousTrack,
                             onPressed: () => unawaited(service.previous()),
                           ),
                         FocusableAction(
-                          icon: isPlaying ? Symbols.pause_rounded : Symbols.play_arrow_rounded,
+                          icon: isPlaying ? LucideIcons.pause : LucideIcons.play,
                           iconColor: tk.text,
                           tooltip: isPlaying ? t.common.pause : t.common.play,
                           onPressed: () => unawaited(service.togglePlayPause()),
                         ),
                         FocusableAction(
-                          icon: Symbols.skip_next_rounded,
+                          icon: LucideIcons.skipForward,
                           iconColor: tk.text,
                           tooltip: t.music.nextTrack,
                           onPressed: () => unawaited(service.next()),
                         ),
                         if (widget.desktop)
                           FocusableAction(
-                            icon: Symbols.close_rounded,
+                            icon: LucideIcons.x,
                             iconColor: tk.textMuted,
                             iconSize: 20,
                             tooltip: t.music.stopPlayback,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../i18n/strings.g.dart';
@@ -46,7 +46,7 @@ class ServicesSettingsScreen extends StatelessWidget {
                 children: [
                   SettingSwitchTile(
                     pref: SettingsService.enableDiscordRPC,
-                    icon: Symbols.chat_rounded,
+                    icon: LucideIcons.messageCircle,
                     title: t.settings.discordRichPresence,
                     subtitle: t.settings.discordRichPresenceDescription,
                   ),
@@ -118,7 +118,7 @@ class _ServiceHubRow extends StatelessWidget {
       leading: leading,
       title: Text(title),
       subtitle: Text(username != null ? t.services.connectedAs(username: username!) : t.services.notConnected),
-      trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+      trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
       onTap: onTap,
     );
   }

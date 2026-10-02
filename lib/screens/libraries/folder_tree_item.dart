@@ -3,7 +3,7 @@ import '../../media/ids.dart';
 
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../focus/focusable_button.dart';
 import '../../providers/watch_state_store.dart';
 import '../../focus/focusable_wrapper.dart';
@@ -81,16 +81,16 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
 
   IconData _getIcon() {
     if (widget.isFolder) {
-      return Symbols.folder_rounded;
+      return LucideIcons.folder;
     }
 
     return switch (widget.item.kind) {
-      MediaKind.movie => Symbols.movie_rounded,
-      MediaKind.show => Symbols.tv_rounded,
-      MediaKind.season => Symbols.video_library_rounded,
-      MediaKind.episode => Symbols.play_circle_rounded,
-      MediaKind.collection => Symbols.collections_rounded,
-      _ => Symbols.insert_drive_file_rounded,
+      MediaKind.movie => LucideIcons.film,
+      MediaKind.show => LucideIcons.tv,
+      MediaKind.season => LucideIcons.libraryBig,
+      MediaKind.episode => LucideIcons.circlePlay,
+      MediaKind.collection => LucideIcons.layers,
+      _ => LucideIcons.file,
     };
   }
 
@@ -139,10 +139,9 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
   /// would offer actions that don't apply to them.
   Future<void> _showFolderMenu() async {
     final entries = <AppMenuEntry<String>>[
-      if (widget.onPlayAll != null)
-        AppMenuItem<String>(value: 'play', icon: Symbols.play_arrow_rounded, label: t.common.play),
+      if (widget.onPlayAll != null) AppMenuItem<String>(value: 'play', icon: LucideIcons.play, label: t.common.play),
       if (widget.onShuffle != null)
-        AppMenuItem<String>(value: 'shuffle', icon: Symbols.shuffle_rounded, label: t.common.shuffle),
+        AppMenuItem<String>(value: 'shuffle', icon: LucideIcons.shuffle, label: t.common.shuffle),
     ];
     if (entries.isEmpty) return;
 
@@ -213,7 +212,7 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
 
   Widget _buildFolderRow(BuildContext context) {
     final indentation = widget.depth * 24.0;
-    final expandIcon = widget.isExpanded ? Symbols.keyboard_arrow_down_rounded : Symbols.keyboard_arrow_right_rounded;
+    final expandIcon = widget.isExpanded ? LucideIcons.chevronDown : LucideIcons.chevronRight;
 
     return Container(
       padding: .only(left: 16.0 + indentation, right: 8.0, top: 8.0, bottom: 8.0),
@@ -245,7 +244,7 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
     final episodePosterMode = svc.read(SettingsService.episodePosterMode);
     final hideSpoilers = svc.read(SettingsService.hideSpoilers);
     final showUnwatchedCount = svc.read(SettingsService.showUnwatchedCount);
-    final expandIcon = widget.isExpanded ? Symbols.keyboard_arrow_down_rounded : Symbols.keyboard_arrow_right_rounded;
+    final expandIcon = widget.isExpanded ? LucideIcons.chevronDown : LucideIcons.chevronRight;
 
     final isWide = widget.item.usesWideAspectRatio(episodePosterMode);
     final thumbWidth = isWide ? 130.0 : 53.0;
@@ -292,7 +291,7 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
               children: [
                 Text(
                   _rowTitle(),
-                  style: const TextStyle(fontSize: 13, fontWeight: .w500, height: 1.2),
+                  style: const TextStyle(fontSize: 14, fontWeight: .w500, height: 1.2),
                   maxLines: 1,
                   overflow: .ellipsis,
                 ),
@@ -301,7 +300,7 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 14,
                       color: tokens(context).textMuted.withValues(alpha: 0.85),
                       height: 1.2,
                     ),
@@ -314,7 +313,7 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
                   Text(
                     metadataLine,
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 14,
                       color: tokens(context).textMuted.withValues(alpha: 0.7),
                       height: 1.2,
                     ),
@@ -443,7 +442,7 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
             child: IconButton(
               onPressed: playAll,
               icon: AppIcon(
-                Symbols.play_arrow_rounded,
+                LucideIcons.play,
                 fill: 1,
                 size: 18,
                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
@@ -463,7 +462,7 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
             child: IconButton(
               onPressed: shuffle,
               icon: AppIcon(
-                Symbols.shuffle_rounded,
+                LucideIcons.shuffle,
                 fill: 1,
                 size: 18,
                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),

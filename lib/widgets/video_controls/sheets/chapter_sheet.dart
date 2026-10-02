@@ -3,7 +3,7 @@ import '../../../media/ids.dart';
 
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../i18n/strings.g.dart';
 import '../../../media/media_server_client.dart';
@@ -141,7 +141,7 @@ class _ChapterSheetState extends State<ChapterSheet> {
                           height: 34,
                           fit: BoxFit.cover,
                           errorWidget: (context, url, error) =>
-                              const AppIcon(Symbols.image_rounded, fill: 1, color: Colors.white54, size: 34),
+                              const AppIcon(LucideIcons.image, fill: 1, color: Colors.white54, size: 34),
                         ),
                         isCurrent: isCurrentChapter,
                         borderColor: Theme.of(context).colorScheme.primary,
@@ -160,11 +160,11 @@ class _ChapterSheetState extends State<ChapterSheet> {
                     color: isCurrentChapter
                         ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.7)
                         : tokens(context).textMuted,
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                 ),
                 trailing: isCurrentChapter
-                    ? AppIcon(Symbols.play_circle_rounded, fill: 1, color: Theme.of(context).colorScheme.primary)
+                    ? AppIcon(LucideIcons.circlePlay, fill: 1, color: Theme.of(context).colorScheme.primary)
                     : null,
                 onTap: widget.canControl ? () => unawaited(_handleChapterTap(chapter.startTime)) : null,
               );
@@ -172,7 +172,7 @@ class _ChapterSheetState extends State<ChapterSheet> {
           );
         }
 
-        return BaseVideoControlSheet(title: t.videoControls.chapters, icon: Symbols.bookmarks_rounded, child: content);
+        return BaseVideoControlSheet(title: t.videoControls.chapters, icon: LucideIcons.bookmark, child: content);
       },
     );
   }

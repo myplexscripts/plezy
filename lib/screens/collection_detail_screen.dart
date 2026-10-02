@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../focus/focusable_action_bar.dart';
 import '../media/library_query.dart';
@@ -32,6 +32,7 @@ import 'base_media_list_detail_screen.dart';
 import 'focusable_detail_screen_mixin.dart';
 import '../mixins/grid_focus_node_mixin.dart';
 import '../services/playlist_items_loader.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Screen to display the contents of a collection.
 ///
@@ -123,8 +124,8 @@ class _CollectionDetailScreenState extends BaseMediaListDetailScreen<CollectionD
 
     return [
       if (hasItems) ...[
-        FocusableAction(icon: Symbols.play_arrow_rounded, tooltip: t.common.play, onPressed: playItems),
-        FocusableAction(icon: Symbols.shuffle_rounded, tooltip: t.common.shuffle, onPressed: shufflePlayItems),
+        FocusableAction(icon: LucideIcons.play, tooltip: t.common.play, onPressed: playItems),
+        FocusableAction(icon: LucideIcons.shuffle, tooltip: t.common.shuffle, onPressed: shufflePlayItems),
       ],
       // Emptiness is handled inside [_downloadCollection], so the download
       // entry stays visible for empty collections.
@@ -137,10 +138,10 @@ class _CollectionDetailScreenState extends BaseMediaListDetailScreen<CollectionD
         onDownload: _downloadCollection,
       ),
       FocusableAction(
-        icon: Symbols.delete_rounded,
+        icon: LucideIcons.trash2,
         tooltip: t.common.delete,
         onPressed: _deleteCollection,
-        iconColor: Colors.red,
+        iconColor: PlezzantColors.danger,
       ),
     ];
   }
@@ -226,7 +227,7 @@ class _CollectionDetailScreenState extends BaseMediaListDetailScreen<CollectionD
         imageType: square ? ImageType.square : ImageType.poster,
         width: square ? height : height * 2 / 3,
         height: height,
-        fallbackIcon: Symbols.collections_bookmark_rounded,
+        fallbackIcon: LucideIcons.libraryBig,
       ),
     );
   }

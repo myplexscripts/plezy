@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../focus/dpad_reorder_mixin.dart';
@@ -104,7 +104,7 @@ List<ContextMenuItem> _getLibraryMenuItems(MediaLibrary library) {
   // to `/Items/{id}/Refresh` (the library view is itself an item).
   final refresh = ContextMenuItem(
     value: 'refresh',
-    icon: Symbols.sync_rounded,
+    icon: LucideIcons.refreshCw,
     label: t.libraries.refreshMetadata,
     requiresConfirmation: true,
     confirmationTitle: t.libraries.refreshMetadata,
@@ -118,7 +118,7 @@ List<ContextMenuItem> _getLibraryMenuItems(MediaLibrary library) {
   return [
     ContextMenuItem(
       value: 'scan',
-      icon: Symbols.refresh_rounded,
+      icon: LucideIcons.rotateCw,
       label: t.libraries.scanLibraryFiles,
       requiresConfirmation: true,
       confirmationTitle: t.libraries.scanLibrary,
@@ -126,7 +126,7 @@ List<ContextMenuItem> _getLibraryMenuItems(MediaLibrary library) {
     ),
     ContextMenuItem(
       value: 'analyze',
-      icon: Symbols.analytics_rounded,
+      icon: LucideIcons.chartColumn,
       label: t.libraries.analyze,
       requiresConfirmation: true,
       confirmationTitle: t.libraries.analyzeLibrary,
@@ -135,7 +135,7 @@ List<ContextMenuItem> _getLibraryMenuItems(MediaLibrary library) {
     refresh,
     ContextMenuItem(
       value: 'empty_trash',
-      icon: Symbols.delete_outline_rounded,
+      icon: LucideIcons.trash,
       label: t.libraries.emptyTrash,
       requiresConfirmation: true,
       confirmationTitle: t.libraries.emptyTrash,
@@ -376,17 +376,14 @@ class _LibraryManagementSheetState extends State<_LibraryManagementSheet>
             appBar: AppBar(
               title: Row(
                 children: [
-                  const AppIcon(Symbols.edit_rounded, fill: 1),
+                  const AppIcon(LucideIcons.pencil, fill: 1),
                   const SizedBox(width: 12),
                   Text(t.libraries.manageLibraries),
                 ],
               ),
               automaticallyImplyLeading: false,
               actions: [
-                IconButton(
-                  icon: const AppIcon(Symbols.close_rounded, fill: 1),
-                  onPressed: () => Navigator.pop(context),
-                ),
+                IconButton(icon: const AppIcon(LucideIcons.x, fill: 1), onPressed: () => Navigator.pop(context)),
               ],
             ),
             body: Focus(
@@ -403,7 +400,7 @@ class _LibraryManagementSheetState extends State<_LibraryManagementSheet>
 
     return BottomSheetPageScaffold(
       title: t.libraries.manageLibraries,
-      icon: Symbols.edit_rounded,
+      icon: LucideIcons.pencil,
       child: Focus(
         focusNode: _listFocusNode,
         descendantsAreFocusable: false,
@@ -484,7 +481,7 @@ class _LibraryManagementSheetState extends State<_LibraryManagementSheet>
             ReorderableDragStartListener(
               index: index,
               child: AppIcon(
-                isMoving ? Symbols.swap_vert_rounded : Symbols.drag_indicator_rounded,
+                isMoving ? LucideIcons.arrowUpDown : LucideIcons.gripVertical,
                 fill: 1,
                 color: isMoving ? colorScheme.primary : IconTheme.of(context).color?.withValues(alpha: 0.5),
               ),
@@ -498,7 +495,7 @@ class _LibraryManagementSheetState extends State<_LibraryManagementSheet>
             ? Text(
                 library.serverName!,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 14,
                   color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                 ),
               )
@@ -509,7 +506,7 @@ class _LibraryManagementSheetState extends State<_LibraryManagementSheet>
             Container(
               decoration: FocusTheme.focusBackgroundDecoration(isFocused: isVisibilityButtonFocused, borderRadius: 20),
               child: IconButton(
-                icon: AppIcon(isHidden ? Symbols.visibility_off_rounded : Symbols.visibility_rounded, fill: 1),
+                icon: AppIcon(isHidden ? LucideIcons.eyeOff : LucideIcons.eye, fill: 1),
                 tooltip: isHidden ? t.libraries.showLibrary : t.libraries.hideLibrary,
                 onPressed: () => widget.onToggleVisibility(library),
               ),
@@ -517,7 +514,7 @@ class _LibraryManagementSheetState extends State<_LibraryManagementSheet>
             Container(
               decoration: FocusTheme.focusBackgroundDecoration(isFocused: isOptionsButtonFocused, borderRadius: 20),
               child: IconButton(
-                icon: const AppIcon(Symbols.more_vert_rounded, fill: 1),
+                icon: const AppIcon(LucideIcons.ellipsisVertical, fill: 1),
                 tooltip: t.libraries.libraryOptions,
                 onPressed: () => _showLibraryMenuBottomSheet(context, library),
               ),

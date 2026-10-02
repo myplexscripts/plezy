@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../focus/focusable_button.dart';
 import '../../i18n/strings.g.dart';
@@ -18,6 +18,7 @@ import '../../widgets/overlay_sheet.dart';
 import '../../widgets/optimized_media_image.dart' show blurArtwork;
 import 'livetv_recording_actions.dart';
 import 'livetv_styles.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Shows a bottom sheet with program details and actions (Play / Watch Channel /
 /// Record / Manage recording).
@@ -204,7 +205,7 @@ class _ProgramDetailsSheetContentState extends State<_ProgramDetailsSheetContent
       actions.add(
         _SheetAction(
           label: isLive ? t.common.play : t.liveTv.watchChannel,
-          icon: isLive ? Symbols.play_arrow_rounded : Symbols.live_tv_rounded,
+          icon: isLive ? LucideIcons.play : LucideIcons.radioTower,
           style: isLive ? _ActionStyle.filled : _ActionStyle.tonal,
           onPressed: () {
             _closeSheet();
@@ -220,7 +221,7 @@ class _ProgramDetailsSheetContentState extends State<_ProgramDetailsSheetContent
         actions.add(
           _SheetAction(
             label: t.liveTv.manageRecording,
-            icon: Symbols.fiber_manual_record_rounded,
+            icon: LucideIcons.circle,
             style: _ActionStyle.filled,
             onPressed: () async {
               final deleted = await confirmDeleteRule(context, client, existing);
@@ -235,7 +236,7 @@ class _ProgramDetailsSheetContentState extends State<_ProgramDetailsSheetContent
         actions.add(
           _SheetAction(
             label: t.liveTv.record,
-            icon: Symbols.fiber_manual_record_rounded,
+            icon: LucideIcons.circle,
             style: _ActionStyle.filled,
             onPressed: () async {
               final outcome = await recordProgram(context, client, program);
@@ -356,7 +357,7 @@ class _ProgramDetailsSheetContentState extends State<_ProgramDetailsSheetContent
                     Row(
                       children: [
                         Expanded(child: Text(program.displayTitle, style: theme.textTheme.titleMedium)),
-                        if (program.isCurrentlyAiring) StatusPill(label: t.liveTv.live, color: Colors.red),
+                        if (program.isCurrentlyAiring) StatusPill(label: t.liveTv.live, color: PlezzantColors.danger),
                       ],
                     ),
                     const SizedBox(height: 4),

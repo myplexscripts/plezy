@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../connection/connection.dart';
@@ -196,7 +196,7 @@ class _BorrowConnectionScreenState extends State<BorrowConnectionScreen> {
               child: EmptyStateWidget(
                 message: t.profiles.borrowEmpty,
                 subtitle: t.profiles.borrowEmptySubtitle,
-                icon: Symbols.share_rounded,
+                icon: LucideIcons.share2,
                 iconSize: 48,
               ),
             );
@@ -418,7 +418,7 @@ class _BorrowTile extends StatelessWidget {
                       ),
                       if (candidate.source.isPinProtected) ...[
                         const SizedBox(width: 6),
-                        AppIcon(Symbols.lock_rounded, fill: 1, size: 12, color: theme.colorScheme.onSurfaceVariant),
+                        AppIcon(LucideIcons.lock, fill: 1, size: 12, color: theme.colorScheme.onSurfaceVariant),
                       ],
                     ],
                   ),
@@ -433,7 +433,7 @@ class _BorrowTile extends StatelessWidget {
                 ],
               ),
             ),
-            const Padding(padding: .only(left: 8, top: 4), child: AppIcon(Symbols.add_rounded, fill: 1)),
+            const Padding(padding: .only(left: 8, top: 4), child: AppIcon(LucideIcons.plus, fill: 1)),
           ],
         ),
       ),

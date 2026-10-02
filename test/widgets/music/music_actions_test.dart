@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/focus/focusable_action_bar.dart';
 import 'package:plezy/i18n/strings.g.dart';
 import 'package:plezy/theme/mono_theme.dart';
@@ -16,7 +16,7 @@ void main() {
 
     await tester.pumpWidget(_wrap(buildMusicActions(onPlay: () {}, onShuffle: () {}, onInstantMix: () => mixes++)));
 
-    final instantMix = find.byIcon(Symbols.wand_stars_rounded);
+    final instantMix = find.byIcon(LucideIcons.wandSparkles);
     expect(instantMix, findsOneWidget);
     expect(
       find.ancestor(of: instantMix, matching: find.byTooltip(t.music.instantMix)),
@@ -26,10 +26,10 @@ void main() {
 
     // #1629: the fader glyph reads as an equalizer in a music context, and is
     // the vertical twin of the video player's settings icon.
-    expect(find.byIcon(Symbols.instant_mix_rounded), findsNothing);
-    expect(find.byIcon(Symbols.tune_rounded), findsNothing);
+    expect(find.byIcon(LucideIcons.disc), findsNothing);
+    expect(find.byIcon(LucideIcons.slidersHorizontal), findsNothing);
     // It must also stay distinguishable from the shuffle button beside it.
-    expect(find.byIcon(Symbols.shuffle_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.shuffle), findsOneWidget);
 
     await tester.tap(instantMix);
     await tester.pump();
@@ -40,9 +40,9 @@ void main() {
   testWidgets('Instant Mix is absent when the server lacks the capability', (tester) async {
     await tester.pumpWidget(_wrap(buildMusicActions(onPlay: () {}, onShuffle: () {})));
 
-    expect(find.byIcon(Symbols.wand_stars_rounded), findsNothing);
+    expect(find.byIcon(LucideIcons.wandSparkles), findsNothing);
     expect(find.byTooltip(t.music.instantMix), findsNothing);
-    expect(find.byIcon(Symbols.shuffle_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.shuffle), findsOneWidget);
     expect(find.text(t.common.play), findsOneWidget);
   });
 }

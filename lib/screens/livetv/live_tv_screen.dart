@@ -3,7 +3,7 @@ import '../../media/ids.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_action_bar.dart';
@@ -736,17 +736,17 @@ class _LiveTvScreenState extends State<LiveTvScreen>
               // the tab chips, and RIGHT selects each tab it crosses — a
               // guide-only action would be unmounted before focus could ever
               // reach it. Selecting a result switches back to the guide tab.
-              FocusableAction(icon: Symbols.search_rounded, tooltip: t.liveTv.searchGuide, onPressed: _showGuideSearch),
+              FocusableAction(icon: LucideIcons.search, tooltip: t.liveTv.searchGuide, onPressed: _showGuideSearch),
               if (!isRecordings)
                 FocusableAction(
-                  icon: _showFavoritesOnly ? Symbols.star_rounded : Symbols.star_outline_rounded,
+                  icon: _showFavoritesOnly ? LucideIcons.star : LucideIcons.star,
                   iconFill: _showFavoritesOnly ? 1.0 : 0.0,
                   tooltip: t.liveTv.favorites,
                   onPressed: _toggleFavoritesFilter,
                 ),
               if (!isRecordings && _showFavoritesOnly && _favoriteChannels.length > 1)
                 FocusableAction(
-                  icon: Symbols.swap_vert_rounded,
+                  icon: LucideIcons.arrowUpDown,
                   tooltip: t.liveTv.reorderFavorites,
                   onPressed: _showReorderFavorites,
                 ),
@@ -754,12 +754,12 @@ class _LiveTvScreenState extends State<LiveTvScreen>
               // bolt when no connected DVR supports it (MediaBrowser).
               if (isRecordings && _canProcessRules)
                 FocusableAction(
-                  icon: Symbols.bolt_rounded,
+                  icon: LucideIcons.zap,
                   tooltip: t.liveTv.processRecordingRules,
                   onPressed: _processRecordingRules,
                 ),
               FocusableAction(
-                icon: Symbols.refresh_rounded,
+                icon: LucideIcons.rotateCw,
                 tooltip: isRecordings ? t.common.refresh : t.liveTv.reloadGuide,
                 onPressed: _onRefresh,
               ),
@@ -776,11 +776,11 @@ class _LiveTvScreenState extends State<LiveTvScreen>
       LiveTvTab.guide =>
         guideChannels.isEmpty && _channels.isNotEmpty
             ? EmptyStateWidget(
-                icon: Symbols.star_outline_rounded,
+                icon: LucideIcons.star,
                 message: t.liveTv.noFavoriteChannels,
                 subtitle: t.liveTv.noFavoriteChannelsHint,
                 actionLabel: t.liveTv.showAllChannels,
-                actionIcon: Symbols.list_rounded,
+                actionIcon: LucideIcons.list,
                 actionFocusNode: _guideEmptyStateActionFocusNode,
                 onAction: _showAllChannelsFromEmptyState,
                 onActionNavigateUp: focusTabBar,
@@ -811,7 +811,7 @@ class _LiveTvScreenState extends State<LiveTvScreen>
     if (_error != null) {
       return ErrorStateWidget(
         message: _error!,
-        icon: Symbols.error_rounded,
+        icon: LucideIcons.circleAlert,
         onRetry: _loadChannels,
         actionAutofocus: true,
         actionUseBackgroundFocus: true,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../media/media_item.dart';
 import '../media/media_item_types.dart';
@@ -9,6 +9,7 @@ import '../theme/mono_tokens.dart';
 import 'app_icon.dart';
 import 'media_progress_bar.dart';
 import 'unwatched_count_badge.dart';
+import '../theme/plezzant/plezzant_palette.dart';
 
 /// Size preset for [WatchedIndicator]: [standard] for grid/poster cards,
 /// [compact] for dense surfaces (folder tree rows, episode thumbnails).
@@ -99,7 +100,7 @@ class WatchedIndicator extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 4)],
               ),
-              child: AppIcon(Symbols.check_rounded, fill: 1, color: tokens(context).bg, size: size.checkIconSize),
+              child: AppIcon(LucideIcons.check, fill: 1, color: tokens(context).bg, size: size.checkIconSize),
             ),
           ),
         // Unwatched count for shows/seasons
@@ -139,7 +140,7 @@ class WatchedIndicator extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: item.leafWatchFraction,
                 backgroundColor: tokens(context).outline,
-                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
+                valueColor: const AlwaysStoppedAnimation<Color>(PlezzantColors.progress),
                 minHeight: size.barMinHeight,
               ),
             ),

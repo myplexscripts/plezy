@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../focus/focusable_button.dart';
 import '../../i18n/strings.g.dart';
@@ -113,7 +113,7 @@ class StateMessageWidget extends StatelessWidget {
                 useBackgroundFocus: actionUseBackgroundFocus,
                 child: FilledButton.icon(
                   onPressed: onAction,
-                  icon: AppIcon(actionIcon ?? Symbols.refresh_rounded, fill: 1),
+                  icon: AppIcon(actionIcon ?? LucideIcons.rotateCw, fill: 1),
                   label: Text(actionLabel!),
                 ),
               ),
@@ -176,7 +176,7 @@ class EmptyStateWidget extends StatelessWidget {
       iconSize: iconSize,
       onAction: onAction,
       actionLabel: actionLabel,
-      actionIcon: actionIcon ?? Symbols.add_rounded,
+      actionIcon: actionIcon ?? LucideIcons.plus,
       actionFocusNode: actionFocusNode,
       onActionNavigateUp: onActionNavigateUp,
       onActionNavigateLeft: onActionNavigateLeft,
@@ -232,7 +232,7 @@ class ErrorStateWidget extends StatelessWidget {
       textColor: Theme.of(context).colorScheme.error,
       onAction: onRetry,
       actionLabel: retryLabel ?? t.common.retry,
-      actionIcon: Symbols.refresh_rounded,
+      actionIcon: LucideIcons.rotateCw,
       actionFocusNode: actionFocusNode,
       onActionNavigateUp: onActionNavigateUp,
       onActionNavigateLeft: onActionNavigateLeft,

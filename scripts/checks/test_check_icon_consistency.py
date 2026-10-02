@@ -27,7 +27,7 @@ class IconConsistencyCheckerTest(unittest.TestCase):
                 text=True,
             )
 
-    def test_accepts_canonical_wrapper_and_qualified_rounded_symbols(self) -> None:
+    def test_accepts_canonical_wrapper_and_lucide_icons(self) -> None:
         result = self.run_checker(
             {
                 "lib/widgets/app_icon.dart": """
@@ -36,9 +36,10 @@ import 'package:flutter/material.dart';
 Widget buildIcon(IconData icon) => Icon(icon);
 """,
                 "lib/example.dart": """
-import 'package:material_symbols_icons/symbols.dart' as ms;
+import 'package:lucide_icons_flutter/lucide_icons.dart' as lucide;
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-Object buildIcon() => AppIcon(ms.Symbols.add_rounded);
+final icons = [AppIcon(lucide.LucideIcons.plus), AppIcon(LucideIcons.disc3), AppIcon(LucideIcons.repeat1)];
 """,
                 "lib/ignored.g.dart": """
 Widget ignored(IconData icon) => Icon(icon);
@@ -49,18 +50,22 @@ Widget ignored(IconData icon) => Icon(icon);
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("Icon consistency check passed", result.stdout)
 
-    def test_rejects_qualified_legacy_symbols_and_constructor_tear_offs(self) -> None:
+    def test_rejects_material_icons_weight_variants_and_constructor_tear_offs(self) -> None:
         result = self.run_checker(
             {
                 "lib/bad.dart": """
 import 'package:flutter/material.dart' as material;
 import 'package:material_symbols_icons/symbols.dart' as ms;
 import 'package:material_symbols_icons/material_symbols_icons.dart' as material_symbols;
+import 'package:lucide_icons_flutter/lucide_icons.dart' as lucide;
 
 final values = [
   material.Icons.add,
-  ms.Symbols.add,
+  ms.Symbols.add_rounded,
   material_symbols.Symbols.add,
+  Symbols.home_rounded,
+  lucide.LucideIcons.house300,
+  LucideIcons.house600Dir,
   material.Icon.new,
   Icon.new,
 ];
@@ -70,8 +75,11 @@ final values = [
 
         self.assertEqual(result.returncode, 1, result.stdout)
         self.assertIn("material.Icons.add is forbidden", result.stderr)
-        self.assertIn("ms.Symbols.add must use its _rounded counterpart", result.stderr)
-        self.assertIn("material_symbols.Symbols.add must use its _rounded counterpart", result.stderr)
+        self.assertIn("ms.Symbols.add_rounded is forbidden", result.stderr)
+        self.assertIn("material_symbols.Symbols.add is forbidden", result.stderr)
+        self.assertIn("Symbols.home_rounded is forbidden", result.stderr)
+        self.assertIn("lucide.LucideIcons.house300 is a stroke-weight variant", result.stderr)
+        self.assertIn("LucideIcons.house600Dir is a stroke-weight variant", result.stderr)
         self.assertEqual(result.stderr.count("constructor tear-offs are forbidden"), 2, result.stderr)
 
 

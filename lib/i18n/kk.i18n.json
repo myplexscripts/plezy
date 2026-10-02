@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Plezy"
+    "title": "Plezzant"
   },
   "auth": {
     "signInWithPlex": "Plex арқылы кіру",
@@ -18,7 +18,7 @@
     "quickConnectWaiting": "Растау күтілуде…",
     "quickConnectCancel": "Бас тарту",
     "quickConnectExpired": "Жылдам қосылу мерзімі өтті. Қайтадан байқап көріңіз.",
-    "localDataRecoveryRequired": "Plezy жергілікті кіру мәліметтерін қалпына келтіре алмады. Қайтадан кіріңіз.",
+    "localDataRecoveryRequired": "Plezzant жергілікті кіру мәліметтерін қалпына келтіре алмады. Қайтадан кіріңіз.",
     "pinCheckRejected": "Plex PIN кодын тексеру қабылданбады"
   },
   "common": {
@@ -117,7 +117,7 @@
   },
   "settings": {
     "title": "Баптаулар",
-    "supportDeveloper": "Plezy жобасын қолдау",
+    "supportDeveloper": "Plezzant жобасын қолдау",
     "supportDeveloperDescription": "Дамытуды қаржыландыру үшін Liberapay арқылы демеушілік жасаңыз",
     "language": "Тіл",
     "theme": "Тақырып",
@@ -255,7 +255,7 @@
     "importSettingsDescription": "Параметрлерді файлдан қалпына келтіріңіз",
     "importSettingsConfirm": "Бұл ағымдағы баптауларыңыздың үстінен жазады. Жалғастырасыз ба?",
     "importSettingsSuccess": "Баптаулар импортталды",
-    "importSettingsInvalidFile": "Бұл файл дұрыс Plezy баптаулар файлы емес",
+    "importSettingsInvalidFile": "Бұл файл дұрыс Plezzant баптаулар файлы емес",
     "importSettingsNoUser": "Баптауларды импорттау алдында жүйеге кіріңіз",
     "shortcutsReset": "Пернелер тіркесі әдепкі күйге қайтарылды",
     "about": "Қолданба туралы",
@@ -363,7 +363,7 @@
     "forceTvMode": "TV режимін мәжбүрлеу",
     "forceTvModeDescription": "TV интерфейсін мәжбүрлеу.",
     "startInFullscreen": "Толық экранда бастау",
-    "startInFullscreenDescription": "Plezy-ді ашқанда толық экран режимінде ашу",
+    "startInFullscreenDescription": "Plezzant-ді ашқанда толық экран режимінде ашу",
     "exitFullscreenOnPlayerClose": "Ойнатқыш жабылғанда толық экраннан шығу",
     "exitFullscreenOnPlayerCloseDescription": "Видео ойнатқышты жапқанда автоматты түрде толық экраннан шығу",
     "autoHidePerformanceOverlay": "Өнімділік панелін авто-жасыру",
@@ -412,7 +412,7 @@
     "playerScopeGlobal": "Барлық жерде",
     "playerScopeLibrary": "Кітапхана бойынша",
     "playerScopeTitle": "Сериал немесе фильм бойынша",
-    "exportDialogTitle": "Plezy параметрлерін экспорттау"
+    "exportDialogTitle": "Plezzant параметрлерін экспорттау"
   },
   "search": {
     "hint": "Фильмдер, сериалдар, музыка іздеу...",
@@ -608,8 +608,8 @@
       "one": "Сол файлда тағы ${n} бөлім сақталған, ол да өшіріледі:",
       "other": "Сол файлда тағы ${n} бөлім сақталған, олар да өшіріледі:"
     },
-    "deleteScopeUnverifiedProbeFailed": "Plezy қандай файлдар өшірілетінін тексере алмады, сондықтан ол жоғарыда аталған элементтен артық өшіруі мүмкін. Бас тартып, қайталап көріңіз немесе бәрібір өшіріңіз.",
-    "deleteScopeUnverifiedNoFileInfo": "Серверіңіз бұл элемент үшін файл мәліметтерін ұсынбады, сондықтан Plezy қандай файлдар өшірілетінін тексере алмайды. Ол жоғарыда аталған элементтен артық өшіруі мүмкін.",
+    "deleteScopeUnverifiedProbeFailed": "Plezzant қандай файлдар өшірілетінін тексере алмады, сондықтан ол жоғарыда аталған элементтен артық өшіруі мүмкін. Бас тартып, қайталап көріңіз немесе бәрібір өшіріңіз.",
+    "deleteScopeUnverifiedNoFileInfo": "Серверіңіз бұл элемент үшін файл мәліметтерін ұсынбады, сондықтан Plezzant қандай файлдар өшірілетінін тексере алмайды. Ол жоғарыда аталған элементтен артық өшіруі мүмкін.",
     "mediaDeletedSuccessfully": "Медиа элементі сәтті өшірілді",
     "mediaFailedToDelete": "Медиа элементін өшіру мүмкін болмады",
     "rate": "Бағалау",
@@ -878,7 +878,7 @@
     "confirmAction": "Әрекетті растау"
   },
   "profiles": {
-    "addPlezyProfile": "Plezy профилін қосу",
+    "addPlezzantProfile": "Plezzant профилін қосу",
     "switchingProfile": "Профильді ауыстыру…",
     "deleteThisProfileTitle": "Осы профиль өшірілсін бе?",
     "deleteThisProfileMessage": "${displayName} өшіріледі. Қосылымдарға әсер етпейді.",
@@ -951,14 +951,14 @@
     "sessionExpiredMany": "${count} сервер үшін сеанс мерзімі өтті",
     "signInAgain": "Қайтадан кіру",
     "editMediaBrowserTitle": "${product} қосылымын өңдеу",
-    "editMediaBrowserIntro": "${serverName} үшін URL мекенжайларды қосыңыз немесе өшіріңіз. Plezy ең төмен кідірісі бар қолжетімді URL мекенжайды пайдаланады."
+    "editMediaBrowserIntro": "${serverName} үшін URL мекенжайларды қосыңыз немесе өшіріңіз. Plezzant ең төмен кідірісі бар қолжетімді URL мекенжайды пайдаланады."
   },
   "accountPreferences": {
     "sectionTitle": "Тіркелгі баптаулары",
     "hubSubtitleSingle": "${account} тіркелгісінде сақталған аудио, субтитр және кітапхана баптаулары",
     "hubSubtitleMultiple": "${count} тіркелгіде сақталған аудио, субтитр және кітапхана баптаулары",
     "pickAccount": "Әр тіркелгі өз баптауларын сақтайды. Өңдеу үшін біреуін таңдаңыз.",
-    "storedOnAccount": "Бұл баптаулар тіркелгінің өзінде сақталады, сондықтан оған кірген әрбір қолданба оларды пайдаланады — басқа құрылғыларыңыздағы Plezy қоса.",
+    "storedOnAccount": "Бұл баптаулар тіркелгінің өзінде сақталады, сондықтан оған кірген әрбір қолданба оларды пайдаланады — басқа құрылғыларыңыздағы Plezzant қоса.",
     "noAccounts": "Баптауға тіркелгілер жоқ",
     "noAccountsHint": "Plex-ке кіріңіз немесе Jellyfin не Emby серверін қосыңыз, сонда сол тіркелгіде сақталған баптаулар осында көрсетіледі.",
     "unavailable": "Бұл тіркелгіге қол жеткізу мүмкін емес",
@@ -1185,9 +1185,9 @@
     "uploadLogs": "Журналдарды жүктеу"
   },
   "startup": {
-    "failedTitle": "Plezy іске қосылмады",
+    "failedTitle": "Plezzant іске қосылмады",
     "failedBody": "Іске қосу кезінде қате орын алды. Төмендегі мәліметтер ненің сәтсіз аяқталғанын көрсетеді.",
-    "failedBodyRepairable": "Plezy сақталған баптаулар файлы зақымдалған және Plezy іске қосылмас бұрын оны қайта құру қажет. Қайталау көмектеспейді — «Сақтауды қалпына келтіру» тармағын таңдаңыз.",
+    "failedBodyRepairable": "Plezzant сақталған баптаулар файлы зақымдалған және Plezzant іске қосылмас бұрын оны қайта құру қажет. Қайталау көмектеспейді — «Сақтауды қалпына келтіру» тармағын таңдаңыз.",
     "phaseLabel": "Қадам",
     "showDetails": "Мәліметтерді көрсету",
     "hideDetails": "Мәліметтерді жасыру",
@@ -1196,16 +1196,16 @@
     "uploadDetails": "Мәліметтерді жүктеп жіберу",
     "repairStorage": "Сақтауды қалпына келтіру",
     "repairTitle": "Сақталған деректер қалпына келтірілсін бе?",
-    "repairBodyCommon": "Plezy баптаулар файлы зақымдалған және оқылмайды. Қалпына келтіру барлық баптауды әдепкі мәнге қайтарады.",
+    "repairBodyCommon": "Plezzant баптаулар файлы зақымдалған және оқылмайды. Қалпына келтіру барлық баптауды әдепкі мәнге қайтарады.",
     "repairBodyOneCredential": "Бір сақталған кіру деректері зақымдалған және оқылмайды. Қалпына келтіру тек соны өшіреді; қалған баптауларыңызға тиіспейді.",
     "repairBodySignInsKept": "Серверлеріңіз бен профильдеріңіз кірген күйінде қалады.",
     "repairBodySignInsLost": "Сақталған кіру деректерін қорғайтын кілт осы файлдан қалпына келтірілмейді, сондықтан әрбір сервер мен профильге қайта кіруге тура келеді. Медиа серверіңіздегі ештеңеге әсер етілмейді.",
-    "repairBodySessionsUncertain": "Tracker-лар (MAL, AniList, Simkl, Trakt) және Seerr бөлек сақталады және сақталуы да, сақталмауы да мүмкін. Plezy не сақталғанын нақты айтады.",
+    "repairBodySessionsUncertain": "Tracker-лар (MAL, AniList, Simkl, Trakt) және Seerr бөлек сақталады және сақталуы да, сақталмауы да мүмкін. Plezzant не сақталғанын нақты айтады.",
     "repairConfirm": "Қалпына келтіру",
     "repairSucceeded": "Сақтау қалпына келтірілді",
     "repairNeedsRestart": "Сақтау қалпына келтірілді — қайта іске қосу қажет",
-    "restartRequiredBody": "Деректеріңіз қалпына келтірілді, бірақ Plezy оларды пайдаланар алдында жаңадан іске қосылуы керек. Plezy жабыңыз да, қайта ашыңыз.",
-    "quitPlezy": "Plezy бағдарламасынан шығу",
+    "restartRequiredBody": "Деректеріңіз қалпына келтірілді, бірақ Plezzant оларды пайдаланар алдында жаңадан іске қосылуы керек. Plezzant жабыңыз да, қайта ашыңыз.",
+    "quitPlezzant": "Plezzant бағдарламасынан шығу",
     "repairFailed": "Қалпына келтіру сәтсіз аяқталды",
     "repairKeptSignIns": "Серверлеріңіз бен профильдеріңіз әлі кірген күйде.",
     "repairLostSignIns": "Сақталған кіру деректерін қорғайтын кілт қалпына келтірілмеді. Әрбір сервер мен профильге қайта кіруге тура келеді.",
@@ -1214,7 +1214,7 @@
     "backupWarning": "Онда сіздің кіру деректеріңіз бар. Оны жүктеп жібермеңіз немесе бөліспеңіз.",
     "deleteBackup": "Көшірмені өшіру",
     "backupDeleted": "Көшірме өшірілді.",
-    "previousFailureTitle": "Plezy соңғы рет іске қосыла алмады"
+    "previousFailureTitle": "Plezzant соңғы рет іске қосыла алмады"
   },
   "licenses": {
     "relatedPackages": "Байланысты пакеттер",
@@ -1750,14 +1750,14 @@
       "bannerAction": "Толығырақ",
       "sheetTitle": "Фондық жүктеулер бұғатталған",
       "sheetTitleDegraded": "Фондық жүктеулер шектелуі мүмкін",
-      "sheetIntro": "Android Plezy-дің фонда сенімді жүктеуіне кедергі келтіруде.",
-      "sheetIntroDegraded": "Құрылғыңыз Plezy-дің фонда қашан жүктей алатынын шектеп отыр.",
-      "reasonBackgroundRestricted": "Plezy-дің фондық жұмысы шектелген. Батарея немесе фондық пайдалануды \"Шектеусіз\" етіп қойыңыз.",
-      "reasonStandbyRestricted": "Android Plezy-ді шектеулі күту режиміне ауыстырды. Батарея пайдалануын \"Шектеусіз\" етіп қойыңыз.",
+      "sheetIntro": "Android Plezzant-дің фонда сенімді жүктеуіне кедергі келтіруде.",
+      "sheetIntroDegraded": "Құрылғыңыз Plezzant-дің фонда қашан жүктей алатынын шектеп отыр.",
+      "reasonBackgroundRestricted": "Plezzant-дің фондық жұмысы шектелген. Батарея немесе фондық пайдалануды \"Шектеусіз\" етіп қойыңыз.",
+      "reasonStandbyRestricted": "Android Plezzant-ді шектеулі күту режиміне ауыстырды. Батарея пайдалануын \"Шектеусіз\" етіп қойыңыз.",
       "reasonDownloadChannelBlocked": "Жүктеу хабарландырулары өшірілген, сондықтан жүктеу барысы мен басқару элементтері қолжетімсіз болуы мүмкін.",
       "reasonNotificationsDisabled": "Хабарландырулар өшірілген. Android 13 және одан жаңа нұсқаларда ұзақ фондық жүктеулер үшін олар қажет.",
       "reasonDataSaver": "Трафикті үнемдеу қосулы, бұл мобильді деректер арқылы фондық жүктеулерді бұғаттайды. Wi-Fi арқылы жүктеулер жұмыс істеуі тиіс.",
-      "reasonOemUnknown": "Plezy фонда тұрғанда жүктеулер бірнеше рет тоқтады. Plezy-дің батарея немесе фондық пайдалану баптауларын тексеріңіз.",
+      "reasonOemUnknown": "Plezzant фонда тұрғанда жүктеулер бірнеше рет тоқтады. Plezzant-дің батарея немесе фондық пайдалану баптауларын тексеріңіз.",
       "openSettings": "Баптауларды ашу",
       "stillNotWorking": "Құрылғыға арналған көмек",
       "stillNotWorkingDescription": "Құрылғыңызға арналған қадамдарды қараңыз немесе мәселе жалғасса Баптаулар › Журналдарды көру бөлімінен журнал жіберіңіз.",
@@ -1819,12 +1819,12 @@
       "manualAddressHint": "Қолмен қосылу мекенжайы:"
     },
     "pairing": {
-      "discoveryDescription": "Бірдей Plex тіркелгісіндегі Plezy құрылғылары мұнда көрінеді",
+      "discoveryDescription": "Бірдей Plex тіркелгісіндегі Plezzant құрылғылары мұнда көрінеді",
       "hostAddressHint": "192.168.1.100:48632",
       "connecting": "Қосылуда...",
       "searchingForDevices": "Құрылғылар ізделуде...",
       "noDevicesFound": "Желіде құрылғылар табылмады",
-      "noDevicesHint": "ПК-де Plezy-ді ашып, бір Wi-Fi-ға қосылыңыз",
+      "noDevicesHint": "ПК-де Plezzant-ді ашып, бір Wi-Fi-ға қосылыңыз",
       "availableDevices": "Қолжетімді құрылғылар",
       "manualConnection": "Қолмен қосылу",
       "cryptoInitFailed": "Қауіпсіз қосылым қатесі. Алдымен Plex-ке кіріңіз.",
@@ -2068,11 +2068,11 @@
     "connected": "Қосылды",
     "connectedAs": "@${username} ретінде қосылды",
     "disconnectConfirm": "Trakt ажыратылсын ба?",
-    "disconnectConfirmBody": "Plezy Trakt-қа деректер жіберуді тоқтатады.",
+    "disconnectConfirmBody": "Plezzant Trakt-қа деректер жіберуді тоқтатады.",
     "scrobble": "Нақты уақытта бақылау",
     "scrobbleDescription": "Ойнату кезінде Trakt-қа деректер жіберу.",
     "watchedSync": "Көру мәртебесін синхрондау",
-    "watchedSyncDescription": "Plezy-де белгіленгенде Trakt-та да белгіленеді."
+    "watchedSyncDescription": "Plezzant-де белгіленгенде Trakt-та да белгіленеді."
   },
   "seerr": {
     "title": "Seerr",
@@ -2087,7 +2087,7 @@
     "noSignInMethods": "Бұл Seerr қолдау көрсетілетін кіру әдісін ұсынбайды.",
     "instance": "Инстанция",
     "disconnectConfirm": "Seerr ажыратылсын ба?",
-    "disconnectConfirmBody": "Plezy бұл Seerr мекенжайын өшіреді.",
+    "disconnectConfirmBody": "Plezzant бұл Seerr мекенжайын өшіреді.",
     "request": "Сұрау салу",
     "request4k": "4K сұрау салу",
     "seasons": "Маусымдар",
@@ -2135,7 +2135,7 @@
     "scrobble": "Барысты автоматты бақылау",
     "scrobbleDescription": "Тізіміңізді автоматты түрде жаңартыңыз.",
     "disconnectConfirm": "${service} ажыратылсын ба?",
-    "disconnectConfirmBody": "Plezy ${service} жаңартуды тоқтатады.",
+    "disconnectConfirmBody": "Plezzant ${service} жаңартуды тоқтатады.",
     "connectFailed": "${service} қосылу мүмкін болмады. Қайтадан байқап көріңіз.",
     "names": {
       "mal": "MyAnimeList",
@@ -2145,7 +2145,7 @@
       "mdblist": "MDBList"
     },
     "deviceCode": {
-      "title": "Plezy-ді ${service} қызметінде белсендіру",
+      "title": "Plezzant-ді ${service} қызметінде белсендіру",
       "instructions": "QR кодын сканерлеңіз немесе төмендегі мекенжайға өтіп, мына кодты енгізіңіз:",
       "openToActivate": "Белсендіру үшін ${service} ашу",
       "copyCode": "Белсендіру кодын көшіру",

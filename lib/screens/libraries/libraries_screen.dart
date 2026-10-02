@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../focus/focusable_action_bar.dart';
 import '../../focus/dpad_navigator.dart';
@@ -605,7 +605,7 @@ class _LibrariesScreenState extends State<LibrariesScreen>
               library: library,
               badgeSize: 10,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 14,
                 color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
               ),
               constrainText: true,
@@ -700,7 +700,7 @@ class _LibrariesScreenState extends State<LibrariesScreen>
             else
               Text(selectedLibrary.title, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(width: 4),
-            const AppIcon(Symbols.arrow_drop_down_rounded, fill: 1, size: 24),
+            const AppIcon(LucideIcons.chevronDown, fill: 1, size: 24),
           ],
         ),
       ),
@@ -750,13 +750,13 @@ class _LibrariesScreenState extends State<LibrariesScreen>
     List<FocusableAction> appBarActions() => [
       if (allLibraries.isNotEmpty)
         FocusableAction(
-          icon: Symbols.edit_rounded,
+          icon: LucideIcons.pencil,
           tooltip: t.libraries.manageLibraries,
           onPressed: _showLibraryManagementSheet,
         ),
       if (showBrowseOptionsAction)
         FocusableAction(
-          icon: Symbols.tune_rounded,
+          icon: LucideIcons.slidersHorizontal,
           tooltip: t.libraries.libraryOptions,
           onPressed: _showBrowseOptionsForCurrentTab,
           // Badge the icon with a dot while the browse tab has active filters
@@ -768,7 +768,7 @@ class _LibrariesScreenState extends State<LibrariesScreen>
                   icon: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      const AppIcon(Symbols.tune_rounded, fill: 1),
+                      const AppIcon(LucideIcons.slidersHorizontal, fill: 1),
                       Positioned(
                         top: -2,
                         right: -2,
@@ -786,7 +786,7 @@ class _LibrariesScreenState extends State<LibrariesScreen>
                 )
               : null,
         ),
-      FocusableAction(icon: Symbols.refresh_rounded, tooltip: t.common.refresh, onPressed: _refreshSelectedLibraryTabs),
+      FocusableAction(icon: LucideIcons.rotateCw, tooltip: t.common.refresh, onPressed: _refreshSelectedLibraryTabs),
     ];
 
     Widget appBar({required bool floating}) => DesktopSliverAppBar(
@@ -851,7 +851,7 @@ class _LibrariesScreenState extends State<LibrariesScreen>
       body = buildSimpleScroll(
         body: ErrorStateWidget(
           message: _errorMessage!,
-          icon: Symbols.error_outline_rounded,
+          icon: LucideIcons.circleAlert,
           onRetry: () {
             final librariesProvider = context.read<LibrariesProvider>();
             librariesProvider.refresh();
@@ -861,13 +861,13 @@ class _LibrariesScreenState extends State<LibrariesScreen>
     } else if (visibleLibraries.isEmpty && selectedLibrary == null) {
       body = buildSimpleScroll(
         body: allLibraries.isEmpty
-            ? EmptyStateWidget(message: t.libraries.noLibrariesFound, icon: Symbols.video_library_rounded)
+            ? EmptyStateWidget(message: t.libraries.noLibrariesFound, icon: LucideIcons.libraryBig)
             : EmptyStateWidget(
                 message: t.libraries.allLibrariesHidden,
-                icon: Symbols.visibility_off_rounded,
+                icon: LucideIcons.eyeOff,
                 onAction: _showLibraryManagementSheet,
                 actionLabel: t.libraries.manageLibraries,
-                actionIcon: Symbols.edit_rounded,
+                actionIcon: LucideIcons.pencil,
               ),
       );
     } else if (selectedLibrary != null) {

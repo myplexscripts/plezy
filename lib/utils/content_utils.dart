@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ContentTypes {
   ContentTypes._();
@@ -29,17 +29,17 @@ class ContentTypeHelper {
   static IconData getLibraryIcon(String type) {
     switch (type.toLowerCase()) {
       case ContentTypes.movie:
-        return Symbols.movie_rounded;
+        return LucideIcons.film;
       case ContentTypes.show:
-        return Symbols.tv_rounded;
+        return LucideIcons.tv;
       case ContentTypes.artist:
-        return Symbols.music_note_rounded;
+        return LucideIcons.music;
       case 'photo':
-        return Symbols.photo_rounded;
+        return LucideIcons.image;
       case 'mixed':
-        return Symbols.share_rounded;
+        return LucideIcons.share2;
       default:
-        return Symbols.folder_rounded;
+        return LucideIcons.folder;
     }
   }
 }

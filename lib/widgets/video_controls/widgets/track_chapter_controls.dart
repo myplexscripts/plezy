@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter/services.dart';
 
 import '../../../focus/dpad_navigator.dart';
@@ -162,7 +162,7 @@ class TrackChapterControls extends StatelessWidget {
                   isZoomActive;
               return _buildTrackButton(
                 buttonIndex: 0,
-                icon: Symbols.tune_rounded,
+                icon: LucideIcons.slidersHorizontal,
                 isActive: isActive,
                 checked: isActive,
                 tooltip: t.videoControls.settingsButton,
@@ -196,8 +196,8 @@ class TrackChapterControls extends StatelessWidget {
                 final hasActiveSubtitle = selectedSub != null && selectedSub.id != SubtitleTrack.off.id;
                 final isHidden = hasSubtitleControls && hasActiveSubtitle && !state.subtitlesVisible;
                 final icon = hasSubtitleControls
-                    ? (isHidden ? Symbols.subtitles_off_rounded : Symbols.subtitles_rounded)
-                    : Symbols.audiotrack_rounded;
+                    ? (isHidden ? LucideIcons.captionsOff : LucideIcons.captions)
+                    : LucideIcons.music;
                 return _buildTrackButton(
                   buttonIndex: currentIndex,
                   icon: icon,
@@ -225,7 +225,7 @@ class TrackChapterControls extends StatelessWidget {
           buttons.add(
             _buildTrackButton(
               buttonIndex: currentIndex,
-              icon: Symbols.bookmarks_rounded,
+              icon: LucideIcons.bookmark,
               tooltip: t.videoControls.chaptersButton,
               semanticLabel: t.videoControls.chaptersButton,
               buttons: buttons,
@@ -255,7 +255,7 @@ class TrackChapterControls extends StatelessWidget {
           buttons.add(
             _buildTrackButton(
               buttonIndex: currentIndex,
-              icon: Symbols.queue_rounded,
+              icon: LucideIcons.listPlus,
               tooltip: t.videoControls.queue,
               semanticLabel: t.videoControls.queue,
               buttons: buttons,
@@ -275,7 +275,7 @@ class TrackChapterControls extends StatelessWidget {
           buttons.add(
             _buildTrackButton(
               buttonIndex: currentIndex,
-              icon: Symbols.picture_in_picture_alt_rounded,
+              icon: LucideIcons.pictureInPicture2,
               tooltip: t.videoControls.pipButton,
               semanticLabel: t.videoControls.pipButton,
               buttons: buttons,
@@ -308,7 +308,7 @@ class TrackChapterControls extends StatelessWidget {
           buttons.add(
             _buildTrackButton(
               buttonIndex: currentIndex,
-              icon: state.isRotationLocked ? Symbols.screen_lock_rotation_rounded : Symbols.screen_rotation_rounded,
+              icon: state.isRotationLocked ? LucideIcons.smartphone : LucideIcons.rotate3d,
               tooltip: state.isRotationLocked ? t.videoControls.unlockRotation : t.videoControls.lockRotation,
               semanticLabel: t.videoControls.rotationLockButton,
               checked: state.isRotationLocked,
@@ -325,7 +325,7 @@ class TrackChapterControls extends StatelessWidget {
           buttons.add(
             _buildTrackButton(
               buttonIndex: currentIndex,
-              icon: Symbols.lock_rounded,
+              icon: LucideIcons.lock,
               tooltip: t.videoControls.lockScreen,
               semanticLabel: t.videoControls.screenLockButton,
               buttons: buttons,
@@ -341,7 +341,7 @@ class TrackChapterControls extends StatelessWidget {
           buttons.add(
             _buildTrackButton(
               buttonIndex: currentIndex,
-              icon: Symbols.layers_rounded,
+              icon: LucideIcons.layers,
               tooltip: t.videoControls.alwaysOnTopButton,
               semanticLabel: t.videoControls.alwaysOnTopButton,
               isActive: state.isAlwaysOnTop,
@@ -359,7 +359,7 @@ class TrackChapterControls extends StatelessWidget {
           buttons.add(
             _buildTrackButton(
               buttonIndex: currentIndex,
-              icon: state.isFullscreen ? Symbols.fullscreen_exit_rounded : Symbols.fullscreen_rounded,
+              icon: state.isFullscreen ? LucideIcons.minimize : LucideIcons.maximize,
               tooltip: state.isFullscreen ? t.videoControls.exitFullscreenButton : t.videoControls.fullscreenButton,
               semanticLabel: state.isFullscreen
                   ? t.videoControls.exitFullscreenButton
@@ -429,13 +429,13 @@ class TrackChapterControls extends StatelessWidget {
   IconData _getBoxFitIcon(int mode) {
     switch (mode) {
       case 0:
-        return Symbols.fit_screen_rounded; // contain (letterbox)
+        return LucideIcons.scan; // contain (letterbox)
       case 1:
-        return Symbols.aspect_ratio_rounded; // cover (fill screen)
+        return LucideIcons.ratio; // cover (fill screen)
       case 2:
-        return Symbols.settings_overscan_rounded; // fill (stretch)
+        return LucideIcons.scan; // fill (stretch)
       default:
-        return Symbols.fit_screen_rounded;
+        return LucideIcons.scan;
     }
   }
 

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/focus/input_mode_tracker.dart';
 import 'package:plezy/i18n/strings.g.dart';
 import 'package:plezy/media/ids.dart';
@@ -185,7 +185,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.byWidgetPredicate((widget) => widget is AppIcon && widget.icon == Symbols.arrow_drop_down_rounded),
+      find.byWidgetPredicate((widget) => widget is AppIcon && widget.icon == LucideIcons.chevronDown),
       findsOneWidget,
     );
     expect(find.text('Obsolete'), findsNothing);
@@ -449,7 +449,7 @@ void main() {
 }
 
 Finder _rightTimeButton() {
-  final icon = find.byWidgetPredicate((widget) => widget is AppIcon && widget.icon == Symbols.chevron_right_rounded);
+  final icon = find.byWidgetPredicate((widget) => widget is AppIcon && widget.icon == LucideIcons.chevronRight);
   return find.ancestor(of: icon, matching: find.byType(IconButton));
 }
 

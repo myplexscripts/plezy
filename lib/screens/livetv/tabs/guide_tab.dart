@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../../focus/dpad_navigator.dart';
@@ -36,6 +36,7 @@ import '../../../widgets/app_menu.dart';
 import '../../../widgets/clickable_cursor.dart';
 import '../../../widgets/optimized_media_image.dart';
 import '../livetv_styles.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 class GuideTab extends StatefulWidget {
   final List<LiveTvChannel> channels;
@@ -1210,7 +1211,7 @@ class GuideTabState extends State<GuideTab>
       left: left,
       top: 0,
       height: gridHeight,
-      child: IgnorePointer(child: Container(width: 2, color: Colors.red)),
+      child: IgnorePointer(child: Container(width: 2, color: PlezzantColors.danger)),
     );
   }
 
@@ -1313,7 +1314,7 @@ class GuideTabState extends State<GuideTab>
       entries: [
         AppMenuItem<int>(
           value: -1,
-          icon: Symbols.chevron_left_rounded,
+          icon: LucideIcons.chevronLeft,
           child: Text(label, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: .bold)),
         ),
         const AppMenuDivider<int>(),
@@ -1365,7 +1366,7 @@ class GuideTabState extends State<GuideTab>
           _timeNavFocusWrap(
             index: 0,
             child: IconButton(
-              icon: const AppIcon(Symbols.chevron_left_rounded),
+              icon: const AppIcon(LucideIcons.chevronLeft),
               onPressed: () => _shiftTimeRange(-2),
               iconSize: 20,
               visualDensity: VisualDensity.compact,
@@ -1392,7 +1393,7 @@ class GuideTabState extends State<GuideTab>
                           children: [
                             Text(dayLabel, style: theme.textTheme.labelLarge),
                             const SizedBox(width: 2),
-                            AppIcon(Symbols.arrow_drop_down_rounded, size: 18, color: theme.colorScheme.onSurface),
+                            AppIcon(LucideIcons.chevronDown, size: 18, color: theme.colorScheme.onSurface),
                           ],
                         ),
                       ),
@@ -1407,7 +1408,7 @@ class GuideTabState extends State<GuideTab>
           _timeNavFocusWrap(
             index: 2,
             child: IconButton(
-              icon: const AppIcon(Symbols.chevron_right_rounded),
+              icon: const AppIcon(LucideIcons.chevronRight),
               onPressed: () => _shiftTimeRange(2),
               iconSize: 20,
               visualDensity: VisualDensity.compact,
@@ -1684,7 +1685,7 @@ class GuideTabState extends State<GuideTab>
                     Row(
                       children: [
                         if (isRecordingScheduled) ...[
-                          _RecordingDot(color: Colors.red, tooltip: t.liveTv.recordingScheduled),
+                          _RecordingDot(color: PlezzantColors.danger, tooltip: t.liveTv.recordingScheduled),
                           const SizedBox(width: 5),
                         ],
                         Expanded(
@@ -1886,13 +1887,13 @@ class _ChannelCellState extends State<_ChannelCell> {
                               )
                             : widget.fallbackBuilder(),
                       ),
-                      if (showAction) AppIcon(Symbols.play_arrow_rounded, size: 32, color: contentColor),
+                      if (showAction) AppIcon(LucideIcons.play, size: 32, color: contentColor),
                       if (widget.isFavorite)
                         Positioned(
                           top: 2,
                           right: 0,
                           child: AppIcon(
-                            Symbols.star_rounded,
+                            LucideIcons.star,
                             size: 14,
                             color: widget.isFocused ? theme.colorScheme.onPrimary : theme.colorScheme.primary,
                           ),

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app_icon.dart';
 
@@ -29,7 +29,7 @@ class MediaSelectorThumbnail extends StatelessWidget {
     this.fallbackBackgroundColor = Colors.white10,
     this.fallbackIconColor = Colors.white38,
     this.fallbackIconSize = 28,
-    this.fallbackIcon = Symbols.movie_rounded,
+    this.fallbackIcon = LucideIcons.film,
     this.blurThumbnail = false,
   });
 

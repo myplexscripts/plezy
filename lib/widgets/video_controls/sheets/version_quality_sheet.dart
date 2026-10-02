@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/widgets/app_icon.dart';
 
 import '../../../i18n/strings.g.dart';
@@ -224,7 +224,7 @@ class _SelectionTile extends StatelessWidget {
             children: [
               if (hasText) Text(trailingText!, style: TextStyle(color: trailingColor)),
               if (hasText && isSelected) const SizedBox(width: 8),
-              if (isSelected) AppIcon(Symbols.check_rounded, fill: 1, color: primary),
+              if (isSelected) AppIcon(LucideIcons.check, fill: 1, color: primary),
             ],
           )
         : null;

@@ -2,7 +2,7 @@ import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/foundation.dart' show ValueListenable, listEquals;
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../../focus/focusable_button.dart';
@@ -39,7 +39,7 @@ class VideoPlayerMacPipPlaceholder extends StatelessWidget {
               child: Column(
                 mainAxisSize: .min,
                 children: [
-                  AppIcon(Symbols.picture_in_picture_alt_rounded, size: 48, color: Colors.white.withValues(alpha: 0.5)),
+                  AppIcon(LucideIcons.pictureInPicture2, size: 48, color: Colors.white.withValues(alpha: 0.5)),
                   const SizedBox(height: 12),
                   Text(
                     t.videoControls.pipActive,
@@ -150,7 +150,7 @@ class VideoPlayerWatchTogetherOverlays extends StatelessWidget {
                       mainAxisSize: .min,
                       children: [
                         if (PlatformDetector.isTV())
-                          const AppIcon(Symbols.sync_rounded, size: 14, color: Colors.white)
+                          const AppIcon(LucideIcons.refreshCw, size: 14, color: Colors.white)
                         else
                           const SizedBox(
                             width: 14,
@@ -160,7 +160,7 @@ class VideoPlayerWatchTogetherOverlays extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           t.watchTogether.reconnectingToHost,
-                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                          style: const TextStyle(color: Colors.white, fontSize: 14),
                         ),
                       ],
                     ),
@@ -251,7 +251,7 @@ class VideoPlayerPlayNextOverlay extends StatelessWidget {
                   children: [
                     Text('$countdown'),
                     const SizedBox(width: 4),
-                    const AppIcon(Symbols.play_arrow_rounded, fill: 1, size: 18),
+                    const AppIcon(LucideIcons.play, fill: 1, size: 18),
                   ],
                 );
               },
@@ -320,11 +320,11 @@ class _PlayNextEpisodeHeader extends StatelessWidget {
                     children: [
                       Text(
                         t.videoControls.nextEpisode,
-                        style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12, fontWeight: .w500),
+                        style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 14, fontWeight: .w500),
                       ),
                       if (isShuffleActive) ...[
                         const SizedBox(width: 4),
-                        AppIcon(Symbols.shuffle_rounded, fill: 1, size: 12, color: Colors.white.withValues(alpha: 0.7)),
+                        AppIcon(LucideIcons.shuffle, fill: 1, size: 12, color: Colors.white.withValues(alpha: 0.7)),
                       ],
                     ],
                   );
@@ -382,7 +382,7 @@ class VideoPlayerStillWatchingOverlay extends StatelessWidget {
       children: [
         Text(
           t.videoControls.stillWatching,
-          style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12, fontWeight: .w500),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 14, fontWeight: .w500),
         ),
         const SizedBox(height: 4),
         ValueListenableBuilder<int>(

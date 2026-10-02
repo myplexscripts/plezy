@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../media/ids.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/focusable_button.dart';
 import '../focus/focusable_text_field.dart';
@@ -177,7 +177,7 @@ class _PlexMatchScreenState extends State<PlexMatchScreen> with ControllerDispos
                 decoration: pillInputDecoration(
                   context,
                   hintText: t.matchScreen.titleHint,
-                  prefixIcon: const AppIcon(Symbols.search_rounded),
+                  prefixIcon: const AppIcon(LucideIcons.search),
                 ),
                 textInputAction: TextInputAction.next,
                 onSubmitted: (_) => _yearFocus.requestFocus(),
@@ -207,7 +207,7 @@ class _PlexMatchScreenState extends State<PlexMatchScreen> with ControllerDispos
           onPressed: _isSearching ? null : _search,
           child: FilledButton.icon(
             onPressed: _isSearching ? null : _search,
-            icon: const AppIcon(Symbols.search_rounded),
+            icon: const AppIcon(LucideIcons.search),
             label: Text(t.matchScreen.search),
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
@@ -238,7 +238,7 @@ class _PlexMatchScreenState extends State<PlexMatchScreen> with ControllerDispos
               client: _client,
               imagePath: result.thumb,
               fit: BoxFit.cover,
-              fallbackIcon: Symbols.movie_rounded,
+              fallbackIcon: LucideIcons.film,
             ),
           ),
         ),

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:drift/native.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/media/ids.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -696,7 +696,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.byType(PageView), findsOneWidget);
-    expect(find.byIcon(Symbols.pause_rounded), findsOneWidget, reason: 'hero indicators render in pointer mode');
+    expect(find.byIcon(LucideIcons.pause), findsOneWidget, reason: 'hero indicators render in pointer mode');
 
     // Entering keyboard mode must not hide the indicators on non-TV devices
     // (regression: back-key/BT-keyboard events left them permanently hidden).
@@ -704,7 +704,7 @@ void main() {
     await tester.sendKeyUpEvent(LogicalKeyboardKey.arrowDown);
     await tester.pump();
     expect(
-      find.byIcon(Symbols.pause_rounded),
+      find.byIcon(LucideIcons.pause),
       findsOneWidget,
       reason: 'hero indicators stay visible in keyboard mode on non-TV',
     );

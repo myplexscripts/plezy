@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plezy/focus/key_event_utils.dart';
@@ -1855,17 +1855,17 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(find.byIcon(Symbols.subtitles_rounded), findsOneWidget);
+      expect(find.byIcon(LucideIcons.captions), findsOneWidget);
 
       await tester.sendKeyEvent(LogicalKeyboardKey.keyS);
       await tester.pump();
       expect(player.propertyValues, ['no']);
-      expect(find.byIcon(Symbols.subtitles_off_rounded), findsOneWidget);
+      expect(find.byIcon(LucideIcons.captionsOff), findsOneWidget);
 
       await tester.sendKeyEvent(LogicalKeyboardKey.keyS);
       await tester.pump();
       expect(player.propertyValues, ['no'], reason: 'the latest toggle must wait for the in-flight native write');
-      expect(find.byIcon(Symbols.subtitles_rounded), findsOneWidget);
+      expect(find.byIcon(LucideIcons.captions), findsOneWidget);
 
       firstWrite.complete();
       await tester.pump();
@@ -1877,7 +1877,7 @@ void main() {
       await tester.pump();
 
       expect(tester.takeException(), isNull);
-      expect(find.byIcon(Symbols.subtitles_off_rounded), findsOneWidget);
+      expect(find.byIcon(LucideIcons.captionsOff), findsOneWidget);
       chrome.cancelAutoHide();
       await tester.pumpWidget(const SizedBox.shrink());
     });
@@ -2112,13 +2112,13 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byIcon(Symbols.add_rounded));
+      await tester.tap(find.byIcon(LucideIcons.plus));
       await tester.pump();
       expect(tester.widget<Slider>(find.byType(Slider)).value, 50);
 
-      await tester.tap(find.byIcon(Symbols.remove_rounded));
+      await tester.tap(find.byIcon(LucideIcons.minus));
       await tester.pump();
-      await tester.tap(find.byIcon(Symbols.remove_rounded));
+      await tester.tap(find.byIcon(LucideIcons.minus));
       await tester.pump();
 
       expect(tester.widget<Slider>(find.byType(Slider)).value, -50);
@@ -2145,7 +2145,7 @@ void main() {
         ),
       );
 
-      final gesture = await tester.startGesture(tester.getCenter(find.byIcon(Symbols.add_rounded)));
+      final gesture = await tester.startGesture(tester.getCenter(find.byIcon(LucideIcons.plus)));
       await tester.pump(kLongPressTimeout);
       await tester.pump(const Duration(milliseconds: 200));
       await tester.pump(const Duration(milliseconds: 200));
@@ -2176,7 +2176,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byIcon(Symbols.add_rounded));
+      await tester.tap(find.byIcon(LucideIcons.plus));
       await tester.pump();
       await tester.pump();
 

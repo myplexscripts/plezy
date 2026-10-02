@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Plezy"
+    "title": "Plezzant"
   },
   "auth": {
     "signInWithPlex": "Zaloguj się przez Plex",
@@ -18,7 +18,7 @@
     "quickConnectWaiting": "Oczekiwanie na zatwierdzenie…",
     "quickConnectCancel": "Anuluj",
     "quickConnectExpired": "Quick Connect wygasł. Spróbuj ponownie.",
-    "localDataRecoveryRequired": "Plezy nie mogło bezpiecznie odzyskać lokalnych danych logowania ani oczekujących danych odtwarzania. Zaloguj się ponownie.",
+    "localDataRecoveryRequired": "Plezzant nie mogło bezpiecznie odzyskać lokalnych danych logowania ani oczekujących danych odtwarzania. Zaloguj się ponownie.",
     "pinCheckRejected": "Sprawdzenie kodu PIN Plex zostało odrzucone"
   },
   "common": {
@@ -117,7 +117,7 @@
   },
   "settings": {
     "title": "Ustawienia",
-    "supportDeveloper": "Wesprzyj Plezy",
+    "supportDeveloper": "Wesprzyj Plezzant",
     "supportDeveloperDescription": "Wspomóż rozwój darowizną na Liberapay",
     "language": "Język",
     "theme": "Motyw",
@@ -255,7 +255,7 @@
     "importSettingsDescription": "Przywróć preferencje z pliku",
     "importSettingsConfirm": "Bieżące ustawienia zostaną zastąpione. Kontynuować?",
     "importSettingsSuccess": "Ustawienia zaimportowane",
-    "importSettingsInvalidFile": "Ten plik nie jest prawidłowym eksportem Plezy",
+    "importSettingsInvalidFile": "Ten plik nie jest prawidłowym eksportem Plezzant",
     "importSettingsNoUser": "Zaloguj się przed importem ustawień",
     "shortcutsReset": "Skróty przywrócone do domyślnych",
     "about": "O aplikacji",
@@ -363,7 +363,7 @@
     "forceTvMode": "Wymuś tryb TV",
     "forceTvModeDescription": "Wymuś układ telewizyjny na urządzeniach, które nie wykrywają go automatycznie. Wymaga ponownego uruchomienia.",
     "startInFullscreen": "Uruchom na pełnym ekranie",
-    "startInFullscreenDescription": "Otwiera Plezy w trybie pełnoekranowym przy uruchomieniu",
+    "startInFullscreenDescription": "Otwiera Plezzant w trybie pełnoekranowym przy uruchomieniu",
     "exitFullscreenOnPlayerClose": "Wyjdź z pełnego ekranu przy zamykaniu odtwarzacza",
     "exitFullscreenOnPlayerCloseDescription": "Automatycznie wychodzi z trybu pełnoekranowego po zamknięciu odtwarzacza wideo",
     "autoHidePerformanceOverlay": "Automatycznie ukrywaj nakładkę wydajności",
@@ -412,7 +412,7 @@
     "playerScopeGlobal": "Wszędzie",
     "playerScopeLibrary": "Na bibliotekę",
     "playerScopeTitle": "Na serial lub film",
-    "exportDialogTitle": "Eksport ustawień Plezy"
+    "exportDialogTitle": "Eksport ustawień Plezzant"
   },
   "search": {
     "hint": "Szukaj filmów, seriali, muzyki...",
@@ -614,8 +614,8 @@
       "many": "W tym samym pliku przechowywanych jest jeszcze ${n} innych odcinków, które również zostaną usunięte:",
       "other": "W tym samym pliku przechowywany jest jeszcze ${n} innego odcinka, który również zostanie usunięty:"
     },
-    "deleteScopeUnverifiedProbeFailed": "Plezy nie mogło sprawdzić, które pliki zostaną usunięte, więc może usunąć więcej niż element wymieniony powyżej. Anuluj i spróbuj ponownie albo usuń mimo to.",
-    "deleteScopeUnverifiedNoFileInfo": "Twój serwer nie podał informacji o plikach tego elementu, więc Plezy nie może sprawdzić, które pliki zostaną usunięte. Może usunąć więcej niż element wymieniony powyżej.",
+    "deleteScopeUnverifiedProbeFailed": "Plezzant nie mogło sprawdzić, które pliki zostaną usunięte, więc może usunąć więcej niż element wymieniony powyżej. Anuluj i spróbuj ponownie albo usuń mimo to.",
+    "deleteScopeUnverifiedNoFileInfo": "Twój serwer nie podał informacji o plikach tego elementu, więc Plezzant nie może sprawdzić, które pliki zostaną usunięte. Może usunąć więcej niż element wymieniony powyżej.",
     "mediaDeletedSuccessfully": "Usunięto element multimedialny",
     "mediaFailedToDelete": "Nie udało się usunąć elementu multimedialnego",
     "rate": "Oceń",
@@ -886,7 +886,7 @@
     "confirmAction": "Potwierdź działanie"
   },
   "profiles": {
-    "addPlezyProfile": "Dodaj profil Plezy",
+    "addPlezzantProfile": "Dodaj profil Plezzant",
     "switchingProfile": "Przełączanie profilu…",
     "deleteThisProfileTitle": "Usunąć ten profil?",
     "deleteThisProfileMessage": "Usuń ${displayName}. Połączenia nie zostaną zmienione.",
@@ -959,14 +959,14 @@
     "sessionExpiredMany": "Sesja wygasła dla ${count} serwerów",
     "signInAgain": "Zaloguj się ponownie",
     "editMediaBrowserTitle": "Edytuj połączenie z ${product}",
-    "editMediaBrowserIntro": "Dodaj lub usuń adresy URL dla ${serverName}. Plezy będzie używać osiągalnego adresu URL o najniższym opóźnieniu."
+    "editMediaBrowserIntro": "Dodaj lub usuń adresy URL dla ${serverName}. Plezzant będzie używać osiągalnego adresu URL o najniższym opóźnieniu."
   },
   "accountPreferences": {
     "sectionTitle": "Preferencje konta",
     "hubSubtitleSingle": "Opcje audio, napisów i biblioteki zapisane na koncie ${account}",
     "hubSubtitleMultiple": "Opcje audio, napisów i biblioteki zapisane na ${count} kontach",
     "pickAccount": "Każde konto przechowuje własne preferencje. Wybierz to, które chcesz edytować.",
-    "storedOnAccount": "Te opcje są zapisywane na samym koncie, więc używa ich każda aplikacja zalogowana na to konto — w tym Plezy na Twoich innych urządzeniach.",
+    "storedOnAccount": "Te opcje są zapisywane na samym koncie, więc używa ich każda aplikacja zalogowana na to konto — w tym Plezzant na Twoich innych urządzeniach.",
     "noAccounts": "Brak kont do skonfigurowania",
     "noAccountsHint": "Zaloguj się do Plex albo połącz serwer Jellyfin lub Emby, a preferencje zapisane na tym koncie pojawią się tutaj.",
     "unavailable": "Nie można połączyć się z tym kontem",
@@ -1195,9 +1195,9 @@
     "uploadLogs": "Prześlij logi"
   },
   "startup": {
-    "failedTitle": "Nie udało się uruchomić Plezy",
+    "failedTitle": "Nie udało się uruchomić Plezzant",
     "failedBody": "Coś poszło nie tak podczas uruchamiania. Poniższe szczegóły wskazują, co zawiodło.",
-    "failedBodyRepairable": "Zapisany plik ustawień Plezy jest uszkodzony i musi zostać odbudowany, zanim Plezy będzie mogło się uruchomić. Ponawianie nie pomoże — wybierz Napraw pamięć.",
+    "failedBodyRepairable": "Zapisany plik ustawień Plezzant jest uszkodzony i musi zostać odbudowany, zanim Plezzant będzie mogło się uruchomić. Ponawianie nie pomoże — wybierz Napraw pamięć.",
     "phaseLabel": "Krok",
     "showDetails": "Pokaż szczegóły",
     "hideDetails": "Ukryj szczegóły",
@@ -1206,16 +1206,16 @@
     "uploadDetails": "Prześlij szczegóły",
     "repairStorage": "Napraw pamięć",
     "repairTitle": "Naprawić zapisane dane?",
-    "repairBodyCommon": "Plik ustawień Plezy jest uszkodzony i nie można go odczytać. Naprawa przywraca wszystkie ustawienia do wartości domyślnych.",
+    "repairBodyCommon": "Plik ustawień Plezzant jest uszkodzony i nie można go odczytać. Naprawa przywraca wszystkie ustawienia do wartości domyślnych.",
     "repairBodyOneCredential": "Jedno zapisane logowanie jest uszkodzone i nie można go odczytać. Naprawa usunie tylko je; pozostałe ustawienia pozostaną nietknięte.",
     "repairBodySignInsKept": "Twoje serwery i profile powinny pozostać zalogowane.",
     "repairBodySignInsLost": "Klucza chroniącego zapisane logowania nie można odzyskać z tego pliku, więc będziesz musiał zalogować się ponownie na każdym serwerze i profilu. Nic na Twoim serwerze multimediów nie zostanie zmienione.",
-    "repairBodySessionsUncertain": "Usługi śledzenia (MAL, AniList, Simkl, Trakt) i Seerr są przechowywane osobno i mogą, ale nie muszą przetrwać. Plezy dokładnie poinformuje Cię, co zachowało.",
+    "repairBodySessionsUncertain": "Usługi śledzenia (MAL, AniList, Simkl, Trakt) i Seerr są przechowywane osobno i mogą, ale nie muszą przetrwać. Plezzant dokładnie poinformuje Cię, co zachowało.",
     "repairConfirm": "Napraw",
     "repairSucceeded": "Naprawiono pamięć",
     "repairNeedsRestart": "Naprawiono pamięć — wymagany restart",
-    "restartRequiredBody": "Twoje dane zostały naprawione, ale Plezy musi uruchomić się od nowa, zanim będzie mogło z nich korzystać. Zamknij Plezy i otwórz je ponownie.",
-    "quitPlezy": "Zamknij Plezy",
+    "restartRequiredBody": "Twoje dane zostały naprawione, ale Plezzant musi uruchomić się od nowa, zanim będzie mogło z nich korzystać. Zamknij Plezzant i otwórz je ponownie.",
+    "quitPlezzant": "Zamknij Plezzant",
     "repairFailed": "Naprawa nie powiodła się",
     "repairKeptSignIns": "Twoje serwery i profile są nadal zalogowane.",
     "repairLostSignIns": "Nie udało się odzyskać klucza chroniącego zapisane logowania. Musisz zalogować się ponownie na każdym serwerze i profilu.",
@@ -1224,7 +1224,7 @@
     "backupWarning": "Zawiera Twoje dane logowania. Nie przesyłaj ani nie udostępniaj jej.",
     "deleteBackup": "Usuń kopię",
     "backupDeleted": "Usunięto kopię.",
-    "previousFailureTitle": "Ostatnim razem nie udało się uruchomić Plezy"
+    "previousFailureTitle": "Ostatnim razem nie udało się uruchomić Plezzant"
   },
   "licenses": {
     "relatedPackages": "Powiązane pakiety",
@@ -1772,14 +1772,14 @@
       "bannerAction": "Szczegóły",
       "sheetTitle": "Pobieranie w tle jest zablokowane",
       "sheetTitleDegraded": "Pobieranie w tle może być ograniczone",
-      "sheetIntro": "Android uniemożliwia Plezy niezawodne pobieranie plików w tle.",
-      "sheetIntroDegraded": "Twoje urządzenie ogranicza możliwość pobierania w tle przez Plezy.",
-      "reasonBackgroundRestricted": "Działanie Plezy w tle jest ograniczone. Ustaw użycie baterii lub działanie w tle na „Bez ograniczeń”.",
-      "reasonStandbyRestricted": "Android umieścił Plezy w ograniczonym trybie gotowości. Ustaw użycie baterii na „Bez ograniczeń”.",
+      "sheetIntro": "Android uniemożliwia Plezzant niezawodne pobieranie plików w tle.",
+      "sheetIntroDegraded": "Twoje urządzenie ogranicza możliwość pobierania w tle przez Plezzant.",
+      "reasonBackgroundRestricted": "Działanie Plezzant w tle jest ograniczone. Ustaw użycie baterii lub działanie w tle na „Bez ograniczeń”.",
+      "reasonStandbyRestricted": "Android umieścił Plezzant w ograniczonym trybie gotowości. Ustaw użycie baterii na „Bez ograniczeń”.",
       "reasonDownloadChannelBlocked": "Powiadomienia o pobieraniu są wyłączone, więc postęp i opcje sterowania mogą być niedostępne.",
       "reasonNotificationsDisabled": "Powiadomienia są wyłączone. W Android 13 lub nowszym są wymagane przy długim pobieraniu w tle.",
       "reasonDataSaver": "Oszczędzanie danych jest włączone, co blokuje pobieranie w tle przez mobilną transmisję danych. Pobieranie powinno nadal działać przez Wi-Fi.",
-      "reasonOemUnknown": "Pobieranie wielokrotnie przerywało się, gdy Plezy działało w tle. Sprawdź ustawienia baterii lub działania w tle dla Plezy.",
+      "reasonOemUnknown": "Pobieranie wielokrotnie przerywało się, gdy Plezzant działało w tle. Sprawdź ustawienia baterii lub działania w tle dla Plezzant.",
       "openSettings": "Otwórz ustawienia",
       "stillNotWorking": "Pomoc dla Twojego urządzenia",
       "stillNotWorkingDescription": "Zobacz instrukcje dla swojego urządzenia lub, jeśli problem nadal występuje, wyślij log przez Ustawienia › Pokaż logi.",
@@ -1841,19 +1841,19 @@
       "manualAddressHint": "Ręczny adres połączenia:"
     },
     "pairing": {
-      "discoveryDescription": "Urządzenia Plezy z tym samym kontem Plex pojawią się tutaj",
+      "discoveryDescription": "Urządzenia Plezzant z tym samym kontem Plex pojawią się tutaj",
       "hostAddressHint": "192.168.1.100:48632",
       "connecting": "Łączenie...",
       "searchingForDevices": "Szukanie urządzeń...",
       "noDevicesFound": "Nie znaleziono urządzeń w sieci",
-      "noDevicesHint": "Otwórz Plezy na komputerze i połącz oba urządzenia z tą samą siecią Wi-Fi",
+      "noDevicesHint": "Otwórz Plezzant na komputerze i połącz oba urządzenia z tą samą siecią Wi-Fi",
       "availableDevices": "Dostępne urządzenia",
       "manualConnection": "Połączenie ręczne",
       "cryptoInitFailed": "Nie udało się uruchomić bezpiecznego połączenia. Najpierw zaloguj się do Plex.",
       "validationHostRequired": "Wprowadź adres hosta",
       "validationHostFormat": "Format musi być IP:port (np. 192.168.1.100:48632)",
       "connectionTimedOut": "Limit czasu połączenia. Użyj tej samej sieci na obu urządzeniach.",
-      "sessionNotFound": "Nie znaleziono urządzenia. Upewnij się, że Plezy działa na hoście.",
+      "sessionNotFound": "Nie znaleziono urządzenia. Upewnij się, że Plezzant działa na hoście.",
       "authFailed": "Uwierzytelnianie nie powiodło się. Oba urządzenia muszą używać tego samego konta Plex.",
       "failedToConnect": "Nie udało się połączyć: ${error}"
     },
@@ -2090,11 +2090,11 @@
     "connected": "Połączono",
     "connectedAs": "Połączono jako @${username}",
     "disconnectConfirm": "Rozłączyć konto Trakt?",
-    "disconnectConfirmBody": "Plezy przestanie wysyłać zdarzenia do serwisu Trakt. Połączenie można przywrócić w dowolnym momencie.",
+    "disconnectConfirmBody": "Plezzant przestanie wysyłać zdarzenia do serwisu Trakt. Połączenie można przywrócić w dowolnym momencie.",
     "scrobble": "Śledzenie odtwarzania w czasie rzeczywistym",
     "scrobbleDescription": "Wysyłaj do serwisu Trakt zdarzenia odtwarzania, wstrzymania i zatrzymania.",
     "watchedSync": "Synchronizuj stan obejrzenia",
-    "watchedSyncDescription": "Gdy oznaczysz element jako obejrzany w Plezy, zostanie on również oznaczony jako obejrzany w serwisie Trakt."
+    "watchedSyncDescription": "Gdy oznaczysz element jako obejrzany w Plezzant, zostanie on również oznaczony jako obejrzany w serwisie Trakt."
   },
   "seerr": {
     "title": "Seerr",
@@ -2106,10 +2106,10 @@
     "signInWithEmby": "Zaloguj się przez Emby",
     "signInWithLocal": "Użyj konta lokalnego",
     "email": "E-mail",
-    "noSignInMethods": "Ta instancja Seerr nie oferuje metody logowania obsługiwanej przez Plezy.",
+    "noSignInMethods": "Ta instancja Seerr nie oferuje metody logowania obsługiwanej przez Plezzant.",
     "instance": "Instancja",
     "disconnectConfirm": "Odłączyć Seerr?",
-    "disconnectConfirmBody": "Plezy zapomni tę instancję Seerr. Połącz ponownie w dowolnym momencie.",
+    "disconnectConfirmBody": "Plezzant zapomni tę instancję Seerr. Połącz ponownie w dowolnym momencie.",
     "request": "Zamów",
     "request4k": "Zamów w 4K",
     "seasons": "Sezony",
@@ -2157,7 +2157,7 @@
     "scrobble": "Automatycznie śledź postęp",
     "scrobbleDescription": "Aktualizuj swoją listę po ukończeniu odcinka lub filmu.",
     "disconnectConfirm": "Odłączyć ${service}?",
-    "disconnectConfirmBody": "Plezy przestanie aktualizować ${service}. Połącz ponownie w dowolnym momencie.",
+    "disconnectConfirmBody": "Plezzant przestanie aktualizować ${service}. Połącz ponownie w dowolnym momencie.",
     "connectFailed": "Nie udało się połączyć z ${service}. Spróbuj ponownie.",
     "names": {
       "mal": "MyAnimeList",
@@ -2167,7 +2167,7 @@
       "mdblist": "MDBList"
     },
     "deviceCode": {
-      "title": "Aktywuj Plezy w ${service}",
+      "title": "Aktywuj Plezzant w ${service}",
       "instructions": "Zeskanuj kod QR albo przejdź pod poniższy adres i wprowadź ten kod:",
       "openToActivate": "Otwórz ${service}, aby aktywować",
       "copyCode": "Skopiuj kod aktywacyjny",

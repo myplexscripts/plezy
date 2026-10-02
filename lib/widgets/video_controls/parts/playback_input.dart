@@ -16,7 +16,7 @@ extension _PlexVideoControlsPlaybackInputMethods on _PlexVideoControlsState {
     final prev = _lastReportedRate;
     if (prev != null && (prev - newRate).abs() < 0.005) return;
     _lastReportedRate = newRate;
-    final icon = newRate >= 1.0 ? Symbols.fast_forward_rounded : Symbols.slow_motion_video_rounded;
+    final icon = newRate >= 1.0 ? LucideIcons.fastForward : LucideIcons.snail;
     widget.toastController.show(icon, formatPlaybackRate(newRate));
   }
 
@@ -152,7 +152,7 @@ extension _PlexVideoControlsPlaybackInputMethods on _PlexVideoControlsState {
       // Only announce a jump that actually happens.
       final title = resolved.chapter?.title?.trim();
       widget.toastController.show(
-        forward ? Symbols.skip_next_rounded : Symbols.skip_previous_rounded,
+        forward ? LucideIcons.skipForward : LucideIcons.skipBack,
         title != null && title.isNotEmpty
             ? title
             : (forward ? t.videoControls.nextChapterButton : t.videoControls.previousChapterButton),
@@ -869,5 +869,5 @@ extension _PlexVideoControlsPlaybackInputMethods on _PlexVideoControlsState {
   /// Build the visual indicator for long-press 2x speed.
   /// Manual (persistent for duration of press) — separate from the stream-driven
   /// toast so it stays visible for the full long-press rather than auto-hiding.
-  Widget _buildSpeedIndicator() => const PlayerToastIndicator(icon: Symbols.fast_forward_rounded, text: '2x');
+  Widget _buildSpeedIndicator() => const PlayerToastIndicator(icon: LucideIcons.fastForward, text: '2x');
 }

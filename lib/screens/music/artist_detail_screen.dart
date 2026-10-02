@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_action_bar.dart';
@@ -127,7 +127,7 @@ class _ArtistDetailScreenState extends BaseMediaListDetailScreen<ArtistDetailScr
         imageType: ImageType.square,
         width: size,
         height: size,
-        fallbackIcon: Symbols.artist_rounded,
+        fallbackIcon: LucideIcons.micVocal,
       ),
     );
 

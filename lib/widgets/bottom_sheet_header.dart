@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../i18n/strings.g.dart';
 
 import 'overlay_sheet.dart';
@@ -77,7 +77,7 @@ class BottomSheetHeader extends StatelessWidget {
         height: kMinInteractiveDimension,
         child: Align(
           alignment: Alignment.centerLeft,
-          child: ExcludeSemantics(child: AppIcon(Symbols.arrow_back_rounded, fill: 1, color: iconColor)),
+          child: ExcludeSemantics(child: AppIcon(LucideIcons.arrowLeft, fill: 1, color: iconColor)),
         ),
       );
     } else if (icon != null) {
@@ -106,7 +106,7 @@ class BottomSheetHeader extends StatelessWidget {
                   child: IconButton(
                     focusNode: closeFocusNode,
                     tooltip: t.common.close,
-                    icon: AppIcon(Symbols.close_rounded, fill: 1, color: iconColor),
+                    icon: AppIcon(LucideIcons.x, fill: 1, color: iconColor),
                     onPressed: onClose ?? () => OverlaySheetController.closeAdaptive(context),
                   ),
                 ),

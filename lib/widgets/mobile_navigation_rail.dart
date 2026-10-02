@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../i18n/strings.g.dart';
 import '../navigation/navigation_tabs.dart';
@@ -91,7 +91,7 @@ class MobileNavigationRail extends StatelessWidget {
         onPressed: isReconnecting ? null : onReconnect,
         icon: isReconnecting
             ? SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: primary))
-            : AppIcon(Symbols.wifi_rounded, size: 18, color: primary),
+            : AppIcon(LucideIcons.wifi, size: 18, color: primary),
       ),
     );
   }

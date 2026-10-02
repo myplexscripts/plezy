@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../i18n/strings.g.dart';
 import '../../../theme/mono_tokens.dart';
 import '../../../utils/track_label_builder.dart';
@@ -65,7 +65,7 @@ class TrackSelectionHelper {
       alignment: .center,
       child: Text(
         number.toString(),
-        style: TextStyle(color: colorScheme.onPrimary, fontSize: 11, fontWeight: .bold),
+        style: TextStyle(color: colorScheme.onPrimary, fontSize: 12, fontWeight: .bold),
       ),
     );
   }
@@ -87,7 +87,7 @@ class TrackSelectionHelper {
     if (badge != null) {
       trailing = badge;
     } else if (isSelected) {
-      trailing = AppIcon(Symbols.check_rounded, fill: 1, color: primaryColor);
+      trailing = AppIcon(LucideIcons.check, fill: 1, color: primaryColor);
     }
 
     Widget tile = FocusableListTile(
@@ -106,7 +106,7 @@ class TrackSelectionHelper {
               secondaryLabel,
               style: TextStyle(
                 color: isSelected ? primaryColor.withValues(alpha: 0.7) : tokens(context).textMuted,
-                fontSize: 12,
+                fontSize: 14,
               ),
               maxLines: 1,
               overflow: .ellipsis,

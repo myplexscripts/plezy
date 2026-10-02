@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../services/settings_service.dart';
@@ -52,7 +52,7 @@ class SubtitleStylingScreen extends StatelessWidget {
           children: [
             SettingSelectionTile<SubAssOverride>(
               pref: SettingsService.subAssOverride,
-              icon: Symbols.subtitles_rounded,
+              icon: LucideIcons.captions,
               title: t.subtitlingStyling.assOverride,
               subtitleBuilder: _assOverrideLabel,
               options: SubAssOverride.values.map((v) => DialogOption(value: v, title: _assOverrideLabel(v))).toList(),
@@ -61,7 +61,7 @@ class SubtitleStylingScreen extends StatelessWidget {
             if (Platform.isIOS)
               SettingSelectionTile<SubtitleRenderResolution>(
                 pref: SettingsService.subtitleRenderResolution,
-                icon: Symbols.aspect_ratio_rounded,
+                icon: LucideIcons.ratio,
                 title: t.subtitlingStyling.renderResolution,
                 subtitleBuilder: _renderResolutionLabel,
                 options: const [
@@ -74,7 +74,7 @@ class SubtitleStylingScreen extends StatelessWidget {
             if (Platform.isAndroid)
               SettingSelectionTile<SubtitleRenderResolution>(
                 pref: SettingsService.subtitleRenderResolution,
-                icon: Symbols.aspect_ratio_rounded,
+                icon: LucideIcons.ratio,
                 title: t.subtitlingStyling.renderResolution,
                 subtitleBuilder: _renderResolutionLabel,
                 options: const [
@@ -87,7 +87,7 @@ class SubtitleStylingScreen extends StatelessWidget {
               ),
             SettingNumberTile(
               pref: SettingsService.subtitleFontSize,
-              icon: Symbols.format_size_rounded,
+              icon: LucideIcons.type,
               title: t.subtitlingStyling.fontSize,
               subtitleBuilder: (v) => '$v',
               labelText: t.subtitlingStyling.fontSize,
@@ -95,12 +95,12 @@ class SubtitleStylingScreen extends StatelessWidget {
             ),
             SettingColorTile(
               pref: SettingsService.subtitleTextColor,
-              icon: Symbols.format_color_text_rounded,
+              icon: LucideIcons.baseline,
               title: t.subtitlingStyling.textColor,
             ),
             SettingNumberTile(
               pref: SettingsService.subtitlePosition,
-              icon: Symbols.vertical_align_bottom_rounded,
+              icon: LucideIcons.arrowDownToLine,
               title: t.subtitlingStyling.position,
               subtitleBuilder: _formatPosition,
               labelText: t.subtitlingStyling.position,
@@ -109,25 +109,25 @@ class SubtitleStylingScreen extends StatelessWidget {
             if (!exoActive)
               SettingSwitchTile(
                 pref: SettingsService.subtitleUseMargins,
-                icon: Symbols.fit_screen_rounded,
+                icon: LucideIcons.scan,
                 title: t.subtitlingStyling.useMargins,
                 subtitle: t.subtitlingStyling.useMarginsDescription,
               ),
             if (exoActive)
               SettingSwitchTile(
                 pref: SettingsService.subtitleAnchorToScreen,
-                icon: Symbols.fit_screen_rounded,
+                icon: LucideIcons.scan,
                 title: t.subtitlingStyling.anchorToScreen,
                 subtitle: t.subtitlingStyling.anchorToScreenDescription,
               ),
             SettingSwitchTile(
               pref: SettingsService.subtitleBold,
-              icon: Symbols.format_bold_rounded,
+              icon: LucideIcons.bold,
               title: t.subtitlingStyling.bold,
             ),
             SettingSwitchTile(
               pref: SettingsService.subtitleItalic,
-              icon: Symbols.format_italic_rounded,
+              icon: LucideIcons.italic,
               title: t.subtitlingStyling.italic,
             ),
           ],
@@ -138,7 +138,7 @@ class SubtitleStylingScreen extends StatelessWidget {
           children: [
             SettingNumberTile(
               pref: SettingsService.subtitleBorderSize,
-              icon: Symbols.border_style_rounded,
+              icon: LucideIcons.squareDashedBottom,
               title: t.subtitlingStyling.borderSize,
               subtitleBuilder: (v) => '$v',
               labelText: t.subtitlingStyling.borderSize,
@@ -146,7 +146,7 @@ class SubtitleStylingScreen extends StatelessWidget {
             ),
             SettingColorTile(
               pref: SettingsService.subtitleBorderColor,
-              icon: Symbols.border_color_rounded,
+              icon: LucideIcons.penLine,
               title: t.subtitlingStyling.borderColor,
             ),
           ],
@@ -157,7 +157,7 @@ class SubtitleStylingScreen extends StatelessWidget {
           children: [
             SettingNumberTile(
               pref: SettingsService.subtitleBackgroundOpacity,
-              icon: Symbols.opacity_rounded,
+              icon: LucideIcons.droplet,
               title: t.subtitlingStyling.backgroundOpacity,
               subtitleBuilder: (v) => '$v%',
               labelText: t.subtitlingStyling.backgroundOpacity,
@@ -165,7 +165,7 @@ class SubtitleStylingScreen extends StatelessWidget {
             ),
             SettingColorTile(
               pref: SettingsService.subtitleBackgroundColor,
-              icon: Symbols.format_color_fill_rounded,
+              icon: LucideIcons.paintBucket,
               title: t.subtitlingStyling.backgroundColor,
             ),
           ],

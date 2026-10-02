@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/dpad_navigator.dart';
 import '../focus/focusable_tile_mixin.dart';
@@ -14,6 +14,7 @@ import '../utils/focus_utils.dart';
 import 'app_icon.dart';
 import 'clickable_cursor.dart';
 import 'overlay_sheet.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 typedef AppMenuEntryBuilder<T> = List<AppMenuEntry<T>> Function(BuildContext context);
 
@@ -423,7 +424,7 @@ class _AppMenuItemTileState<T> extends State<AppMenuItemTile<T>> with FocusableT
     final background = _backgroundColor(context, active: active);
 
     final leading = item.leading ?? (item.icon != null ? AppIcon(item.icon!, fill: 1, size: 20) : null);
-    final trailing = item.trailing ?? (item.selected ? AppIcon(Symbols.check_rounded, size: 18) : null);
+    final trailing = item.trailing ?? (item.selected ? AppIcon(LucideIcons.check, size: 18) : null);
     final subtitle = item.subtitleWidget ?? (item.subtitle != null ? Text(item.subtitle!) : null);
 
     return Semantics(
@@ -735,6 +736,6 @@ double _estimateMenuHeight<T>(List<AppMenuEntry<T>> entries) {
 
 Color _destructiveMenuForeground(BuildContext context) {
   return Theme.of(context).colorScheme.brightness == Brightness.dark
-      ? const Color(0xFFFF453A)
-      : const Color(0xFFFF3B30);
+      ? PlezzantColors.dangerSoft
+      : PlezzantColors.danger;
 }

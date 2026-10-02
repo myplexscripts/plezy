@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../media/ids.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../connection/connection.dart';
 import '../../connection/connection_registry.dart';
@@ -17,6 +17,7 @@ import '../../widgets/focused_scroll_scaffold.dart';
 import '../../widgets/app_icon.dart';
 import '../libraries/state_messages.dart';
 import '../../i18n/strings.g.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 class SyncRulesScreen extends StatefulWidget {
   const SyncRulesScreen({super.key});
@@ -52,7 +53,11 @@ class _SyncRulesScreenState extends State<SyncRulesScreen> {
               slivers: [
                 if (syncRules.isEmpty)
                   SliverFillRemaining(
-                    child: EmptyStateWidget(message: t.downloads.noSyncRules, icon: Symbols.sync_rounded, iconSize: 80),
+                    child: EmptyStateWidget(
+                      message: t.downloads.noSyncRules,
+                      icon: LucideIcons.refreshCw,
+                      iconSize: 80,
+                    ),
                   )
                 else
                   SliverList(
@@ -126,14 +131,14 @@ class _SyncRuleTileState extends State<_SyncRuleTile> {
   IconData _leadingIcon() {
     switch (rule.targetType) {
       case ContentTypes.playlist:
-        return Symbols.playlist_play_rounded;
+        return LucideIcons.listVideo;
       case ContentTypes.collection:
-        return Symbols.collections_bookmark_rounded;
+        return LucideIcons.libraryBig;
       case ContentTypes.show:
       case ContentTypes.season:
-        return Symbols.tv_rounded;
+        return LucideIcons.tv;
       default:
-        return Symbols.sync_rounded;
+        return LucideIcons.refreshCw;
     }
   }
 
@@ -245,10 +250,10 @@ class _SyncRuleTileState extends State<_SyncRuleTile> {
           child: Material(
             type: MaterialType.transparency,
             child: ListTile(
-              dense: true,
+              dense: false,
               visualDensity: const VisualDensity(vertical: -3),
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-              leading: AppIcon(_leadingIcon(), color: rule.enabled ? Colors.teal : null, size: 20),
+              leading: AppIcon(_leadingIcon(), color: rule.enabled ? PlezzantColors.automation : null, size: 20),
               title: Text(title, maxLines: 1, overflow: .ellipsis),
               subtitle: Column(
                 crossAxisAlignment: .start,
@@ -335,7 +340,7 @@ class _SwipeRevealDeleteActionState extends State<_SwipeRevealDeleteAction> {
                             child: Column(
                               mainAxisAlignment: .center,
                               children: [
-                                AppIcon(Symbols.delete_rounded, color: colorScheme.onError, size: 20),
+                                AppIcon(LucideIcons.trash2, color: colorScheme.onError, size: 20),
                                 const SizedBox(height: 2),
                                 Text(
                                   t.common.delete,

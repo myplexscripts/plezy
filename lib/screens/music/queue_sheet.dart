@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_action_bar.dart';
@@ -15,6 +15,7 @@ import '../../widgets/bottom_sheet_page_scaffold.dart';
 import '../../widgets/music/repeat_mode.dart';
 import '../../widgets/music/track_row.dart';
 import '../../widgets/overlay_sheet.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Open the play-queue sheet. The caller's screen must have an
 /// [OverlaySheetHost] ancestor (all now-playing layouts do) so TV back
@@ -43,13 +44,13 @@ class QueueSheet extends StatelessWidget {
             padding: const EdgeInsets.only(right: 4),
             child: Text(
               t.music.trackCount(n: service.queue.length),
-              style: TextStyle(fontSize: 13, color: tk.textMuted),
+              style: TextStyle(fontSize: 14, color: tk.textMuted),
             ),
           ),
           FocusableActionBar(
             actions: [
               FocusableAction(
-                icon: Symbols.shuffle_rounded,
+                icon: LucideIcons.shuffle,
                 iconColor: service.shuffled ? colorScheme.primary : tk.textMuted,
                 iconSize: 20,
                 tooltip: t.common.shuffle,
@@ -63,7 +64,7 @@ class QueueSheet extends StatelessWidget {
                 onPressed: () => service.setRepeatMode(nextRepeatMode(service.repeatMode)),
               ),
               FocusableAction(
-                icon: Symbols.clear_all_rounded,
+                icon: LucideIcons.listX,
                 iconColor: tk.textMuted,
                 iconSize: 20,
                 tooltip: t.music.clearQueue,
@@ -172,7 +173,7 @@ class _QueueListState extends State<QueueList> {
     if (queue.isEmpty) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
-        child: Text(t.messages.noItemsAvailable, style: TextStyle(fontSize: 13, color: tk.textMuted)),
+        child: Text(t.messages.noItemsAvailable, style: TextStyle(fontSize: 14, color: tk.textMuted)),
       );
     }
 
@@ -213,7 +214,7 @@ class _QueueListState extends State<QueueList> {
           dimmed: index < currentIndex,
           showTrackNumber: false,
           focusNode: isCurrent ? _currentRowFocusNode : null,
-          trailingIcon: Symbols.close_rounded,
+          trailingIcon: LucideIcons.x,
           onTrailingTap: () => service.removeAt(index),
           onTap: () => unawaited(service.jumpTo(index)),
         );
@@ -226,8 +227,8 @@ class _QueueListState extends State<QueueList> {
             background: Container(
               alignment: .centerRight,
               padding: const EdgeInsets.only(right: 20),
-              color: Colors.red,
-              child: const AppIcon(Symbols.delete_rounded, fill: 1, color: Colors.white, size: 20),
+              color: PlezzantColors.danger,
+              child: const AppIcon(LucideIcons.trash2, fill: 1, color: Colors.white, size: 20),
             ),
             onDismissed: (_) => service.removeAt(index),
             child: row,

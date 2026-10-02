@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../media/media_item.dart';
 import '../media/media_rating.dart';
@@ -101,7 +101,7 @@ class InlineRatingBadges extends StatelessWidget {
     if (ratings.isEmpty) return const SizedBox.shrink();
 
     final foreground = foregroundColor ?? Theme.of(context).colorScheme.onSurface;
-    final style = (textStyle ?? TextStyle(color: foreground, fontSize: 13, fontWeight: FontWeight.w700)).copyWith(
+    final style = (textStyle ?? TextStyle(color: foreground, fontSize: 14, fontWeight: FontWeight.w700)).copyWith(
       color: textStyle?.color ?? foreground,
     );
     final gap = entrySpacing ?? 10;
@@ -115,7 +115,7 @@ class InlineRatingBadges extends StatelessWidget {
           value: rating.value,
           // Plex's own critic/audience split is the only place the generic
           // icons still carry meaning; every branded source draws its logo.
-          fallbackIcon: rating.source == 'audience' ? Symbols.people_rounded : Symbols.star_rounded,
+          fallbackIcon: rating.source == 'audience' ? LucideIcons.users : LucideIcons.star,
           foreground: foreground,
           style: style,
           iconSize: iconSize,

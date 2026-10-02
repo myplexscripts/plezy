@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_tile_mixin.dart';
@@ -229,7 +229,7 @@ class _TrackRowState extends State<TrackRow> with ContextMenuTapMixin<TrackRow>,
                     child: isCurrent
                         ? EqualizerIcon(animate: serviceIsPlaying, color: colorScheme.primary)
                         : widget.showTrackNumber
-                        ? Text('${widget.item.trackNumber ?? ''}', style: TextStyle(fontSize: 13, color: tk.textMuted))
+                        ? Text('${widget.item.trackNumber ?? ''}', style: TextStyle(fontSize: 14, color: tk.textMuted))
                         : null,
                   ),
                 ),
@@ -254,7 +254,7 @@ class _TrackRowState extends State<TrackRow> with ContextMenuTapMixin<TrackRow>,
                           subtitle,
                           maxLines: 1,
                           overflow: .ellipsis,
-                          style: TextStyle(fontSize: 12, color: tk.textMuted),
+                          style: TextStyle(fontSize: 14, color: tk.textMuted),
                         ),
                     ],
                   ),
@@ -263,7 +263,7 @@ class _TrackRowState extends State<TrackRow> with ContextMenuTapMixin<TrackRow>,
                 if (durationMs != null)
                   Text(
                     formatDurationTimestamp(Duration(milliseconds: durationMs)),
-                    style: TextStyle(fontSize: 13, color: tk.textMuted),
+                    style: TextStyle(fontSize: 14, color: tk.textMuted),
                   ),
                 if (widget.showDownloadStatus) _TrackDownloadStatus(item: widget.item),
                 Container(
@@ -274,7 +274,7 @@ class _TrackRowState extends State<TrackRow> with ContextMenuTapMixin<TrackRow>,
                   child: Builder(
                     builder: (buttonContext) => IconButton(
                       icon: AppIcon(
-                        widget.trailingIcon ?? Symbols.more_vert_rounded,
+                        widget.trailingIcon ?? LucideIcons.ellipsisVertical,
                         fill: 1,
                         size: 20,
                         color: tk.textMuted,

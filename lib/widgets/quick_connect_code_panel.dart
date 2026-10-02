@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/focusable_button.dart';
 import '../i18n/strings.g.dart';
@@ -81,7 +81,7 @@ class QuickConnectCodePanel extends StatelessWidget {
             onPressed: onCancel,
             child: OutlinedButton.icon(
               onPressed: onCancel,
-              icon: const AppIcon(Symbols.close_rounded, fill: 1),
+              icon: const AppIcon(LucideIcons.x, fill: 1),
               label: Text(t.auth.quickConnectCancel),
             ),
           ),

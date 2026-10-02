@@ -3,7 +3,7 @@ import '../../../media/ids.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../../focus/dpad_navigator.dart';
@@ -338,7 +338,7 @@ class ContentStripState extends State<ContentStrip> {
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   _activeTab == _StripTab.chapters ? t.videoControls.chapters : t.videoControls.queue,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: .w500),
+                  style: const TextStyle(color: Colors.white70, fontSize: 14, fontWeight: .w500),
                 ),
               ),
             if (!widget.useFocusNavigation) const SizedBox(height: 8),
@@ -375,7 +375,7 @@ class ContentStripState extends State<ContentStrip> {
               label,
               style: TextStyle(
                 color: isActive ? Colors.white : Colors.white54,
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
@@ -566,7 +566,7 @@ class ContentStripState extends State<ContentStrip> {
       width: isTablet ? 200.0 : 120.0,
       height: isTablet ? 112.0 : 68.0,
       fit: BoxFit.cover,
-      errorWidget: (_, _, _) => const AppIcon(Symbols.image_rounded, fill: 1, color: Colors.white54, size: 34),
+      errorWidget: (_, _, _) => const AppIcon(LucideIcons.image, fill: 1, color: Colors.white54, size: 34),
     );
   }
 

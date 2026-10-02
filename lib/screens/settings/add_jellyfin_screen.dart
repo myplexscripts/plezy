@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -525,7 +525,7 @@ class _AddJellyfinScreenState extends State<AddJellyfinScreen>
           // URL example — intentionally not localized.
           hintText: widget.dialect.exampleBaseUrl,
           helperText: _serverInfo == null ? t.addServer.serverUrlsHelper : null,
-          prefixIcon: const AppIcon(Symbols.link_rounded, fill: 1),
+          prefixIcon: const AppIcon(LucideIcons.link, fill: 1),
         ),
         validator: (_) => _enteredUrls().isEmpty ? t.addServer.required : null,
       ),
@@ -539,7 +539,7 @@ class _AddJellyfinScreenState extends State<AddJellyfinScreen>
           onPressed: busy ? null : _probe,
           child: FilledButton.icon(
             onPressed: busy ? null : _probe,
-            icon: busy ? const LoadingIndicatorBox() : const AppIcon(Symbols.travel_explore_rounded, fill: 1),
+            icon: busy ? const LoadingIndicatorBox() : const AppIcon(LucideIcons.earth, fill: 1),
             label: Text(t.addServer.findServer),
           ),
         ),
@@ -558,7 +558,7 @@ class _AddJellyfinScreenState extends State<AddJellyfinScreen>
           onFieldSubmitted: busy ? null : (_) => _passwordFocus.requestFocus(),
           decoration: InputDecoration(
             labelText: t.addServer.username,
-            prefixIcon: const AppIcon(Symbols.person_rounded, fill: 1),
+            prefixIcon: const AppIcon(LucideIcons.user, fill: 1),
           ),
           validator: (v) => v == null || v.trim().isEmpty ? t.addServer.required : null,
         ),
@@ -572,7 +572,7 @@ class _AddJellyfinScreenState extends State<AddJellyfinScreen>
           onFieldSubmitted: busy ? null : (_) => _signIn(),
           decoration: InputDecoration(
             labelText: t.addServer.password,
-            prefixIcon: const AppIcon(Symbols.lock_rounded, fill: 1),
+            prefixIcon: const AppIcon(LucideIcons.lock, fill: 1),
           ),
           // Empty passwords are valid on some MediaBrowser servers, so don't
           // require a value.
@@ -584,7 +584,7 @@ class _AddJellyfinScreenState extends State<AddJellyfinScreen>
           onPressed: busy ? null : _signIn,
           child: FilledButton.icon(
             onPressed: busy ? null : _signIn,
-            icon: busy ? const LoadingIndicatorBox() : const AppIcon(Symbols.login_rounded, fill: 1),
+            icon: busy ? const LoadingIndicatorBox() : const AppIcon(LucideIcons.logIn, fill: 1),
             label: Text(t.addServer.signIn),
           ),
         ),
@@ -596,7 +596,7 @@ class _AddJellyfinScreenState extends State<AddJellyfinScreen>
             onPressed: busy ? null : _startQuickConnect,
             child: OutlinedButton.icon(
               onPressed: busy ? null : _startQuickConnect,
-              icon: const AppIcon(Symbols.tap_and_play_rounded, fill: 1),
+              icon: const AppIcon(LucideIcons.cast, fill: 1),
               label: Text(t.auth.useQuickConnect),
             ),
           ),
@@ -615,7 +615,7 @@ class _AddJellyfinScreenState extends State<AddJellyfinScreen>
       ),
       child: Row(
         children: [
-          const AppIcon(Symbols.cloud_done_rounded, fill: 1),
+          const AppIcon(LucideIcons.cloudCheck, fill: 1),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -753,7 +753,7 @@ class _DiscoveredJellyfinServerTile extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               child: Row(
                 children: [
-                  const AppIcon(Symbols.dns_rounded, fill: 1),
+                  const AppIcon(LucideIcons.server, fill: 1),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -774,7 +774,7 @@ class _DiscoveredJellyfinServerTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+                  const AppIcon(LucideIcons.chevronRight, fill: 1),
                 ],
               ),
             ),

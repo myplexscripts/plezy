@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/card_focus_scope.dart';
 import '../focus/dpad_navigator.dart';
@@ -167,7 +167,7 @@ class TvBrowseRailLayout {
     final posterHeight = (isPersonHub || isSquareHub)
         ? posterWidth
         : (useWideLayout ? posterWidth * 9 / 16 : posterWidth * 1.5);
-    final labelHeight = fullCardLayout ? 0.0 : ((isPersonHub ? 52 : 36) * scale);
+    final labelHeight = fullCardLayout ? 0.0 : ((isPersonHub ? 56 : 40) * scale);
     final containerHeight = (posterHeight + labelHeight).ceilToDouble();
     final height = containerHeight + focusExtra + (10 * scale);
 
@@ -1474,7 +1474,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
               ),
               if (_trailingFor(hub) == TvRailTrailing.viewAll) ...[
                 SizedBox(width: 8 * scale),
-                AppIcon(Symbols.chevron_right_rounded, fill: 1, size: 20 * scale, color: iconColor),
+                AppIcon(LucideIcons.chevronRight, fill: 1, size: 20 * scale, color: iconColor),
                 SizedBox(width: 30 * scale),
               ],
             ],
@@ -1758,7 +1758,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                   height: imageSize,
                   fit: BoxFit.cover,
                   imageType: ImageType.square,
-                  fallbackIcon: Symbols.person_rounded,
+                  fallbackIcon: LucideIcons.user,
                   artworkDim: artworkDim,
                 ),
                 RasterizedGradient(
@@ -1781,7 +1781,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                         item.displayTitle,
                         maxLines: 1,
                         overflow: .ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 13 * scale, height: 1.1, fontWeight: .w800),
+                        style: TextStyle(color: Colors.white, fontSize: 14 * scale, height: 1.1, fontWeight: .w800),
                       ),
                       if (characterName != null && characterName.isNotEmpty) ...[
                         SizedBox(height: 2 * scale),
@@ -1791,7 +1791,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                           overflow: .ellipsis,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.82),
-                            fontSize: 11 * scale,
+                            fontSize: 14 * scale,
                             height: 1.1,
                             fontWeight: .w600,
                           ),
@@ -1826,7 +1826,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                   height: imageSize,
                   fit: BoxFit.cover,
                   imageType: ImageType.square,
-                  fallbackIcon: Symbols.person_rounded,
+                  fallbackIcon: LucideIcons.user,
                   artworkDim: artworkDim,
                 ),
               ),
@@ -1838,7 +1838,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
               overflow: .ellipsis,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: tokens(context).text,
-                fontSize: 13 * scale,
+                fontSize: 14 * scale,
                 height: 1.1,
                 fontWeight: .w700,
               ),
@@ -1851,7 +1851,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                 overflow: .ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: tokens(context).textMuted,
-                  fontSize: 11 * scale,
+                  fontSize: 14 * scale,
                   height: 1.1,
                 ),
               ),
@@ -1903,7 +1903,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
             metrics: metrics,
             isFocused: isFocused,
             scale: scale,
-            icon: Symbols.more_horiz_rounded,
+            icon: LucideIcons.ellipsis,
             label: t.common.options,
           ),
         ),
@@ -1935,7 +1935,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
               metrics: metrics,
               isFocused: isFocused,
               scale: scale,
-              icon: Symbols.refresh_rounded,
+              icon: LucideIcons.rotateCw,
               label: t.common.retry,
             ),
           ),
@@ -1952,7 +1952,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
               metrics: metrics,
               isFocused: isFocused,
               scale: scale,
-              icon: Symbols.arrow_forward_rounded,
+              icon: LucideIcons.arrowRight,
               label: t.common.viewAll,
             ),
           ),

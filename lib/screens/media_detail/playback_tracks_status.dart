@@ -179,7 +179,7 @@ extension _MediaDetailPlaybackTracksStatus on _MediaDetailScreenState {
       for (final label in videoLabels) MetadataLineText(label, dropPriority: 2),
       if (audioLabel != null)
         MetadataLineIconText(
-          Symbols.volume_up_rounded,
+          LucideIcons.volume2,
           audioLabel.primary,
           detail: audioLabel.secondary,
           dropPriority: 1,
@@ -187,7 +187,7 @@ extension _MediaDetailPlaybackTracksStatus on _MediaDetailScreenState {
         ),
       if (preview != null)
         MetadataLineIconText(
-          Symbols.subtitles_rounded,
+          LucideIcons.captions,
           subtitleLabel?.primary ?? t.common.off,
           detail: subtitleLabel?.secondary,
           dropPriority: 0,

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../i18n/strings.g.dart';
@@ -182,7 +182,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
         hasScrollBody: false,
         child: ErrorStateWidget(
           message: unavailable ? t.accountPreferences.unavailable : t.accountPreferences.loadFailed,
-          icon: unavailable ? Symbols.cloud_off_rounded : Symbols.sync_problem_rounded,
+          icon: unavailable ? LucideIcons.cloudOff : LucideIcons.refreshCwOff,
           onRetry: _retry,
           actionUseBackgroundFocus: true,
         ),
@@ -231,7 +231,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
       if (capabilities.supports(AccountPreferenceKey.preferredAudioLanguage))
         _languageRow(
           preferenceKey: AccountPreferenceKey.preferredAudioLanguage,
-          icon: Symbols.audiotrack_rounded,
+          icon: LucideIcons.music,
           title: t.accountPreferences.preferredAudioLanguage,
           code1: preferences.preferredAudioLanguageCode1,
           options: languageOptions,
@@ -239,7 +239,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
       if (capabilities.supports(AccountPreferenceKey.autoSelectAudio))
         AccountSettingSwitchTile(
           value: preferences.autoSelectAudio,
-          icon: Symbols.graphic_eq_rounded,
+          icon: LucideIcons.audioLines,
           title: t.accountPreferences.autoSelectAudio,
           subtitle: t.accountPreferences.autoSelectAudioDescription,
           onChanged: (value) => _write(AccountPreferenceKey.autoSelectAudio, value),
@@ -247,7 +247,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
       if (capabilities.supports(AccountPreferenceKey.preferredSubtitleLanguage))
         _languageRow(
           preferenceKey: AccountPreferenceKey.preferredSubtitleLanguage,
-          icon: Symbols.subtitles_rounded,
+          icon: LucideIcons.captions,
           title: t.accountPreferences.preferredSubtitleLanguage,
           code1: preferences.preferredSubtitleLanguageCode1,
           options: languageOptions,
@@ -255,7 +255,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
       if (capabilities.supports(AccountPreferenceKey.subtitleMode))
         AccountSettingSelectionTile<SubtitlePlaybackMode>(
           value: preferences.subtitlePlaybackMode,
-          icon: Symbols.closed_caption_rounded,
+          icon: LucideIcons.captions,
           title: t.accountPreferences.subtitleMode,
           subtitleBuilder: (mode) => mode == null ? t.accountPreferences.notSet : _subtitleModeLabel(mode),
           options: [
@@ -269,7 +269,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
       if (capabilities.supports(AccountPreferenceKey.subtitleAccessibility))
         AccountSettingSelectionTile<SubtitleAccessibilityPreference>(
           value: preferences.subtitleAccessibility,
-          icon: Symbols.hearing_rounded,
+          icon: LucideIcons.ear,
           title: t.accountPreferences.subtitleAccessibility,
           subtitleBuilder: (value) => value == null ? t.accountPreferences.notSet : _accessibilityLabel(value),
           options: [
@@ -281,7 +281,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
       if (capabilities.supports(AccountPreferenceKey.forcedSubtitles))
         AccountSettingSelectionTile<ForcedSubtitlePreference>(
           value: preferences.forcedSubtitles,
-          icon: Symbols.flag_rounded,
+          icon: LucideIcons.flag,
           title: t.accountPreferences.forcedSubtitles,
           subtitleBuilder: (value) => value == null ? t.accountPreferences.notSet : _forcedLabel(value),
           options: [
@@ -296,7 +296,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
     if (capabilities.supports(AccountPreferenceKey.displayMissingEpisodes))
       AccountSettingSwitchTile(
         value: preferences.displayMissingEpisodes,
-        icon: Symbols.dvr_rounded,
+        icon: LucideIcons.cctv,
         title: t.accountPreferences.displayMissingEpisodes,
         subtitle: t.accountPreferences.displayMissingEpisodesDescription,
         onChanged: (value) => _write(AccountPreferenceKey.displayMissingEpisodes, value),
@@ -304,7 +304,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
     if (capabilities.supports(AccountPreferenceKey.hidePlayedInLatest))
       AccountSettingSwitchTile(
         value: preferences.hidePlayedInLatest,
-        icon: Symbols.visibility_off_rounded,
+        icon: LucideIcons.eyeOff,
         title: t.accountPreferences.hidePlayedInLatest,
         subtitle: t.accountPreferences.hidePlayedInLatestDescription,
         onChanged: (value) => _write(AccountPreferenceKey.hidePlayedInLatest, value),
@@ -312,7 +312,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
     if (capabilities.supports(AccountPreferenceKey.displayCollectionsView))
       AccountSettingSwitchTile(
         value: preferences.displayCollectionsView,
-        icon: Symbols.collections_rounded,
+        icon: LucideIcons.layers,
         title: t.accountPreferences.displayCollectionsView,
         subtitle: t.accountPreferences.displayCollectionsViewDescription,
         onChanged: (value) => _write(AccountPreferenceKey.displayCollectionsView, value),
@@ -320,7 +320,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
     if (capabilities.supports(AccountPreferenceKey.rewatchingInNextUp))
       AccountSettingSwitchTile(
         value: preferences.rewatchingInNextUp ?? false,
-        icon: Symbols.replay_rounded,
+        icon: LucideIcons.rotateCcw,
         title: t.accountPreferences.rewatchingInNextUp,
         subtitle: t.accountPreferences.rewatchingInNextUpDescription,
         onChanged: (value) => _write(AccountPreferenceKey.rewatchingInNextUp, value),
@@ -331,7 +331,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
     if (capabilities.supports(AccountPreferenceKey.watchedIndicator))
       AccountSettingSelectionTile<WatchedIndicatorScope>(
         value: preferences.watchedIndicator,
-        icon: Symbols.visibility_rounded,
+        icon: LucideIcons.eye,
         title: t.accountPreferences.watchedIndicator,
         subtitleBuilder: (value) => value == null ? t.accountPreferences.notSet : _watchedIndicatorLabel(value),
         options: [
@@ -343,7 +343,7 @@ class _AccountPreferencesBodyState extends State<AccountPreferencesBody> {
     if (capabilities.supports(AccountPreferenceKey.mediaReviewsVisibility))
       AccountSettingSelectionTile<MediaReviewsVisibility>(
         value: preferences.mediaReviewsVisibility,
-        icon: Symbols.reviews_rounded,
+        icon: LucideIcons.messageSquareQuote,
         title: t.accountPreferences.mediaReviewsVisibility,
         subtitleBuilder: (value) => value == null ? t.accountPreferences.notSet : _reviewsLabel(value),
         options: [

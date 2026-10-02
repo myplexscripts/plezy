@@ -29,7 +29,7 @@ class WatchNextPlugin() :
 
     fun handleIntent(intent: Intent?): String? {
       val data = intent?.data ?: return null
-      return if (data.scheme == "plezy" && data.authority == "play") {
+      return if (data.scheme == "plezzant" && data.authority == "play") {
         data.getQueryParameter("content_id")
       } else {
         null

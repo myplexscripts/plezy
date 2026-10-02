@@ -11,7 +11,7 @@ import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show HardwareKeyboard, KeyDownEvent, KeyRepeatEvent, KeyUpEvent, LogicalKeyboardKey;
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import '../i18n/strings.g.dart';
@@ -2252,7 +2252,7 @@ class _MainScreenState extends State<MainScreen>
                           ),
                         )
                       else
-                        AppIcon(Symbols.wifi_rounded, size: 18, color: Theme.of(context).colorScheme.primary),
+                        AppIcon(LucideIcons.wifi, size: 18, color: Theme.of(context).colorScheme.primary),
                       const SizedBox(width: 8),
                       Text(
                         t.common.reconnect,

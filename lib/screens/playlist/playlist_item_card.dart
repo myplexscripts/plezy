@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../media/ids.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../media/media_item.dart';
 import '../../media/media_kind.dart';
 import '../../mixins/context_menu_tap_mixin.dart';
@@ -111,7 +111,7 @@ class _PlaylistItemCardState extends State<PlaylistItemCard> with ContextMenuTap
                                 )
                               : null,
                           child: AppIcon(
-                            widget.isMoving ? Symbols.swap_vert_rounded : Symbols.drag_indicator_rounded,
+                            widget.isMoving ? LucideIcons.arrowUpDown : LucideIcons.gripVertical,
                             fill: 1,
                             color: (widget.isMoving || isDragHandleFocused) ? colorScheme.primary : textMuted,
                           ),
@@ -140,7 +140,7 @@ class _PlaylistItemCardState extends State<PlaylistItemCard> with ContextMenuTap
 
                       Text(
                         _buildSubtitle(item),
-                        style: TextStyle(fontSize: 13, color: textMuted),
+                        style: TextStyle(fontSize: 14, color: textMuted),
                         maxLines: 1,
                         overflow: .ellipsis,
                       ),
@@ -151,7 +151,7 @@ class _PlaylistItemCardState extends State<PlaylistItemCard> with ContextMenuTap
                 const SizedBox(width: 12),
 
                 if (item.durationMs != null)
-                  Text(formatDurationTextual(item.durationMs!), style: TextStyle(fontSize: 13, color: textMuted)),
+                  Text(formatDurationTextual(item.durationMs!), style: TextStyle(fontSize: 14, color: textMuted)),
 
                 const SizedBox(width: 8),
 
@@ -163,7 +163,7 @@ class _PlaylistItemCardState extends State<PlaylistItemCard> with ContextMenuTap
                         )
                       : null,
                   child: IconButton(
-                    icon: const AppIcon(Symbols.close_rounded, fill: 1, size: 20),
+                    icon: const AppIcon(LucideIcons.x, fill: 1, size: 20),
                     onPressed: widget.onRemove,
                     tooltip: t.playlists.removeItem,
                     color: isRemoveButtonFocused ? colorScheme.primary : textMuted,
@@ -223,11 +223,11 @@ class _PlaylistItemCardState extends State<PlaylistItemCard> with ContextMenuTap
   }
 
   IconData _fallbackIcon(MediaItem item) => switch (item.kind) {
-    MediaKind.artist => Symbols.artist_rounded,
-    MediaKind.album => Symbols.album_rounded,
-    MediaKind.track => Symbols.music_note_rounded,
-    MediaKind.show || MediaKind.season || MediaKind.episode => Symbols.tv_rounded,
-    _ => Symbols.movie_rounded,
+    MediaKind.artist => LucideIcons.micVocal,
+    MediaKind.album => LucideIcons.disc3,
+    MediaKind.track => LucideIcons.music,
+    MediaKind.show || MediaKind.season || MediaKind.episode => LucideIcons.tv,
+    _ => LucideIcons.film,
   };
 
   String _buildSubtitle(MediaItem item) {

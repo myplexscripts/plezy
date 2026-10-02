@@ -1,5 +1,5 @@
 name: plezy
-description: "A beautiful Plex and Jellyfin client for Flutter"
+description: "Plezzant — a cinematic Plex client for Android TV"
 publish_to: "none"
 version: 2.19.1+149
 
@@ -53,7 +53,7 @@ dependencies:
     # Vendored 3.1.0: fixes upstream's duplicate MethodChannel result.
     path: packages/saf_util
   saf_stream: ^3.1.0
-  material_symbols_icons: ^4.2951.0
+  lucide_icons_flutter: ^3.1.21
   web_socket_channel: ^3.0.1
   dart_discord_presence: ^1.2.0
   flutter_svg: ^2.2.3
@@ -126,9 +126,25 @@ dependency_overrides:
     path: packages/shared_preferences_linux
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-300.ttf
+          weight: 300
+        - asset: assets/fonts/Manrope-400.ttf
+          weight: 400
+        - asset: assets/fonts/Manrope-500.ttf
+          weight: 500
+        - asset: assets/fonts/Manrope-600.ttf
+          weight: 600
+        - asset: assets/fonts/Manrope-700.ttf
+          weight: 700
+        - asset: assets/fonts/Manrope-800.ttf
+          weight: 800
   assets:
-    - assets/plezy.png
-    - assets/plezy_adaptive_foreground.svg
+    - assets/plezzant.png
+    - assets/plezzant_mark.svg
+    - assets/fonts/OFL-Manrope.txt
     - assets/plex_chevron.svg
     - assets/jellyfin_icon.svg
     - assets/emby_icon.svg

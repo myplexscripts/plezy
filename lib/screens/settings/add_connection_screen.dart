@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../focus/focusable_wrapper.dart';
 import '../../i18n/strings.g.dart';
@@ -89,7 +89,7 @@ class AddConnectionScreen extends StatelessWidget {
                   borderRadius: groupItemRadii(context, i, options.length),
                   leading: options[i].backend != null
                       ? BackendBadge(backend: options[i].backend!, size: 28)
-                      : const AppIcon(Symbols.share_rounded, fill: 1, size: 28),
+                      : const AppIcon(LucideIcons.share2, fill: 1, size: 28),
                   title: options[i].title,
                   subtitle: options[i].subtitle,
                   onTap: () async {
@@ -173,7 +173,7 @@ class _BackendCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+                const AppIcon(LucideIcons.chevronRight, fill: 1),
               ],
             ),
           ),

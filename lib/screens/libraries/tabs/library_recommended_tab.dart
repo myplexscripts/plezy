@@ -2,7 +2,7 @@ import 'dart:async';
 import '../../../media/ids.dart';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../focus/hub_vertical_navigation.dart';
 import '../../../focus/locked_hub_controller.dart';
@@ -169,7 +169,7 @@ class _LibraryRecommendedTabState extends BaseLibraryTabState<MediaHub, LibraryR
   }
 
   @override
-  IconData get emptyIcon => Symbols.recommend_rounded;
+  IconData get emptyIcon => LucideIcons.thumbsUp;
 
   @override
   String get emptyMessage => t.libraries.noRecommendations;

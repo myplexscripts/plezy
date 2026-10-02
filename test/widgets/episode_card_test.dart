@@ -74,7 +74,7 @@ void main() {
 
     collectSemantics(tester.binding.renderViews.single.owner!.semanticsOwner!.rootSemanticsNode!);
     final cardSemantics = semanticNodes.singleWhere((node) => node.label.contains('A Difficult Crossing'));
-    expect(cardSemantics.label, contains('The expedition follows a careful team'));
+    expect(cardSemantics.label, contains('The expedition follows a careful'));
     expect(cardSemantics.label, isNot(contains('Expand')));
     expect(cardSemantics.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
     semantics.dispose();

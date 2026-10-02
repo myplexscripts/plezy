@@ -277,7 +277,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           mainAxisAlignment: .center,
                           crossAxisAlignment: .center,
                           children: [
-                            Image.asset('assets/plezy.png', width: 120, height: 120),
+                            Image.asset('assets/plezzant.png', width: 120, height: 120),
                             const SizedBox(height: 24),
                             Text(
                               t.app.title,
@@ -306,7 +306,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       mainAxisSize: .min,
                       crossAxisAlignment: .stretch,
                       children: [
-                        Image.asset('assets/plezy.png', width: 120, height: 120),
+                        Image.asset('assets/plezzant.png', width: 120, height: 120),
                         const SizedBox(height: 24),
                         Text(
                           t.app.title,
@@ -459,7 +459,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 side: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5)),
               ),
-              child: const Text('Debug: Enter Plex Token', style: TextStyle(fontSize: 12)),
+              child: const Text('Debug: Enter Plex Token', style: TextStyle(fontSize: 14)),
             ),
           ),
         ],

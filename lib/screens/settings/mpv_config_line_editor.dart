@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../focus/focusable_button.dart';
 import '../../focus/focusable_text_field.dart';
@@ -200,7 +200,7 @@ class _MpvConfigLineEditorState extends State<MpvConfigLineEditor> {
                     visualDensity: VisualDensity.compact,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints.tightFor(width: 36, height: 36),
-                    icon: const AppIcon(Symbols.close_rounded, fill: 1, size: 20),
+                    icon: const AppIcon(LucideIcons.x, fill: 1, size: 20),
                     onPressed: () => _removeLine(i),
                   ),
                 ),
@@ -213,7 +213,7 @@ class _MpvConfigLineEditorState extends State<MpvConfigLineEditor> {
           onPressed: _addLine,
           child: TextButton.icon(
             onPressed: _addLine,
-            icon: const AppIcon(Symbols.add_rounded, fill: 1),
+            icon: const AppIcon(LucideIcons.plus, fill: 1),
             label: Text(t.mpvConfig.addLine),
           ),
         ),

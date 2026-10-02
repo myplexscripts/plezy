@@ -1,7 +1,7 @@
 import 'dart:async';
 import '../media/ids.dart';
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/watch_state_store.dart';
@@ -77,14 +77,14 @@ List<_MenuAction> _syncDownloadMenuActions({
 }) {
   _MenuAction deleteDownload() => _MenuAction(
     value: 'delete_download',
-    icon: Symbols.delete_rounded,
+    icon: LucideIcons.trash2,
     label: t.downloads.deleteDownload,
     destructive: true,
   );
   if (hasSyncRule) {
     return [
-      _MenuAction(value: 'manage_sync', icon: Symbols.sync_rounded, label: t.downloads.manageSyncRule),
-      _MenuAction(value: 'remove_sync', icon: Symbols.sync_disabled_rounded, label: t.downloads.removeSyncRule),
+      _MenuAction(value: 'manage_sync', icon: LucideIcons.refreshCw, label: t.downloads.manageSyncRule),
+      _MenuAction(value: 'remove_sync', icon: LucideIcons.refreshCwOff, label: t.downloads.removeSyncRule),
       if (hasAnyDownload) deleteDownload(),
     ];
   }
@@ -92,7 +92,7 @@ List<_MenuAction> _syncDownloadMenuActions({
     if (hasAnyDownload)
       deleteDownload()
     else
-      _MenuAction(value: downloadValue, icon: Symbols.download_rounded, label: t.downloads.downloadNow),
+      _MenuAction(value: downloadValue, icon: LucideIcons.download, label: t.downloads.downloadNow),
   ];
 }
 
@@ -398,9 +398,9 @@ class MediaContextMenuState extends State<MediaContextMenu> {
     final menuActions = <_MenuAction>[];
 
     if (isCollection || isPlaylist) {
-      menuActions.add(_MenuAction(value: 'play', icon: Symbols.play_arrow_rounded, label: t.common.play));
+      menuActions.add(_MenuAction(value: 'play', icon: LucideIcons.play, label: t.common.play));
 
-      menuActions.add(_MenuAction(value: 'shuffle', icon: Symbols.shuffle_rounded, label: t.mediaMenu.shufflePlay));
+      menuActions.add(_MenuAction(value: 'shuffle', icon: LucideIcons.shuffle, label: t.mediaMenu.shufflePlay));
 
       // Download + sync-rule management. Video and audio playlists and any
       // collection qualify — collections can contain movies, episodes,
@@ -418,22 +418,20 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       }
 
       menuActions.add(
-        _MenuAction(value: 'delete', icon: Symbols.delete_rounded, label: t.common.delete, destructive: true),
+        _MenuAction(value: 'delete', icon: LucideIcons.trash2, label: t.common.delete, destructive: true),
       );
     } else {
       // Music (artist/album/track) playback + navigation actions. Queue
       // insertion only exists where a playback session is bound.
       final isMusicKind = mediaKind != null && mediaKind.isMusic;
       if (isMusicKind) {
-        menuActions.add(_MenuAction(value: 'music_play', icon: Symbols.play_arrow_rounded, label: t.common.play));
+        menuActions.add(_MenuAction(value: 'music_play', icon: LucideIcons.play, label: t.common.play));
 
         final musicAvailable = context.read<MusicPlaybackService?>() != null;
         if (musicAvailable) {
+          menuActions.add(_MenuAction(value: 'music_play_next', icon: LucideIcons.listVideo, label: t.music.playNext));
           menuActions.add(
-            _MenuAction(value: 'music_play_next', icon: Symbols.playlist_play_rounded, label: t.music.playNext),
-          );
-          menuActions.add(
-            _MenuAction(value: 'music_add_queue', icon: Symbols.queue_music_rounded, label: t.music.addToQueue),
+            _MenuAction(value: 'music_add_queue', icon: LucideIcons.listMusic, label: t.music.addToQueue),
           );
         }
 
@@ -441,7 +439,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
         // reachable (capabilities stay truthy for offline servers).
         if (itemServerOnline && (mediaClient?.capabilities.instantMix ?? false)) {
           menuActions.add(
-            _MenuAction(value: 'music_instant_mix', icon: Symbols.wand_stars_rounded, label: t.music.instantMix),
+            _MenuAction(value: 'music_instant_mix', icon: LucideIcons.wandSparkles, label: t.music.instantMix),
           );
         }
 
@@ -449,7 +447,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
         // detail screen, mirroring the Go to Series ancestor check.
         final ancestorAlbumId = context.findAncestorWidgetOfExactType<AlbumDetailScreen>()?.album.id;
         if (mediaKind == MediaKind.track && mediaItem!.parentId != null && ancestorAlbumId != mediaItem.parentId) {
-          menuActions.add(_MenuAction(value: 'music_album', icon: Symbols.album_rounded, label: t.music.goToAlbum));
+          menuActions.add(_MenuAction(value: 'music_album', icon: LucideIcons.disc3, label: t.music.goToAlbum));
         }
 
         // Go to Artist — album: parent, track: grandparent; hidden when
@@ -461,13 +459,13 @@ class MediaContextMenuState extends State<MediaContextMenu> {
         };
         final ancestorArtistId = context.findAncestorWidgetOfExactType<ArtistDetailScreen>()?.artist.id;
         if (musicArtistId != null && ancestorArtistId != musicArtistId) {
-          menuActions.add(_MenuAction(value: 'music_artist', icon: Symbols.artist_rounded, label: t.music.goToArtist));
+          menuActions.add(_MenuAction(value: 'music_artist', icon: LucideIcons.micVocal, label: t.music.goToArtist));
         }
       }
 
       if (hasActiveProgress) {
         menuActions.add(
-          _MenuAction(value: 'play_from_beginning', icon: Symbols.replay_rounded, label: t.mediaMenu.playFromBeginning),
+          _MenuAction(value: 'play_from_beginning', icon: LucideIcons.rotateCcw, label: t.mediaMenu.playFromBeginning),
         );
       }
 
@@ -475,23 +473,17 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       // screens, so surface it here whenever the screen wires up onPlayTrailer.
       if (widget.onPlayTrailer != null) {
         menuActions.add(
-          _MenuAction(value: 'play_trailer', icon: Symbols.theaters_rounded, label: t.tooltips.playTrailer),
+          _MenuAction(value: 'play_trailer', icon: LucideIcons.clapperboard, label: t.tooltips.playTrailer),
         );
       }
 
       if (!mediaItem!.isWatched || isPartiallyWatched || hasActiveProgress) {
-        menuActions.add(
-          _MenuAction(value: 'watch', icon: Symbols.check_circle_outline_rounded, label: t.mediaMenu.markAsWatched),
-        );
+        menuActions.add(_MenuAction(value: 'watch', icon: LucideIcons.circleCheck, label: t.mediaMenu.markAsWatched));
       }
 
       if (mediaItem.isWatched || isPartiallyWatched || hasActiveProgress) {
         menuActions.add(
-          _MenuAction(
-            value: 'unwatch',
-            icon: Symbols.remove_circle_outline_rounded,
-            label: t.mediaMenu.markAsUnwatched,
-          ),
+          _MenuAction(value: 'unwatch', icon: LucideIcons.circleMinus, label: t.mediaMenu.markAsUnwatched),
         );
       }
 
@@ -499,7 +491,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
         menuActions.add(
           _MenuAction(
             value: 'remove_from_continue_watching',
-            icon: Symbols.close_rounded,
+            icon: LucideIcons.x,
             label: t.mediaMenu.removeFromContinueWatching,
           ),
         );
@@ -508,17 +500,17 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       final isVideoKind = mediaItem.isVideoContent;
 
       if (widget.isInContinueWatching && isVideoKind) {
-        menuActions.add(_MenuAction(value: 'details', icon: Symbols.info_rounded, label: t.mediaMenu.viewDetails));
+        menuActions.add(_MenuAction(value: 'details', icon: LucideIcons.info, label: t.mediaMenu.viewDetails));
       }
 
       if (isVideoKind) {
-        menuActions.add(_MenuAction(value: 'rate', icon: Symbols.star_rounded, label: t.mediaMenu.rate));
+        menuActions.add(_MenuAction(value: 'rate', icon: LucideIcons.star, label: t.mediaMenu.rate));
       }
 
       // Edit Metadata — admin-only and backend-capability gated.
       if (canEditMetadata) {
         menuActions.add(
-          _MenuAction(value: 'edit_metadata', icon: Symbols.edit_rounded, label: t.metadataEdit.editMetadata),
+          _MenuAction(value: 'edit_metadata', icon: LucideIcons.pencil, label: t.metadataEdit.editMetadata),
         );
       }
 
@@ -528,12 +520,12 @@ class MediaContextMenuState extends State<MediaContextMenu> {
         menuActions.add(
           _MenuAction(
             value: 'match',
-            icon: Symbols.search_rounded,
+            icon: LucideIcons.search,
             label: isUnmatched ? t.matchScreen.match : t.matchScreen.fixMatch,
           ),
         );
         if (!isUnmatched) {
-          menuActions.add(_MenuAction(value: 'unmatch', icon: Symbols.link_off_rounded, label: t.matchScreen.unmatch));
+          menuActions.add(_MenuAction(value: 'unmatch', icon: LucideIcons.unlink, label: t.matchScreen.unmatch));
         }
       }
 
@@ -544,7 +536,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
         menuActions.add(
           _MenuAction(
             value: 'remove_from_collection',
-            icon: Symbols.delete_outline_rounded,
+            icon: LucideIcons.trash,
             label: t.collections.removeFromCollection,
           ),
         );
@@ -562,13 +554,11 @@ class MediaContextMenuState extends State<MediaContextMenu> {
           itemSeriesKey != null &&
           !widget.isInContinueWatching &&
           ancestorSeriesKey != itemSeriesKey) {
-        menuActions.add(_MenuAction(value: 'series', icon: Symbols.tv_rounded, label: t.mediaMenu.goToSeries));
+        menuActions.add(_MenuAction(value: 'series', icon: LucideIcons.tv, label: t.mediaMenu.goToSeries));
       }
 
       if (mediaKind == MediaKind.show || mediaKind == MediaKind.season) {
-        menuActions.add(
-          _MenuAction(value: 'shuffle_play', icon: Symbols.shuffle_rounded, label: t.mediaMenu.shufflePlay),
-        );
+        menuActions.add(_MenuAction(value: 'shuffle_play', icon: LucideIcons.shuffle, label: t.mediaMenu.shufflePlay));
       }
 
       // Play Version (for episodes and movies). Hidden when there's
@@ -588,7 +578,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
           (hasVersionChoice || canTranscode) &&
           itemServerOnline) {
         menuActions.add(
-          _MenuAction(value: 'play_version', icon: Symbols.video_file_rounded, label: t.mediaMenu.playVersion),
+          _MenuAction(value: 'play_version', icon: LucideIcons.fileVideo, label: t.mediaMenu.playVersion),
         );
       }
 
@@ -601,7 +591,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       // "not available" snackbar. Hidden when the item has no backend marker
       // so we don't fan out to an arbitrary client.
       if (itemBackend != null && mediaKind != null && mediaKind.hasFileInfo) {
-        menuActions.add(_MenuAction(value: 'fileinfo', icon: Symbols.info_rounded, label: t.mediaMenu.fileInfo));
+        menuActions.add(_MenuAction(value: 'fileinfo', icon: LucideIcons.info, label: t.mediaMenu.fileInfo));
       }
 
       if (PlatformDetector.supportsExternalPlayers() &&
@@ -609,7 +599,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
         menuActions.add(
           _MenuAction(
             value: 'play_external',
-            icon: Symbols.open_in_new_rounded,
+            icon: LucideIcons.externalLink,
             label: t.externalPlayer.playInExternalPlayer,
           ),
         );
@@ -640,7 +630,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
         menuActions.add(
           _MenuAction(
             value: 'toggle_watchlist',
-            icon: watchlistRemoveOffered ? Symbols.bookmark_remove_rounded : Symbols.bookmark_add_rounded,
+            icon: watchlistRemoveOffered ? LucideIcons.bookmarkMinus : LucideIcons.bookmarkPlus,
             label: watchlistRemoveOffered ? t.explore.removeFromWatchlist : t.explore.addToWatchlist,
           ),
         );
@@ -654,7 +644,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
               mediaKind == MediaKind.movie ||
               mediaKind == MediaKind.show ||
               mediaKind == MediaKind.season)) {
-        menuActions.add(_MenuAction(value: 'add_to', icon: Symbols.add_rounded, label: t.common.addTo));
+        menuActions.add(_MenuAction(value: 'add_to', icon: LucideIcons.plus, label: t.common.addTo));
       }
 
       // Delete media item (for episodes, movies, shows, and seasons). Routed
@@ -671,7 +661,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
         menuActions.add(
           _MenuAction(
             value: 'delete_media',
-            icon: Symbols.delete_forever_rounded,
+            icon: LucideIcons.trash2,
             label: _deleteMenuLabel(mediaKind),
             destructive: true,
           ),
@@ -1226,8 +1216,8 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       context,
       title: t.common.addTo,
       options: [
-        (icon: Symbols.playlist_play_rounded, label: t.playlists.playlist, value: 'playlist'),
-        (icon: Symbols.collections_rounded, label: t.collections.collection, value: 'collection'),
+        (icon: LucideIcons.listVideo, label: t.playlists.playlist, value: 'playlist'),
+        (icon: LucideIcons.layers, label: t.collections.collection, value: 'collection'),
       ],
     );
 

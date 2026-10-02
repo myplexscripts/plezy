@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
 
 import '../../focus/focusable_wrapper.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// A standardized button for video player controls with improved tap targets.
 ///
@@ -62,7 +63,7 @@ class VideoControlButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = color ?? (isActive ? Colors.amber : Colors.white);
+    final effectiveColor = color ?? (isActive ? PlezzantColors.highlight : Colors.white);
 
     final button = IconButton(
       icon: AppIcon(icon, fill: 1, color: effectiveColor),

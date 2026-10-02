@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../media/library_query.dart';
 import '../../../media/media_kind.dart';
 import '../../../media/media_playlist.dart';
@@ -35,7 +35,7 @@ class _LibraryPlaylistsTabState extends PaginatedCardGridTabState<MediaPlaylist,
   String get focusNodeDebugLabel => 'playlists_first_item';
 
   @override
-  IconData get emptyIcon => Symbols.playlist_play_rounded;
+  IconData get emptyIcon => LucideIcons.listVideo;
 
   @override
   String get emptyMessage => t.playlists.noPlaylists;

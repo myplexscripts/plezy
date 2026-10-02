@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../connection/connection.dart';
@@ -165,7 +165,7 @@ class _AddPlexAccountScreenState extends State<AddPlexAccountScreen> with AsyncF
                             onPressed: busy || this.busy ? null : qr,
                             child: OutlinedButton.icon(
                               onPressed: busy || this.busy ? null : qr,
-                              icon: const AppIcon(Symbols.qr_code_rounded, fill: 1),
+                              icon: const AppIcon(LucideIcons.qrCode, fill: 1),
                               label: Text(t.auth.showQRCode),
                             ),
                           ),

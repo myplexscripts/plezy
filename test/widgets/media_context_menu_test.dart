@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/connection/connection.dart';
 import 'package:plezy/database/app_database.dart';
 import 'package:plezy/focus/focusable_wrapper.dart';
@@ -1149,19 +1149,19 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(t.music.instantMix), findsOneWidget);
-      expect(find.byIcon(Symbols.wand_stars_rounded), findsOneWidget);
+      expect(find.byIcon(LucideIcons.wandSparkles), findsOneWidget);
 
       // #1629: the fader glyph reads as an equalizer, and the neighbouring
       // rows must stay tellable apart at a glance on a TV.
-      expect(find.byIcon(Symbols.instant_mix_rounded), findsNothing);
-      expect(find.byIcon(Symbols.tune_rounded), findsNothing);
+      expect(find.byIcon(LucideIcons.disc), findsNothing);
+      expect(find.byIcon(LucideIcons.slidersHorizontal), findsNothing);
       final musicIcons = tester
           .widgetList<Icon>(find.byType(Icon))
           .map((icon) => icon.icon)
           .whereType<IconData>()
           .toList();
       expect(
-        musicIcons.where((icon) => icon == Symbols.wand_stars_rounded),
+        musicIcons.where((icon) => icon == LucideIcons.wandSparkles),
         hasLength(1),
         reason: 'Instant Mix must not reuse the glyph of Play, Play next, Add to queue, or Go to artist',
       );

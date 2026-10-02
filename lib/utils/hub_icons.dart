@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../media/media_hub.dart';
 
@@ -15,7 +15,7 @@ IconData hubIconFor(MediaHub hub) {
   final title = hub.title.toLowerCase();
 
   if (hub.isContinueWatchingHub || title.contains('continue watching') || title.contains('on deck')) {
-    return Symbols.play_circle_rounded;
+    return LucideIcons.circlePlay;
   }
   for (final (keywords, icon) in _titleKeywordIcons) {
     if (keywords.any(title.contains)) return icon;
@@ -23,44 +23,44 @@ IconData hubIconFor(MediaHub hub) {
   return _defaultHubIcon;
 }
 
-const _defaultHubIcon = Symbols.auto_awesome_rounded;
+const _defaultHubIcon = LucideIcons.sparkles;
 
 /// Title keywords in match order — see [hubIconFor].
 const _titleKeywordIcons = <(List<String>, IconData)>[
   // Trending/Popular
-  (['trending'], Symbols.trending_up_rounded),
-  (['popular', 'imdb'], Symbols.whatshot_rounded),
+  (['trending'], LucideIcons.trendingUp),
+  (['popular', 'imdb'], LucideIcons.flame),
   // Seasonal/Time-based
-  (['seasonal'], Symbols.calendar_month_rounded),
-  (['newly', 'new release'], Symbols.new_releases_rounded),
-  (['recently released', 'recent'], Symbols.schedule_rounded),
+  (['seasonal'], LucideIcons.calendarDays),
+  (['newly', 'new release'], LucideIcons.badgeAlert),
+  (['recently released', 'recent'], LucideIcons.clock),
   // Top/Rated
-  (['top rated', 'highest rated'], Symbols.star_rounded),
-  (['top '], Symbols.military_tech_rounded),
+  (['top rated', 'highest rated'], LucideIcons.star),
+  (['top '], LucideIcons.medal),
   // Genre-specific
-  (['thriller'], Symbols.warning_amber_rounded),
-  (['comedy', 'comedier'], Symbols.mood_rounded),
-  (['action'], Symbols.flash_on_rounded),
-  (['drama'], Symbols.theater_comedy_rounded),
-  (['fantasy'], Symbols.auto_fix_high_rounded),
-  (['science', 'sci-fi'], Symbols.rocket_launch_rounded),
-  (['horror', 'skräck'], Symbols.nights_stay_rounded),
-  (['romance', 'romantic'], Symbols.favorite_border_rounded),
-  (['adventure', 'äventyr'], Symbols.explore_rounded),
+  (['thriller'], LucideIcons.triangleAlert),
+  (['comedy', 'comedier'], LucideIcons.smile),
+  (['action'], LucideIcons.zap),
+  (['drama'], LucideIcons.drama),
+  (['fantasy'], LucideIcons.wandSparkles),
+  (['science', 'sci-fi'], LucideIcons.rocket),
+  (['horror', 'skräck'], LucideIcons.moonStar),
+  (['romance', 'romantic'], LucideIcons.heart),
+  (['adventure', 'äventyr'], LucideIcons.compass),
   // Watchlist/Playlists
-  (['playlist', 'watchlist'], Symbols.playlist_play_rounded),
-  (['unwatched', 'unplayed'], Symbols.visibility_off_rounded),
-  (['watched', 'played'], Symbols.visibility_rounded),
+  (['playlist', 'watchlist'], LucideIcons.listVideo),
+  (['unwatched', 'unplayed'], LucideIcons.eyeOff),
+  (['watched', 'played'], LucideIcons.eye),
   // Network/Studio
-  (['network', 'more from'], Symbols.tv_rounded),
+  (['network', 'more from'], LucideIcons.tv),
   // Actor/Director
-  (['actor', 'director'], Symbols.person_rounded),
+  (['actor', 'director'], LucideIcons.user),
   // Decades (80s, 90s, etc.)
-  (['80', '90', '00'], Symbols.history_rounded),
+  (['80', '90', '00'], LucideIcons.history),
   // Rediscover/Start Watching
-  (['rediscover', 'start watching'], Symbols.play_arrow_rounded),
+  (['rediscover', 'start watching'], LucideIcons.play),
   // Broad library-hub keywords, last so the specific rows above keep their icons.
-  (['rated'], Symbols.star_rounded),
-  (['recommended'], Symbols.thumb_up_rounded),
-  (['genre'], Symbols.category_rounded),
+  (['rated'], LucideIcons.star),
+  (['recommended'], LucideIcons.thumbsUp),
+  (['genre'], LucideIcons.shapes),
 ];

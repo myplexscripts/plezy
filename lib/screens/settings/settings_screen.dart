@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -63,6 +63,7 @@ import 'services_settings_screen.dart';
 import 'settings_utils.dart';
 import 'tracker_service_info.dart';
 import '../../widgets/loading_indicator_box.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({
@@ -226,7 +227,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
                   children: [
                     SettingNavigationTile(
                       focusNode: _focusTracker.get(_kAbout),
-                      icon: Symbols.info_rounded,
+                      icon: LucideIcons.info,
                       title: t.settings.about,
                       subtitle: t.settings.aboutDescription,
                       destinationBuilder: (context) => const AboutScreen(),
@@ -246,7 +247,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
   Widget _buildGeneralTile() {
     return SettingNavigationTile(
       focusNode: _focusTracker.get(_kGeneral),
-      icon: Symbols.settings_rounded,
+      icon: LucideIcons.settings,
       title: t.settings.general,
       subtitle: t.settings.generalDescription,
       destinationBuilder: (context) => const GeneralSettingsScreen(),
@@ -256,10 +257,10 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
   Widget _buildDonateTile() {
     return SettingNavigationTile(
       focusNode: _focusTracker.get(_kDonate),
-      icon: Symbols.favorite_rounded,
+      icon: LucideIcons.heart,
       title: t.settings.supportDeveloper,
       subtitle: t.settings.supportDeveloperDescription,
-      trailingIcon: Symbols.open_in_new_rounded,
+      trailingIcon: LucideIcons.externalLink,
       onTap: () async {
         final url = Uri.parse(DonationService.donationUrl);
         if (await canLaunchUrl(url)) {
@@ -277,7 +278,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
           final summary = '${themeModeLabel(themeProvider.themeMode)} · ${t.settings.libraryDensity} $libraryDensity';
           return SettingNavigationTile(
             focusNode: _focusTracker.get(_kAppearance),
-            icon: Symbols.palette_rounded,
+            icon: LucideIcons.palette,
             title: t.settings.appearance,
             subtitle: summary,
             destinationBuilder: (context) => const AppearanceSettingsScreen(),
@@ -290,7 +291,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
   Widget _buildPlaybackTile() {
     return SettingNavigationTile(
       focusNode: _focusTracker.get(_kPlayback),
-      icon: Symbols.play_circle_rounded,
+      icon: LucideIcons.circlePlay,
       title: t.settings.videoPlayback,
       subtitle: t.settings.videoPlaybackDescription,
       destinationBuilder: (context) => const PlaybackSettingsScreen(),
@@ -300,7 +301,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
   Widget _buildManageLibrariesTile(BuildContext context) {
     return SettingNavigationTile(
       focusNode: _focusTracker.get(_kManageLibraries),
-      icon: Symbols.video_library_rounded,
+      icon: LucideIcons.libraryBig,
       title: t.libraries.manageLibraries,
       subtitle: t.settings.manageLibrariesDescription,
       onTap: () => showLibraryManagementSheet(context),
@@ -319,7 +320,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         final subtitle = connectedNames.isEmpty ? t.settings.servicesDescription : connectedNames.join(' · ');
         return SettingNavigationTile(
           focusNode: _focusTracker.get(_kServices),
-          icon: Symbols.sync_rounded,
+          icon: LucideIcons.refreshCw,
           title: t.settings.services,
           subtitle: subtitle,
           destinationBuilder: (_) => const ServicesSettingsScreen(),
@@ -342,7 +343,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         // the picker scoped to the active profile so users can add a Plex
         // account, Jellyfin server, or borrow from another profile.
         SettingNavigationTile(
-          icon: Symbols.add_link_rounded,
+          icon: LucideIcons.link2,
           title: t.connections.addConnection,
           subtitle: subtitle,
           onTap: () {
@@ -366,7 +367,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         : t.accountPreferences.hubSubtitleMultiple(count: accounts.length);
     return SettingNavigationTile(
       focusNode: _focusTracker.get(_kAccountPreferences),
-      icon: Symbols.manage_accounts_rounded,
+      icon: LucideIcons.userCog,
       title: t.accountPreferences.sectionTitle,
       subtitle: subtitle,
       destinationBuilder: (context) =>
@@ -388,7 +389,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
               ? t.profiles.summaryMultipleWithActive(count: count, activeName: activeName)
               : t.profiles.summaryMultiple(count: count));
     return SettingNavigationTile(
-      icon: Symbols.group_rounded,
+      icon: LucideIcons.users,
       title: t.profiles.sectionTitle,
       subtitle: subtitle,
       onTap: () => Navigator.of(
@@ -412,10 +413,10 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
               final currentPath = snapshot.data ?? '...';
               return FocusableListTile(
                 focusNode: _focusTracker.get(_kDownloadLocation),
-                leading: const AppIcon(Symbols.folder_rounded, fill: 1),
+                leading: const AppIcon(LucideIcons.folder, fill: 1),
                 title: Text(isCustom ? t.settings.downloadLocationCustom : t.settings.downloadLocationDefault),
                 subtitle: Text(currentPath, maxLines: 2, overflow: .ellipsis),
-                trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+                trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
                 onTap: () => _showDownloadLocationDialog(),
               );
             },
@@ -423,14 +424,14 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         SettingSwitchTile(
           focusNode: _focusTracker.get(_kDownloadOnWifiOnly),
           pref: settings.SettingsService.downloadOnWifiOnly,
-          icon: Symbols.wifi_rounded,
+          icon: LucideIcons.wifi,
           title: t.settings.downloadOnWifiOnly,
           subtitle: t.settings.downloadOnWifiOnlyDescription,
         ),
         SettingSwitchTile(
           focusNode: _focusTracker.get(_kAutoRemoveWatchedDownloads),
           pref: settings.SettingsService.autoRemoveWatchedDownloads,
-          icon: Symbols.delete_sweep_rounded,
+          icon: LucideIcons.eraser,
           title: t.settings.autoRemoveWatchedDownloads,
           subtitle: t.settings.autoRemoveWatchedDownloadsDescription,
         ),
@@ -451,25 +452,21 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         final status = diagnostics.status;
         final scheme = Theme.of(context).colorScheme;
         final (icon, color, summary) = switch (status) {
-          _ when !status.probed => (Symbols.help_rounded, null, t.downloads.backgroundWarning.statusUnknown),
+          _ when !status.probed => (LucideIcons.circleHelp, null, t.downloads.backgroundWarning.statusUnknown),
           _ when status.isBlocked => (
-            Symbols.battery_alert_rounded,
+            LucideIcons.batteryWarning,
             scheme.error,
             t.downloads.backgroundWarning.statusBlocked,
           ),
-          _ when !status.isHealthy => (
-            Symbols.info_rounded,
-            scheme.tertiary,
-            t.downloads.backgroundWarning.statusDegraded,
-          ),
-          _ => (Symbols.check_circle_rounded, null, t.downloads.backgroundWarning.statusOk),
+          _ when !status.isHealthy => (LucideIcons.info, scheme.tertiary, t.downloads.backgroundWarning.statusDegraded),
+          _ => (LucideIcons.circleCheck, null, t.downloads.backgroundWarning.statusOk),
         };
         return FocusableListTile(
           focusNode: _focusTracker.get(_kBackgroundDownloads),
           leading: AppIcon(icon, fill: 1, color: color),
           title: Text(t.downloads.backgroundWarning.statusTile),
           subtitle: Text(summary),
-          trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+          trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
           onTap: () async {
             await diagnostics.refresh();
             if (!context.mounted) return;
@@ -493,7 +490,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
       if (_keyboardService != null) ...[
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kVideoPlayerControls),
-          icon: Symbols.keyboard_rounded,
+          icon: LucideIcons.keyboard,
           title: t.settings.videoPlayerControls,
           subtitle: t.settings.keyboardShortcutsDescription,
           onTap: () {
@@ -506,7 +503,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         SettingSwitchTile(
           focusNode: _focusTracker.get(_kVideoPlayerNavigation),
           pref: settings.SettingsService.videoPlayerNavigationEnabled,
-          icon: Symbols.gamepad_rounded,
+          icon: LucideIcons.gamepad2,
           title: t.settings.videoPlayerNavigation,
           subtitle: t.settings.videoPlayerNavigationDescription,
         ),
@@ -515,7 +512,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         SettingSwitchTile(
           focusNode: _focusTracker.get(_kCompanionRemoteServer),
           pref: settings.SettingsService.enableCompanionRemoteServer,
-          icon: Symbols.phone_android_rounded,
+          icon: LucideIcons.smartphone,
           title: t.settings.companionRemoteServer,
           subtitle: t.settings.companionRemoteServerDescription,
         ),
@@ -532,7 +529,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
       children: [
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kWatchTogetherRelay),
-          icon: Symbols.dns_rounded,
+          icon: LucideIcons.server,
           title: t.settings.watchTogetherRelay,
           subtitle: t.settings.watchTogetherRelayDescription,
           onTap: () => _showRelayUrlDialog(),
@@ -540,48 +537,48 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         SettingSwitchTile(
           focusNode: _focusTracker.get(_kCrashReporting),
           pref: settings.SettingsService.crashReporting,
-          icon: Symbols.monitoring_rounded,
+          icon: LucideIcons.activity,
           title: t.settings.crashReporting,
           subtitle: t.settings.crashReportingDescription,
         ),
         SettingSwitchTile(
           focusNode: _focusTracker.get(_kDebugLogging),
           pref: settings.SettingsService.enableDebugLogging,
-          icon: Symbols.bug_report_rounded,
+          icon: LucideIcons.bug,
           title: t.settings.debugLogging,
           subtitle: t.settings.debugLoggingDescription,
         ),
         SettingSwitchTile(
           focusNode: _focusTracker.get(_kAutoHidePerformanceOverlay),
           pref: settings.SettingsService.autoHidePerformanceOverlay,
-          icon: Symbols.speed_rounded,
+          icon: LucideIcons.gauge,
           title: t.settings.autoHidePerformanceOverlay,
           subtitle: t.settings.autoHidePerformanceOverlayDescription,
         ),
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kViewLogs),
-          icon: Symbols.article_rounded,
+          icon: LucideIcons.newspaper,
           title: t.settings.viewLogs,
           subtitle: t.settings.viewLogsDescription,
           destinationBuilder: (context) => const LogsScreen(),
         ),
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kClearImageCache),
-          icon: Symbols.cleaning_services_rounded,
+          icon: LucideIcons.brushCleaning,
           title: t.settings.clearImageCache,
           subtitle: t.settings.clearImageCacheDescription,
           onTap: () => _showClearImageCacheDialog(),
         ),
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kResetSettings),
-          icon: Symbols.restore_rounded,
+          icon: LucideIcons.archiveRestore,
           title: t.settings.resetSettings,
           subtitle: t.settings.resetSettingsDescription,
           onTap: () => _showResetSettingsDialog(),
         ),
         if (kDebugMode)
           SettingNavigationTile(
-            icon: Symbols.error_rounded,
+            icon: LucideIcons.circleAlert,
             title: 'Test Sentry',
             subtitle: 'Send a test error',
             onTap: () {
@@ -590,7 +587,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
           ),
         if (kDebugMode)
           SettingNavigationTile(
-            icon: Symbols.timer_rounded,
+            icon: LucideIcons.timer,
             title: 'Test ANR',
             subtitle: 'Block the main thread for 10 seconds',
             onTap: () {
@@ -609,14 +606,14 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
       children: [
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kExportSettings),
-          icon: Symbols.upload_rounded,
+          icon: LucideIcons.upload,
           title: t.settings.exportSettings,
           subtitle: t.settings.exportSettingsDescription,
           onTap: _handleExportSettings,
         ),
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kImportSettings),
-          icon: Symbols.download_rounded,
+          icon: LucideIcons.download,
           title: t.settings.importSettings,
           subtitle: t.settings.importSettingsDescription,
           onTap: _showImportSettingsDialog,
@@ -630,7 +627,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
   Widget _buildAutoCheckUpdatesOnStartupTile() => SettingSwitchTile(
     focusNode: _focusTracker.get(_kAutoCheckUpdatesOnStartup),
     pref: settings.SettingsService.autoCheckUpdatesOnStartup,
-    icon: Symbols.notifications_active_rounded,
+    icon: LucideIcons.bellRing,
     title: t.settings.autoCheckUpdatesOnStartup,
     subtitle: t.settings.autoCheckUpdatesOnStartupDescription,
   );
@@ -642,7 +639,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         children: [
           SettingNavigationTile(
             focusNode: _focusTracker.get(_kCheckForUpdates),
-            icon: Symbols.system_update_rounded,
+            icon: LucideIcons.download,
             title: t.settings.checkForUpdates,
             onTap: () => UpdateService.checkForUpdatesNative(inBackground: false),
           ),
@@ -659,15 +656,15 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         FocusableListTile(
           focusNode: _focusTracker.get(_kCheckForUpdates),
           leading: AppIcon(
-            hasUpdate ? Symbols.system_update_rounded : Symbols.check_circle_rounded,
+            hasUpdate ? LucideIcons.download : LucideIcons.circleCheck,
             fill: 1,
-            color: hasUpdate ? Colors.orange : null,
+            color: hasUpdate ? PlezzantColors.warning : null,
           ),
           title: Text(hasUpdate ? t.settings.updateAvailable : t.settings.checkForUpdates),
           subtitle: hasUpdate ? Text(t.update.versionAvailable(version: _updateInfo!['latestVersion'])) : null,
           trailing: _isCheckingForUpdate
               ? const LoadingIndicatorBox(size: 24)
-              : const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+              : const AppIcon(LucideIcons.chevronRight, fill: 1),
           onTap: _isCheckingForUpdate
               ? null
               : () {

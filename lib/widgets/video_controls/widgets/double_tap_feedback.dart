@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../i18n/strings.g.dart';
 import '../../../utils/formatters.dart';
@@ -131,7 +131,7 @@ class _DoubleTapFeedbackState extends State<DoubleTapFeedback> with SingleTicker
         );
       },
       child: AppIcon(
-        widget.isForward ? Symbols.chevron_right_rounded : Symbols.chevron_left_rounded,
+        widget.isForward ? LucideIcons.chevronRight : LucideIcons.chevronLeft,
         fill: 1,
         color: Colors.white,
         size: DoubleTapFeedback._chevronSize(context),

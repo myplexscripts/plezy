@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../connection/connection.dart';
@@ -95,7 +95,7 @@ class _ProfileSwitchScreenState extends State<ProfileSwitchScreen> with MountedS
                       : EmptyStateWidget(
                           message: t.messages.noProfilesAvailable,
                           subtitle: t.messages.contactAdminForProfiles,
-                          icon: Symbols.person_off_rounded,
+                          icon: LucideIcons.userX,
                         ),
                 )
               else
@@ -111,8 +111,8 @@ class _ProfileSwitchScreenState extends State<ProfileSwitchScreen> with MountedS
                     onSelect: _switching ? null : _addLocalProfile,
                     child: OutlinedButton.icon(
                       onPressed: _switching ? null : _addLocalProfile,
-                      icon: const AppIcon(Symbols.person_add_rounded, fill: 1),
-                      label: Text(t.profiles.addPlezyProfile),
+                      icon: const AppIcon(LucideIcons.userPlus, fill: 1),
+                      label: Text(t.profiles.addPlezzantProfile),
                     ),
                   ),
                 ),
@@ -462,7 +462,7 @@ class _ProfileTile extends StatelessWidget {
                         const SizedBox(width: 8),
                         // Plain inline indicator instead of a boxed badge: a
                         // filled pill fights the tile's own focus fill.
-                        AppIcon(Symbols.check_circle_rounded, fill: 1, size: 16, color: tokens(context).textMuted),
+                        AppIcon(LucideIcons.circleCheck, fill: 1, size: 16, color: tokens(context).textMuted),
                         const SizedBox(width: 4),
                         Text(
                           t.profiles.active,
@@ -489,7 +489,7 @@ class _ProfileTile extends StatelessWidget {
                 ],
               )
             else if (!isActive)
-              const Padding(padding: .only(left: 8), child: AppIcon(Symbols.chevron_right_rounded, fill: 1)),
+              const Padding(padding: .only(left: 8), child: AppIcon(LucideIcons.chevronRight, fill: 1)),
           ],
         ),
       ),
@@ -535,7 +535,7 @@ class _ProfileActionsButton extends StatelessWidget {
       focusNode: focusNode,
       semanticLabel: t.profiles.manage,
       onNavigateLeft: onNavigateLeft,
-      icon: const AppIcon(Symbols.more_vert_rounded, fill: 1),
+      icon: const AppIcon(LucideIcons.ellipsisVertical, fill: 1),
       tooltip: t.profiles.manage,
       onSelected: onSelected,
       itemBuilder: (_) => [for (final action in actions) AppMenuItem(value: action, label: action.label)],

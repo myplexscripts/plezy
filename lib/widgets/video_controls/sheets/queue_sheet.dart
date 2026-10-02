@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../media/ids.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../../i18n/strings.g.dart';
@@ -89,12 +89,12 @@ class _QueueSheetState extends State<QueueSheet> {
                     formatQueueItemSubtitle(item),
                     style: TextStyle(
                       color: isCurrent ? primaryColor.withValues(alpha: 0.7) : tokens(context).textMuted,
-                      fontSize: 12,
+                      fontSize: 14,
                     ),
                     maxLines: 1,
                     overflow: .ellipsis,
                   ),
-                  trailing: isCurrent ? AppIcon(Symbols.play_circle_rounded, fill: 1, color: primaryColor) : null,
+                  trailing: isCurrent ? AppIcon(LucideIcons.circlePlay, fill: 1, color: primaryColor) : null,
                   onTap: () {
                     widget.onItemSelected(item);
                     OverlaySheetController.of(context).close();
@@ -104,7 +104,7 @@ class _QueueSheetState extends State<QueueSheet> {
             );
           }
 
-          return BaseVideoControlSheet(title: t.videoControls.queue, icon: Symbols.queue_rounded, child: content);
+          return BaseVideoControlSheet(title: t.videoControls.queue, icon: LucideIcons.listPlus, child: content);
         },
       ),
     );
@@ -126,7 +126,7 @@ class _QueueSheetState extends State<QueueSheet> {
         height: _kThumbHeight,
         fit: BoxFit.cover,
         errorWidget: (context, url, error) =>
-            AppIcon(Symbols.image_rounded, fill: 1, color: Colors.white54, size: _kThumbHeight),
+            AppIcon(LucideIcons.image, fill: 1, color: Colors.white54, size: _kThumbHeight),
       ),
       isCurrent: isCurrent,
       borderColor: Theme.of(context).colorScheme.primary,

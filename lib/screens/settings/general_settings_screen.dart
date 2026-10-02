@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../i18n/strings.g.dart';
@@ -39,14 +39,14 @@ class GeneralSettingsScreen extends StatelessWidget {
             if (hasMultipleProfiles)
               SettingSwitchTile(
                 pref: SettingsService.requireProfileSelectionOnOpen,
-                icon: Symbols.person_rounded,
+                icon: LucideIcons.user,
                 title: t.settings.requireProfileSelectionOnOpen,
                 subtitle: t.settings.requireProfileSelectionOnOpenDescription,
               ),
             if (Platform.isAndroid || PlatformDetector.isDesktopOS())
               SettingSwitchTile(
                 pref: SettingsService.forceTvMode,
-                icon: Symbols.tv_rounded,
+                icon: LucideIcons.tv,
                 title: t.settings.forceTvMode,
                 subtitle: t.settings.forceTvModeDescription,
               ),
@@ -59,7 +59,7 @@ class GeneralSettingsScreen extends StatelessWidget {
             children: [
               SettingSwitchTile(
                 pref: SettingsService.startInFullscreen,
-                icon: Symbols.fullscreen_rounded,
+                icon: LucideIcons.maximize,
                 title: t.settings.startInFullscreen,
                 subtitle: t.settings.startInFullscreenDescription,
               ),
@@ -72,10 +72,10 @@ class GeneralSettingsScreen extends StatelessWidget {
 
   Widget _languageSelector(BuildContext context) {
     return FocusableListTile(
-      leading: const AppIcon(Symbols.language_rounded, fill: 1),
+      leading: const AppIcon(LucideIcons.languages, fill: 1),
       title: Text(t.settings.language),
       subtitle: Text(_getLanguageDisplayName(LocaleSettings.currentLocale)),
-      trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+      trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
       onTap: () async {
         final picked = await showSelectionDialog<AppLocale>(
           context: context,
@@ -108,7 +108,7 @@ class GeneralSettingsScreen extends StatelessWidget {
 
   Widget _startupSectionSelector() => SettingSelectionTile<NavigationTabId>(
     pref: SettingsService.startupSection,
-    icon: Symbols.start_rounded,
+    icon: LucideIcons.stepForward,
     title: t.settings.startupSection,
     subtitleBuilder: _startupSectionLabel,
     options: _startupSectionOptions.map((id) => DialogOption(value: id, title: _startupSectionLabel(id))).toList(),

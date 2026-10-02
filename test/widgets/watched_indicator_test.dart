@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/media/media_kind.dart';
 import 'package:plezy/services/settings_service.dart';
 import 'package:plezy/theme/mono_theme.dart';
@@ -32,7 +32,7 @@ void main() {
   testWidgets('shows the watched checkmark by default', (tester) async {
     await pump(tester, WatchedIndicator(item: watchedMovie));
 
-    expect(find.byIcon(Symbols.check_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.check), findsOneWidget);
   });
 
   testWidgets('hides only the checkmark when watched indicators are off (#1998)', (tester) async {
@@ -46,7 +46,7 @@ void main() {
     );
 
     await pump(tester, WatchedIndicator(item: watchedMovie));
-    expect(find.byIcon(Symbols.check_rounded), findsNothing);
+    expect(find.byIcon(LucideIcons.check), findsNothing);
 
     await pump(tester, WatchedIndicator(item: partiallyWatchedShow));
     expect(find.byType(UnwatchedCountBadge), findsOneWidget, reason: 'unwatched counts are a separate pref');

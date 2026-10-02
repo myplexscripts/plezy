@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../focus/focusable_text_field.dart';
 import '../../focus/input_mode_tracker.dart';
@@ -184,7 +184,7 @@ Future<DialogOption<T>?> showSelectionDialog<T>({
             return FocusableListTile(
               key: ValueKey(option.value),
               leading: AppIcon(
-                selected ? Symbols.radio_button_checked_rounded : Symbols.radio_button_unchecked_rounded,
+                selected ? LucideIcons.circleDot : LucideIcons.circle,
                 color: selected ? Theme.of(dialogContext).colorScheme.primary : null,
               ),
               title: Text(option.title),

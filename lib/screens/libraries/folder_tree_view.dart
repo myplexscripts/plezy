@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../media/ids.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../media/media_backend.dart';
 import '../../media/media_item.dart';
 import '../../media/media_kind.dart';
@@ -333,7 +333,7 @@ class FolderTreeViewState extends State<FolderTreeView> {
         hasScrollBody: false,
         child: ErrorStateWidget(
           message: _errorMessage!,
-          icon: Symbols.error_outline_rounded,
+          icon: LucideIcons.circleAlert,
           onRetry: _loadRootFolders,
           retryLabel: t.common.retry,
           actionFocusNode: widget.firstItemFocusNode,
@@ -347,7 +347,7 @@ class FolderTreeViewState extends State<FolderTreeView> {
     if (_rootFolders.isEmpty) {
       return SliverFillRemaining(
         hasScrollBody: false,
-        child: EmptyStateWidget(message: t.libraries.noFoldersFound, icon: Symbols.folder_open_rounded),
+        child: EmptyStateWidget(message: t.libraries.noFoldersFound, icon: LucideIcons.folderOpen),
       );
     }
 

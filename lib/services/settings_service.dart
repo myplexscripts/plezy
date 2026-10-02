@@ -33,6 +33,7 @@ export 'base_shared_preferences_service.dart'
         JsonPref;
 import '../models/audio_quality_preset.dart';
 import '../models/transcode_quality_preset.dart';
+import '../theme/plezzant/plezzant_preferences.dart';
 import '../navigation/navigation_tabs.dart';
 import '../utils/platform_detector.dart';
 import 'trackers/tracker_constants.dart';
@@ -830,6 +831,21 @@ class SettingsService extends BaseSharedPreferencesService {
   );
   static const automotiveUiScale = _AutomotiveUiScalePref();
   static const tvCornerSpotlightBackdrop = BoolPref('tv_corner_spotlight_backdrop');
+
+  /// Plezzant: artwork-driven palette ambience behind heroes, focus and progress.
+  static const ambienceIntensity = EnumPref<AmbienceIntensity>(
+    'plezzant_ambience_intensity',
+    values: AmbienceIntensity.values,
+    defaultValue: AmbienceIntensity.subtle,
+  );
+
+  /// Plezzant: translucency of floating surfaces. Reduced-performance devices
+  /// always render solid surfaces regardless of this value.
+  static const glassIntensity = EnumPref<GlassIntensity>(
+    'plezzant_glass_intensity',
+    values: GlassIntensity.values,
+    defaultValue: GlassIntensity.subtle,
+  );
   static const episodePosterMode = _EpisodePosterModePref();
   static const continueWatchingAction = EnumPref<ContinueWatchingAction>(
     'continue_watching_action',
@@ -1366,6 +1382,8 @@ class SettingsService extends BaseSharedPreferencesService {
     gridSpacing,
     automotiveUiScale,
     tvCornerSpotlightBackdrop,
+    ambienceIntensity,
+    glassIntensity,
     episodePosterMode,
     continueWatchingAction,
     episodeAction,

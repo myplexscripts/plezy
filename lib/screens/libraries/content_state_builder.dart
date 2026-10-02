@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../focus/focusable_button.dart';
 import '../../i18n/strings.g.dart';
 import '../../utils/error_message_utils.dart';
@@ -34,7 +34,7 @@ class SliverErrorState extends StatelessWidget {
   Widget build(BuildContext context) => SliverFillRemaining(
     child: ErrorStateWidget(
       message: message,
-      icon: Symbols.error_outline_rounded,
+      icon: LucideIcons.circleAlert,
       onRetry: onRetry,
       retryLabel: retryLabel,
       actionFocusNode: actionFocusNode,
@@ -189,7 +189,7 @@ class ContentStateBuilder<T> extends StatelessWidget {
     if (errorMessage != null && items.isEmpty) {
       return ErrorStateWidget(
         message: errorMessage!,
-        icon: Symbols.error_outline_rounded,
+        icon: LucideIcons.circleAlert,
         onRetry: onRetry,
         retryLabel: t.common.retry,
       );

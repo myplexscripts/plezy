@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import '../../media/ids.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../focus/focusable_action_bar.dart';
 import '../../media/media_item.dart';
@@ -151,7 +151,7 @@ class DownloadsScreenState extends State<DownloadsScreen>
                 onNavigateDown: _focusCurrentTab,
                 actions: [
                   FocusableAction(
-                    icon: Symbols.rule_settings_rounded,
+                    icon: LucideIcons.settings2,
                     tooltip: t.downloads.activeSyncRules,
                     onPressed: () =>
                         Navigator.push(context, MaterialPageRoute(builder: (_) => const SyncRulesScreen())),
@@ -340,7 +340,7 @@ class _DownloadsGridContentState extends State<_DownloadsGridContent>
     return EmptyStateWidget(
       message: t.downloads.noDownloads,
       subtitle: t.downloads.noDownloadsDescription,
-      icon: Symbols.download_rounded,
+      icon: LucideIcons.download,
       iconSize: 80,
     );
   }
@@ -422,7 +422,7 @@ class _DownloadedMusicContentState extends State<_DownloadedMusicContent>
       width: 48,
       height: 48,
       color: tk.surface,
-      child: AppIcon(Symbols.album_rounded, fill: 1, size: 24, color: tk.textMuted),
+      child: AppIcon(LucideIcons.disc3, fill: 1, size: 24, color: tk.textMuted),
     );
 
     return Padding(
@@ -486,7 +486,7 @@ class _DownloadedMusicContentState extends State<_DownloadedMusicContent>
           return EmptyStateWidget(
             message: t.downloads.noDownloads,
             subtitle: t.downloads.noDownloadsDescription,
-            icon: Symbols.music_note_rounded,
+            icon: LucideIcons.music,
             iconSize: 80,
           );
         }

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focus_theme.dart';
@@ -247,7 +247,7 @@ class _LyricsViewState extends State<LyricsView> {
     }
     final lyrics = _lyrics;
     if (lyrics == null || lyrics.isEmpty) {
-      return StateMessageWidget(icon: Symbols.lyrics_rounded, message: t.music.noLyrics, iconSize: 48);
+      return StateMessageWidget(icon: LucideIcons.micVocal, message: t.music.noLyrics, iconSize: 48);
     }
 
     final showFocus = _paneFocused && InputModeTracker.isKeyboardMode(context);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/focus/focusable_action_bar.dart';
 import 'package:plezy/focus/input_mode_tracker.dart';
 
@@ -23,14 +23,9 @@ void main() {
     // segment sits a hairline from the play segment while the remaining
     // actions keep the uniform row gap.
     await pumpBar(tester, [
-      FocusableAction(icon: Symbols.play_arrow_rounded, debugLabel: 'play', onPressed: () {}),
-      FocusableAction(
-        icon: Symbols.keyboard_arrow_down_rounded,
-        debugLabel: 'version',
-        onPressed: () {},
-        spacingBefore: 2,
-      ),
-      FocusableAction(icon: Symbols.shuffle_rounded, debugLabel: 'shuffle', onPressed: () {}),
+      FocusableAction(icon: LucideIcons.play, debugLabel: 'play', onPressed: () {}),
+      FocusableAction(icon: LucideIcons.chevronDown, debugLabel: 'version', onPressed: () {}, spacingBefore: 2),
+      FocusableAction(icon: LucideIcons.shuffle, debugLabel: 'shuffle', onPressed: () {}),
     ]);
 
     final buttons = find.byType(IconButton);
@@ -119,7 +114,7 @@ void main() {
     var requestPresses = 0;
     var trailerPresses = 0;
     FocusableAction unlabeled(VoidCallback onPressed) =>
-        FocusableAction(icon: Symbols.circle_rounded, onPressed: onPressed);
+        FocusableAction(icon: LucideIcons.circle, onPressed: onPressed);
 
     final watchlist = unlabeled(() {});
     final trailer = unlabeled(() => trailerPresses++);
@@ -148,7 +143,7 @@ void main() {
 
   testWidgets('equal-shape rebuild still preserves an unlabeled action focus positionally', (tester) async {
     final rowFocusChanges = <bool>[];
-    FocusableAction unlabeled() => FocusableAction(icon: Symbols.circle_rounded, onPressed: () {});
+    FocusableAction unlabeled() => FocusableAction(icon: LucideIcons.circle, onPressed: () {});
     FocusableAction labeled(String label) => FocusableAction(debugLabel: label, onPressed: () {});
 
     await pumpTrackedBar(tester, [labeled('play'), unlabeled()], rowFocusChanges);

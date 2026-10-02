@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/widgets/app_icon.dart';
 
 import '../media/media_server_client.dart';
@@ -148,7 +148,7 @@ class OptimizedMediaImage extends StatelessWidget {
          errorWidget: errorWidget,
          fadeInDuration: fadeInDuration,
          alignment: alignment,
-         fallbackIcon: fallbackIcon ?? Symbols.movie_rounded,
+         fallbackIcon: fallbackIcon ?? LucideIcons.film,
          imageType: ImageType.poster,
          localFilePath: localFilePath,
          artworkDim: artworkDim,
@@ -182,7 +182,7 @@ class OptimizedMediaImage extends StatelessWidget {
          errorWidget: errorWidget,
          fadeInDuration: fadeInDuration,
          alignment: alignment,
-         fallbackIcon: fallbackIcon ?? Symbols.video_library_rounded,
+         fallbackIcon: fallbackIcon ?? LucideIcons.libraryBig,
          imageType: ImageType.thumb,
          localFilePath: localFilePath,
          logoToneTarget: logoToneTarget,
@@ -433,14 +433,11 @@ class OptimizedMediaImage extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorWidget(BuildContext context, dynamic _) => _surfacePlaceholder(
-    context,
-    icon: fallbackIcon ?? Symbols.broken_image_rounded,
-    fillParent: !_hasKnownDimensions,
-  );
+  Widget _buildErrorWidget(BuildContext context, dynamic _) =>
+      _surfacePlaceholder(context, icon: fallbackIcon ?? LucideIcons.imageOff, fillParent: !_hasKnownDimensions);
 
   Widget _buildFallback(BuildContext context) =>
-      _surfacePlaceholder(context, icon: fallbackIcon ?? Symbols.image_not_supported_rounded);
+      _surfacePlaceholder(context, icon: fallbackIcon ?? LucideIcons.imageOff);
 }
 
 /// Clear-logo artwork for hero and detail headers.

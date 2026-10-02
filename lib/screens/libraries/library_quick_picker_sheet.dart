@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../media/media_library.dart';
@@ -73,7 +73,7 @@ class LibraryQuickPickerSheet extends StatelessWidget {
               constrainText: true,
             )
           : null,
-      trailing: isSelected ? AppIcon(Symbols.check_rounded, fill: 1, color: colorScheme.primary) : null,
+      trailing: isSelected ? AppIcon(LucideIcons.check, fill: 1, color: colorScheme.primary) : null,
       onTap: () => onSelected(library.globalKey),
     );
   }

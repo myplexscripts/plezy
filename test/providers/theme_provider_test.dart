@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/i18n/strings.g.dart';
 import 'package:plezy/providers/theme_provider.dart';
 import 'package:plezy/screens/settings/settings_utils.dart';
@@ -110,19 +110,19 @@ void main() {
 
       await p.setThemeMode(settings.ThemeMode.light);
       expect(themeModeLabel(p.themeMode), t.settings.lightTheme);
-      expect(p.themeModeIcon, Symbols.light_mode_rounded);
+      expect(p.themeModeIcon, LucideIcons.sun);
 
       await p.setThemeMode(settings.ThemeMode.dark);
       expect(themeModeLabel(p.themeMode), t.settings.darkTheme);
-      expect(p.themeModeIcon, Symbols.dark_mode_rounded);
+      expect(p.themeModeIcon, LucideIcons.moon);
 
       await p.setThemeMode(settings.ThemeMode.oled);
       expect(themeModeLabel(p.themeMode), t.settings.oledTheme);
-      expect(p.themeModeIcon, Symbols.contrast_rounded);
+      expect(p.themeModeIcon, LucideIcons.contrast);
 
       await p.setThemeMode(settings.ThemeMode.system);
       expect(themeModeLabel(p.themeMode), t.settings.systemTheme);
-      expect(p.themeModeIcon, Symbols.brightness_auto_rounded);
+      expect(p.themeModeIcon, LucideIcons.sunMoon);
 
       p.dispose();
     });

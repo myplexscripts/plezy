@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../media/media_item.dart';
@@ -128,7 +128,7 @@ class VisualEffectsController {
   /// Also used by the pinch-zoom gesture, which mutates the filter
   /// manager directly during the gesture and toasts once on gesture end.
   void showZoomToast(double zoomScale) {
-    _toast.show(Symbols.zoom_in_rounded, t.videoControls.zoomPercent(percent: (zoomScale * 100).round()));
+    _toast.show(LucideIcons.zoomIn, t.videoControls.zoomPercent(percent: (zoomScale * 100).round()));
   }
 
   double setZoom(double zoomScale, {bool showToast = true}) {

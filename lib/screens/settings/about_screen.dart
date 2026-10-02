@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../widgets/focused_scroll_scaffold.dart';
 import '../../widgets/focusable_list_tile.dart';
@@ -33,7 +33,7 @@ class AboutScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         const SizedBox(height: 24),
-                        Image.asset('assets/plezy.png', width: 80, height: 80),
+                        Image.asset('assets/plezzant.png', width: 80, height: 80),
                         const SizedBox(height: 16),
                         Text(appName, style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: .bold)),
                         const SizedBox(height: 8),
@@ -57,10 +57,10 @@ class AboutScreen extends StatelessWidget {
                     margin: EdgeInsets.zero,
                     children: [
                       FocusableListTile(
-                        leading: const AppIcon(Symbols.description_rounded, fill: 1),
+                        leading: const AppIcon(LucideIcons.fileText, fill: 1),
                         title: Text(t.about.openSourceLicenses),
                         subtitle: Text(t.about.viewLicensesDescription),
-                        trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+                        trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const LicensesScreen()));
                         },

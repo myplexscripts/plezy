@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../models/audio_quality_preset.dart';
@@ -113,7 +113,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
               title: t.settings.subtitles,
               children: [
                 SettingNavigationTile(
-                  icon: Symbols.subtitles_rounded,
+                  icon: LucideIcons.captions,
                   title: t.settings.subtitleStyling,
                   subtitle: t.settings.subtitleStylingDescription,
                   destinationBuilder: (_) => const SubtitleStylingScreen(),
@@ -138,7 +138,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
     children: [
       SettingNumberTile(
         pref: SettingsService.seekTimeSmall,
-        icon: Symbols.replay_10_rounded,
+        icon: LucideIcons.rotateCcw,
         title: t.settings.smallSkipDuration,
         subtitleBuilder: (v) => t.settings.secondsUnit(seconds: v.toString()),
         labelText: t.settings.secondsLabel,
@@ -146,7 +146,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
       ),
       SettingNumberTile(
         pref: SettingsService.seekTimeLarge,
-        icon: Symbols.replay_30_rounded,
+        icon: LucideIcons.rotateCcw,
         title: t.settings.largeSkipDuration,
         subtitleBuilder: (v) => t.settings.secondsUnit(seconds: v.toString()),
         labelText: t.settings.secondsLabel,
@@ -154,7 +154,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
       ),
       SettingNumberTile(
         pref: SettingsService.rewindOnResume,
-        icon: Symbols.replay_rounded,
+        icon: LucideIcons.rotateCcw,
         title: t.settings.rewindOnResume,
         subtitleBuilder: (v) => t.settings.secondsUnit(seconds: v.toString()),
         labelText: t.settings.secondsLabel,
@@ -162,7 +162,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
       ),
       SettingNumberTile(
         pref: SettingsService.sleepTimerDuration,
-        icon: Symbols.bedtime_rounded,
+        icon: LucideIcons.moonStar,
         title: t.settings.defaultSleepTimer,
         subtitleBuilder: (v) => t.settings.minutesUnit(minutes: v.toString()),
         labelText: t.settings.minutesLabel,
@@ -176,22 +176,18 @@ class PlaybackSettingsScreen extends StatelessWidget {
     children: [
       _playerScopeTile(
         pref: SettingsService.playbackSpeedScope,
-        icon: Symbols.speed_rounded,
+        icon: LucideIcons.gauge,
         title: t.settings.scopePlaybackSpeed,
       ),
       _playerScopeTile(
         pref: SettingsService.shaderPresetScope,
-        icon: Symbols.auto_fix_high_rounded,
+        icon: LucideIcons.wandSparkles,
         title: t.settings.scopeShaderPreset,
       ),
-      _playerScopeTile(
-        pref: SettingsService.boxFitScope,
-        icon: Symbols.aspect_ratio_rounded,
-        title: t.settings.scopeAspectRatio,
-      ),
+      _playerScopeTile(pref: SettingsService.boxFitScope, icon: LucideIcons.ratio, title: t.settings.scopeAspectRatio),
       _playerScopeTile(
         pref: SettingsService.syncOffsetScope,
-        icon: Symbols.sync_rounded,
+        icon: LucideIcons.refreshCw,
         title: t.settings.scopeSyncOffsets,
       ),
     ],
@@ -221,31 +217,31 @@ class PlaybackSettingsScreen extends StatelessWidget {
     children: [
       SettingSwitchTile(
         pref: SettingsService.rememberTrackSelections,
-        icon: Symbols.bookmark_rounded,
+        icon: LucideIcons.bookmark,
         title: t.settings.rememberTrackSelections,
         subtitle: t.settings.rememberTrackSelectionsDescription,
       ),
       SettingSwitchTile(
         pref: SettingsService.followServerTrackSelections,
-        icon: Symbols.dns_rounded,
+        icon: LucideIcons.server,
         title: t.settings.followServerTrackSelections,
         subtitle: t.settings.followServerTrackSelectionsDescription,
       ),
       SettingSwitchTile(
         pref: SettingsService.resumeMusicOnLaunch,
-        icon: Symbols.music_history_rounded,
+        icon: LucideIcons.history,
         title: t.settings.resumeMusicOnLaunch,
         subtitle: t.settings.resumeMusicOnLaunchDescription,
       ),
       SettingSwitchTile(
         pref: SettingsService.showChapterMarkersOnTimeline,
-        icon: Symbols.bookmarks_rounded,
+        icon: LucideIcons.bookmark,
         title: t.settings.showChapterMarkersOnTimeline,
         subtitle: t.settings.showChapterMarkersOnTimelineDescription,
       ),
       SettingSelectionTile<SpecialsOrdering>(
         pref: SettingsService.specialsOrdering,
-        icon: Symbols.low_priority_rounded,
+        icon: LucideIcons.arrowDown01,
         title: t.settings.specialsOrdering,
         subtitleBuilder: (mode) => '${_specialsOrderingLabel(mode)} · ${t.settings.specialsOrderingDescription}',
         options: SpecialsOrdering.values.map((m) => DialogOption(value: m, title: _specialsOrderingLabel(m))).toList(),
@@ -253,14 +249,14 @@ class PlaybackSettingsScreen extends StatelessWidget {
       if (!isMobile)
         SettingSwitchTile(
           pref: SettingsService.clickVideoTogglesPlayback,
-          icon: Symbols.play_pause_rounded,
+          icon: LucideIcons.circlePlay,
           title: t.settings.clickVideoTogglesPlayback,
           subtitle: t.settings.clickVideoTogglesPlaybackDescription,
         ),
       if (PlatformDetector.isDesktopOS())
         SettingSwitchTile(
           pref: SettingsService.exitFullscreenOnPlayerClose,
-          icon: Symbols.fullscreen_exit_rounded,
+          icon: LucideIcons.minimize,
           title: t.settings.exitFullscreenOnPlayerClose,
           subtitle: t.settings.exitFullscreenOnPlayerCloseDescription,
         ),
@@ -282,13 +278,13 @@ class PlaybackSettingsScreen extends StatelessWidget {
       // pref, and this pref gates the play-next prompt.
       SettingSwitchTile(
         pref: SettingsService.autoPlayNextEpisode,
-        icon: Symbols.skip_next_rounded,
+        icon: LucideIcons.skipForward,
         title: t.settings.autoPlayNextEpisode,
         subtitle: t.settings.autoPlayNextEpisodeDescription,
       ),
       SettingNumberTile(
         pref: SettingsService.playNextCountdown,
-        icon: Symbols.timer_rounded,
+        icon: LucideIcons.timer,
         title: t.settings.playNextCountdown,
         subtitleBuilder: (v) =>
             v == 0 ? t.settings.playNextCountdownImmediate : t.settings.secondsUnit(seconds: v.toString()),
@@ -297,27 +293,27 @@ class PlaybackSettingsScreen extends StatelessWidget {
       ),
       SettingSelectionTile<SkipMarkerMode>(
         pref: SettingsService.skipIntroMode,
-        icon: Symbols.fast_forward_rounded,
+        icon: LucideIcons.fastForward,
         title: t.settings.skipIntroMode,
         subtitleBuilder: (mode) => '${_skipMarkerModeLabel(mode)} · ${_skipIntroModeDescription(mode)}',
         options: SkipMarkerMode.values.map((m) => DialogOption(value: m, title: _skipMarkerModeLabel(m))).toList(),
       ),
       SettingSelectionTile<SkipMarkerMode>(
         pref: SettingsService.skipCreditsMode,
-        icon: Symbols.skip_next_rounded,
+        icon: LucideIcons.skipForward,
         title: t.settings.skipCreditsMode,
         subtitleBuilder: (mode) => '${_skipMarkerModeLabel(mode)} · ${_skipCreditsModeDescription(mode)}',
         options: SkipMarkerMode.values.map((m) => DialogOption(value: m, title: _skipMarkerModeLabel(m))).toList(),
       ),
       SettingSwitchTile(
         pref: SettingsService.forceSkipMarkerFallback,
-        icon: Symbols.tune_rounded,
+        icon: LucideIcons.slidersHorizontal,
         title: t.settings.forceSkipMarkerFallback,
         subtitle: t.settings.forceSkipMarkerFallbackDescription,
       ),
       SettingNumberTile(
         pref: SettingsService.autoSkipDelay,
-        icon: Symbols.timer_rounded,
+        icon: LucideIcons.timer,
         title: t.settings.autoSkipDelay,
         subtitleBuilder: (v) => t.settings.autoSkipDelayDescription(seconds: v.toString()),
         labelText: t.settings.secondsLabel,
@@ -325,14 +321,14 @@ class PlaybackSettingsScreen extends StatelessWidget {
       ),
       SettingRegexTile(
         pref: SettingsService.introPattern,
-        icon: Symbols.match_case_rounded,
+        icon: LucideIcons.caseSensitive,
         title: t.settings.introPattern,
         subtitle: t.settings.introPatternDescription,
         defaultValue: SettingsService.defaultIntroPattern,
       ),
       SettingRegexTile(
         pref: SettingsService.creditsPattern,
-        icon: Symbols.match_case_rounded,
+        icon: LucideIcons.caseSensitive,
         title: t.settings.creditsPattern,
         subtitle: t.settings.creditsPatternDescription,
         defaultValue: SettingsService.defaultCreditsPattern,
@@ -365,26 +361,26 @@ class PlaybackSettingsScreen extends StatelessWidget {
     children: [
       SettingSwitchTile(
         pref: SettingsService.gestureBrightnessSwipe,
-        icon: Symbols.brightness_6_rounded,
+        icon: LucideIcons.sunMoon,
         title: t.settings.gestureBrightnessSwipe,
         subtitle: t.settings.gestureBrightnessSwipeDescription,
       ),
       // Remember the last swiped level between playbacks (#2178).
       SettingSwitchTile(
         pref: SettingsService.rememberBrightnessLevel,
-        icon: Symbols.settings_brightness_rounded,
+        icon: LucideIcons.sunDim,
         title: t.settings.rememberBrightnessLevel,
         subtitle: t.settings.rememberBrightnessLevelDescription,
       ),
       SettingSwitchTile(
         pref: SettingsService.gestureVolumeSwipe,
-        icon: Symbols.volume_up_rounded,
+        icon: LucideIcons.volume2,
         title: t.settings.gestureVolumeSwipe,
         subtitle: t.settings.gestureVolumeSwipeDescription,
       ),
       SettingSwitchTile(
         pref: SettingsService.gesturePinchToZoom,
-        icon: Symbols.pinch_rounded,
+        icon: LucideIcons.hand,
         title: t.settings.gesturePinchToZoom,
         subtitle: t.settings.gesturePinchToZoomDescription,
       ),
@@ -393,7 +389,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
 
   Widget _playerBackendSelector() => SettingSegmentedTile<bool>(
     pref: SettingsService.useExoPlayer,
-    icon: Symbols.play_circle_rounded,
+    icon: LucideIcons.circlePlay,
     title: t.settings.playerBackend,
     segments: [
       ButtonSegment(value: true, label: Text(t.settings.exoPlayer)),
@@ -408,7 +404,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
       final useExt = svc.read(SettingsService.useExternalPlayer);
       final player = svc.read(SettingsService.selectedExternalPlayer);
       return SettingNavigationTile(
-        icon: Symbols.open_in_new_rounded,
+        icon: LucideIcons.externalLink,
         title: t.externalPlayer.title,
         subtitle: useExt
             ? (player.id == 'system_default' ? t.externalPlayer.systemDefault : player.name)
@@ -420,21 +416,21 @@ class PlaybackSettingsScreen extends StatelessWidget {
 
   Widget _hardwareDecodingTile() => SettingSwitchTile(
     pref: SettingsService.enableHardwareDecoding,
-    icon: Symbols.hardware_rounded,
+    icon: LucideIcons.hardDrive,
     title: t.settings.hardwareDecoding,
     subtitle: t.settings.hardwareDecodingDescription,
   );
 
   Widget _autoPipTile() => SettingSwitchTile(
     pref: SettingsService.autoPip,
-    icon: Symbols.picture_in_picture_alt_rounded,
+    icon: LucideIcons.pictureInPicture2,
     title: t.settings.autoPip,
     subtitle: t.settings.autoPipDescription,
   );
 
   Widget _matchContentFrameRateTile() => SettingSwitchTile(
     pref: SettingsService.matchContentFrameRate,
-    icon: Symbols.display_settings_rounded,
+    icon: LucideIcons.monitorCog,
     title: t.settings.matchContentFrameRate,
     subtitle: t.settings.matchContentFrameRateDescription,
   );
@@ -444,35 +440,35 @@ class PlaybackSettingsScreen extends StatelessWidget {
   // surprising rather than useful. The native switch path itself is generic.
   Widget _matchContentResolutionTile() => SettingSwitchTile(
     pref: SettingsService.matchContentResolution,
-    icon: Symbols.aspect_ratio_rounded,
+    icon: LucideIcons.ratio,
     title: t.settings.matchContentResolution,
     subtitle: t.settings.matchContentResolutionDescription,
   );
 
   Widget _matchRefreshRateTile() => SettingSwitchTile(
     pref: SettingsService.matchRefreshRate,
-    icon: Symbols.display_settings_rounded,
+    icon: LucideIcons.monitorCog,
     title: t.settings.matchRefreshRate,
     subtitle: t.settings.matchRefreshRateDescription,
   );
 
   Widget _matchDynamicRangeTile() => SettingSwitchTile(
     pref: SettingsService.matchDynamicRange,
-    icon: Symbols.hdr_on_rounded,
+    icon: LucideIcons.sunMedium,
     title: t.settings.matchDynamicRange,
     subtitle: t.settings.matchDynamicRangeDescription,
   );
 
   Widget _deinterlaceTile() => SettingSwitchTile(
     pref: SettingsService.deinterlace,
-    icon: Symbols.deblur_rounded,
+    icon: LucideIcons.focus,
     title: t.settings.deinterlace,
     subtitle: t.settings.deinterlaceDescription,
   );
 
   Widget _audioPassthroughTile() => SettingSwitchTile(
     pref: SettingsService.audioPassthrough,
-    icon: Symbols.surround_sound_rounded,
+    icon: LucideIcons.audioWaveform,
     title: t.settings.audioPassthrough,
     subtitle: PlatformDetector.isAppleTV()
         ? t.settings.audioPassthroughDescriptionAppleTv
@@ -481,14 +477,14 @@ class PlaybackSettingsScreen extends StatelessWidget {
 
   Widget _audioDownmixTile() => SettingSwitchTile(
     pref: SettingsService.audioDownmix,
-    icon: Symbols.headphones_rounded,
+    icon: LucideIcons.headphones,
     title: t.settings.audioDownmix,
     subtitle: t.settings.audioDownmixDescription,
   );
 
   Widget _downmixCenterBoostTile() => SettingNumberTile(
     pref: SettingsService.downmixCenterBoost,
-    icon: Symbols.record_voice_over_rounded,
+    icon: LucideIcons.audioLines,
     title: t.settings.downmixCenterBoost,
     subtitleBuilder: (v) => t.settings.downmixCenterBoostValue(db: v.toString()),
     labelText: t.settings.downmixCenterBoostLabel,
@@ -497,14 +493,14 @@ class PlaybackSettingsScreen extends StatelessWidget {
 
   Widget _downmixNormalizeTile() => SettingSwitchTile(
     pref: SettingsService.audioDownmixNormalize,
-    icon: Symbols.graphic_eq_rounded,
+    icon: LucideIcons.audioLines,
     title: t.settings.audioDownmixNormalize,
     subtitle: t.settings.audioDownmixNormalizeDescription,
   );
 
   Widget _maxVolumeTile() => SettingNumberTile(
     pref: SettingsService.maxVolume,
-    icon: Symbols.volume_up_rounded,
+    icon: LucideIcons.volume2,
     title: t.settings.maxVolume,
     subtitleBuilder: (v) => t.settings.maxVolumePercent(percent: v.toString()),
     labelText: t.settings.maxVolumeDescription,
@@ -515,7 +511,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
   // SettingsBuilder in build().
   Widget _displaySwitchDelayTile() => SettingNumberTile(
     pref: SettingsService.displaySwitchDelay,
-    icon: Symbols.timer_rounded,
+    icon: LucideIcons.timer,
     title: t.settings.displaySwitchDelay,
     subtitleBuilder: (v) => t.settings.secondsUnit(seconds: v.toString()),
     labelText: t.settings.secondsLabel,
@@ -524,14 +520,14 @@ class PlaybackSettingsScreen extends StatelessWidget {
 
   Widget _tunneledPlaybackTile() => SettingSwitchTile(
     pref: SettingsService.tunneledPlayback,
-    icon: Symbols.tv_options_input_settings_rounded,
+    icon: LucideIcons.monitorCog,
     title: t.settings.tunneledPlayback,
     subtitle: t.settings.tunneledPlaybackDescription,
   );
 
   Widget _dvConversionModeTile() => SettingSelectionTile<DvConversionModePreference>(
     pref: SettingsService.dvConversionMode,
-    icon: Symbols.hdr_strong_rounded,
+    icon: LucideIcons.sunMedium,
     title: t.settings.dvConversionMode,
     subtitleBuilder: (mode) => '${_dvConversionModeLabel(mode)} · ${t.settings.dvConversionModeDescription}',
     options: DvConversionModePreference.values
@@ -548,7 +544,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
 
   Widget _playbackBufferTile() => SettingSelectionTile<PlaybackBufferTier>(
     pref: SettingsService.playbackBufferTier,
-    icon: Symbols.hourglass_top_rounded,
+    icon: LucideIcons.hourglass,
     title: t.settings.playbackBuffer,
     subtitleBuilder: (tier) => '${_playbackBufferLabel(tier)} · ${t.settings.playbackBufferDescription}',
     options: PlaybackBufferTier.values
@@ -564,7 +560,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
 
   Widget _defaultQualityTile() => SettingSelectionTile<TranscodeQualityPreset>(
     pref: SettingsService.defaultQualityPreset,
-    icon: Symbols.high_quality_rounded,
+    icon: LucideIcons.gem,
     title: t.settings.defaultQualityTitle,
     subtitleBuilder: qualityPresetLabel,
     options: TranscodeQualityPreset.displayOrder
@@ -574,7 +570,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
 
   Widget _cellularQualityTile() => SettingSelectionTile<TranscodeQualityPreset?>(
     pref: SettingsService.cellularQualityPreset,
-    icon: Symbols.signal_cellular_alt_rounded,
+    icon: LucideIcons.signalHigh,
     title: t.settings.cellularQualityTitle,
     subtitleBuilder: (p) => p == null ? t.settings.cellularQualitySameAsDefault : qualityPresetLabel(p),
     options: [
@@ -589,14 +585,14 @@ class PlaybackSettingsScreen extends StatelessWidget {
   // direct-play-vs-transcode call server-side (#2152, #2193).
   Widget _directPlayCoveredQualityTile() => SettingSwitchTile(
     pref: SettingsService.directPlayCoveredQuality,
-    icon: Symbols.bolt_rounded,
+    icon: LucideIcons.zap,
     title: t.settings.directPlayCoveredQuality,
     subtitle: t.settings.directPlayCoveredQualityDescription,
   );
 
   Widget _musicQualityTile() => SettingSelectionTile<AudioQualityPreset>(
     pref: SettingsService.musicQualityPreset,
-    icon: Symbols.music_note_rounded,
+    icon: LucideIcons.music,
     title: t.settings.musicQualityTitle,
     subtitleBuilder: _musicQualityLabel,
     options: AudioQualityPreset.values.map((p) => DialogOption(value: p, title: _musicQualityLabel(p))).toList(),
@@ -606,7 +602,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
       preset.isOriginal ? t.videoControls.qualityOriginal : '${preset.bitrateKbps} kbps';
 
   Widget _mpvConfigTile() => SettingNavigationTile(
-    icon: Symbols.tune_rounded,
+    icon: LucideIcons.slidersHorizontal,
     title: t.mpvConfig.title,
     subtitle: t.mpvConfig.description,
     destinationBuilder: (_) => const MpvConfigScreen(),

@@ -2,7 +2,7 @@ import 'dart:async';
 import '../../../media/ids.dart';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../focus/focusable_button.dart';
 import '../../../focus/focusable_text_field.dart';
@@ -21,6 +21,7 @@ import '../../../widgets/pill_input_decoration.dart';
 import 'base_video_control_sheet.dart';
 import '../../loading_indicator_box.dart';
 import '../models/track_controls_state.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 @visibleForTesting
 String resolveSubtitleSearchLanguageCode({String? savedLanguageCode, required Locale systemLocale}) {
@@ -239,7 +240,7 @@ class _SubtitleSearchSheetState extends State<SubtitleSearchSheet> with Controll
 
     return BaseVideoControlSheet(
       title: t.videoControls.searchSubtitles,
-      icon: Symbols.search_rounded,
+      icon: LucideIcons.search,
       onBack: () => OverlaySheetController.of(context).pop(),
       // Deliberately fills the sheet's height cap instead of hugging content.
       // Overlay sheets are bottom-anchored, so a content-driven height would
@@ -272,7 +273,7 @@ class _SubtitleSearchSheetState extends State<SubtitleSearchSheet> with Controll
                           children: [
                             Text(_languageName),
                             const SizedBox(width: 2),
-                            const AppIcon(Symbols.arrow_drop_down_rounded, size: 20),
+                            const AppIcon(LucideIcons.chevronDown, size: 20),
                           ],
                         ),
                       ),
@@ -288,7 +289,7 @@ class _SubtitleSearchSheetState extends State<SubtitleSearchSheet> with Controll
                     decoration: pillInputDecoration(
                       context,
                       hintText: widget.mediaTitle ?? t.metadataEdit.title,
-                      prefixIcon: const AppIcon(Symbols.search_rounded, size: 20),
+                      prefixIcon: const AppIcon(LucideIcons.search, size: 20),
                     ),
                     onChanged: _onTitleChanged,
                     textInputAction: TextInputAction.search,
@@ -347,13 +348,13 @@ class _SubtitleSearchSheetState extends State<SubtitleSearchSheet> with Controll
         } else {
           final trailingChildren = <Widget>[];
           if (result.perfectMatch) {
-            trailingChildren.add(const AppIcon(Symbols.star_rounded, fill: 1, color: Color(0xFFCC7B19), size: 16));
+            trailingChildren.add(const AppIcon(LucideIcons.star, fill: 1, color: PlezzantColors.rating, size: 16));
           }
           if (result.score != null) {
             trailingChildren.add(
               Text(
                 result.score!.toInt().toString(),
-                style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
               ),
             );
           }
@@ -443,7 +444,7 @@ class _LanguagePickerViewState extends State<_LanguagePickerView> with Controlle
   Widget build(BuildContext context) {
     return BaseVideoControlSheet(
       title: t.videoControls.language,
-      icon: Symbols.language_rounded,
+      icon: LucideIcons.languages,
       onBack: widget.onBack,
       // Fills the height cap for the same reason as the search body: the filter
       // field is autofocused and refilters on every keystroke, so a
@@ -460,7 +461,7 @@ class _LanguagePickerViewState extends State<_LanguagePickerView> with Controlle
               decoration: pillInputDecoration(
                 context,
                 hintText: t.videoControls.searchLanguages,
-                prefixIcon: const AppIcon(Symbols.search_rounded, size: 20),
+                prefixIcon: const AppIcon(LucideIcons.search, size: 20),
               ),
               onChanged: _onFilterChanged,
               onSubmitted: (_) => _focusFirstLanguageAfterSubmit(),
@@ -481,7 +482,7 @@ class _LanguagePickerViewState extends State<_LanguagePickerView> with Controlle
                     style: TextStyle(color: isSelected ? Theme.of(context).colorScheme.primary : null),
                   ),
                   trailing: isSelected
-                      ? AppIcon(Symbols.check_rounded, fill: 1, color: Theme.of(context).colorScheme.primary)
+                      ? AppIcon(LucideIcons.check, fill: 1, color: Theme.of(context).colorScheme.primary)
                       : null,
                   onTap: () => widget.onSelected(lang.code, lang.name),
                 );

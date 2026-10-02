@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../media/ids.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../focus/focusable_wrapper.dart';
 import '../i18n/strings.g.dart';
 import '../media/media_item.dart';
@@ -12,6 +12,7 @@ import '../utils/dialogs.dart';
 import '../utils/global_key_utils.dart';
 import '../mixins/unsuppress_focus_mixin.dart';
 import 'download_status_icon.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Represents a node in the download tree
 class DownloadTreeNode {
@@ -672,7 +673,7 @@ class _DownloadTreeItemState extends State<_DownloadTreeItem> {
     return Row(
       children: [
         if (canExpand)
-          AppIcon(widget.isExpanded ? Symbols.expand_more_rounded : Symbols.chevron_right_rounded, fill: 1, size: 20)
+          AppIcon(widget.isExpanded ? LucideIcons.chevronDown : LucideIcons.chevronRight, fill: 1, size: 20)
         else
           const SizedBox(width: 20),
 
@@ -736,7 +737,7 @@ class _DownloadTreeItemState extends State<_DownloadTreeItem> {
                 const SizedBox(height: 4),
                 Text(
                   widget.node.downloadProgress!.errorMessage!,
-                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.red.withValues(alpha: 0.8)),
+                  style: theme.textTheme.bodySmall?.copyWith(color: PlezzantColors.danger.withValues(alpha: 0.8)),
                   maxLines: 2,
                   overflow: .ellipsis,
                 ),
@@ -770,7 +771,7 @@ class _DownloadTreeItemState extends State<_DownloadTreeItem> {
       // Pause all button
       if ((status == DownloadStatus.downloading || status == DownloadStatus.queued) && widget.onPause != null) {
         actions.add((
-          icon: Symbols.pause_rounded,
+          icon: LucideIcons.pause,
           tooltip: t.downloads.pauseAll,
           onPressed: () => widget.pauseAllChildren(widget.node),
         ));
@@ -779,7 +780,7 @@ class _DownloadTreeItemState extends State<_DownloadTreeItem> {
       // Resume all button
       if (status == DownloadStatus.paused && widget.onResume != null) {
         actions.add((
-          icon: Symbols.play_arrow_rounded,
+          icon: LucideIcons.play,
           tooltip: t.downloads.resumeAll,
           onPressed: () => widget.resumeAllChildren(widget.node),
         ));
@@ -788,7 +789,7 @@ class _DownloadTreeItemState extends State<_DownloadTreeItem> {
       // Delete all button
       if (widget.onDelete != null) {
         actions.add((
-          icon: Symbols.delete_sweep_rounded,
+          icon: LucideIcons.eraser,
           tooltip: t.downloads.deleteAll,
           onPressed: () async {
             if (await _confirmDelete()) widget.deleteAllChildren(widget.node);
@@ -803,31 +804,23 @@ class _DownloadTreeItemState extends State<_DownloadTreeItem> {
 
     // Pause button for downloading items
     if (status == DownloadStatus.downloading && widget.onPause != null) {
-      actions.add((icon: Symbols.pause_rounded, tooltip: t.common.pause, onPressed: () => widget.onPause!(globalKey)));
+      actions.add((icon: LucideIcons.pause, tooltip: t.common.pause, onPressed: () => widget.onPause!(globalKey)));
     }
 
     // Resume button for paused items
     if (status == DownloadStatus.paused && widget.onResume != null) {
-      actions.add((
-        icon: Symbols.play_arrow_rounded,
-        tooltip: t.common.resume,
-        onPressed: () => widget.onResume!(globalKey),
-      ));
+      actions.add((icon: LucideIcons.play, tooltip: t.common.resume, onPressed: () => widget.onResume!(globalKey)));
     }
 
     // Cancel button for downloading/queued items
     if ((status == DownloadStatus.downloading || status == DownloadStatus.queued) && widget.onCancel != null) {
-      actions.add((
-        icon: Symbols.close_rounded,
-        tooltip: t.common.cancel,
-        onPressed: () => widget.onCancel!(globalKey),
-      ));
+      actions.add((icon: LucideIcons.x, tooltip: t.common.cancel, onPressed: () => widget.onCancel!(globalKey)));
     }
 
     // Retry button for failed items
     if (status == DownloadStatus.failed && widget.onRetry != null) {
       actions.add((
-        icon: Symbols.refresh_rounded,
+        icon: LucideIcons.rotateCw,
         tooltip: t.downloads.retryDownload,
         onPressed: () => widget.onRetry!(globalKey),
       ));
@@ -837,7 +830,7 @@ class _DownloadTreeItemState extends State<_DownloadTreeItem> {
     if ((status == DownloadStatus.completed || status == DownloadStatus.failed || status == DownloadStatus.cancelled) &&
         widget.onDelete != null) {
       actions.add((
-        icon: Symbols.delete_rounded,
+        icon: LucideIcons.trash2,
         tooltip: t.common.delete,
         onPressed: () async {
           if (await _confirmDelete()) widget.onDelete!(globalKey);

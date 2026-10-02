@@ -2,7 +2,7 @@ import 'dart:async' show unawaited;
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../mixins/disposable_change_notifier_mixin.dart';
 import '../services/settings_binding_owner.dart';
 import '../services/settings_service.dart' as settings;
@@ -116,13 +116,13 @@ class ThemeProvider extends ChangeNotifier with DisposableChangeNotifierMixin, W
   IconData get themeModeIcon {
     switch (_themeMode) {
       case settings.ThemeMode.light:
-        return Symbols.light_mode_rounded;
+        return LucideIcons.sun;
       case settings.ThemeMode.dark:
-        return Symbols.dark_mode_rounded;
+        return LucideIcons.moon;
       case settings.ThemeMode.oled:
-        return Symbols.contrast_rounded;
+        return LucideIcons.contrast;
       case settings.ThemeMode.system:
-        return Symbols.brightness_auto_rounded;
+        return LucideIcons.sunMoon;
     }
   }
 }

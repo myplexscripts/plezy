@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/utils/media_image_helper.dart';
 import 'package:plezy/widgets/optimized_media_image.dart';
 
@@ -48,7 +48,7 @@ void main() {
     expect(widgetCached.cacheKey, sharedCached.cacheKey);
     expect(widgetCached.cacheKey, isNotNull);
     expect(widgetCached.headers, sharedCached.headers);
-    expect(widgetCached.headers, const {'User-Agent': 'Plezy'});
+    expect(widgetCached.headers, const {'User-Agent': 'Plezzant'});
     expect(widgetCached.maxWidth, sharedCached.maxWidth);
     expect(widgetCached.maxWidth, isNull);
     expect(widgetCached.maxHeight, sharedCached.maxHeight);
@@ -163,7 +163,7 @@ void main() {
                   width: 96,
                   height: 96,
                   imageType: ImageType.avatar,
-                  fallbackIcon: Symbols.person_rounded,
+                  fallbackIcon: LucideIcons.user,
                 ),
                 const SizedBox(height: 8),
                 const Text('Actor Name'),
@@ -176,7 +176,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Symbols.person_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.user), findsOneWidget);
 
     final placeholder = find.descendant(of: find.byType(OptimizedMediaImage), matching: find.byType(Container));
     expect(placeholder, findsOneWidget);
@@ -299,17 +299,17 @@ void main() {
               localFilePath: file.path,
               width: 80,
               height: 120,
-              fallbackIcon: Symbols.image_not_supported_rounded,
+              fallbackIcon: LucideIcons.imageOff,
             );
           },
         ),
       ),
     );
 
-    expect(find.byIcon(Symbols.image_not_supported_rounded), findsNothing);
+    expect(find.byIcon(LucideIcons.imageOff), findsNothing);
     await tester.runAsync(() => Future<void>.delayed(Duration.zero));
     await tester.pump();
-    expect(find.byIcon(Symbols.image_not_supported_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.imageOff), findsOneWidget);
 
     file.writeAsBytesSync(
       base64Decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='),
@@ -318,12 +318,12 @@ void main() {
     rebuild(() {});
     await tester.pump();
 
-    expect(find.byIcon(Symbols.image_not_supported_rounded), findsNothing);
+    expect(find.byIcon(LucideIcons.imageOff), findsNothing);
     await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 20)));
     await tester.pump();
     await tester.pump();
     expect(file.existsSync(), isTrue);
-    expect(find.byIcon(Symbols.image_not_supported_rounded), findsNothing);
+    expect(find.byIcon(LucideIcons.imageOff), findsNothing);
     expect(find.byType(Image), findsOneWidget);
     final localImage = tester.widget<Image>(find.byType(Image));
     final localResize = localImage.image as ResizeImage;

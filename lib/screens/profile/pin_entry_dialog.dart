@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../focus/dpad_navigator.dart';
 import '../../focus/focus_theme.dart';
@@ -107,7 +107,7 @@ class _PinEntryDialogState extends State<PinEntryDialog> with SingleTickerProvid
           ),
           if (widget.errorMessage != null) ...[
             const SizedBox(height: 12),
-            Text(widget.errorMessage!, style: TextStyle(color: theme.colorScheme.error, fontSize: 12), maxLines: 2),
+            Text(widget.errorMessage!, style: TextStyle(color: theme.colorScheme.error, fontSize: 14), maxLines: 2),
           ],
         ],
       ),
@@ -152,7 +152,7 @@ class _PinEntryDialogState extends State<PinEntryDialog> with SingleTickerProvid
             ),
             if (widget.errorMessage != null) ...[
               const SizedBox(height: 12),
-              Text(widget.errorMessage!, style: TextStyle(color: colorScheme.error, fontSize: 12), maxLines: 2),
+              Text(widget.errorMessage!, style: TextStyle(color: colorScheme.error, fontSize: 14), maxLines: 2),
             ],
           ],
         ),
@@ -163,7 +163,7 @@ class _PinEntryDialogState extends State<PinEntryDialog> with SingleTickerProvid
   Widget _buildTitle(ThemeData theme) {
     return Row(
       children: [
-        AppIcon(Symbols.lock_outline_rounded, fill: 1, size: 24, color: theme.colorScheme.primary),
+        AppIcon(LucideIcons.lock, fill: 1, size: 24, color: theme.colorScheme.primary),
         const SizedBox(width: 12),
         Expanded(child: Text(widget.userName, overflow: .ellipsis)),
       ],
@@ -672,9 +672,9 @@ class _PinKey {
       case _PinKeyType.digit:
         return null;
       case _PinKeyType.backspace:
-        return Symbols.backspace_rounded;
+        return LucideIcons.delete;
       case _PinKeyType.close:
-        return Symbols.close_rounded;
+        return LucideIcons.x;
     }
   }
 }

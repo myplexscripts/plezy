@@ -2,7 +2,7 @@ import 'dart:async';
 import '../../../media/ids.dart';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../../media/library_first_character.dart';
 import '../../../media/library_query.dart';
@@ -460,7 +460,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
 
   // Required abstract implementations from base class
   @override
-  IconData get emptyIcon => Symbols.folder_open_rounded;
+  IconData get emptyIcon => LucideIcons.folderOpen;
 
   @override
   String get emptyMessage => t.libraries.thisLibraryIsEmpty;
@@ -964,36 +964,36 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
     final controller = OverlaySheetController.of(sheetContext);
     return BottomSheetPageScaffold(
       title: t.libraries.libraryOptions,
-      icon: Symbols.tune_rounded,
+      icon: LucideIcons.slidersHorizontal,
       child: ListView(
         primary: false,
         shrinkWrap: true,
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
           FocusableListTile(
-            leading: const AppIcon(Symbols.category_rounded, fill: 1),
+            leading: const AppIcon(LucideIcons.shapes, fill: 1),
             title: Text(t.libraries.groupings.title),
             subtitle: Text(_getGroupingLabel(_selectedGrouping)),
-            trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+            trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
             onTap: () => _showGroupingOptionsPage(controller),
           ),
           if (_isFiltersChipVisible)
             FocusableListTile(
-              leading: const AppIcon(Symbols.filter_alt_rounded, fill: 1),
+              leading: const AppIcon(LucideIcons.funnel, fill: 1),
               title: Text(
                 _selectedFilters.isEmpty
                     ? t.libraries.filters
                     : t.libraries.filtersWithCount(count: _selectedFilters.length),
               ),
-              trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+              trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
               onTap: () => _showFiltersOptionsPage(controller),
             ),
           if (_isSortChipVisible)
             FocusableListTile(
-              leading: const AppIcon(Symbols.sort_rounded, fill: 1),
+              leading: const AppIcon(LucideIcons.arrowDownWideNarrow, fill: 1),
               title: Text(t.libraries.sort),
               subtitle: _selectedSort == null ? null : Text(_selectedSort!.title),
-              trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+              trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
               onTap: () => _showSortOptionsPage(controller),
             ),
         ],
@@ -1057,7 +1057,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
   Widget _buildGroupingBottomSheet({required ValueChanged<String> onSelected, VoidCallback? onBack}) {
     return BottomSheetPageScaffold(
       title: t.libraries.groupings.title,
-      icon: Symbols.category_rounded,
+      icon: LucideIcons.shapes,
       onBack: onBack,
       child: ListView(
         primary: false,
@@ -1074,11 +1074,8 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
       final isSelected = _selectedGrouping == grouping;
       return FocusableListTile(
         key: ValueKey(grouping),
-        dense: true,
-        leading: AppIcon(
-          isSelected ? Symbols.radio_button_checked_rounded : Symbols.radio_button_unchecked_rounded,
-          fill: 1,
-        ),
+        dense: false,
+        leading: AppIcon(isSelected ? LucideIcons.circleDot : LucideIcons.circle, fill: 1),
         title: Text(_getGroupingLabel(grouping)),
         onTap: () => onSelected(grouping),
       );
@@ -1345,7 +1342,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
   /// selecting another field applies it with its default direction.
   Future<void> _showSortMenu(Rect anchorRect) async {
     final selectedKey = _selectedSort?.key;
-    final directionIcon = _isSortDescending ? Symbols.arrow_downward_rounded : Symbols.arrow_upward_rounded;
+    final directionIcon = _isSortDescending ? LucideIcons.arrowDown : LucideIcons.arrowUp;
     final choice = await showAppMenu<Object>(
       context,
       anchorRect: anchorRect,
@@ -1981,7 +1978,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
           FocusableFilterChip(
             key: _groupingChipKey,
             focusNode: _groupingChipFocusNode,
-            icon: Symbols.category_rounded,
+            icon: LucideIcons.shapes,
             label: _getGroupingLabel(_selectedGrouping),
             onPressed: _showGroupingBottomSheet,
             onNavigateDown: _navigateToGrid,
@@ -1996,7 +1993,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
             FocusableFilterChip(
               key: _filtersChipKey,
               focusNode: _filtersChipFocusNode,
-              icon: Symbols.filter_alt_rounded,
+              icon: LucideIcons.funnel,
               label: _selectedFilters.isEmpty
                   ? t.libraries.filters
                   : t.libraries.filtersWithCount(count: _selectedFilters.length),
@@ -2013,7 +2010,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
             FocusableFilterChip(
               key: _sortChipKey,
               focusNode: _sortChipFocusNode,
-              icon: Symbols.sort_rounded,
+              icon: LucideIcons.arrowDownWideNarrow,
               label: _selectedSort?.title ?? t.libraries.sort,
               onPressed: _showSortBottomSheet,
               onNavigateDown: _navigateToGrid,
@@ -2070,10 +2067,10 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
         return [
           SliverEmptyState(
             message: t.libraries.noItemsMatchFilters,
-            icon: Symbols.filter_alt_off_rounded,
+            icon: LucideIcons.funnelX,
             onAction: _resetFilters,
             actionLabel: t.libraries.resetFilters,
-            actionIcon: Symbols.clear_all_rounded,
+            actionIcon: LucideIcons.listX,
             actionFocusNode: firstItemFocusNode,
             onActionNavigateUp: _navigateToChips,
             onActionNavigateLeft: _navigateToSidebar,
@@ -2081,7 +2078,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
           ),
         ];
       }
-      return [SliverEmptyState(message: t.libraries.thisLibraryIsEmpty, icon: Symbols.folder_open_rounded)];
+      return [SliverEmptyState(message: t.libraries.thisLibraryIsEmpty, icon: LucideIcons.folderOpen)];
     }
 
     return [

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_text_field.dart';
@@ -19,6 +19,7 @@ import '../../widgets/companion_remote/discovery_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/pill_input_decoration.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 class MobileRemoteScreen extends StatefulWidget {
   const MobileRemoteScreen({super.key});
@@ -41,7 +42,7 @@ class _MobileRemoteScreenState extends State<MobileRemoteScreen> {
               builder: (context, provider, child) {
                 if (provider.isConnected) {
                   return IconButton(
-                    icon: const AppIcon(Symbols.link_off_rounded),
+                    icon: const AppIcon(LucideIcons.unlink),
                     onPressed: () async {
                       final confirmed = await showConfirmDialog(
                         context,
@@ -170,7 +171,7 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
               color: Theme.of(context).colorScheme.primaryContainer,
               child: Row(
                 children: [
-                  AppIcon(Symbols.computer_rounded, color: Theme.of(context).colorScheme.onPrimaryContainer),
+                  AppIcon(LucideIcons.monitor, color: Theme.of(context).colorScheme.onPrimaryContainer),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -194,7 +195,7 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
                   Container(
                     width: 8,
                     height: 8,
-                    decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+                    decoration: const BoxDecoration(color: PlezzantColors.success, shape: BoxShape.circle),
                   ),
                 ],
               ),
@@ -211,17 +212,17 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
                   ButtonSegment(
                     value: 0,
                     label: Text(t.companionRemote.remote.tabRemote),
-                    icon: const AppIcon(Symbols.navigation_rounded),
+                    icon: const AppIcon(LucideIcons.navigation),
                   ),
                   ButtonSegment(
                     value: 1,
                     label: Text(t.companionRemote.remote.tabPlay),
-                    icon: const AppIcon(Symbols.play_arrow_rounded),
+                    icon: const AppIcon(LucideIcons.play),
                   ),
                   ButtonSegment(
                     value: 2,
                     label: Text(t.companionRemote.remote.tabMore),
-                    icon: const AppIcon(Symbols.flash_on_rounded),
+                    icon: const AppIcon(LucideIcons.zap),
                   ),
                 ],
                 selected: {_selectedTab},
@@ -252,17 +253,17 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
           mainAxisAlignment: .spaceEvenly,
           children: [
             _RemoteButton(
-              icon: Symbols.home_rounded,
+              icon: LucideIcons.house,
               label: t.common.home,
               onPressed: () => _sendCommand(RemoteCommandType.home),
             ),
             _RemoteButton(
-              icon: Symbols.arrow_back_rounded,
+              icon: LucideIcons.arrowLeft,
               label: t.common.back,
               onPressed: () => _sendCommand(RemoteCommandType.back),
             ),
             _RemoteButton(
-              icon: Symbols.menu_rounded,
+              icon: LucideIcons.menu,
               label: t.companionRemote.remote.menu,
               onPressed: () => _sendCommand(RemoteCommandType.contextMenu),
             ),
@@ -280,27 +281,27 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
             alignment: WrapAlignment.center,
             children: [
               _RemoteChip(
-                icon: Symbols.explore_rounded,
+                icon: LucideIcons.compass,
                 label: t.companionRemote.remote.tabDiscover,
                 onPressed: () => _sendCommand(RemoteCommandType.tabDiscover),
               ),
               _RemoteChip(
-                icon: Symbols.video_library_rounded,
+                icon: LucideIcons.libraryBig,
                 label: t.companionRemote.remote.tabLibraries,
                 onPressed: () => _sendCommand(RemoteCommandType.tabLibraries),
               ),
               _RemoteChip(
-                icon: Symbols.search_rounded,
+                icon: LucideIcons.search,
                 label: t.companionRemote.remote.tabSearch,
                 onPressed: () => _showSearchSheet(switchToSearchTab: true),
               ),
               _RemoteChip(
-                icon: Symbols.download_rounded,
+                icon: LucideIcons.download,
                 label: t.companionRemote.remote.tabDownloads,
                 onPressed: () => _sendCommand(RemoteCommandType.tabDownloads),
               ),
               _RemoteChip(
-                icon: Symbols.settings_rounded,
+                icon: LucideIcons.settings,
                 label: t.companionRemote.remote.tabSettings,
                 onPressed: () => _sendCommand(RemoteCommandType.tabSettings),
               ),
@@ -319,13 +320,13 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
           mainAxisAlignment: .center,
           children: [
             _RemoteButton(
-              icon: Symbols.skip_previous_rounded,
+              icon: LucideIcons.skipBack,
               label: t.companionRemote.remote.previous,
               onPressed: () => _sendCommand(RemoteCommandType.previousTrack),
             ),
             const SizedBox(width: 16),
             _RemoteButton(
-              icon: Symbols.play_arrow_rounded,
+              icon: LucideIcons.play,
               label: t.companionRemote.remote.playPause,
               size: 64,
               iconSize: 36,
@@ -333,7 +334,7 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
             ),
             const SizedBox(width: 16),
             _RemoteButton(
-              icon: Symbols.skip_next_rounded,
+              icon: LucideIcons.skipForward,
               label: t.companionRemote.remote.next,
               onPressed: () => _sendCommand(RemoteCommandType.nextTrack),
             ),
@@ -344,19 +345,19 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
           mainAxisAlignment: .center,
           children: [
             _RemoteButton(
-              icon: Symbols.replay_10_rounded,
+              icon: LucideIcons.rotateCcw,
               label: t.companionRemote.remote.seekBack,
               onPressed: () => _sendCommand(RemoteCommandType.seekBackward),
             ),
             const SizedBox(width: 16),
             _RemoteButton(
-              icon: Symbols.stop_rounded,
+              icon: LucideIcons.square,
               label: t.companionRemote.remote.stop,
               onPressed: () => _sendCommand(RemoteCommandType.stop),
             ),
             const SizedBox(width: 16),
             _RemoteButton(
-              icon: Symbols.forward_10_rounded,
+              icon: LucideIcons.rotateCw,
               label: t.companionRemote.remote.seekForward,
               onPressed: () => _sendCommand(RemoteCommandType.seekForward),
             ),
@@ -369,19 +370,19 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
           mainAxisAlignment: .center,
           children: [
             _RemoteButton(
-              icon: Symbols.volume_off_rounded,
+              icon: LucideIcons.volumeX,
               label: t.common.mute,
               onPressed: () => _sendCommand(RemoteCommandType.volumeMute),
             ),
             const SizedBox(width: 16),
             _RemoteButton(
-              icon: Symbols.volume_down_rounded,
+              icon: LucideIcons.volume1,
               label: t.companionRemote.remote.volumeDown,
               onPressed: () => _sendCommand(RemoteCommandType.volumeDown),
             ),
             const SizedBox(width: 16),
             _RemoteButton(
-              icon: Symbols.volume_up_rounded,
+              icon: LucideIcons.volume2,
               label: t.companionRemote.remote.volumeUp,
               onPressed: () => _sendCommand(RemoteCommandType.volumeUp),
             ),
@@ -403,20 +404,20 @@ class _RemoteControlContentState extends State<_RemoteControlContent> {
           alignment: WrapAlignment.center,
           children: [
             if (!isPlayerActive)
-              _RemoteCard(icon: Symbols.search_rounded, label: t.common.search, onPressed: _showSearchSheet),
+              _RemoteCard(icon: LucideIcons.search, label: t.common.search, onPressed: _showSearchSheet),
             if (isPlayerActive) ...[
               _RemoteCard(
-                icon: Symbols.fullscreen_rounded,
+                icon: LucideIcons.maximize,
                 label: t.companionRemote.remote.fullscreen,
                 onPressed: () => _sendCommand(RemoteCommandType.fullscreen),
               ),
               _RemoteCard(
-                icon: Symbols.subtitles_rounded,
+                icon: LucideIcons.captions,
                 label: t.companionRemote.remote.subtitles,
                 onPressed: () => _sendCommand(RemoteCommandType.subtitles),
               ),
               _RemoteCard(
-                icon: Symbols.audiotrack_rounded,
+                icon: LucideIcons.music,
                 label: t.companionRemote.remote.audio,
                 onPressed: () => _sendCommand(RemoteCommandType.audioTracks),
               ),
@@ -450,24 +451,20 @@ class _DPad extends StatelessWidget {
             Container(
               decoration: BoxDecoration(shape: BoxShape.circle, color: colors.surface),
             ),
-            _DPadZone(
-              startAngle: -135,
-              icon: Symbols.keyboard_arrow_up_rounded,
-              onTap: () => onCommand(RemoteCommandType.dpadUp),
-            ),
+            _DPadZone(startAngle: -135, icon: LucideIcons.chevronUp, onTap: () => onCommand(RemoteCommandType.dpadUp)),
             _DPadZone(
               startAngle: -45,
-              icon: Symbols.keyboard_arrow_right_rounded,
+              icon: LucideIcons.chevronRight,
               onTap: () => onCommand(RemoteCommandType.dpadRight),
             ),
             _DPadZone(
               startAngle: 45,
-              icon: Symbols.keyboard_arrow_down_rounded,
+              icon: LucideIcons.chevronDown,
               onTap: () => onCommand(RemoteCommandType.dpadDown),
             ),
             _DPadZone(
               startAngle: 135,
-              icon: Symbols.keyboard_arrow_left_rounded,
+              icon: LucideIcons.chevronLeft,
               onTap: () => onCommand(RemoteCommandType.dpadLeft),
             ),
             Center(child: _DPadCenter(onTap: () => onCommand(RemoteCommandType.select))),
@@ -699,11 +696,8 @@ class _SearchBottomSheetState extends State<_SearchBottomSheet> with ControllerD
             decoration: pillInputDecoration(
               context,
               hintText: t.companionRemote.remote.searchHint,
-              prefixIcon: const AppIcon(Symbols.search_rounded),
-              suffixIcon: IconButton(
-                icon: const AppIcon(Symbols.send_rounded),
-                onPressed: () => _submit(_controller.text),
-              ),
+              prefixIcon: const AppIcon(LucideIcons.search),
+              suffixIcon: IconButton(icon: const AppIcon(LucideIcons.send), onPressed: () => _submit(_controller.text)),
             ),
             onSubmitted: _submit,
           ),

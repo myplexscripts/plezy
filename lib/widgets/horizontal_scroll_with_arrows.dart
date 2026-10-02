@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../theme/mono_tokens.dart';
 import '../utils/platform_detector.dart';
 
@@ -158,13 +158,13 @@ class _HorizontalScrollWithArrowsState extends State<HorizontalScrollWithArrows>
             child,
             _buildArrowButton(
               position: 8,
-              icon: Symbols.chevron_left_rounded,
+              icon: LucideIcons.chevronLeft,
               onPressed: _scrollLeft,
               canScroll: _canScrollLeft,
             ),
             _buildArrowButton(
               position: -8,
-              icon: Symbols.chevron_right_rounded,
+              icon: LucideIcons.chevronRight,
               onPressed: _scrollRight,
               canScroll: _canScrollRight,
             ),

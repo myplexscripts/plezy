@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../focus/focusable_button.dart';
@@ -57,7 +57,7 @@ class BackgroundDownloadWarningBanner extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
             child: Row(
               children: [
-                AppIcon(blocked ? Symbols.battery_alert_rounded : Symbols.info_rounded, fill: 1, color: foreground),
+                AppIcon(blocked ? LucideIcons.batteryWarning : LucideIcons.info, fill: 1, color: foreground),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -162,7 +162,7 @@ Future<bool> showBackgroundDownloadWarningDialog(
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
-                      child: const AppIcon(Symbols.chevron_right_rounded, fill: 1, size: 18),
+                      child: const AppIcon(LucideIcons.chevronRight, fill: 1, size: 18),
                     ),
                     const SizedBox(width: 8),
                     Expanded(child: Text(_describeReason(reason))),
@@ -180,7 +180,7 @@ Future<bool> showBackgroundDownloadWarningDialog(
                   onPressed: () => _openDontKillMyApp(dialogContext, launcher: externalUrlLauncher),
                   child: TextButton.icon(
                     onPressed: () => _openDontKillMyApp(dialogContext, launcher: externalUrlLauncher),
-                    icon: const AppIcon(Symbols.open_in_new_rounded, fill: 1, size: 18),
+                    icon: const AppIcon(LucideIcons.externalLink, fill: 1, size: 18),
                     label: const Text('dontkillmyapp.com'),
                   ),
                 ),

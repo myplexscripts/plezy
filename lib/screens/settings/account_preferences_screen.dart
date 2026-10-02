@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../media/account_preferences_target.dart';
@@ -34,7 +34,7 @@ class AccountPreferencesScreen extends StatelessWidget {
           SliverFillRemaining(
             hasScrollBody: false,
             child: EmptyStateWidget(
-              icon: Symbols.account_circle_rounded,
+              icon: LucideIcons.circleUser,
               message: t.accountPreferences.noAccounts,
               subtitle: t.accountPreferences.noAccountsHint,
             ),
@@ -70,7 +70,7 @@ class AccountPreferencesScreen extends StatelessWidget {
                 leading: BackendBadge(backend: target.backend, size: 24),
                 title: Text(target.label),
                 subtitle: target.subtitle != null ? Text(target.subtitle!) : null,
-                trailing: const AppIcon(Symbols.chevron_right_rounded, fill: 1),
+                trailing: const AppIcon(LucideIcons.chevronRight, fill: 1),
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => AccountPreferencesDetailScreen(target: target)),

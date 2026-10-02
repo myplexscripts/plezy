@@ -4,7 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/dpad_navigator.dart';
@@ -208,20 +208,20 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
         entries: [
           AppMenuItem(
             value: 'off',
-            icon: Symbols.timer_off_rounded,
+            icon: LucideIcons.timerOff,
             label: t.common.off,
             selected: !service.sleepTimerActive,
           ),
           for (final minutes in const [15, 30, 60])
             AppMenuItem(
               value: '$minutes',
-              icon: Symbols.timer_rounded,
+              icon: LucideIcons.timer,
               label: t.music.sleepTimerMinutes(n: minutes),
               selected: timed && service.sleepTimerDuration == Duration(minutes: minutes),
             ),
           AppMenuItem(
             value: 'end_of_track',
-            icon: Symbols.music_note_rounded,
+            icon: LucideIcons.music,
             label: t.music.sleepTimerEndOfTrack,
             selected: service.sleepTimerEndOfTrack,
           ),
@@ -478,7 +478,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
               FocusableButton(
                 onPressed: _pop,
                 child: IconButton(
-                  icon: AppIcon(Symbols.keyboard_arrow_down_rounded, fill: 1, color: tk.text),
+                  icon: AppIcon(LucideIcons.chevronDown, fill: 1, color: tk.text),
                   tooltip: t.common.close,
                   onPressed: _pop,
                 ),
@@ -493,7 +493,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: .ellipsis,
-                      style: TextStyle(fontSize: 13, color: tk.textMuted),
+                      style: TextStyle(fontSize: 14, color: tk.textMuted),
                     ),
             ),
             _buildOverflowButton(track),
@@ -531,7 +531,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
           onPressed: _toggleLyrics,
           child: IconButton(
             icon: AppIcon(
-              Symbols.lyrics_rounded,
+              LucideIcons.micVocal,
               fill: 1,
               size: 22,
               color: _showLyrics ? colorScheme.primary : tk.textMuted,
@@ -567,10 +567,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
       builder: (context, volume, _) {
         final tk = tokens(context);
         final icon = volume <= 0
-            ? Symbols.volume_off_rounded
+            ? LucideIcons.volumeX
             : volume < 50
-            ? Symbols.volume_down_rounded
-            : Symbols.volume_up_rounded;
+            ? LucideIcons.volume1
+            : LucideIcons.volume2;
         return Row(
           mainAxisSize: .min,
           children: [
@@ -610,7 +610,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
       key: contextMenuKey,
       item: track,
       extraEntries: [
-        MediaMenuExtraEntry(icon: Symbols.bedtime_rounded, label: t.music.sleepTimer, onSelected: _showSleepTimerSheet),
+        MediaMenuExtraEntry(icon: LucideIcons.moonStar, label: t.music.sleepTimer, onSelected: _showSleepTimerSheet),
       ],
       child: FocusableButton(
         focusNode: focusable ? _overflowFocusNode : null,
@@ -622,7 +622,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
         onBack: focusable ? _pop : null,
         useBackgroundFocus: focusable,
         child: IconButton(
-          icon: AppIcon(Symbols.more_vert_rounded, fill: 1, color: tk.text),
+          icon: AppIcon(LucideIcons.ellipsisVertical, fill: 1, color: tk.text),
           onPressed: showMenu,
           tooltip: MaterialLocalizations.of(context).showMenuTooltip,
         ),
@@ -737,7 +737,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
           onPressed: service.toggleShuffle,
           builder: (context, state) => _transportIcon(
             state,
-            icon: Symbols.shuffle_rounded,
+            icon: LucideIcons.shuffle,
             active: service.shuffled,
             tooltip: t.common.shuffle,
             onPressed: service.toggleShuffle,
@@ -749,7 +749,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
           onPressed: () => unawaited(service.previous()),
           builder: (context, state) => _transportIcon(
             state,
-            icon: Symbols.skip_previous_rounded,
+            icon: LucideIcons.skipBack,
             tooltip: t.music.previousTrack,
             onPressed: () => unawaited(service.previous()),
             size: 32,
@@ -768,7 +768,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
           onPressed: () => unawaited(service.next()),
           builder: (context, state) => _transportIcon(
             state,
-            icon: Symbols.skip_next_rounded,
+            icon: LucideIcons.skipForward,
             tooltip: t.music.nextTrack,
             onPressed: () => unawaited(service.next()),
             size: 32,
@@ -814,7 +814,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
             onPressed: _toggleLyrics,
             builder: (context, state) => _transportIcon(
               state,
-              icon: Symbols.lyrics_rounded,
+              icon: LucideIcons.micVocal,
               active: _showLyrics,
               tooltip: t.music.lyrics,
               onPressed: _toggleLyrics,
@@ -827,7 +827,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
               onPressed: () => unawaited(showQueueSheet(_sheetContext)),
               builder: (context, state) => _transportIcon(
                 state,
-                icon: Symbols.queue_music_rounded,
+                icon: LucideIcons.listMusic,
                 active: false,
                 tooltip: t.music.queue,
                 onPressed: () => unawaited(showQueueSheet(_sheetContext)),
@@ -880,7 +880,7 @@ class _Artwork extends StatelessWidget {
               imageType: ImageType.square,
               width: side,
               height: side,
-              fallbackIcon: Symbols.music_note_rounded,
+              fallbackIcon: LucideIcons.music,
             ),
           ),
         );
@@ -975,7 +975,7 @@ class _PlayPauseButton extends StatelessWidget {
                       child: CircularProgressIndicator(strokeWidth: 2.5, color: colorScheme.onInverseSurface),
                     )
                   : AppIcon(
-                      isPlaying ? Symbols.pause_rounded : Symbols.play_arrow_rounded,
+                      isPlaying ? LucideIcons.pause : LucideIcons.play,
                       fill: 1,
                       size: 36,
                       color: colorScheme.onInverseSurface,
@@ -1173,10 +1173,10 @@ class _NowPlayingSeekBarState extends State<_NowPlayingSeekBar> {
                 children: [
                   Text(
                     formatDurationTimestamp(Duration(milliseconds: positionMs.round())),
-                    style: TextStyle(fontSize: 12, color: tk.textMuted),
+                    style: TextStyle(fontSize: 14, color: tk.textMuted),
                   ),
                   const Spacer(),
-                  Text(formatDurationTimestamp(duration), style: TextStyle(fontSize: 12, color: tk.textMuted)),
+                  Text(formatDurationTimestamp(duration), style: TextStyle(fontSize: 14, color: tk.textMuted)),
                 ],
               ),
             ),

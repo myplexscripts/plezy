@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/focusable_wrapper.dart';
 import '../i18n/strings.g.dart';
@@ -49,7 +49,7 @@ class _FileInfoBottomSheetState extends State<FileInfoBottomSheet> {
     final versions = widget.fileInfo.versions;
     return BottomSheetPageScaffold(
       title: t.fileInfo.title,
-      icon: Symbols.info_rounded,
+      icon: LucideIcons.info,
       closeFocusNode: _initialFocusNode,
       // Flat sheet: the tonal cards do the separating, so the header
       // keeps no rule under it.
@@ -154,7 +154,7 @@ class _VersionBlock extends StatelessWidget {
             padding: EdgeInsets.only(top: index == 0 ? 0 : 8, bottom: 10),
             child: Row(
               children: [
-                AppIcon(Symbols.layers_rounded, size: 18, fill: 1, color: theme.colorScheme.primary),
+                AppIcon(LucideIcons.layers, size: 18, fill: 1, color: theme.colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
                   t.fileInfo.versionCounter(index: index + 1, count: versionCount),
@@ -177,13 +177,13 @@ class _VersionBlock extends StatelessWidget {
             ),
           ),
         ],
-        _InfoSection(title: t.fileInfo.overview, icon: Symbols.movie_info_rounded, fields: _overviewFields(version)),
+        _InfoSection(title: t.fileInfo.overview, icon: LucideIcons.clapperboard, fields: _overviewFields(version)),
         for (var partIndex = 0; partIndex < version.parts.length; partIndex++)
           _PartBlock(part: version.parts[partIndex], index: partIndex, partCount: version.parts.length),
         if (version.attachments.isNotEmpty)
           _InfoSection(
             title: t.fileInfo.attachments,
-            icon: Symbols.attach_file_rounded,
+            icon: LucideIcons.paperclip,
             subtitle: '${version.attachments.length}',
             fields: [
               for (final attachment in version.attachments)
@@ -198,7 +198,7 @@ class _VersionBlock extends StatelessWidget {
           ),
         _InfoSection(
           title: t.fileInfo.delivery,
-          icon: Symbols.cell_tower_rounded,
+          icon: LucideIcons.radioTower,
           fields: _deliveryFields(context, version),
         ),
         if (!isLast) const SizedBox(height: 20),
@@ -302,7 +302,7 @@ class _PartBlock extends StatelessWidget {
       children: [
         _InfoSection(
           title: partCount > 1 ? t.fileInfo.fileCounter(index: index + 1, count: partCount) : t.fileInfo.file,
-          icon: Symbols.description_rounded,
+          icon: LucideIcons.fileText,
           fields: _fileFields(),
           leading: part.filePath == null ? null : _PathRow(path: part.filePath!),
         ),
@@ -393,7 +393,7 @@ class _PathRow extends StatelessWidget {
               const SizedBox(width: 8),
               Tooltip(
                 message: t.fileInfo.copyPath,
-                child: AppIcon(Symbols.content_copy_rounded, size: 18, color: theme.colorScheme.onSurfaceVariant),
+                child: AppIcon(LucideIcons.copy, size: 18, color: theme.colorScheme.onSurfaceVariant),
               ),
             ],
           ),
@@ -437,12 +437,12 @@ class _StreamGroup extends StatelessWidget {
   };
 
   IconData _groupIcon(MediaStreamKind kind) => switch (kind) {
-    MediaStreamKind.video => Symbols.movie_rounded,
-    MediaStreamKind.audio => Symbols.graphic_eq_rounded,
-    MediaStreamKind.subtitle => Symbols.subtitles_rounded,
-    MediaStreamKind.image => Symbols.image_rounded,
-    MediaStreamKind.lyric => Symbols.lyrics_rounded,
-    MediaStreamKind.data || MediaStreamKind.unknown => Symbols.data_object_rounded,
+    MediaStreamKind.video => LucideIcons.film,
+    MediaStreamKind.audio => LucideIcons.audioLines,
+    MediaStreamKind.subtitle => LucideIcons.captions,
+    MediaStreamKind.image => LucideIcons.image,
+    MediaStreamKind.lyric => LucideIcons.micVocal,
+    MediaStreamKind.data || MediaStreamKind.unknown => LucideIcons.braces,
   };
 
   List<String> _flagChips(MediaStreamDetails stream) {

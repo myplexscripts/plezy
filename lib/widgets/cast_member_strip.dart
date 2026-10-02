@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/card_focus_scope.dart';
 import '../focus/dpad_navigator.dart';
@@ -57,7 +57,11 @@ class CastMemberStrip extends StatefulWidget {
 
   /// The strip's fixed height for a given card width:
   /// image + inner padding + text area + list padding + focus scale headroom.
-  static double heightForCardWidth(double cardWidth) => cardWidth + _innerPadding * 2 + 66 + 10;
+  static double heightForCardWidth(double cardWidth) => cardWidth + _innerPadding * 2 + _textAreaHeight + 10;
+
+  /// Gap plus a two-line name and one secondary line at the Plezzant type scale
+  /// (bodyMedium 16/1.45, bodySmall 14/1.4).
+  static const double _textAreaHeight = 78;
 
   static double _itemExtentForCardWidth(double cardWidth) => cardWidth + _innerPadding * 2 + 4;
 
@@ -215,7 +219,7 @@ class CastMemberStripState extends State<CastMemberStrip> {
                                 height: imageSize,
                                 fit: BoxFit.cover,
                                 imageType: ImageType.square,
-                                fallbackIcon: Symbols.person_rounded,
+                                fallbackIcon: LucideIcons.user,
                               ),
                             ),
                           ),

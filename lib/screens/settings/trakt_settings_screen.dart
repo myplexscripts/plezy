@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../i18n/strings.g.dart';
@@ -70,13 +70,13 @@ class TraktSettingsScreen extends StatelessWidget {
           toggles: [
             TrackerSettingsToggle(
               pref: SettingsService.scrobblePref(TrackerService.trakt),
-              icon: Symbols.auto_timer_rounded,
+              icon: LucideIcons.alarmClock,
               title: t.trakt.scrobble,
               subtitle: t.trakt.scrobbleDescription,
             ),
             TrackerSettingsToggle(
               pref: SettingsService.enableTraktWatchedSync,
-              icon: Symbols.check_circle_rounded,
+              icon: LucideIcons.circleCheck,
               title: t.trakt.watchedSync,
               subtitle: t.trakt.watchedSyncDescription,
             ),

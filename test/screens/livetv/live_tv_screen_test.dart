@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/focus/input_mode_tracker.dart';
 import 'package:plezy/i18n/strings.g.dart';
 import 'package:plezy/media/ids.dart';
@@ -43,7 +43,7 @@ void main() {
       harness.dispose();
     });
 
-    expect(find.byIcon(Symbols.star_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.star), findsOneWidget);
     expect(_guideChannels(tester).map((channel) => channel.key), ['channel-a']);
 
     harness.liveTv.favorites.complete(const []);
@@ -57,7 +57,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(t.liveTv.noFavoriteChannels), findsNothing);
-    expect(find.byIcon(Symbols.star_outline_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.star), findsOneWidget);
     expect(_guideChannels(tester).map((channel) => channel.key), ['channel-a']);
   });
 
@@ -89,7 +89,7 @@ void main() {
 
     expect(_guideChannels(tester).map((channel) => channel.key), ['channel-a']);
 
-    await tester.tap(find.byIcon(Symbols.refresh_rounded));
+    await tester.tap(find.byIcon(LucideIcons.rotateCw));
     await tester.pumpAndSettle();
 
     expect(_guideChannels(tester).map((channel) => channel.key), ['channel-a']);
@@ -113,7 +113,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(_guideChannels(tester).map((channel) => channel.key), ['channel-a']);
 
-    await tester.tap(find.byIcon(Symbols.search_rounded));
+    await tester.tap(find.byIcon(LucideIcons.search));
     await tester.pumpAndSettle();
 
     // The sheet searches the full lineup, not the favorites-filtered one.
@@ -141,7 +141,7 @@ void main() {
     harness.liveTv.favorites.completeError(StateError('favorite read failed'));
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Symbols.star_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.star), findsOneWidget);
     expect(_guideChannels(tester).map((channel) => channel.key), ['channel-a']);
   });
   testWidgets('favorite failure keeps favorites loaded from healthy stores', (tester) async {

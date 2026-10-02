@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:provider/provider.dart';
@@ -39,6 +39,7 @@ import '../widgets/sleep_timer_content.dart';
 import '../../../i18n/strings.g.dart';
 import 'base_video_control_sheet.dart';
 import 'version_quality_sheet.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 enum _SettingsView { menu, speed, zoom, versionQuality, sleep, audioDevice, shader, dvConversion, hdrToneMapping }
 
@@ -64,19 +65,19 @@ class _SettingsMenuItem extends StatelessWidget {
     final t = tokens(context);
     final valueWidget = Text(
       valueText,
-      style: TextStyle(color: isHighlighted ? Colors.amber : t.textMuted, fontSize: 14),
+      style: TextStyle(color: isHighlighted ? PlezzantColors.highlight : t.textMuted, fontSize: 14),
       overflow: allowValueOverflow ? TextOverflow.ellipsis : null,
     );
 
     return FocusableListTile(
-      leading: AppIcon(icon, fill: 1, color: isHighlighted ? Colors.amber : t.textMuted),
+      leading: AppIcon(icon, fill: 1, color: isHighlighted ? PlezzantColors.highlight : t.textMuted),
       title: Text(title),
       trailing: Row(
         mainAxisSize: .min,
         children: [
           if (allowValueOverflow) Flexible(child: valueWidget) else valueWidget,
           const SizedBox(width: 8),
-          AppIcon(Symbols.chevron_right_rounded, fill: 1, color: t.textMuted),
+          AppIcon(LucideIcons.chevronRight, fill: 1, color: t.textMuted),
         ],
       ),
       onTap: onTap,
@@ -231,9 +232,17 @@ class _SettingsToggleItemState extends State<_SettingsToggleItem> {
         final displayedValue = _pendingValue ?? value;
         final isPending = _pendingValue != null;
         return FocusableListTile(
-          leading: AppIcon(widget.icon, fill: 1, color: displayedValue ? Colors.amber : tokens(context).textMuted),
+          leading: AppIcon(
+            widget.icon,
+            fill: 1,
+            color: displayedValue ? PlezzantColors.highlight : tokens(context).textMuted,
+          ),
           title: Text(widget.title),
-          trailing: Switch(value: displayedValue, onChanged: isPending ? null : _write, activeThumbColor: Colors.amber),
+          trailing: Switch(
+            value: displayedValue,
+            onChanged: isPending ? null : _write,
+            activeThumbColor: PlezzantColors.highlight,
+          ),
           onTap: isPending ? null : () => _write(!displayedValue),
         );
       },
@@ -292,9 +301,9 @@ class _AudioRenderingModeItemState extends State<_AudioRenderingModeItem> {
     final highlighted = mode.isDolbyAtmos || mode.isDolbyAudio;
     return FocusableListTile(
       leading: AppIcon(
-        Symbols.spatial_audio_rounded,
+        LucideIcons.audioLines,
         fill: 1,
-        color: highlighted ? Colors.amber : tokens(context).textMuted,
+        color: highlighted ? PlezzantColors.highlight : tokens(context).textMuted,
       ),
       title: Text(t.videoSettings.audioOutput),
       trailing: Text(label, style: TextStyle(color: tokens(context).textMuted)),
@@ -511,7 +520,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
     if (controller == null) return;
 
     final title = isSubtitle ? t.videoSettings.subtitleSync : t.videoSettings.audioSync;
-    final icon = isSubtitle ? Symbols.subtitles_rounded : Symbols.sync_rounded;
+    final icon = isSubtitle ? LucideIcons.captions : LucideIcons.refreshCw;
     final propertyName = isSubtitle ? 'sub-delay' : 'audio-delay';
     final initialOffset = isSubtitle ? _subtitleSyncOffset : _audioSyncOffset;
 
@@ -587,23 +596,23 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
   IconData _getIcon() {
     switch (_currentView) {
       case _SettingsView.menu:
-        return Symbols.tune_rounded;
+        return LucideIcons.slidersHorizontal;
       case _SettingsView.speed:
-        return Symbols.speed_rounded;
+        return LucideIcons.gauge;
       case _SettingsView.zoom:
-        return Symbols.zoom_in_rounded;
+        return LucideIcons.zoomIn;
       case _SettingsView.versionQuality:
-        return Symbols.art_track_rounded;
+        return LucideIcons.galleryHorizontal;
       case _SettingsView.sleep:
-        return Symbols.bedtime_rounded;
+        return LucideIcons.moonStar;
       case _SettingsView.audioDevice:
-        return Symbols.speaker_rounded;
+        return LucideIcons.speaker;
       case _SettingsView.shader:
-        return Symbols.auto_fix_high_rounded;
+        return LucideIcons.wandSparkles;
       case _SettingsView.dvConversion:
-        return Symbols.hdr_strong_rounded;
+        return LucideIcons.sunMedium;
       case _SettingsView.hdrToneMapping:
-        return Symbols.tonality_rounded;
+        return LucideIcons.contrast;
     }
   }
 
@@ -701,7 +710,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
             builder: (context, snapshot) {
               final currentRate = _displayedRate(snapshot.data ?? 1.0);
               return _SettingsMenuItem(
-                icon: Symbols.speed_rounded,
+                icon: LucideIcons.gauge,
                 title: t.videoSettings.playbackSpeed,
                 valueText: formatPlaybackRate(currentRate, normalAtOne: true),
                 onTap: () => _navigateTo(_SettingsView.speed),
@@ -711,7 +720,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
 
         if (_state.onVideoZoomChanged != null || _state.onResetVideoZoom != null)
           _SettingsMenuItem(
-            icon: Symbols.zoom_in_rounded,
+            icon: LucideIcons.zoomIn,
             title: t.videoSettings.zoom,
             valueText: _formatZoomScale(_zoomScale),
             isHighlighted: (_zoomScale - 1.0).abs() > 0.0001,
@@ -720,7 +729,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
 
         if (_hasVersionQuality)
           _SettingsMenuItem(
-            icon: Symbols.art_track_rounded,
+            icon: LucideIcons.galleryHorizontal,
             title: _versionQualityTitle(),
             valueText: _versionQualityValueText(),
             allowValueOverflow: true,
@@ -733,7 +742,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
           builder: (context, _) {
             final isActive = sleepTimer.isActive;
             return _SettingsMenuItem(
-              icon: Symbols.bedtime_rounded,
+              icon: LucideIcons.moonStar,
               title: t.videoSettings.sleepTimer,
               valueText: _formatSleepTimer(sleepTimer),
               isHighlighted: isActive,
@@ -743,7 +752,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         ),
 
         _SettingsMenuItem(
-          icon: Symbols.sync_rounded,
+          icon: LucideIcons.refreshCw,
           title: t.videoSettings.audioSync,
           valueText: formatSyncOffset(_audioSyncOffset.toDouble()),
           isHighlighted: _audioSyncOffset != 0,
@@ -751,7 +760,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         ),
 
         _SettingsMenuItem(
-          icon: Symbols.subtitles_rounded,
+          icon: LucideIcons.captions,
           title: t.videoSettings.subtitleSync,
           valueText: formatSyncOffset(_subtitleSyncOffset.toDouble()),
           isHighlighted: _subtitleSyncOffset != 0,
@@ -761,7 +770,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         if (_supportsHdrControl)
           _SettingsToggleItem(
             pref: SettingsService.enableHDR,
-            icon: Symbols.hdr_strong_rounded,
+            icon: LucideIcons.sunMedium,
             title: t.videoSettings.hdr,
             onAfterWrite: _setHdrEnabled,
           ),
@@ -771,7 +780,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         // tone-maps.
         if (_supportsHdrControl && PlayerNative.usesLinuxVideoPlane)
           _SettingsMenuItem(
-            icon: Symbols.tonality_rounded,
+            icon: LucideIcons.contrast,
             title: t.videoSettings.hdrToneMapping,
             valueText: _formatHdrToneMapping(_hdrToneMapping),
             onTap: () => _navigateTo(_SettingsView.hdrToneMapping),
@@ -779,7 +788,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
 
         _SettingsToggleItem(
           pref: SettingsService.autoPlayNextEpisode,
-          icon: Symbols.skip_next_rounded,
+          icon: LucideIcons.skipForward,
           title: t.videoControls.autoPlayNext,
         ),
 
@@ -792,7 +801,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
               final deviceLabel = currentDevice.description.isEmpty ? currentDevice.name : currentDevice.description;
 
               return _SettingsMenuItem(
-                icon: Symbols.speaker_rounded,
+                icon: LucideIcons.speaker,
                 title: t.videoSettings.audioOutput,
                 valueText: deviceLabel,
                 allowValueOverflow: true,
@@ -814,14 +823,14 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
 
         _SettingsToggleItem(
           pref: SettingsService.audioNormalization,
-          icon: Symbols.graphic_eq_rounded,
+          icon: LucideIcons.audioLines,
           title: t.videoSettings.audioNormalization,
           onAfterWrite: widget.player.setAudioNormalization,
         ),
 
         _SettingsToggleItem(
           pref: SettingsService.audioDownmix,
-          icon: Symbols.headphones_rounded,
+          icon: LucideIcons.headphones,
           title: t.videoSettings.audioDownmix,
           onAfterWrite: (enabled) => widget.player.setAudioDownmix(
             enabled: enabled,
@@ -833,7 +842,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         // Shader Preset (MPV only)
         if (_state.shaderService != null && _state.shaderService!.isSupported)
           _SettingsMenuItem(
-            icon: Symbols.auto_fix_high_rounded,
+            icon: LucideIcons.wandSparkles,
             title: t.shaders.title,
             valueText: _shaderPresetTitle(_state.shaderService!.currentPreset),
             isHighlighted: _state.shaderService!.currentPreset.isEnabled,
@@ -844,9 +853,9 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         if (_state.onToggleAmbientLighting != null)
           FocusableListTile(
             leading: AppIcon(
-              Symbols.blur_on_rounded,
+              LucideIcons.blend,
               fill: 1,
-              color: _state.isAmbientLightingEnabled ? Colors.amber : tokens(context).textMuted,
+              color: _state.isAmbientLightingEnabled ? PlezzantColors.highlight : tokens(context).textMuted,
             ),
             title: Text(t.videoControls.ambientLighting),
             trailing: Switch(
@@ -855,7 +864,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
                 _state.onToggleAmbientLighting?.call();
                 OverlaySheetController.of(context).close();
               },
-              activeThumbColor: Colors.amber,
+              activeThumbColor: PlezzantColors.highlight,
             ),
             onTap: () {
               _state.onToggleAmbientLighting?.call();
@@ -866,13 +875,13 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         // Performance Overlay Toggle
         _SettingsToggleItem(
           pref: SettingsService.showPerformanceOverlay,
-          icon: Symbols.analytics_rounded,
+          icon: LucideIcons.chartColumn,
           title: t.videoSettings.performanceOverlay,
         ),
 
         if (_showDebugDvConversionMode)
           _SettingsMenuItem(
-            icon: Symbols.hdr_strong_rounded,
+            icon: LucideIcons.sunMedium,
             title: t.settings.dvConversionMode,
             valueText: _formatDvConversionMode(_dvConversionMode),
             isHighlighted: _dvConversionMode != 'auto',
@@ -882,7 +891,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         // Debug: Trigger MPV Fallback (Android ExoPlayer only)
         if (kDebugMode && Platform.isAndroid && widget.player.playerType == 'exoplayer')
           FocusableListTile(
-            leading: AppIcon(Symbols.swap_horiz_rounded, fill: 1, color: tokens(context).textMuted),
+            leading: AppIcon(LucideIcons.arrowLeftRight, fill: 1, color: tokens(context).textMuted),
             title: const Text('Trigger MPV Fallback'),
             onTap: () {
               const MethodChannel('com.plezy/exo_player').invokeMethod('triggerFallback');
@@ -893,7 +902,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         if (kDebugMode)
           for (final status in const [500, 404, 503])
             FocusableListTile(
-              leading: AppIcon(Symbols.bug_report_rounded, fill: 1, color: tokens(context).textMuted),
+              leading: AppIcon(LucideIcons.bug, fill: 1, color: tokens(context).textMuted),
               title: Text('Simulate HTTP $status from server'),
               onTap: () {
                 final player = widget.player;
@@ -926,8 +935,8 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         for (final mode in modes)
           FocusableListTile(
             title: Text(mode.title, style: TextStyle(color: _dvConversionMode == mode.value ? primary : null)),
-            subtitle: Text(mode.subtitle, style: TextStyle(color: tokens(context).textMuted, fontSize: 12)),
-            trailing: _dvConversionMode == mode.value ? AppIcon(Symbols.check_rounded, fill: 1, color: primary) : null,
+            subtitle: Text(mode.subtitle, style: TextStyle(color: tokens(context).textMuted, fontSize: 14)),
+            trailing: _dvConversionMode == mode.value ? AppIcon(LucideIcons.check, fill: 1, color: primary) : null,
             onTap: () => _setDebugDvConversionMode(mode.value),
           ),
       ],
@@ -949,8 +958,8 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
               _formatHdrToneMapping(mode.value),
               style: TextStyle(color: _hdrToneMapping == mode.value ? primary : null),
             ),
-            subtitle: Text(mode.subtitle, style: TextStyle(color: tokens(context).textMuted, fontSize: 12)),
-            trailing: _hdrToneMapping == mode.value ? AppIcon(Symbols.check_rounded, fill: 1, color: primary) : null,
+            subtitle: Text(mode.subtitle, style: TextStyle(color: tokens(context).textMuted, fontSize: 14)),
+            trailing: _hdrToneMapping == mode.value ? AppIcon(LucideIcons.check, fill: 1, color: primary) : null,
             onTap: () => _setHdrToneMapping(mode.value),
           ),
       ],
@@ -1007,7 +1016,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
             final primary = Theme.of(context).colorScheme.primary;
             return FocusableListTile(
               title: Text(label, style: TextStyle(color: isSelected ? primary : null)),
-              trailing: isSelected ? AppIcon(Symbols.check_rounded, fill: 1, color: primary) : null,
+              trailing: isSelected ? AppIcon(LucideIcons.check, fill: 1, color: primary) : null,
               onTap: () async {
                 await (_state.onRateRequested ?? widget.player.setRate)(speed);
                 // Save at the configured persistence scope (global by default).
@@ -1031,7 +1040,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
       shrinkWrap: true,
       children: [
         FocusableListTile(
-          leading: AppIcon(Symbols.restart_alt_rounded, fill: 1, color: tokens(context).textMuted),
+          leading: AppIcon(LucideIcons.rotateCcw, fill: 1, color: tokens(context).textMuted),
           title: Text(t.common.reset),
           onTap: _resetZoomScale,
         ),
@@ -1041,9 +1050,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
               _formatZoomScale(scale),
               style: TextStyle(color: (_zoomScale - scale).abs() < 0.005 ? primary : null),
             ),
-            trailing: (_zoomScale - scale).abs() < 0.005
-                ? AppIcon(Symbols.check_rounded, fill: 1, color: primary)
-                : null,
+            trailing: (_zoomScale - scale).abs() < 0.005 ? AppIcon(LucideIcons.check, fill: 1, color: primary) : null,
             onTap: () => _setZoomScale(scale),
           ),
       ],
@@ -1134,7 +1141,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
                     child: Text(
                       _formatBackend(entry.key),
-                      style: TextStyle(color: tokens(context).textMuted, fontSize: 12, fontWeight: .w600),
+                      style: TextStyle(color: tokens(context).textMuted, fontSize: 14, fontWeight: .w600),
                     ),
                   ),
                   for (final d in entry.value) _buildDeviceTile(d, currentDevice),
@@ -1179,7 +1186,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
     final primary = Theme.of(context).colorScheme.primary;
     return FocusableListTile(
       title: Text(label, style: TextStyle(color: isSelected ? primary : null)),
-      trailing: isSelected ? AppIcon(Symbols.check_rounded, fill: 1, color: primary) : null,
+      trailing: isSelected ? AppIcon(LucideIcons.check, fill: 1, color: primary) : null,
       onTap: () {
         widget.player.setAudioDevice(device);
         OverlaySheetController.of(context).close();
@@ -1202,7 +1209,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
           itemBuilder: (context, index) {
             if (index == presets.length) {
               return FocusableListTile(
-                leading: AppIcon(Symbols.add_rounded, fill: 1, color: tokens(context).textMuted),
+                leading: AppIcon(LucideIcons.plus, fill: 1, color: tokens(context).textMuted),
                 title: Text(t.shaders.importShader),
                 onTap: () => _importCustomShader(shaderProvider),
               );
@@ -1214,19 +1221,19 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
             final presetName = _shaderPresetTitle(preset);
 
             return FocusableListTile(
-              title: Text(presetName, style: TextStyle(color: isSelected ? Colors.amber : null)),
+              title: Text(presetName, style: TextStyle(color: isSelected ? PlezzantColors.highlight : null)),
               subtitle: _getShaderSubtitle(preset) != null
-                  ? Text(_getShaderSubtitle(preset)!, style: TextStyle(color: tokens(context).textMuted, fontSize: 12))
+                  ? Text(_getShaderSubtitle(preset)!, style: TextStyle(color: tokens(context).textMuted, fontSize: 14))
                   : null,
               trailing: Row(
                 mainAxisSize: .min,
                 children: [
-                  if (isSelected) const AppIcon(Symbols.check_rounded, fill: 1, color: Colors.amber),
+                  if (isSelected) const AppIcon(LucideIcons.check, fill: 1, color: PlezzantColors.highlight),
                   if (isCustom) ...[
                     if (isSelected) const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () => _deleteCustomShader(shaderProvider, preset),
-                      child: AppIcon(Symbols.delete_rounded, fill: 1, color: tokens(context).textMuted, size: 20),
+                      child: AppIcon(LucideIcons.trash2, fill: 1, color: tokens(context).textMuted, size: 20),
                     ),
                   ],
                 ],
@@ -1364,8 +1371,8 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
       title: _getTitle(),
       icon: _getIcon(),
       iconColor: () {
-        if (isIconActive) return Colors.amber;
-        if (_currentView == _SettingsView.shader && isShaderActive) return Colors.amber;
+        if (isIconActive) return PlezzantColors.highlight;
+        if (_currentView == _SettingsView.shader && isShaderActive) return PlezzantColors.highlight;
         return null;
       }(),
       onBack: _currentView != _SettingsView.menu ? _navigateBack : null,
@@ -1463,7 +1470,7 @@ class _CompactSyncBarState extends State<_CompactSyncBar> {
               width: 36,
               height: 36,
               alignment: .center,
-              child: AppIcon(Symbols.close_rounded, fill: 1, color: tokens(context).textMuted, size: 22),
+              child: AppIcon(LucideIcons.x, fill: 1, color: tokens(context).textMuted, size: 22),
             ),
           ),
         ),

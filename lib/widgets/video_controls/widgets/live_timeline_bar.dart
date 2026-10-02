@@ -8,6 +8,7 @@ import '../../../focus/focusable_wrapper.dart';
 import '../../../utils/formatters.dart';
 import '../../clickable_cursor.dart';
 import '../helpers/eager_horizontal_drag_recognizer.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Timeline bar for live TV time-shift.
 ///
@@ -147,7 +148,7 @@ class _LiveTimelineBarState extends State<LiveTimelineBar> {
         ExcludeSemantics(
           child: Text(
             _formatEpochTime(context, displayPos),
-            style: const TextStyle(color: Colors.white70, fontSize: 13, fontFeatures: [FontFeature.tabularFigures()]),
+            style: const TextStyle(color: Colors.white70, fontSize: 14, fontFeatures: [FontFeature.tabularFigures()]),
           ),
         ),
         const SizedBox(width: 8),
@@ -170,7 +171,7 @@ class _LiveTimelineBarState extends State<LiveTimelineBar> {
                 _formatEpochTime(context, displayPos),
                 style: const TextStyle(
                   color: Colors.white70,
-                  fontSize: 12,
+                  fontSize: 14,
                   fontFeatures: [FontFeature.tabularFigures()],
                 ),
               ),
@@ -304,7 +305,7 @@ class _LiveTimelinePainter extends CustomPainter {
           Rect.fromLTRB(0, trackY - trackHeight / 2, posX, trackY + trackHeight / 2),
           trackRadius,
         ),
-        Paint()..color = Colors.red,
+        Paint()..color = PlezzantColors.danger,
       );
     }
 
@@ -316,7 +317,7 @@ class _LiveTimelinePainter extends CustomPainter {
         Rect.fromCenter(center: Offset(posX, trackY), width: thumbWidth, height: thumbHeight),
         Radius.circular(thumbWidth / 2),
       ),
-      Paint()..color = Colors.red,
+      Paint()..color = PlezzantColors.danger,
     );
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../connection/connection.dart';
@@ -93,7 +93,7 @@ class _EditJellyfinConnectionScreenState extends State<EditJellyfinConnectionScr
                     onNavigateDown: () => _saveFocus.requestFocus(),
                     decoration: InputDecoration(
                       labelText: t.addServer.serverUrls,
-                      prefixIcon: const AppIcon(Symbols.link_rounded, fill: 1),
+                      prefixIcon: const AppIcon(LucideIcons.link, fill: 1),
                     ),
                     validator: (_) => _enteredUrls().isEmpty ? t.addServer.required : null,
                   ),
@@ -104,7 +104,7 @@ class _EditJellyfinConnectionScreenState extends State<EditJellyfinConnectionScr
                     onPressed: busy ? null : _save,
                     child: FilledButton.icon(
                       onPressed: busy ? null : _save,
-                      icon: busy ? const LoadingIndicatorBox() : const AppIcon(Symbols.save_rounded, fill: 1),
+                      icon: busy ? const LoadingIndicatorBox() : const AppIcon(LucideIcons.save, fill: 1),
                       label: Text(t.common.save),
                     ),
                   ),

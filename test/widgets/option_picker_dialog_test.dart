@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/utils/dialogs.dart';
 
 void main() {
@@ -26,13 +26,13 @@ void main() {
                     title: 'Download',
                     toggle: (
                       label: 'Include Specials',
-                      icon: Symbols.star_rounded,
+                      icon: LucideIcons.star,
                       value: includeSpecials,
                       onChanged: (value) => includeSpecials = value,
                     ),
                     options: [
-                      (icon: Symbols.download_rounded, label: 'All Episodes', value: 'all'),
-                      (icon: Symbols.visibility_off_rounded, label: 'Unwatched Only', value: 'unwatched'),
+                      (icon: LucideIcons.download, label: 'All Episodes', value: 'all'),
+                      (icon: LucideIcons.eyeOff, label: 'Unwatched Only', value: 'unwatched'),
                     ],
                   );
                 },

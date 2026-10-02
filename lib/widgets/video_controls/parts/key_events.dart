@@ -6,7 +6,7 @@ extension _PlexVideoControlsKeyEventMethods on _PlexVideoControlsState {
   }
 
   void _showScreenshotToast() {
-    widget.toastController.show(Symbols.photo_camera_rounded, t.videoControls.screenshotSaved);
+    widget.toastController.show(LucideIcons.camera, t.videoControls.screenshotSaved);
   }
 
   /// Resolve the transport intent for a key event, or null when the key is not

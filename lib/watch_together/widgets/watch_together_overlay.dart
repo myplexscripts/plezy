@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../focus/focusable_wrapper.dart';
@@ -18,6 +18,7 @@ import '../../widgets/focusable_list_tile.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../models/watch_session.dart';
 import '../providers/watch_together_provider.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 class WatchTogetherSessionIndicator extends StatelessWidget {
   final VoidCallback? onCancelAutoHide;
@@ -106,11 +107,11 @@ class _SessionIndicator extends StatelessWidget {
                     width: 16,
                     height: 16,
                     child: PlatformDetector.isTV()
-                        ? const AppIcon(Symbols.sync_rounded, size: 16, color: Colors.white)
+                        ? const AppIcon(LucideIcons.refreshCw, size: 16, color: Colors.white)
                         : const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                   )
                 else
-                  AppIcon(Symbols.group_rounded, size: 18, color: isHost ? Colors.amber : Colors.white),
+                  AppIcon(LucideIcons.users, size: 18, color: isHost ? PlezzantColors.highlight : Colors.white),
                 const SizedBox(width: 6),
                 Text(
                   '$participantCount',
@@ -121,12 +122,12 @@ class _SessionIndicator extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: const BoxDecoration(
-                      color: Colors.amber,
+                      color: PlezzantColors.highlight,
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                     ),
                     child: Text(
                       t.watchTogether.hostBadge,
-                      style: const TextStyle(color: Colors.black, fontSize: 10, fontWeight: .bold),
+                      style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: .bold),
                     ),
                   ),
                 ],
@@ -150,7 +151,7 @@ class _SessionMenuSheet extends StatelessWidget {
 
     return BottomSheetPageScaffold(
       title: t.watchTogether.title,
-      icon: Symbols.group_rounded,
+      icon: LucideIcons.users,
       iconColor: theme.colorScheme.primary,
       action: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -202,7 +203,7 @@ class _SessionMenuSheet extends StatelessWidget {
                         style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace', fontWeight: .bold),
                       ),
                       const SizedBox(width: 8),
-                      AppIcon(Symbols.content_copy_rounded, size: 16, color: theme.colorScheme.onSurfaceVariant),
+                      AppIcon(LucideIcons.copy, size: 16, color: theme.colorScheme.onSurfaceVariant),
                     ],
                   ),
                 ),
@@ -221,7 +222,7 @@ class _SessionMenuSheet extends StatelessWidget {
                 title: Text(participant.displayName),
                 trailing:
                     _bufferingIndicator(participant) ??
-                    AppIcon(Symbols.star_rounded, size: 20, color: theme.colorScheme.onSurfaceVariant),
+                    AppIcon(LucideIcons.star, size: 20, color: theme.colorScheme.onSurfaceVariant),
                 onTap: () => unawaited(_confirmTransferHost(context, participant)),
                 contentPadding: .zero,
               )
@@ -231,14 +232,14 @@ class _SessionMenuSheet extends StatelessWidget {
                 title: Text(participant.displayName),
                 subtitle: participant.isHost ? Text(t.watchTogether.host) : null,
                 trailing: _bufferingIndicator(participant),
-                dense: true,
+                dense: false,
                 contentPadding: .zero,
               ),
           const SizedBox(height: 16),
           const Divider(),
           const SizedBox(height: 8),
           FocusableListTile(
-            leading: AppIcon(Symbols.logout_rounded, color: theme.colorScheme.error),
+            leading: AppIcon(LucideIcons.logOut, color: theme.colorScheme.error),
             title: Text(
               provider.isHost ? t.watchTogether.endSession : t.watchTogether.leaveSession,
               style: TextStyle(color: theme.colorScheme.error),
@@ -255,7 +256,7 @@ class _SessionMenuSheet extends StatelessWidget {
     return CircleAvatar(
       backgroundColor: participant.isHost ? theme.colorScheme.primary : theme.colorScheme.surfaceContainerHighest,
       child: AppIcon(
-        participant.isHost ? Symbols.star_rounded : Symbols.person_rounded,
+        participant.isHost ? LucideIcons.star : LucideIcons.user,
         color: participant.isHost ? Colors.white : theme.colorScheme.onSurfaceVariant,
         size: 20,
       ),
@@ -268,7 +269,7 @@ class _SessionMenuSheet extends StatelessWidget {
       width: 16,
       height: 16,
       child: PlatformDetector.isTV()
-          ? const AppIcon(Symbols.hourglass_empty_rounded, size: 16)
+          ? const AppIcon(LucideIcons.hourglass, size: 16)
           : const CircularProgressIndicator(strokeWidth: 2),
     );
   }
@@ -393,7 +394,7 @@ class _ParticipantNotificationOverlayState extends State<ParticipantNotification
                 color: Colors.black54,
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
-              child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 12)),
+              child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 14)),
             );
           }).toList(),
         ),
@@ -417,7 +418,7 @@ class SyncingIndicator extends StatelessWidget {
       selector: (_, provider) => provider.isSyncing,
       builder: (context, isSyncing, child) {
         if (!isSyncing) return const SizedBox.shrink();
-        return _StatusPill(tvIcon: Symbols.sync_rounded, label: t.watchTogether.syncing);
+        return _StatusPill(tvIcon: LucideIcons.refreshCw, label: t.watchTogether.syncing);
       },
     );
   }
@@ -442,7 +443,7 @@ class WaitingForParticipantsIndicator extends StatelessWidget {
       builder: (context, value, child) {
         final (isWaiting, label) = value;
         if (!isWaiting) return const SizedBox.shrink();
-        return _StatusPill(tvIcon: Symbols.hourglass_empty_rounded, label: label);
+        return _StatusPill(tvIcon: LucideIcons.hourglass, label: label);
       },
     );
   }
@@ -475,7 +476,7 @@ class _StatusPill extends StatelessWidget {
                     : const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
               ),
               const SizedBox(width: 8),
-              Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
+              Text(label, style: const TextStyle(color: Colors.white, fontSize: 14)),
             ],
           ),
         ),

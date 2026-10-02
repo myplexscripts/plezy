@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -118,7 +118,7 @@ class PendingAuthDialog extends StatelessWidget {
               onPressed: _open,
               useBackgroundFocus: true,
               child: FilledButton.icon(
-                icon: const AppIcon(Symbols.open_in_new_rounded),
+                icon: const AppIcon(LucideIcons.externalLink),
                 label: Text(openLabel),
                 onPressed: _open,
               ),

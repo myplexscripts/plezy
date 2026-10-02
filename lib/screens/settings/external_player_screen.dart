@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/widgets/app_icon.dart';
 
 import '../../widgets/dialog_action_button.dart';
@@ -31,7 +31,7 @@ class ExternalPlayerScreen extends StatelessWidget {
           children: [
             SettingSwitchTile(
               pref: SettingsService.useExternalPlayer,
-              icon: Symbols.open_in_new_rounded,
+              icon: LucideIcons.externalLink,
               title: t.externalPlayer.useExternalPlayer,
               subtitle: t.externalPlayer.useExternalPlayerDescription,
             ),
@@ -69,7 +69,7 @@ class ExternalPlayerScreen extends StatelessWidget {
                   children: [
                     for (final p in custom) _PlayerTile(player: p, selectedId: selected.id, isCustom: true),
                     FocusableListTile(
-                      leading: const AppIcon(Symbols.add_rounded, fill: 1),
+                      leading: const AppIcon(LucideIcons.plus, fill: 1),
                       title: Text(t.externalPlayer.addCustomPlayer),
                       onTap: () => _showAddCustomPlayerDialog(context),
                     ),
@@ -116,13 +116,13 @@ class _PlayerTile extends StatelessWidget {
                 player.iconAsset!,
                 width: 32,
                 height: 32,
-                errorBuilder: (_, _, _) => const AppIcon(Symbols.play_circle_rounded, fill: 1, size: 32),
+                errorBuilder: (_, _, _) => const AppIcon(LucideIcons.circlePlay, fill: 1, size: 32),
               ),
       );
     } else if (player.id == 'system_default') {
-      leading = const AppIcon(Symbols.open_in_new_rounded, fill: 1, size: 32);
+      leading = const AppIcon(LucideIcons.externalLink, fill: 1, size: 32);
     } else {
-      leading = const AppIcon(Symbols.play_circle_rounded, fill: 1, size: 32);
+      leading = const AppIcon(LucideIcons.circlePlay, fill: 1, size: 32);
     }
 
     return FocusableListTile(
@@ -136,12 +136,12 @@ class _PlayerTile extends StatelessWidget {
               onPressed: () => svc.removeCustomExternalPlayer(player.id),
               autoScroll: false,
               child: IconButton(
-                icon: const AppIcon(Symbols.delete_rounded, fill: 1, size: 20),
+                icon: const AppIcon(LucideIcons.trash2, fill: 1, size: 20),
                 onPressed: () => svc.removeCustomExternalPlayer(player.id),
               ),
             ),
           AppIcon(
-            isSelected ? Symbols.radio_button_checked_rounded : Symbols.radio_button_unchecked_rounded,
+            isSelected ? LucideIcons.circleDot : LucideIcons.circle,
             fill: 1,
             color: isSelected ? Theme.of(context).colorScheme.primary : null,
           ),

@@ -13,10 +13,12 @@ import '../utils/layout_constants.dart';
 import '../utils/media_image_helper.dart';
 import '../services/settings_service.dart';
 import '../utils/tone_mapped_logo_image.dart';
+import '../theme/plezzant/plezzant_ambient_glow.dart';
 import 'cycling_media_backdrop.dart';
 import 'fitting_title_text.dart';
 import 'fitted_metadata_line.dart';
 import 'settings_builder.dart';
+import 'media_ambience.dart';
 import 'media_rating_badge.dart';
 import 'optimized_media_image.dart' show ClearLogoImage, blurArtwork;
 import 'rasterized_gradient.dart';
@@ -63,6 +65,8 @@ class TvSpotlightBackground extends StatelessWidget {
     // rotating layer avoids full-screen saveLayers on low-end TVs.
     final size = MediaQuery.sizeOf(context);
     final containerAspect = size.width / size.height;
+    // Palette ambience follows the item the viewer settles on.
+    if (allowNetwork) requestAmbienceForItem(media, client);
     final fallbackPaths = media == null
         ? const <String>[]
         : <String>[...media.heroArtCandidates(containerAspectRatio: containerAspect), ?media.thumbPath];
@@ -91,6 +95,7 @@ class TvSpotlightBackground extends StatelessWidget {
               child: cornerBackdrop ? _buildCornerBackdrop(backdropSize, backdrop) : blurArtwork(backdrop),
             ),
             _buildHorizontalScrim(bgColor),
+            const PlezzantAmbientGlow(),
             RasterizedGradient(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,

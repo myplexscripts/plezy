@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../media/media_item.dart';
 import '../../mpv/mpv.dart';
@@ -18,6 +18,7 @@ import 'widgets/play_pause_stream_builder.dart';
 import 'widgets/live_timeline_bar.dart';
 import 'widgets/video_controls_header.dart';
 import 'widgets/video_timeline_bar.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Mobile video controls layout for Plex video player
 ///
@@ -271,7 +272,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> with SingleTi
                                   _buildBottomBar(context),
                                 ],
                               ),
-                              const ContentStripHint(Symbols.keyboard_arrow_up_rounded),
+                              const ContentStripHint(LucideIcons.chevronUp),
                             ],
                           ),
                         ),
@@ -288,7 +289,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> with SingleTi
                             opacity: (t * 2).clamp(0.0, 1.0),
                             child: ContentStripPanel(
                               padding: const EdgeInsets.only(top: 32),
-                              chevron: Symbols.keyboard_arrow_down_rounded,
+                              chevron: LucideIcons.chevronDown,
                               child: ContentStrip(
                                 player: widget.player,
                                 chapters: widget.chapters,
@@ -361,7 +362,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> with SingleTi
             if (!widget.isLive) ...[
               CircularControlButton(
                 semanticLabel: t.videoControls.previousButton,
-                icon: Symbols.skip_previous_rounded,
+                icon: LucideIcons.skipBack,
                 iconSize: 48,
                 onPressed: widget.onPrevious,
               ),
@@ -369,7 +370,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> with SingleTi
             ],
             CircularControlButton(
               semanticLabel: isPlaying ? t.videoControls.pauseButton : t.videoControls.playButton,
-              icon: isPlaying ? Symbols.pause_rounded : Symbols.play_arrow_rounded,
+              icon: isPlaying ? LucideIcons.pause : LucideIcons.play,
               iconSize: 72,
               onPressed: () {
                 widget.onPlayPause();
@@ -384,7 +385,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> with SingleTi
               const SizedBox(width: 24),
               CircularControlButton(
                 semanticLabel: t.videoControls.nextButton,
-                icon: Symbols.skip_next_rounded,
+                icon: LucideIcons.skipForward,
                 iconSize: 48,
                 onPressed: widget.onNext,
               ),
@@ -419,10 +420,13 @@ class _MobileVideoControlsState extends State<MobileVideoControls> with SingleTi
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: const BoxDecoration(color: Colors.red, borderRadius: BorderRadius.all(Radius.circular(4))),
+              decoration: const BoxDecoration(
+                color: PlezzantColors.danger,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
               child: Text(
                 t.liveTv.live,
-                style: const TextStyle(color: Colors.white, fontWeight: .bold, fontSize: 12),
+                style: const TextStyle(color: Colors.white, fontWeight: .bold, fontSize: 14),
               ),
             ),
           ],

@@ -5,7 +5,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -1007,8 +1007,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                                     ],
                                     if (!widget.isOfflineMode) ...[
                                       _buildNavItem(
-                                        icon: Symbols.home_rounded,
-                                        selectedIcon: Symbols.home_rounded,
+                                        icon: LucideIcons.house,
+                                        selectedIcon: LucideIcons.house,
                                         label: Translations.of(context).common.home,
                                         isSelected: widget.selectedTab == NavigationTabId.discover,
                                         onTap: () => widget.onDestinationSelected(NavigationTabId.discover),
@@ -1031,8 +1031,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                                       const SizedBox(height: _itemGap),
                                       if (context.watch<MultiServerProvider>().hasLiveTv) ...[
                                         _buildNavItem(
-                                          icon: Symbols.live_tv_rounded,
-                                          selectedIcon: Symbols.live_tv_rounded,
+                                          icon: LucideIcons.radioTower,
+                                          selectedIcon: LucideIcons.radioTower,
                                           label: Translations.of(context).navigation.liveTv,
                                           isSelected: widget.selectedTab == NavigationTabId.liveTv,
                                           onTap: () => widget.onDestinationSelected(NavigationTabId.liveTv),
@@ -1043,8 +1043,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                                       ],
                                       if (hasExplore) ...[
                                         _buildNavItem(
-                                          icon: Symbols.explore_rounded,
-                                          selectedIcon: Symbols.explore_rounded,
+                                          icon: LucideIcons.compass,
+                                          selectedIcon: LucideIcons.compass,
                                           label: Translations.of(context).navigation.explore,
                                           isSelected: widget.selectedTab == NavigationTabId.explore,
                                           onTap: () => widget.onDestinationSelected(NavigationTabId.explore),
@@ -1054,8 +1054,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                                         const SizedBox(height: _itemGap),
                                       ],
                                       _buildNavItem(
-                                        icon: Symbols.search_rounded,
-                                        selectedIcon: Symbols.search_rounded,
+                                        icon: LucideIcons.search,
+                                        selectedIcon: LucideIcons.search,
                                         label: Translations.of(context).common.search,
                                         isSelected: widget.selectedTab == NavigationTabId.search,
                                         onTap: () => widget.onDestinationSelected(NavigationTabId.search),
@@ -1068,8 +1068,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                                     // file storage)
                                     if (_showDownloads) ...[
                                       _buildNavItem(
-                                        icon: Symbols.download_rounded,
-                                        selectedIcon: Symbols.download_rounded,
+                                        icon: LucideIcons.download,
+                                        selectedIcon: LucideIcons.download,
                                         label: Translations.of(context).navigation.downloads,
                                         isSelected: widget.selectedTab == NavigationTabId.downloads,
                                         onTap: () => widget.onDestinationSelected(NavigationTabId.downloads),
@@ -1079,8 +1079,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                                       const SizedBox(height: _itemGap),
                                     ],
                                     _buildNavItem(
-                                      icon: Symbols.settings_rounded,
-                                      selectedIcon: Symbols.settings_rounded,
+                                      icon: LucideIcons.settings,
+                                      selectedIcon: LucideIcons.settings,
                                       label: Translations.of(context).common.settings,
                                       isSelected: widget.selectedTab == NavigationTabId.settings,
                                       onTap: () => widget.onDestinationSelected(NavigationTabId.settings),
@@ -1170,7 +1170,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           ),
           Text(
             trackTitle,
-            style: TextStyle(fontSize: 11, color: t.textMuted.withValues(alpha: t.textMuted.a * opacity)),
+            style: TextStyle(fontSize: 14, color: t.textMuted.withValues(alpha: t.textMuted.a * opacity)),
             overflow: .ellipsis,
             maxLines: 1,
           ),
@@ -1179,7 +1179,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
     }
 
     return NavigationRailItem(
-      icon: Symbols.music_note_rounded,
+      icon: LucideIcons.music,
       iconWidget: SizedBox(
         width: 22,
         child: Center(
@@ -1201,7 +1201,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
     final t = tokens(context);
 
     return NavigationRailItem(
-      icon: widget.isReconnecting ? Symbols.sync_rounded : Symbols.wifi_rounded,
+      icon: widget.isReconnecting ? LucideIcons.refreshCw : LucideIcons.wifi,
       label: widget.isReconnecting
           ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: t.text))
           : Text(
@@ -1229,7 +1229,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
         : Translations.of(context).common.fullscreen;
 
     return NavigationRailItem(
-      icon: isFullscreen ? Symbols.fullscreen_exit_rounded : Symbols.fullscreen_rounded,
+      icon: isFullscreen ? LucideIcons.minimize : LucideIcons.maximize,
       label: Text(
         label,
         style: const TextStyle(fontSize: 14, fontWeight: .w400),
@@ -1261,7 +1261,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
 
     Widget buildChevron(double opacity) {
       return AppIcon(
-        _librariesExpanded ? Symbols.expand_less_rounded : Symbols.expand_more_rounded,
+        _librariesExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown,
         fill: 1,
         size: 18,
         color: t.textMuted.withValues(alpha: t.textMuted.a * opacity),
@@ -1275,7 +1275,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
         // label metrics — with the chevron as the expand affordance. The
         // smaller header type is reserved for the nested sub-headers.
         NavigationRailItem(
-          icon: Symbols.video_library_rounded,
+          icon: LucideIcons.libraryBig,
           label: Text(
             Translations.of(context).navigation.libraries,
             style: TextStyle(fontSize: 14, fontWeight: isLibrariesTabSelected ? FontWeight.w600 : FontWeight.w400),
@@ -1331,7 +1331,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                     padding: const EdgeInsets.all(16),
                     child: Text(
                       Translations.of(context).libraries.noLibrariesFound,
-                      style: TextStyle(fontSize: 12, color: t.textMuted),
+                      style: TextStyle(fontSize: 14, color: t.textMuted),
                     ),
                   )
                 else ...[
@@ -1387,11 +1387,11 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
     final backend = context.read<MultiServerProvider>().serverManager.getClient(serverId)?.backend;
     return _buildCollapsibleHeader(
       focusKey: _serverHeaderFocusKey(section, serverId),
-      icon: Symbols.dns_rounded,
+      icon: LucideIcons.server,
       iconSize: 14,
       leading: backend == null ? null : BackendBadge(backend: backend, size: 14, color: t.textMuted),
       label: serverName,
-      labelStyle: TextStyle(fontSize: 11, fontWeight: .w600, letterSpacing: 0.4, color: t.textMuted),
+      labelStyle: TextStyle(fontSize: 14, fontWeight: .w600, letterSpacing: 0.4, color: t.textMuted),
       verticalPadding: 6,
       isExpanded: !_collapsedServerGroupKeys.contains(_serverGroupStateKey(section, serverId)),
       onToggle: () => _toggleServerCollapse(section, serverId),
@@ -1411,10 +1411,10 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
   Widget _buildHiddenLibrariesHeader(int count, dynamic t) {
     return _buildCollapsibleHeader(
       focusKey: _kHiddenLibraries,
-      icon: Symbols.visibility_off_rounded,
+      icon: LucideIcons.eyeOff,
       iconSize: 16,
       label: Translations.of(context).libraries.hiddenLibrariesCount(count: count),
-      labelStyle: TextStyle(fontSize: 12, fontWeight: .w500, color: t.textMuted),
+      labelStyle: TextStyle(fontSize: 14, fontWeight: .w500, color: t.textMuted),
       verticalPadding: 8,
       isExpanded: _hiddenLibrariesExpanded,
       onToggle: () => setState(() => _hiddenLibrariesExpanded = !_hiddenLibrariesExpanded),
@@ -1474,7 +1474,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                           child: Text(label, style: labelStyle, overflow: .ellipsis),
                         ),
                         AppIcon(
-                          isExpanded ? Symbols.expand_less_rounded : Symbols.expand_more_rounded,
+                          isExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown,
                           fill: 1,
                           size: 16,
                           color: t.textMuted,
@@ -1507,7 +1507,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           Text(
             library.title,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 14,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               color: isSelected ? t.text : t.textMuted,
             ),
@@ -1516,7 +1516,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           if (showServerName)
             Text(
               library.serverName!,
-              style: TextStyle(fontSize: 9, color: t.textMuted.withValues(alpha: 0.4)),
+              style: TextStyle(fontSize: 14, color: t.textMuted.withValues(alpha: 0.4)),
               overflow: .ellipsis,
             ),
         ],

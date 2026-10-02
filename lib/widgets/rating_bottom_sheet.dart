@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../focus/dpad_navigator.dart';
@@ -24,6 +24,7 @@ import 'backend_badge.dart';
 import 'bottom_sheet_page_scaffold.dart';
 import 'catalog_source_logo.dart';
 import 'clickable_cursor.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 class RatingBottomSheet extends StatefulWidget {
   final MediaItem item;
@@ -107,7 +108,7 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
         // rather than removing its row.
         return BottomSheetPageScaffold(
           title: t.rateSheet.title,
-          icon: Symbols.star_rounded,
+          icon: LucideIcons.star,
           child: ListView(
             shrinkWrap: true,
             padding: const EdgeInsets.fromLTRB(10, 4, 10, 12),
@@ -688,7 +689,7 @@ class _TrailingStatus extends StatelessWidget {
     return Tooltip(
       message: status.text,
       child: AppIcon(
-        status.isError ? Symbols.error_rounded : Symbols.check_circle_rounded,
+        status.isError ? LucideIcons.circleAlert : LucideIcons.circleCheck,
         fill: 1,
         color: color,
         size: 18,
@@ -746,10 +747,10 @@ class _StarRatingControlState extends State<_StarRatingControl> {
                     width: starWidth,
                     child: Center(
                       child: AppIcon(
-                        half ? Symbols.star_half_rounded : Symbols.star_rounded,
+                        half ? LucideIcons.starHalf : LucideIcons.star,
                         fill: filled || half ? 1 : 0,
                         color: filled || half
-                            ? Colors.amber
+                            ? PlezzantColors.highlight
                             : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.34),
                         size: iconSize,
                       ),
@@ -798,9 +799,9 @@ class _FavoriteControl extends StatelessWidget {
             mainAxisAlignment: .center,
             children: [
               AppIcon(
-                Symbols.favorite_rounded,
+                LucideIcons.heart,
                 fill: value ? 1 : 0,
-                color: value ? Colors.redAccent : (enabled ? scheme.onSurfaceVariant : theme.disabledColor),
+                color: value ? PlezzantColors.favorite : (enabled ? scheme.onSurfaceVariant : theme.disabledColor),
                 size: 18,
               ),
               const SizedBox(width: 6),

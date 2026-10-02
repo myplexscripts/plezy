@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/focusable_text_field.dart';
 import '../focus/key_event_utils.dart';
@@ -160,7 +160,7 @@ class _PickerDialogScaffoldState<T> extends State<_PickerDialogScaffold<T>> {
                   decoration: pillInputDecoration(
                     context,
                     hintText: widget.searchHint,
-                    prefixIcon: const AppIcon(Symbols.search_rounded, size: 20),
+                    prefixIcon: const AppIcon(LucideIcons.search, size: 20),
                   ),
                   onChanged: _onFilterChanged,
                 ),
@@ -175,7 +175,7 @@ class _PickerDialogScaffoldState<T> extends State<_PickerDialogScaffold<T>> {
                     if (index == 0) {
                       return FocusableListTile(
                         focusNode: _firstItemFocusNode,
-                        leading: const AppIcon(Symbols.add_rounded, fill: 1),
+                        leading: const AppIcon(LucideIcons.plus, fill: 1),
                         title: Text(t.common.createNew),
                         onTap: () => Navigator.pop(context, '_create_new'),
                       );
@@ -187,7 +187,7 @@ class _PickerDialogScaffoldState<T> extends State<_PickerDialogScaffold<T>> {
 
                     if (_errorMessage != null) {
                       return FocusableListTile(
-                        leading: const AppIcon(Symbols.error_rounded, fill: 1),
+                        leading: const AppIcon(LucideIcons.circleAlert, fill: 1),
                         title: Text(t.messages.errorLoading(error: _errorMessage!)),
                         onTap: _loadNextPage,
                       );
@@ -239,8 +239,8 @@ class PlaylistSelectionDialog extends StatelessWidget {
         final subtitleText = leafCount == 1 ? t.playlists.oneItem : t.playlists.itemCount(count: leafCount ?? 0);
         return FocusableListTile(
           leading: playlist.smart
-              ? const AppIcon(Symbols.auto_awesome_rounded, fill: 1)
-              : const AppIcon(Symbols.playlist_play_rounded, fill: 1),
+              ? const AppIcon(LucideIcons.sparkles, fill: 1)
+              : const AppIcon(LucideIcons.listVideo, fill: 1),
           title: Text(playlist.title),
           subtitle: playlist.leafCount != null ? Text(subtitleText) : null,
           onTap: playlist.smart
@@ -269,7 +269,7 @@ class CollectionSelectionDialog extends StatelessWidget {
       loadPage: (start, size, abort) => client.fetchCollectionsPage(libraryId, start: start, size: size, abort: abort),
       itemTitle: (collection) => collection.title ?? '',
       itemBuilder: (context, collection) => FocusableListTile(
-        leading: const AppIcon(Symbols.collections_rounded, fill: 1),
+        leading: const AppIcon(LucideIcons.layers, fill: 1),
         title: Text(collection.title ?? ''),
         subtitle: collection.childCount != null ? Text(t.playlists.itemCount(count: collection.childCount!)) : null,
         onTap: () => Navigator.pop(context, collection.id),

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/media/media_backend.dart';
 import 'package:plezy/media/media_item.dart';
 import 'package:plezy/media/media_item_types.dart';
@@ -96,12 +96,12 @@ void main() {
     });
 
     test('getLibraryIcon normalizes type and falls back to folder', () {
-      expect(ContentTypeHelper.getLibraryIcon('MOVIE'), Symbols.movie_rounded);
-      expect(ContentTypeHelper.getLibraryIcon('show'), Symbols.tv_rounded);
-      expect(ContentTypeHelper.getLibraryIcon('artist'), Symbols.music_note_rounded);
-      expect(ContentTypeHelper.getLibraryIcon('photo'), Symbols.photo_rounded);
-      expect(ContentTypeHelper.getLibraryIcon('mixed'), Symbols.share_rounded);
-      expect(ContentTypeHelper.getLibraryIcon('unknown'), Symbols.folder_rounded);
+      expect(ContentTypeHelper.getLibraryIcon('MOVIE'), LucideIcons.film);
+      expect(ContentTypeHelper.getLibraryIcon('show'), LucideIcons.tv);
+      expect(ContentTypeHelper.getLibraryIcon('artist'), LucideIcons.music);
+      expect(ContentTypeHelper.getLibraryIcon('photo'), LucideIcons.image);
+      expect(ContentTypeHelper.getLibraryIcon('mixed'), LucideIcons.share2);
+      expect(ContentTypeHelper.getLibraryIcon('unknown'), LucideIcons.folder);
     });
   });
 }

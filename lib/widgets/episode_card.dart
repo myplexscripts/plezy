@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../focus/focus_theme.dart';
 import '../focus/focusable_wrapper.dart';
 import '../mixins/context_menu_tap_mixin.dart';
@@ -26,6 +26,7 @@ import '../widgets/media_context_menu.dart';
 import '../widgets/placeholder_container.dart';
 import '../theme/mono_tokens.dart';
 import '../media/media_server_client.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Episode card widget with D-pad long-press support
 class EpisodeCard extends StatefulWidget {
@@ -62,7 +63,7 @@ class _EpisodeCardState extends State<EpisodeCard> with ContextMenuTapMixin<Epis
   MediaItem _effectiveEpisode(BuildContext context) => context.withFreshWatchState(widget.episode);
 
   Widget _buildEpisodeMetaRow(BuildContext context, MediaItem episode, List<String> qualityLabels) {
-    final mutedStyle = Theme.of(context).textTheme.bodySmall?.copyWith(color: tokens(context).textMuted, fontSize: 12);
+    final mutedStyle = Theme.of(context).textTheme.bodySmall?.copyWith(color: tokens(context).textMuted, fontSize: 14);
     final children = <Widget>[];
 
     void addSeparator() {
@@ -92,7 +93,7 @@ class _EpisodeCardState extends State<EpisodeCard> with ContextMenuTapMixin<Epis
           children: [
             const Padding(
               padding: .only(top: 2),
-              child: AppIcon(Symbols.star_rounded, size: 12, fill: 1, color: Colors.amber),
+              child: AppIcon(LucideIcons.star, size: 12, fill: 1, color: PlezzantColors.highlight),
             ),
             const SizedBox(width: 2),
             Text(
@@ -202,12 +203,7 @@ class _EpisodeCardState extends State<EpisodeCard> with ContextMenuTapMixin<Epis
                                     color: Colors.black.withValues(alpha: 0.6),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const AppIcon(
-                                    Symbols.play_arrow_rounded,
-                                    fill: 1,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
+                                  child: const AppIcon(LucideIcons.play, fill: 1, color: Colors.white, size: 20),
                                 ),
                               ),
                             ),
@@ -318,7 +314,7 @@ class _EpisodeCardState extends State<EpisodeCard> with ContextMenuTapMixin<Epis
         localFilePath: widget.localPosterPath,
         fit: BoxFit.cover,
         errorWidget: (context, url, error) =>
-            const PlaceholderContainer(child: AppIcon(Symbols.movie_rounded, fill: 1, size: 32)),
+            const PlaceholderContainer(child: AppIcon(LucideIcons.film, fill: 1, size: 32)),
       );
     }
     if (episode.thumbPath != null) {
@@ -328,10 +324,10 @@ class _EpisodeCardState extends State<EpisodeCard> with ContextMenuTapMixin<Epis
         fit: BoxFit.cover,
         placeholder: (context, url) => const PlaceholderContainer(),
         errorWidget: (context, url, error) =>
-            const PlaceholderContainer(child: AppIcon(Symbols.movie_rounded, fill: 1, size: 32)),
+            const PlaceholderContainer(child: AppIcon(LucideIcons.film, fill: 1, size: 32)),
       );
     }
-    return const PlaceholderContainer(child: AppIcon(Symbols.movie_rounded, fill: 1, size: 32));
+    return const PlaceholderContainer(child: AppIcon(LucideIcons.film, fill: 1, size: 32));
   }
 }
 

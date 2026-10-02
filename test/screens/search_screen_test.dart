@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/exceptions/media_server_exceptions.dart';
 import 'package:plezy/focus/dpad_navigator.dart';
 import 'package:plezy/focus/focusable_text_field.dart';
@@ -204,7 +204,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(client.queries, isEmpty);
-    expect(find.byIcon(Symbols.error_rounded), findsOneWidget);
+    expect(find.byIcon(LucideIcons.circleAlert), findsOneWidget);
     expect(find.byKey(const Key('tv_virtual_keyboard_panel')), findsNothing);
     expect(FocusManager.instance.primaryFocus?.debugLabel, 'SearchInput');
     expect(tester.widget<TextField>(find.byType(TextField)).readOnly, isTrue);

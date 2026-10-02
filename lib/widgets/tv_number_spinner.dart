@@ -9,7 +9,7 @@ import '../focus/key_event_utils.dart';
 import '../focus/key_repeat_helper.dart';
 import 'app_icon.dart';
 import '../theme/mono_tokens.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Size variant for [TvNumberSpinner].
 enum TvNumberSpinnerDensity {
@@ -213,7 +213,7 @@ class _TvNumberSpinnerState extends State<TvNumberSpinner> with KeyRepeatHelper<
               gap,
             ],
             _SpinnerButton(
-              icon: Symbols.remove_rounded,
+              icon: LucideIcons.minus,
               onPressed: canDecrement ? _decrement : null,
               onLongPressStart: !isCompact && canDecrement ? () => startRepeat(_decrement) : null,
               onLongPressEnd: isCompact ? null : stopRepeat,
@@ -233,7 +233,7 @@ class _TvNumberSpinnerState extends State<TvNumberSpinner> with KeyRepeatHelper<
             ),
             gap,
             _SpinnerButton(
-              icon: Symbols.add_rounded,
+              icon: LucideIcons.plus,
               onPressed: canIncrement ? _increment : null,
               onLongPressStart: !isCompact && canIncrement ? () => startRepeat(_increment) : null,
               onLongPressEnd: isCompact ? null : stopRepeat,

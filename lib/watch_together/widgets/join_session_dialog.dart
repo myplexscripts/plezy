@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../focus/focusable_button.dart';
 import '../../focus/focusable_text_field.dart';
@@ -49,7 +49,7 @@ class _JoinSessionDialogState extends State<JoinSessionDialog> with ControllerDi
               children: [
                 Row(
                   children: [
-                    AppIcon(Symbols.group_add_rounded, color: theme.colorScheme.primary),
+                    AppIcon(LucideIcons.userPlus, color: theme.colorScheme.primary),
                     const SizedBox(width: 12),
                     Expanded(child: Text(t.watchTogether.joinWatchSession, style: theme.textTheme.titleLarge)),
                     FocusableWrapper(
@@ -62,7 +62,7 @@ class _JoinSessionDialogState extends State<JoinSessionDialog> with ControllerDi
                       onNavigateDown: _sessionIdFocusNode.requestFocus,
                       child: IconButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        icon: const AppIcon(Symbols.close_rounded),
+                        icon: const AppIcon(LucideIcons.x),
                       ),
                     ),
                   ],
@@ -76,10 +76,10 @@ class _JoinSessionDialogState extends State<JoinSessionDialog> with ControllerDi
                   decoration: InputDecoration(
                     labelText: t.watchTogether.sessionCode,
                     hintText: t.watchTogether.enterCodeHint,
-                    prefixIcon: const AppIcon(Symbols.tag_rounded),
+                    prefixIcon: const AppIcon(LucideIcons.hash),
                     suffixIcon: IconButton(
                       onPressed: _pasteFromClipboard,
-                      icon: const AppIcon(Symbols.content_paste_rounded),
+                      icon: const AppIcon(LucideIcons.clipboardPaste),
                       tooltip: t.watchTogether.pasteFromClipboard,
                     ),
                     border: const OutlineInputBorder(),
@@ -119,7 +119,7 @@ class _JoinSessionDialogState extends State<JoinSessionDialog> with ControllerDi
                   useBackgroundFocus: true,
                   child: FilledButton.icon(
                     onPressed: _join,
-                    icon: const AppIcon(Symbols.group_add_rounded),
+                    icon: const AppIcon(LucideIcons.userPlus),
                     label: Text(t.watchTogether.joinSession),
                   ),
                 ),

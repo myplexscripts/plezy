@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../media/library_query.dart';
 import '../../../media/media_item.dart';
 import '../../../utils/library_refresh_notifier.dart';
@@ -34,7 +34,7 @@ class _LibraryCollectionsTabState extends PaginatedCardGridTabState<MediaItem, L
   String get focusNodeDebugLabel => 'collections_first_item';
 
   @override
-  IconData get emptyIcon => Symbols.collections_rounded;
+  IconData get emptyIcon => LucideIcons.layers;
 
   @override
   String get emptyMessage => t.libraries.noCollections;

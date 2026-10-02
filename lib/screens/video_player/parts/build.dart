@@ -113,7 +113,7 @@ extension _VideoPlayerBuildMethods on VideoPlayerScreenState {
             child: Column(
               mainAxisSize: .min,
               children: [
-                const AppIcon(Symbols.error_rounded, color: Colors.white70, size: 44, fill: 1),
+                const AppIcon(LucideIcons.circleAlert, color: Colors.white70, size: 44, fill: 1),
                 const SizedBox(height: 16),
                 Text(
                   message,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../media/ids.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../focus/focusable_action_bar.dart';
 import '../i18n/strings.g.dart';
@@ -24,6 +24,7 @@ import 'dialogs.dart';
 import 'download_version_utils.dart';
 import 'platform_detector.dart';
 import 'snackbar_helper.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 @visibleForTesting
 String? validateEpisodeCountInput(String text, {required bool allowZero}) {
@@ -108,19 +109,15 @@ Future<DownloadResult?> showDownloadOptionsAndQueue(
   if (kind == MediaKind.show || kind == MediaKind.season) {
     int? customCount;
     final options = <({IconData? icon, String label, _DownloadChoice value})>[
-      (icon: Symbols.download_rounded, label: t.downloads.allEpisodes, value: _DownloadChoice.all),
-      (icon: Symbols.visibility_off_rounded, label: t.downloads.unwatchedOnly, value: _DownloadChoice.unwatched),
-      (icon: Symbols.filter_5_rounded, label: t.downloads.nextNUnwatched(count: 5), value: _DownloadChoice.next5),
-      (
-        icon: Symbols.filter_9_plus_rounded,
-        label: t.downloads.nextNUnwatched(count: 10),
-        value: _DownloadChoice.next10,
-      ),
-      (icon: Symbols.tune_rounded, label: t.downloads.customAmount, value: _DownloadChoice.custom),
+      (icon: LucideIcons.download, label: t.downloads.allEpisodes, value: _DownloadChoice.all),
+      (icon: LucideIcons.eyeOff, label: t.downloads.unwatchedOnly, value: _DownloadChoice.unwatched),
+      (icon: LucideIcons.layers, label: t.downloads.nextNUnwatched(count: 5), value: _DownloadChoice.next5),
+      (icon: LucideIcons.layers, label: t.downloads.nextNUnwatched(count: 10), value: _DownloadChoice.next10),
+      (icon: LucideIcons.slidersHorizontal, label: t.downloads.customAmount, value: _DownloadChoice.custom),
     ];
     // Already-downloaded show/season: offer deletion as the last row.
     if (onDelete != null) {
-      options.add((icon: Symbols.delete_rounded, label: t.downloads.deleteDownload, value: _DownloadChoice.delete));
+      options.add((icon: LucideIcons.trash2, label: t.downloads.deleteDownload, value: _DownloadChoice.delete));
     }
     final selected = await showOptionPickerDialog<_DownloadChoice>(
       context,
@@ -129,7 +126,7 @@ Future<DownloadResult?> showDownloadOptionsAndQueue(
       toggle: kind == MediaKind.show
           ? (
               label: t.downloads.includeSpecials,
-              icon: Symbols.star_rounded,
+              icon: LucideIcons.star,
               value: includeSpecials,
               onChanged: (value) => includeSpecials = value,
             )
@@ -384,8 +381,8 @@ Future<void> downloadPlaylist(
 /// The all/unwatched option rows, shared by the pickers that differ only in
 /// how they spell those two values.
 List<({IconData? icon, String label, T value})> _filterOptions<T>(T all, T unwatched) => [
-  (icon: Symbols.download_rounded, label: t.downloads.allEpisodes, value: all),
-  (icon: Symbols.visibility_off_rounded, label: t.downloads.unwatchedOnly, value: unwatched),
+  (icon: LucideIcons.download, label: t.downloads.allEpisodes, value: all),
+  (icon: LucideIcons.eyeOff, label: t.downloads.unwatchedOnly, value: unwatched),
 ];
 
 /// Asks whether to download once or keep the target synced.
@@ -393,8 +390,8 @@ Future<_SyncChoice?> _showSyncChoiceDialog(BuildContext context) => showOptionPi
   context,
   title: t.downloads.downloadNow,
   options: [
-    (icon: Symbols.download_rounded, label: t.downloads.downloadOnce, value: _SyncChoice.downloadOnce),
-    (icon: Symbols.sync_rounded, label: t.downloads.keepSynced, value: _SyncChoice.keepSynced),
+    (icon: LucideIcons.download, label: t.downloads.downloadOnce, value: _SyncChoice.downloadOnce),
+    (icon: LucideIcons.refreshCw, label: t.downloads.keepSynced, value: _SyncChoice.keepSynced),
   ],
 );
 
@@ -647,16 +644,16 @@ List<FocusableAction> buildSyncRuleActions(
   return [
     if (showDownload)
       FocusableAction(
-        icon: hasRule ? Symbols.sync_rounded : Symbols.download_rounded,
+        icon: hasRule ? LucideIcons.refreshCw : LucideIcons.download,
         tooltip: hasRule ? t.downloads.manageSyncRule : t.downloads.downloadNow,
         onPressed: hasRule
             ? () => manageSyncRule(context, downloadProvider: context.read<DownloadProvider>(), globalKey: ruleKey)
             : onDownload,
-        iconColor: hasRule ? Colors.teal : null,
+        iconColor: hasRule ? PlezzantColors.automation : null,
       ),
     if (hasRule)
       FocusableAction(
-        icon: Symbols.sync_disabled_rounded,
+        icon: LucideIcons.refreshCwOff,
         tooltip: t.downloads.removeSyncRule,
         onPressed: () => removeSyncRuleAndSnack(
           context,

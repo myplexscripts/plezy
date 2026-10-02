@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../../focus/hub_vertical_navigation.dart';
@@ -165,7 +165,7 @@ class WhatsOnTabState extends State<WhatsOnTab>
           key: _hubKeys[index],
           hub: hub.mediaHub,
           focusMemory: _hubFocusMemory,
-          icon: Symbols.live_tv_rounded,
+          icon: LucideIcons.radioTower,
           cardSizing: HubCardSizing.grid,
           episodePosterModeOverride: EpisodePosterMode.seriesPoster,
           onItemTap: (item) => _onItemTap(hub.entryFor(item)),

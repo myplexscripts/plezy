@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../focus/dpad_navigator.dart';
 import '../../focus/focusable_button.dart';
 import '../../focus/input_mode_tracker.dart';
@@ -146,10 +146,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
                   focusNode: (widget.selectedSort?.key == sort.key || (widget.selectedSort == null && index == 0))
                       ? _initialFocusNode
                       : null,
-                  leading: AppIcon(
-                    isSelected ? Symbols.radio_button_checked_rounded : Symbols.radio_button_unchecked_rounded,
-                    fill: 1,
-                  ),
+                  leading: AppIcon(isSelected ? LucideIcons.circleDot : LucideIcons.circle, fill: 1),
                   title: Text(sort.title),
                   trailing: Visibility(
                     visible: isSelected,

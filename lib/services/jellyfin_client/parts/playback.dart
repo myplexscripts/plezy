@@ -828,7 +828,7 @@ mixin _JellyfinPlaybackMethods on _JellyfinClientInternals {
         'AllowVideoStreamCopy': ?allowVideoStreamCopy,
         'AllowAudioStreamCopy': ?allowAudioStreamCopy,
         'DeviceProfile': <String, Object?>{
-          'Name': 'Plezy',
+          'Name': 'Plezzant',
           'MaxStreamingBitrate': ?maxStreamingBitrate,
           'CodecProfiles': const <Map<String, Object?>>[],
           // fMP4 segments instead of MPEG-TS (#2131): ts cannot carry AV1,

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/focus/focusable_action_bar.dart';
 import 'package:plezy/focus/focusable_wrapper.dart';
 import 'package:plezy/i18n/strings.g.dart';
@@ -268,7 +268,7 @@ void main() {
       expect(rect.left, 12 + 24);
       expect(rect.right, 900 - 12 - 48);
       final next = find.ancestor(
-        of: find.byWidgetPredicate((widget) => widget is AppIcon && widget.icon == Symbols.skip_next_rounded),
+        of: find.byWidgetPredicate((widget) => widget is AppIcon && widget.icon == LucideIcons.skipForward),
         matching: find.byType(IconButton),
       );
       final target = tester.getRect(next);
@@ -406,8 +406,8 @@ void main() {
         .toList();
 
     expect(icons, hasLength(4));
-    expect(icons.singleWhere((icon) => icon.icon == Symbols.close_rounded).size, 20);
-    expect(icons.where((icon) => icon.icon != Symbols.close_rounded).map((icon) => icon.size), everyElement(24));
+    expect(icons.singleWhere((icon) => icon.icon == LucideIcons.x).size, 20);
+    expect(icons.where((icon) => icon.icon != LucideIcons.x).map((icon) => icon.size), everyElement(24));
   });
 
   testWidgets('keyboard long-press anchors the context menu to the focused card instead of a stale pointer', (
@@ -446,9 +446,7 @@ void main() {
     await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
 
-    final playMenuIcon = find.byWidgetPredicate(
-      (widget) => widget is AppIcon && widget.icon == Symbols.play_arrow_rounded,
-    );
+    final playMenuIcon = find.byWidgetPredicate((widget) => widget is AppIcon && widget.icon == LucideIcons.play);
     expect(playMenuIcon, findsOneWidget);
     final menuSurface = find.ancestor(of: playMenuIcon, matching: find.byType(BottomSheet));
     expect(menuSurface, findsOneWidget);

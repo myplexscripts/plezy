@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences_foundation/shared_preferences_foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material show ThemeMode;
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
@@ -28,6 +28,7 @@ import 'profiles/profile_selection_policy.dart';
 import 'models/external_player_models.dart';
 import 'mixins/mounted_set_state_mixin.dart';
 import 'theme/mono_theme.dart';
+import 'theme/plezzant/plezzant_palette.dart';
 import 'profiles/plex_home_service.dart';
 import 'screens/auth_screen.dart';
 import 'screens/profile/pin_entry_dialog.dart';
@@ -564,7 +565,7 @@ Future<void> showRepairOutcomeDialog(
                 const SizedBox(height: 16),
                 Text(t.startup.backupTitle, style: Theme.of(dialogContext).textTheme.titleSmall),
                 const SizedBox(height: 4),
-                SelectableText(backupPath, style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
+                SelectableText(backupPath, style: const TextStyle(fontFamily: 'monospace', fontSize: 14)),
                 if (outcome.backupHoldsCredentials) ...[
                   const SizedBox(height: 4),
                   Text(t.startup.backupWarning, style: TextStyle(color: Theme.of(dialogContext).colorScheme.error)),
@@ -1049,7 +1050,7 @@ Future<void> _logEnvironmentDiagnostics() async {
     await Future.sync(() => Sentry.configureScope((scope) => scope.setTag('renderer', rendererName ?? 'unknown')));
   }
   appLogger.i(
-    'Plezy v${packageInfo.version}+${packageInfo.buildNumber}$commitSuffix$renderer'
+    'Plezzant v${packageInfo.version}+${packageInfo.buildNumber}$commitSuffix$renderer'
     ' [effects: ${DevicePerformance.describeSync()}]',
   );
   appLogger.i('Display: ${DevicePerformance.describeDisplay()}');
@@ -1155,6 +1156,9 @@ FutureOr<SentryEvent?> _beforeSend(SentryEvent event, Hint _) {
 }
 
 void _registerShaderLicenses() {
+  LicenseRegistry.addLicense(() async* {
+    yield LicenseEntryWithLineBreaks(['Manrope'], await rootBundle.loadString('assets/fonts/OFL-Manrope.txt'));
+  });
   LicenseRegistry.addLicense(() async* {
     yield const LicenseEntryWithLineBreaks(
       ['Anime4K'],
@@ -2305,8 +2309,8 @@ class _SetupScreenState extends State<SetupScreen> with MountedSetStateMixin {
     if (_serverStatus.isEmpty) return const SizedBox.shrink();
     final textTheme = Theme.of(context).textTheme;
     final dimColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5);
-    const successColor = Color(0xFF4CAF50);
-    const failColor = Color(0xFFEF5350);
+    const successColor = PlezzantColors.success;
+    const failColor = PlezzantColors.danger;
 
     return Column(
       mainAxisSize: .min,
@@ -2314,11 +2318,11 @@ class _SetupScreenState extends State<SetupScreen> with MountedSetStateMixin {
         final (name, connected) = entry.value;
         final Widget statusIcon;
         if (connected == null) {
-          statusIcon = AppIcon(Symbols.circle_rounded, size: 10, color: dimColor);
+          statusIcon = AppIcon(LucideIcons.circle, size: 10, color: dimColor);
         } else if (connected) {
-          statusIcon = const AppIcon(Symbols.check_circle_rounded, size: 14, color: successColor);
+          statusIcon = const AppIcon(LucideIcons.circleCheck, size: 14, color: successColor);
         } else {
-          statusIcon = const AppIcon(Symbols.cancel_rounded, size: 14, color: failColor);
+          statusIcon = const AppIcon(LucideIcons.circleX, size: 14, color: failColor);
         }
         return Padding(
           key: ValueKey(entry.key),
@@ -2338,7 +2342,7 @@ class _SetupScreenState extends State<SetupScreen> with MountedSetStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    const coralColor = Color(0xFFE5A00D);
+    const accentColor = PlezzantColors.highlight;
     final height = MediaQuery.sizeOf(context).height;
     // The stacked layout below hangs its two rows off fixed ±170/180 offsets from the middle, which
     // needs roughly 700 logical pixels of height. A car at a large interface scale — and a phone in
@@ -2353,7 +2357,7 @@ class _SetupScreenState extends State<SetupScreen> with MountedSetStateMixin {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SvgPicture.asset('assets/plezy_adaptive_foreground.svg', width: 160, height: 160),
+                  SvgPicture.asset('assets/plezzant_mark.svg', width: 160, height: 160),
                   _buildStatusText(context),
                   const SizedBox(height: 16),
                   Center(
@@ -2361,7 +2365,7 @@ class _SetupScreenState extends State<SetupScreen> with MountedSetStateMixin {
                         ? const SizedBox(
                             width: 20,
                             height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: coralColor),
+                            child: CircularProgressIndicator(strokeWidth: 2, color: accentColor),
                           )
                         : _buildServerStatusList(context),
                   ),
@@ -2376,7 +2380,7 @@ class _SetupScreenState extends State<SetupScreen> with MountedSetStateMixin {
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Stack(
         children: [
-          Center(child: SvgPicture.asset('assets/plezy_adaptive_foreground.svg', width: 288, height: 288)),
+          Center(child: SvgPicture.asset('assets/plezzant_mark.svg', width: 288, height: 288)),
           Positioned(left: 0, right: 0, bottom: height * 0.5 - 170, child: _buildStatusText(context)),
           Positioned(
             left: 0,
@@ -2387,7 +2391,7 @@ class _SetupScreenState extends State<SetupScreen> with MountedSetStateMixin {
                   ? const SizedBox(
                       width: 20,
                       height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: coralColor),
+                      child: CircularProgressIndicator(strokeWidth: 2, color: accentColor),
                     )
                   : _buildServerStatusList(context),
             ),

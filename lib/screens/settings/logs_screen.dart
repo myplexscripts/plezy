@@ -5,7 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show SelectedContent;
 import 'package:plezy/utils/media_server_http_client.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -29,8 +29,13 @@ import '../../utils/snackbar_helper.dart';
 import '../../widgets/desktop_app_bar.dart';
 import '../../widgets/ios_status_bar_tap_scroll_to_top.dart';
 import '../../widgets/system_bottom_inset.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 const previousStartupFailureKey = Key('logs-previous-startup-failure');
+
+/// Log upload posts to a third-party relay; Plezzant builds keep logs on the
+/// device (copy/share instead) unless a build opts in explicitly.
+const bool kLogUploadEnabled = bool.fromEnvironment('ENABLE_LOG_UPLOAD', defaultValue: false);
 
 /// `SelectionArea` claims plain arrow keys as no-op caret moves, which starves
 /// `DirectionalFocusIntent` and pins D-pad focus on the app-bar back button.
@@ -293,7 +298,7 @@ class _LogsScreenState extends State<LogsScreen> with MountedSetStateMixin {
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      icon: const AppIcon(Symbols.content_copy_rounded, size: 20),
+                      icon: const AppIcon(LucideIcons.copy, size: 20),
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: id));
                         showSuccessSnackBar(context, t.messages.logsCopied);
@@ -320,11 +325,11 @@ class _LogsScreenState extends State<LogsScreen> with MountedSetStateMixin {
     switch (level) {
       case Level.error:
       case Level.fatal:
-        return Colors.red;
+        return PlezzantColors.danger;
       case Level.warning:
-        return Colors.orange;
+        return PlezzantColors.warning;
       case Level.info:
-        return Colors.blue;
+        return PlezzantColors.info;
       case Level.debug:
       case Level.trace:
         return Colors.grey;
@@ -343,7 +348,7 @@ class _LogsScreenState extends State<LogsScreen> with MountedSetStateMixin {
   }
 
   TextStyle? _logTextStyle(ThemeData theme) =>
-      theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace', fontSize: 12, height: 1.5);
+      theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace', fontSize: 14, height: 1.5);
 
   List<TextSpan> _buildDeviceInfoSpans() {
     return [
@@ -402,7 +407,7 @@ class _LogsScreenState extends State<LogsScreen> with MountedSetStateMixin {
           children: [
             Row(
               children: [
-                AppIcon(Symbols.error_rounded, size: 18, color: theme.colorScheme.onErrorContainer),
+                AppIcon(LucideIcons.circleAlert, size: 18, color: theme.colorScheme.onErrorContainer),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -417,7 +422,7 @@ class _LogsScreenState extends State<LogsScreen> with MountedSetStateMixin {
               failure.describe(),
               style: theme.textTheme.bodySmall?.copyWith(
                 fontFamily: 'monospace',
-                fontSize: 12,
+                fontSize: 14,
                 color: theme.colorScheme.onErrorContainer,
               ),
             ),
@@ -474,22 +479,23 @@ class _LogsScreenState extends State<LogsScreen> with MountedSetStateMixin {
                           FocusableActionBar(
                             actions: [
                               FocusableAction(
-                                icon: Symbols.refresh_rounded,
+                                icon: LucideIcons.rotateCw,
                                 tooltip: t.common.refresh,
                                 onPressed: _loadLogs,
                               ),
+                              if (kLogUploadEnabled)
+                                FocusableAction(
+                                  icon: LucideIcons.upload,
+                                  tooltip: t.logs.uploadLogs,
+                                  onPressed: _hasDiagnostics ? _uploadLogs : null,
+                                ),
                               FocusableAction(
-                                icon: Symbols.upload_rounded,
-                                tooltip: t.logs.uploadLogs,
-                                onPressed: _hasDiagnostics ? _uploadLogs : null,
-                              ),
-                              FocusableAction(
-                                icon: Symbols.content_copy_rounded,
+                                icon: LucideIcons.copy,
                                 tooltip: t.logs.copyLogs,
                                 onPressed: _hasDiagnostics ? _copyAllLogs : null,
                               ),
                               FocusableAction(
-                                icon: Symbols.delete_outline_rounded,
+                                icon: LucideIcons.trash,
                                 tooltip: t.logs.clearLogs,
                                 onPressed: _hasDiagnostics ? _clearLogs : null,
                               ),

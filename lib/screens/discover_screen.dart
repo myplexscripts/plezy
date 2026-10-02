@@ -6,7 +6,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
 import '../widgets/server_activities_button.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../focus/focusable_action_bar.dart';
 import '../focus/hub_vertical_navigation.dart';
@@ -66,6 +66,7 @@ import '../watch_together/watch_together.dart';
 import '../providers/companion_remote_provider.dart';
 import '../widgets/companion_remote/remote_session_dialog.dart';
 import 'companion_remote/mobile_remote_screen.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -699,7 +700,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
         enabled: !_switchingProfile,
         icon: active != null
             ? ProfileAvatar(profile: active, size: 32, avatarUrl: activeProvider.avatarUrlFor(active.id))
-            : const AppIcon(Symbols.account_circle_rounded, fill: 1, size: 32, color: Colors.white),
+            : const AppIcon(LucideIcons.circleUser, fill: 1, size: 32, color: Colors.white),
         tooltip: t.profiles.sectionTitle,
         adaptiveSheet: true,
         anchorAlignment: AppMenuAnchorAlignment.end,
@@ -726,13 +727,13 @@ class _DiscoverScreenState extends State<DiscoverScreen>
           leading: ProfileAvatar(profile: p, size: 24, avatarUrl: activeProvider.avatarUrlFor(p.id)),
           label: p.displayName,
           trailing: p.isPinProtected
-              ? AppIcon(Symbols.lock_rounded, fill: 1, size: 14, color: theme.colorScheme.onSurfaceVariant)
+              ? AppIcon(LucideIcons.lock, fill: 1, size: 14, color: theme.colorScheme.onSurfaceVariant)
               : null,
         ),
       if (switchable.isNotEmpty) const AppMenuDivider(),
-      AppMenuItem<String>(value: 'manage_profiles', icon: Symbols.group_rounded, label: t.profiles.sectionTitle),
-      AppMenuItem<String>(value: 'settings', icon: Symbols.settings_rounded, label: t.common.settings),
-      AppMenuItem<String>(value: 'logout', icon: Symbols.logout_rounded, label: t.common.logout),
+      AppMenuItem<String>(value: 'manage_profiles', icon: LucideIcons.users, label: t.profiles.sectionTitle),
+      AppMenuItem<String>(value: 'settings', icon: LucideIcons.settings, label: t.common.settings),
+      AppMenuItem<String>(value: 'logout', icon: LucideIcons.logOut, label: t.common.logout),
     ];
   }
 
@@ -801,7 +802,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                 onNavigateDown: _focusContentFromAppBar,
                 actions: [
                   FocusableAction(
-                    icon: Symbols.refresh_rounded,
+                    icon: LucideIcons.rotateCw,
                     iconColor: foregroundColor,
                     onPressed: () async {
                       final outcome = await _discover.refreshNow();
@@ -825,7 +826,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                       children: [
                         IconButton(
                           icon: AppIcon(
-                            Symbols.group_rounded,
+                            LucideIcons.users,
                             fill: watchTogether.isInSession ? 1 : 0,
                             color: watchTogether.isInSession ? colorScheme.primary : foregroundColor,
                           ),
@@ -845,7 +846,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                               ),
                               child: Text(
                                 '${watchTogether.participantCount}',
-                                style: TextStyle(color: colorScheme.onPrimary, fontSize: 10, fontWeight: .bold),
+                                style: TextStyle(color: colorScheme.onPrimary, fontSize: 12, fontWeight: .bold),
                               ),
                             ),
                           ),
@@ -865,7 +866,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                       children: [
                         IconButton(
                           icon: AppIcon(
-                            Symbols.phone_android_rounded,
+                            LucideIcons.smartphone,
                             fill: companionRemote.isConnected ? 1 : 0,
                             color: companionRemote.isConnected ? colorScheme.primary : foregroundColor,
                           ),
@@ -889,7 +890,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                               width: 8,
                               height: 8,
                               decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: PlezzantColors.success,
                                 shape: BoxShape.circle,
                                 border: Border.fromBorderSide(BorderSide(color: foregroundColor, width: 1)),
                               ),
@@ -1047,7 +1048,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                   SliverEmptyState(
                     message: t.discover.noContentAvailable,
                     subtitle: t.discover.addMediaToLibraries,
-                    icon: Symbols.movie_rounded,
+                    icon: LucideIcons.film,
                   ),
 
                 SliverToBoxAdapter(child: SizedBox(height: 24 + bottomPadding)),
@@ -1115,7 +1116,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
           if (_errorMessage != null)
             ErrorStateWidget(
               message: _errorMessage!,
-              icon: Symbols.error_outline_rounded,
+              icon: LucideIcons.circleAlert,
               onRetry: _discover.load,
               actionAutofocus: true,
               actionUseBackgroundFocus: true,
@@ -1124,7 +1125,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
             EmptyStateWidget(
               message: t.discover.noContentAvailable,
               subtitle: t.discover.addMediaToLibraries,
-              icon: Symbols.movie_rounded,
+              icon: LucideIcons.film,
             ),
           if (browseHubs.isNotEmpty)
             Positioned(
@@ -1201,7 +1202,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                             }
                           },
                           child: AppIcon(
-                            _isAutoScrollPaused ? Symbols.play_arrow_rounded : Symbols.pause_rounded,
+                            _isAutoScrollPaused ? LucideIcons.play : LucideIcons.pause,
                             fill: 1,
                             color: Theme.of(context).colorScheme.onSurface,
                             size: 18,
@@ -1578,7 +1579,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                 child: Row(
                   mainAxisSize: .min,
                   children: [
-                    AppIcon(Symbols.play_arrow_rounded, fill: 1, size: isTv ? 28 : 20, color: foregroundColor),
+                    AppIcon(LucideIcons.play, fill: 1, size: isTv ? 28 : 20, color: foregroundColor),
                     SizedBox(width: isTv ? 12 : 8),
                     if (hasProgress) ...[
                       // Progress bar

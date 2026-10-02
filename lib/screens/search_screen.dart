@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../exceptions/media_server_exceptions.dart';
@@ -488,20 +488,20 @@ class _SearchScreenState extends State<SearchScreen>
                 child: StateMessageWidget(
                   message: t.search.searchYourMedia,
                   subtitle: t.search.enterTitleActorOrKeyword,
-                  icon: Symbols.search_rounded,
+                  icon: LucideIcons.search,
                   iconSize: 80,
                 ),
               )
             else if (lastSearchFailed)
               SliverFillRemaining(
-                child: StateMessageWidget(message: t.explore.searchFailed, icon: Symbols.error_rounded, iconSize: 80),
+                child: StateMessageWidget(message: t.explore.searchFailed, icon: LucideIcons.circleAlert, iconSize: 80),
               )
             else if (searchResults.isEmpty)
               SliverFillRemaining(
                 child: StateMessageWidget(
                   message: t.messages.noResultsFound,
                   subtitle: t.search.tryDifferentTerm,
-                  icon: Symbols.search_off_rounded,
+                  icon: LucideIcons.searchX,
                   iconSize: 80,
                 ),
               )

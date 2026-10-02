@@ -257,7 +257,7 @@ class _TimelineSliderState extends State<TimelineSlider> {
         formatDurationTimestamp(time),
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 12,
+          fontSize: 14,
           height: 1.0,
           fontFeatures: [FontFeature.tabularFigures()],
         ),

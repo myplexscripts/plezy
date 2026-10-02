@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../i18n/strings.g.dart';
 import '../media/media_kind.dart';
@@ -35,8 +35,8 @@ Future<WatchlistCandidate?> showWatchlistSourceChooser(
               ? t.explore.removeFromWatchlist
               : t.explore.addToWatchlist,
           trailing: (candidate.source.isOnWatchlist(kind, candidate.ids) ?? false)
-              ? const AppIcon(Symbols.bookmark_added_rounded, fill: 1)
-              : const AppIcon(Symbols.bookmark_add_rounded),
+              ? const AppIcon(LucideIcons.bookmarkCheck, fill: 1)
+              : const AppIcon(LucideIcons.bookmarkPlus),
         ),
     ],
   );

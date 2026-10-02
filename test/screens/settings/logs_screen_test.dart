@@ -51,7 +51,7 @@ void main() {
     expect(constrainLogUploadPayload(header: header, logs: logs, maxBytes: 128), '$header$logs');
   });
 
-  testWidgets('long upload capability displays and copies at narrow width', (tester) async {
+  testWidgets('long upload capability displays and copies at narrow width', skip: !kLogUploadEnabled, (tester) async {
     const capability = 'abcdefghijklmnopqrstuvwxy';
     String? uploadedBody;
     http.Request? uploadedRequest;
@@ -224,7 +224,7 @@ void main() {
       // Gating these on the log buffer alone would show the record and then
       // refuse to let the user do anything with it.
       final bar = tester.widget<FocusableActionBar>(find.byType(FocusableActionBar));
-      for (final tooltip in [t.logs.uploadLogs, t.logs.copyLogs, t.logs.clearLogs]) {
+      for (final tooltip in [if (kLogUploadEnabled) t.logs.uploadLogs, t.logs.copyLogs, t.logs.clearLogs]) {
         final action = bar.actions.singleWhere((candidate) => candidate.tooltip == tooltip);
         expect(action.onPressed, isNotNull, reason: tooltip);
       }
@@ -380,7 +380,7 @@ void main() {
       await tester.pump();
 
       expect(clipboardText, isNotNull);
-      expect(clipboardText, startsWith('Plezy'));
+      expect(clipboardText, startsWith('Plezzant'));
       expect(clipboardText, matches(RegExp(r'---\n\[')));
       expect(clipboardText, matches(RegExp(r'newer-row\n\[')));
       expect(clipboardText, endsWith('older-row'));
@@ -403,7 +403,7 @@ void main() {
 
       await pumpLogs(tester);
       await pumpSelectionRegistration(tester);
-      final header = find.textContaining('Plezy', findRichText: true);
+      final header = find.textContaining('Plezzant', findRichText: true);
       final newerRow = find.textContaining('newer-row', findRichText: true);
       final gesture = await tester.startGesture(
         tester.getTopLeft(header) + const Offset(1, 6),

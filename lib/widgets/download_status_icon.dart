@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../models/download_models.dart';
 import '../utils/platform_detector.dart';
 import '../widgets/app_icon.dart';
+import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// Visual weight preset.
 ///
@@ -60,12 +61,17 @@ class DownloadStatusIcon extends StatelessWidget {
 
     switch (s) {
       case DownloadStatus.queued:
-        return AppIcon(Symbols.schedule_rounded, fill: 1, size: size, color: _tint(Colors.orange));
+        return AppIcon(LucideIcons.clock, fill: 1, size: size, color: _tint(PlezzantColors.warning));
       case DownloadStatus.downloading:
         // No progress value — render a static "downloading" icon (callers
         // without per-item progress, e.g. the download tree view).
         if (progress == null) {
-          return AppIcon(Symbols.downloading_rounded, fill: 1, size: size, color: _tint(overrideColor ?? Colors.blue));
+          return AppIcon(
+            LucideIcons.cloudDownload,
+            fill: 1,
+            size: size,
+            color: _tint(overrideColor ?? PlezzantColors.info),
+          );
         }
         final primary = overrideColor ?? Theme.of(context).colorScheme.primary;
         final tinted = _tint(primary);
@@ -90,31 +96,29 @@ class DownloadStatusIcon extends StatelessWidget {
         );
       case DownloadStatus.paused:
         return AppIcon(
-          Symbols.pause_circle_outline_rounded,
+          LucideIcons.circlePause,
           fill: 1,
           size: size,
-          color: _tint(variant == DownloadStatusIconVariant.muted ? Colors.amber : Colors.grey),
+          color: _tint(variant == DownloadStatusIconVariant.muted ? PlezzantColors.highlight : Colors.grey),
         );
       case DownloadStatus.failed:
         return AppIcon(
-          variant == DownloadStatusIconVariant.muted ? Symbols.error_outline_rounded : Symbols.error_rounded,
+          variant == DownloadStatusIconVariant.muted ? LucideIcons.circleAlert : LucideIcons.circleAlert,
           fill: 1,
           size: size,
-          color: _tint(Colors.red),
+          color: _tint(PlezzantColors.danger),
         );
       case DownloadStatus.cancelled:
-        return AppIcon(Symbols.cancel_rounded, fill: 1, size: size, color: _tint(Colors.grey));
+        return AppIcon(LucideIcons.circleX, fill: 1, size: size, color: _tint(Colors.grey));
       case DownloadStatus.completed:
         return AppIcon(
-          variant == DownloadStatusIconVariant.muted
-              ? Symbols.file_download_done_rounded
-              : Symbols.check_circle_rounded,
+          variant == DownloadStatusIconVariant.muted ? LucideIcons.fileCheck : LucideIcons.circleCheck,
           fill: 1,
           size: size,
-          color: _tint(Colors.green),
+          color: _tint(PlezzantColors.success),
         );
       case DownloadStatus.partial:
-        return AppIcon(Symbols.downloading_rounded, fill: 1, size: size, color: _tint(Colors.orange));
+        return AppIcon(LucideIcons.cloudDownload, fill: 1, size: size, color: _tint(PlezzantColors.warning));
     }
   }
 }
