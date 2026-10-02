@@ -15,40 +15,77 @@ class PlezzantGlassStyle {
   /// Backdrop blur sigma. Zero skips the BackdropFilter entirely.
   final double blur;
 
-  /// Neutral fill over the backdrop (white-on-dark lift).
+  /// Neutral fill over the backdrop.
   final double fillAlpha;
 
   /// Palette tint mixed over the fill, from the current ambience.
   final double tintAlpha;
 
-  /// Opaque fallback alpha when blur is unavailable (weak hardware / off).
+  /// Opaque fallback alpha when blur is unavailable.
   final double solidAlpha;
+
+  /// Soft elevation shadow behind floating glass.
+  final double shadowAlpha;
+
+  /// Brightness of the specular edge.
+  final double specularAlpha;
 
   const PlezzantGlassStyle({
     required this.blur,
     required this.fillAlpha,
     required this.tintAlpha,
     required this.solidAlpha,
+    this.shadowAlpha = 0.20,
+    this.specularAlpha = 0.30,
   });
 
-  /// Navigation rails and top bars: light, mostly transparent.
-  static const chrome = PlezzantGlassStyle(blur: 24, fillAlpha: 0.06, tintAlpha: 0.05, solidAlpha: 0.92);
+  /// Navigation rails and top bars. Kept clear so artwork remains present.
+  static const chrome = PlezzantGlassStyle(
+    blur: 26,
+    fillAlpha: 0.055,
+    tintAlpha: 0.035,
+    solidAlpha: 0.90,
+    shadowAlpha: 0.16,
+    specularAlpha: 0.28,
+  );
 
-  /// Player controls and floating panels over video.
-  static const overlay = PlezzantGlassStyle(blur: 28, fillAlpha: 0.10, tintAlpha: 0.06, solidAlpha: 0.88);
+  /// Player controls and compact floating panels over video.
+  static const overlay = PlezzantGlassStyle(
+    blur: 30,
+    fillAlpha: 0.075,
+    tintAlpha: 0.045,
+    solidAlpha: 0.88,
+    shadowAlpha: 0.24,
+    specularAlpha: 0.34,
+  );
 
-  /// Menus, dialogs and sheets that must stay highly readable.
-  static const panel = PlezzantGlassStyle(blur: 32, fillAlpha: 0.12, tintAlpha: 0.05, solidAlpha: 0.96);
+  /// Menus, dialogs and sheets that need stronger separation.
+  static const panel = PlezzantGlassStyle(
+    blur: 34,
+    fillAlpha: 0.105,
+    tintAlpha: 0.04,
+    solidAlpha: 0.95,
+    shadowAlpha: 0.28,
+    specularAlpha: 0.38,
+  );
+
+  /// Very clear glass for small controls floating directly over artwork.
+  static const clear = PlezzantGlassStyle(
+    blur: 22,
+    fillAlpha: 0.035,
+    tintAlpha: 0.025,
+    solidAlpha: 0.84,
+    shadowAlpha: 0.18,
+    specularAlpha: 0.42,
+  );
 }
 
-/// A restrained Liquid-Glass-inspired surface: blurred backdrop, neutral lift,
-/// faint palette tint from the current ambience, and a specular top edge.
+/// A Liquid-Glass-inspired functional layer for navigation, controls, menus
+/// and overlays. Content itself stays solid so hierarchy remains obvious.
 ///
-/// Glass is for floating UI only (navigation, player chrome, menus, dialogs,
-/// context panels). Content stays solid. When the device runs the reduced
-/// performance tier or the user turned glass off, the surface renders as a
-/// solid near-black panel with the same shape and edge, so layouts and
-/// contrast never depend on blur.
+/// The material combines backdrop blur, a faint ambience tint, a directional
+/// highlight and a thin specular edge. Reduced-performance devices and the
+/// user's glass setting fall back to a solid surface with the same geometry.
 class PlezzantGlass extends StatelessWidget {
   final Widget child;
   final PlezzantGlassStyle style;
@@ -93,41 +130,88 @@ class PlezzantGlass extends StatelessWidget {
       builder: (context, match, _) {
         final tint = (match?.hue ?? PlezzantPalette.brand).darker;
         final Widget surface;
+
         switch (intensity) {
           case GlassIntensity.off:
             surface = DecoratedBox(
               decoration: BoxDecoration(
                 color: Color.alphaBlend(
-                  tint.withValues(alpha: style.tintAlpha * 0.6),
+                  tint.withValues(alpha: style.tintAlpha * 0.55),
                   base.withValues(alpha: style.solidAlpha),
                 ),
                 borderRadius: borderRadius,
               ),
               child: _padded(child),
             );
+
           case GlassIntensity.subtle:
           case GlassIntensity.full:
             final full = intensity == GlassIntensity.full;
-            final blur = full ? style.blur : style.blur * 0.66;
-            final fill = Color.alphaBlend(
-              tint.withValues(alpha: style.tintAlpha * (full ? 1.2 : 1.0)),
-              Color.alphaBlend(lift.withValues(alpha: style.fillAlpha), base.withValues(alpha: full ? 0.38 : 0.55)),
+            final blur = full ? style.blur : style.blur * 0.72;
+            final glassFill = Color.alphaBlend(
+              tint.withValues(alpha: style.tintAlpha * (full ? 1.15 : 1.0)),
+              Color.alphaBlend(
+                lift.withValues(alpha: style.fillAlpha),
+                base.withValues(alpha: full ? 0.30 : 0.44),
+              ),
             );
+
+            final highlight = Color.alphaBlend(
+              Colors.white.withValues(alpha: dark ? 0.08 : 0.16),
+              glassFill,
+            );
+            final lowerTint = Color.alphaBlend(
+              tint.withValues(alpha: style.tintAlpha * 0.48),
+              glassFill,
+            );
+
             surface = ClipRRect(
               borderRadius: borderRadius,
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
                 child: DecoratedBox(
-                  decoration: BoxDecoration(color: fill),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: const Alignment(-0.8, -1.0),
+                      end: const Alignment(0.8, 1.0),
+                      colors: [highlight, glassFill, lowerTint],
+                      stops: const [0.0, 0.48, 1.0],
+                    ),
+                  ),
                   child: _padded(child),
                 ),
               ),
             );
         }
-        if (!edge) return surface;
+
+        Widget layered = surface;
+        if (intensity != GlassIntensity.off && style.shadowAlpha > 0) {
+          layered = DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(
+                    alpha: dark ? style.shadowAlpha : style.shadowAlpha * 0.42,
+                  ),
+                  blurRadius: 30,
+                  spreadRadius: -8,
+                  offset: const Offset(0, 12),
+                ),
+              ],
+            ),
+            child: surface,
+          );
+        }
+
+        if (!edge) return layered;
         return CustomPaint(
-          foregroundPainter: _SpecularEdgePainter(borderRadius: borderRadius, dark: dark),
-          child: surface,
+          foregroundPainter: _SpecularEdgePainter(
+            borderRadius: borderRadius,
+            dark: dark,
+            alpha: style.specularAlpha,
+          ),
+          child: layered,
         );
       },
     );
@@ -136,34 +220,41 @@ class PlezzantGlass extends StatelessWidget {
   Widget _padded(Widget child) => padding == null ? child : Padding(padding: padding!, child: child);
 }
 
-/// One-pixel edge, brighter along the top: the "specular" catch-light that
-/// makes a glass panel read as a physical layer without a heavy border.
+/// Thin directional catch-light around the glass perimeter.
 class _SpecularEdgePainter extends CustomPainter {
   final BorderRadius borderRadius;
   final bool dark;
+  final double alpha;
 
-  const _SpecularEdgePainter({required this.borderRadius, required this.dark});
+  const _SpecularEdgePainter({
+    required this.borderRadius,
+    required this.dark,
+    required this.alpha,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
     final rrect = borderRadius.toRRect(rect).deflate(0.5);
-    final light = dark ? Colors.white : Colors.black;
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
       ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
+        begin: const Alignment(-0.7, -1.0),
+        end: const Alignment(0.7, 1.0),
         colors: [
-          light.withValues(alpha: dark ? 0.22 : 0.10),
-          light.withValues(alpha: dark ? 0.05 : 0.04),
+          Colors.white.withValues(alpha: alpha),
+          Colors.white.withValues(alpha: alpha * 0.45),
+          (dark ? Colors.white : Colors.black).withValues(alpha: alpha * 0.12),
         ],
+        stops: const [0.0, 0.42, 1.0],
       ).createShader(rect);
     canvas.drawRRect(rrect, paint);
   }
 
   @override
   bool shouldRepaint(_SpecularEdgePainter oldDelegate) =>
-      oldDelegate.borderRadius != borderRadius || oldDelegate.dark != dark;
+      oldDelegate.borderRadius != borderRadius ||
+      oldDelegate.dark != dark ||
+      oldDelegate.alpha != alpha;
 }

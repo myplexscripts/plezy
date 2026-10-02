@@ -34,6 +34,7 @@ import '../theme/mono_tokens.dart';
 import '../widgets/backend_badge.dart';
 import '../i18n/strings.g.dart';
 import '../theme/plezzant/plezzant_glass.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 
 enum _LibraryNavSection { visible, hidden }
 
@@ -162,8 +163,8 @@ class NavigationRailItem extends StatelessWidget {
     this.expandedContentWidth = SideNavigationRailState.expandedWidth - 24,
     this.expandedHeight = 48,
     this.suppressSelectedBackground = false,
-    this.focusAlpha = 0.12,
-    this.selectedFocusAlpha = 0.15,
+    this.focusAlpha = 0.16,
+    this.selectedFocusAlpha = 0.20,
     this.onNavigateRight,
   });
 
@@ -455,8 +456,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
   /// track tick for tick.
   /// Reduced-tier devices resolve this to zero; keep every consumer on this
   /// getter so the shell and rail continue to move in lockstep.
-  static Duration get expandDuration => DevicePerformance.reducedDuration(const Duration(milliseconds: 250));
-  static const Curve expandCurve = Curves.easeInOutCubicEmphasized;
+  static Duration get expandDuration => DevicePerformance.reducedDuration(PlezzantMotion.navigation);
+  static const Curve expandCurve = PlezzantMotion.standard;
 
   static double collapsedWidthForContext(BuildContext _) => PlatformDetector.isTV() ? tvCollapsedWidth : collapsedWidth;
 

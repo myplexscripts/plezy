@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
 
 import '../services/device_performance.dart';
-import 'layout_constants.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 
 Route<T> fadeRoute<T>(Widget page) {
   return PageRouteBuilder<T>(
-    // opaque must stay false: routes composite over the video player layer
-    // below the transparent root scaffold. The reduced tier only drops the
-    // fade (two full-screen layers blending for the whole transition).
+    // Keep the route translucent because some routes composite above video.
     opaque: false,
     pageBuilder: (context, animation, secondaryAnimation) => page,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        FadeTransition(opacity: animation, child: child),
-    transitionDuration: DevicePerformance.reducedDuration(AppDurations.animSlow),
-    reverseTransitionDuration: DevicePerformance.reducedDuration(AppDurations.animSlow),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: PlezzantMotion.standard,
+        reverseCurve: PlezzantMotion.exit,
+      );
+
+      return FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.018),
+            end: Offset.zero,
+          ).animate(curved),
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.992, end: 1.0).animate(curved),
+            child: child,
+          ),
+        ),
+      );
+    },
+    transitionDuration: DevicePerformance.reducedDuration(PlezzantMotion.route),
+    reverseTransitionDuration: DevicePerformance.reducedDuration(PlezzantMotion.routeOut),
   );
 }
