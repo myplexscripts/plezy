@@ -5,7 +5,10 @@
 final class WatchTogetherRelayEndpoint {
   WatchTogetherRelayEndpoint._(this._baseUri);
 
-  static const String defaultBaseUrl = 'https://ice.plezy.app';
+  static const String defaultBaseUrl = String.fromEnvironment(
+    'PLEZZANT_RELAY_URL',
+    defaultValue: 'https://ice.plezy.app',
+  );
 
   static final WatchTogetherRelayEndpoint defaultEndpoint = WatchTogetherRelayEndpoint._(Uri.parse(defaultBaseUrl));
 

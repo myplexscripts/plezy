@@ -113,6 +113,12 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Ambience and glass intensity settings | 🆕 | Settings → Appearance |
 | Focus system (scale, luminance, tinted halo) | 🎨 | Thinner neutral edge, palette-tinted glow |
 | Reduced-performance tier (weak TVs) | ✅ | Animations and blur drop out |
+| Apple TV style navigation | 🆕 | Section pill (‹ Home) in the top-left corner; a floating glass sidebar with profile and clock that opens on LEFT; the focused item is a white pill |
+| Apple TV style home | 🆕 | Full-bleed hero showing genre, rating badge and synopsis, with a white action pill (Play / Resume / Go to Show); landscape Up Next rows |
+| Apple TV style details | 🆕 | Logo-led hero with a white "Play S1E1" pill and glass secondary actions |
+| Apple TV style profile picker | 🆕 | "Who's watching?": round avatars on a soft gradient |
+| TV search | 🆕 | Poster grid with kind chips (All / Movies / TV Shows / Episodes) |
+| TV settings | 🆕 | tvOS-style large centred titles over a centred list |
 
 ## Diagnostics & settings
 
@@ -126,14 +132,18 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 
 ## External services inherited from the upstream project
 
-These depend on infrastructure that Plezzant doesn't operate. They are kept
-off by default or are desktop-only:
+Every endpoint and client ID below can be replaced at build time (see
+[RELEASE.md](RELEASE.md)). Without overrides, the built-in defaults are used:
 
-| Service | State in Plezzant |
-|---|---|
-| Crash reporting (Sentry) | Off unless built with `ENABLE_SENTRY` |
-| Update checker | Off unless built with `ENABLE_UPDATE_CHECK` |
-| Log upload relay | Off unless built with `ENABLE_LOG_UPLOAD` |
-| Watch Together relay | Uses the upstream relay. Needs a Plezzant-owned relay before release |
-| Discord Rich Presence poster host | Desktop only; not used on Android TV |
-| Trakt / Simkl / MDBList OAuth apps | Registered under the upstream name. Plezzant needs its own client IDs before release |
+| Service | State in Plezzant | Build override |
+|---|---|---|
+| Crash reporting (Sentry) | Off. Needs your own DSN | `PLEZZANT_SENTRY_DSN` (CI also turns on `ENABLE_SENTRY`) |
+| Update checker | Off unless built with `ENABLE_UPDATE_CHECK` | |
+| Log upload relay | Off unless built with `ENABLE_LOG_UPLOAD`; uses the relay host | `PLEZZANT_RELAY_URL` |
+| Watch Together relay | Default relay. Users can also set their own in Settings → Advanced | `PLEZZANT_RELAY_URL` |
+| Discord Rich Presence poster host | Desktop only; uses the relay host | `PLEZZANT_RELAY_URL` |
+| Trakt | Default OAuth app | `PLEZZANT_TRAKT_CLIENT_ID`, `PLEZZANT_TRAKT_CLIENT_SECRET` |
+| Simkl | Default OAuth app | `PLEZZANT_SIMKL_CLIENT_ID` |
+| MDBList | Default OAuth app | `PLEZZANT_MDBLIST_CLIENT_ID` |
+| MyAnimeList | Default OAuth app | `PLEZZANT_MAL_CLIENT_ID` |
+| Simkl / MDBList app-name header | Default name | `PLEZZANT_TRACKER_APP_NAME` |

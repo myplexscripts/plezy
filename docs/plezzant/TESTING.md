@@ -27,16 +27,25 @@ don't need to build anything yourself unless you want to (Option A, Part 2).
 4. Click **plezzant-apks**. A file called `plezzant-apks.zip` downloads.
 5. Open your **Downloads** folder, right-click `plezzant-apks.zip`, choose
    **Extract All…**, then click **Extract**.
-6. Inside the new `plezzant-apks` folder are three files:
+6. Inside the new `plezzant-apks` folder are four files:
 
    | File | Use it for |
    |---|---|
-   | `plezzant-x86_64.apk` | **The emulator on your PC** (Option A) |
-   | `plezzant-arm64-v8a.apk` | Most modern TVs and boxes (NVIDIA Shield, newer Google TV TVs, Fire TV Stick 4K Max) |
-   | `plezzant-armeabi-v7a.apk` | Older or budget TVs, Chromecast with Google TV, most Fire TV sticks |
+   | `plezzant-universal.apk` | **Start here.** Installs on any TV, box or emulator |
+   | `plezzant-x86_64.apk` | Smaller file for the emulator on your PC (Option A) |
+   | `plezzant-arm64-v8a.apk` | Smaller file for most modern TVs and boxes (NVIDIA Shield, newer Google TV TVs, Fire TV Stick 4K Max) |
+   | `plezzant-armeabi-v7a.apk` | Smaller file for older or budget TVs, Chromecast with Google TV, most Fire TV sticks |
 
-   Not sure which one your TV needs? Option B, step 7 shows how to ask the TV.
-   If one fails to install with "App not installed", try the other ARM file.
+   If you're unsure, use `plezzant-universal.apk`. It is bigger because it
+   contains every CPU type, but it always installs.
+
+   Every build is signed with the same key, so a newer APK installs over the
+   older one and keeps your sign-in. **Stick with the same kind of file each
+   time.** The smaller per-CPU files carry a higher internal version number
+   than the universal one, so Android refuses to swap a per-CPU install for
+   the universal file ("App not installed"). If that happens, or if your
+   copy came from a much older build, uninstall Plezzant first (Option B,
+   step 12) and then install again.
 
 > Plezzant installs **next to** any other Plex app. It doesn't replace the
 > official Plex app or anything else.

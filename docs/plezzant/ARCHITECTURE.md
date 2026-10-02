@@ -169,7 +169,14 @@ toolchain, and platform-channel names must match on both sides:
 * Dart package name (`package:plezy/...` imports)
 * Kotlin namespace / source package (`com.edde746.plezy` directories)
 * Platform channel names (`com.plezy/mpv_player`, …)
-* Third-party OAuth app registrations (Trakt, Simkl, MDBList client names)
+* Third-party OAuth app registrations (Trakt, Simkl, MDBList client names).
+  These are overridable at build time; see [RELEASE.md](RELEASE.md)
+
+**Rename decision (1.1.0):** the internal identifiers above stay as they are.
+Renaming them touches every import, the Kotlin sources and the native channel
+names. It changes nothing users see, and a mismatch would only show up as a
+runtime failure on a device. Revisit this only if the code is published as
+its own repository.
 
 User-visible identity **was** changed: app label, Android `applicationId`
 (`app.plezzant.tv`, so it installs side-by-side), provider authorities, the

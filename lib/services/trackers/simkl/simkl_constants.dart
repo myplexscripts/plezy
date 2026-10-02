@@ -16,11 +16,14 @@ class SimklConstants {
 
   /// Registered Simkl app client ID. Extractable from the binary; same threat
   /// model as the Plex token already in SharedPreferences.
-  static const String clientId = 'ac97718a469c33eab948b63f92226106157e58fdcdd70c1b5857f1779b1d3a6a';
+  static const String clientId = String.fromEnvironment(
+    'PLEZZANT_SIMKL_CLIENT_ID',
+    defaultValue: 'ac97718a469c33eab948b63f92226106157e58fdcdd70c1b5857f1779b1d3a6a',
+  );
 
   static const String apiBase = 'https://api.simkl.com';
   static const String dataBase = 'https://data.simkl.in';
-  static const String appName = 'plezy';
+  static const String appName = String.fromEnvironment('PLEZZANT_TRACKER_APP_NAME', defaultValue: 'plezy');
   static const String appVersion = '2';
 
   // OAuth (device-code / PIN) endpoints

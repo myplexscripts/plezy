@@ -1,7 +1,7 @@
 name: plezy
 description: "Plezzant — a cinematic Plex client for Android TV"
 publish_to: "none"
-version: 1.0.0+150
+version: 1.1.0+151
 
 environment:
   # Dart floor stays 3.12: freezed 3.x emits `final` constructor parameters,

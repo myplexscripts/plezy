@@ -140,14 +140,41 @@ jobs:
             flutter pub get --enforce-lockfile --no-example
           fi
 
+      # Optional build-time overrides: your own tracker client IDs, Watch
+      # Together relay and crash-report DSN. Only secrets that are set are
+      # passed, so unset ones keep the built-in defaults.
+      - name: Collect build overrides
+        env:
+          PLEZZANT_TRAKT_CLIENT_ID: ${{ secrets.PLEZZANT_TRAKT_CLIENT_ID }}
+          PLEZZANT_TRAKT_CLIENT_SECRET: ${{ secrets.PLEZZANT_TRAKT_CLIENT_SECRET }}
+          PLEZZANT_SIMKL_CLIENT_ID: ${{ secrets.PLEZZANT_SIMKL_CLIENT_ID }}
+          PLEZZANT_MDBLIST_CLIENT_ID: ${{ secrets.PLEZZANT_MDBLIST_CLIENT_ID }}
+          PLEZZANT_MAL_CLIENT_ID: ${{ secrets.PLEZZANT_MAL_CLIENT_ID }}
+          PLEZZANT_TRACKER_APP_NAME: ${{ secrets.PLEZZANT_TRACKER_APP_NAME }}
+          PLEZZANT_RELAY_URL: ${{ secrets.PLEZZANT_RELAY_URL }}
+          PLEZZANT_SENTRY_DSN: ${{ secrets.PLEZZANT_SENTRY_DSN }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          defines = {"GIT_COMMIT": os.environ["GITHUB_SHA"]}
+          for key, value in os.environ.items():
+              if key.startswith("PLEZZANT_") and value:
+                  defines[key] = value
+          if defines.get("PLEZZANT_SENTRY_DSN"):
+              defines["ENABLE_SENTRY"] = "true"
+          with open("build-defines.json", "w") as f:
+              json.dump(defines, f)
+          print("Build overrides:", ", ".join(sorted(k for k in defines if k != "GIT_COMMIT")) or "none")
+          PY
+
       - name: Build APKs
         run: |
           mkdir -p dist
           # One universal APK that installs on any device, plus smaller
           # per-CPU APKs for people who know which one they need.
-          flutter build apk --release --dart-define=GIT_COMMIT=${{ github.sha }}
+          flutter build apk --release --dart-define-from-file=build-defines.json
           cp build/app/outputs/flutter-apk/app-release.apk dist/plezzant-universal.apk
-          flutter build apk --release --split-per-abi --dart-define=GIT_COMMIT=${{ github.sha }}
+          flutter build apk --release --split-per-abi --dart-define-from-file=build-defines.json
           cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk dist/plezzant-arm64-v8a.apk
           cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk dist/plezzant-armeabi-v7a.apk
           cp build/app/outputs/flutter-apk/app-x86_64-release.apk dist/plezzant-x86_64.apk
