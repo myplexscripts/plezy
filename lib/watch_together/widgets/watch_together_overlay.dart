@@ -200,7 +200,7 @@ class _SessionMenuSheet extends StatelessWidget {
                       ),
                       Text(
                         provider.sessionId!,
-                        style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace', fontWeight: .bold),
+                        style: theme.textTheme.bodySmall?.copyWith(fontWeight: .w800, letterSpacing: 1.5),
                       ),
                       const SizedBox(width: 8),
                       AppIcon(LucideIcons.copy, size: 16, color: theme.colorScheme.onSurfaceVariant),

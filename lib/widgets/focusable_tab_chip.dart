@@ -113,27 +113,23 @@ class _FocusableTabChipState extends State<FocusableTabChip> with FocusableChipS
     // Only show focus effects during keyboard/d-pad navigation
     final showFocus = isFocused && InputModeTracker.isKeyboardMode(context);
 
-    // Determine background color based on focus and selection state
-    // - Selected + Focused: slightly dimmed primary (to show focus distinction)
-    // - Selected only: primary color
-    // - Focused only: primary color
-    // - Neither: surface color
+    // Focus and selection must never look alike on a TV: focus is the solid
+    // light pill (where the remote is), selection is a soft tinted pill with
+    // bold text (which tab's content is showing).
     Color backgroundColor;
     Color foregroundColor;
 
-    if (widget.isSelected && showFocus) {
-      // Selected + focused: dim the primary color slightly
-      backgroundColor = Color.lerp(colorScheme.primary, colorScheme.surface, 0.25)!;
-      foregroundColor = colorScheme.onPrimary;
-    } else if (widget.isSelected || showFocus) {
-      // Selected or focused (but not both): full primary
+    if (showFocus) {
       backgroundColor = colorScheme.primary;
       foregroundColor = colorScheme.onPrimary;
+    } else if (widget.isSelected) {
+      backgroundColor = colorScheme.onSurface.withValues(alpha: 0.16);
+      foregroundColor = colorScheme.onSurface;
     } else {
       // Neither selected nor focused
       if (PlatformDetector.isTV()) {
         backgroundColor = colorScheme.secondaryContainer.withValues(alpha: 0.38);
-        foregroundColor = colorScheme.onSecondaryContainer;
+        foregroundColor = colorScheme.onSecondaryContainer.withValues(alpha: 0.72);
       } else {
         backgroundColor = colorScheme.surfaceContainerHighest;
         foregroundColor = colorScheme.onSurfaceVariant;
@@ -146,7 +142,7 @@ class _FocusableTabChipState extends State<FocusableTabChip> with FocusableChipS
       widget.label,
       style: Theme.of(context).textTheme.labelLarge?.copyWith(
         color: foregroundColor,
-        fontWeight: isHighlighted ? FontWeight.w600 : FontWeight.normal,
+        fontWeight: widget.isSelected ? FontWeight.w700 : (isHighlighted ? FontWeight.w600 : FontWeight.w500),
       ),
     );
 

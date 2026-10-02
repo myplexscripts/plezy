@@ -138,7 +138,8 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
   }
 
   // Focus management for regular (non-smart) reorderable lists
-  final FocusNode _listFocusNode = FocusNode(debugLabel: 'playlist_list');
+  // Every primary-focus change re-evaluates the rows' focus marks.
+  late final FocusNode _listFocusNode = FocusNode(debugLabel: 'playlist_list')..addListener(_notifyFocusChanged);
   final FocusNode _continuationRetryFocusNode = FocusNode(debugLabel: 'playlist_continuation_retry');
 
   // Navigation state for regular (non-smart) playlists
@@ -254,6 +255,7 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
             _focusedIndex = 0;
             _focusedColumn = 0;
           });
+          _notifyFocusChanged();
           if (_isReadOnly) {
             firstItemFocusNode.requestFocus();
           } else {
@@ -277,6 +279,16 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
       });
       _listFocusNode.requestFocus();
     }
+    _notifyFocusChanged();
+  }
+
+  /// Rows read [isAppBarFocused] through a [ListenableSelector] keyed on
+  /// [_focusRevision]; without a revision bump the last row kept its focus
+  /// outline while the header action was focused (two focus marks at once).
+  @override
+  void navigateToAppBar() {
+    super.navigateToAppBar();
+    _notifyFocusChanged();
   }
 
   Future<void> _downloadPlaylist() => downloadPlaylist(
@@ -695,12 +707,17 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
         autofocus: isKeyboardMode && !isAppBarFocused,
         focusNode: _listFocusNode,
         onKeyEvent: _handleListKeyEvent,
-        onFocusChange: (hasFocus) {
-          if (hasFocus && mounted) {
+        onFocusChange: (_) {
+          if (!mounted) return;
+          // The header actions live inside this node's subtree, so `hasFocus`
+          // stays true while they are focused; only primary focus means the
+          // list itself (and therefore a row) is where the remote is.
+          if (_listFocusNode.hasPrimaryFocus) {
             setState(() {
               isAppBarFocused = false;
             });
           }
+          _notifyFocusChanged();
         },
         child: scrollView,
       );
@@ -741,7 +758,9 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
           key: ValueKey(keyId),
           listenable: _focusRevision,
           selector: () {
-            final focused = index == _focusedIndex && !isAppBarFocused;
+            // The list node is the source of truth: when focus leaves for the
+            // header (by any path) the row must stop drawing its focus mark.
+            final focused = index == _focusedIndex && !isAppBarFocused && _listFocusNode.hasPrimaryFocus;
             return (focused, focused ? _focusedColumn : null, index == _movingIndex);
           },
           builder: (context, focusState, _) {

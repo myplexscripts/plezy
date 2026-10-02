@@ -1968,6 +1968,9 @@ bool shouldBypassSetupForDatabaseRecovery(TvosDatabaseRecoveryOutcome outcome) {
   return outcome == TvosDatabaseRecoveryOutcome.recoveryRequired;
 }
 
+/// Longest the splash waits for download metadata before showing Home.
+const Duration _startupDownloadRefreshBudget = Duration(seconds: 6);
+
 class SetupScreen extends StatefulWidget {
   const SetupScreen({
     super.key,
@@ -2240,7 +2243,17 @@ class _SetupScreenState extends State<SetupScreen> with MountedSetStateMixin {
     // are resolvable (the Connections row + live MediaBrowser client are in
     // place). Without this the downloads list and sync-rule titles render
     // empty until something forces a later refresh.
-    await downloadProvider.refreshMetadataFromCache();
+    // Bounded: download bookkeeping must never hold the viewer on the splash.
+    // When storage is unavailable (no documents directory, a stuck native
+    // downloader init) the refresh can wait indefinitely; the downloads list
+    // simply fills in later once the provider settles.
+    await downloadProvider
+        .refreshMetadataFromCache()
+        .timeout(
+          _startupDownloadRefreshBudget,
+          onTimeout: () => appLogger.w('Setup: download metadata refresh exceeded its startup budget; continuing'),
+        )
+        .catchError((Object e) => appLogger.w('Setup: download metadata refresh failed; continuing', error: e));
     if (!mounted) return;
 
     AndroidExitDiagnostics.markStartupPhase(AndroidStartupPhase.mainScreen);

@@ -102,7 +102,7 @@ class PendingAuthDialog extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Text(
           _urlDisplayText,
-          style: theme.textTheme.titleMedium?.copyWith(fontFamily: 'monospace', fontWeight: .w600),
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: .w700, letterSpacing: 0.3),
           textAlign: textAlign,
         ),
       ),

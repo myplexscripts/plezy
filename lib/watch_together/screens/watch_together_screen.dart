@@ -471,7 +471,11 @@ class _RecentRoomTile extends StatelessWidget {
             subtitle: room.name != null
                 ? Text(
                     room.code,
-                    style: TextStyle(fontFamily: 'monospace', color: theme.colorScheme.onSurfaceVariant),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.5,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   )
                 : null,
             trailing: IconButton(
@@ -828,7 +832,8 @@ class _SessionCodeRow extends StatelessWidget {
               Text(
                 '${t.watchTogether.sessionCode}: $sessionId',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  fontFamily: 'monospace',
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.5,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),

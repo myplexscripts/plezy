@@ -82,6 +82,10 @@ mixin FocusableChipStateMixin<T extends StatefulWidget> on State<T> {
   void _bindFocusNode() {
     _boundExternalNode = widgetFocusNode;
     _focusNodeBinding.bind(externalNode: widgetFocusNode, listener: _onFocusChange, debugLabel: debugLabel);
+    // A chip can be (re)built around a node that already holds focus — e.g.
+    // its header is rebuilt while focus moves onto it — and no change event
+    // follows, so read the current state instead of assuming "unfocused".
+    _isFocused = focusNode.hasFocus;
   }
 
   void _onFocusChange() {
