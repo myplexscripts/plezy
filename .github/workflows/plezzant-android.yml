@@ -1,0 +1,144 @@
+name: Plezzant Android TV APK
+
+# Builds installable Plezzant APKs for every push to the plezzant branch, so
+# testers can download a build from the run's "Artifacts" section without
+# installing any Android tooling.
+
+on:
+  push:
+    branches:
+      - plezzant
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plezzant-android-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: "3.47.1"
+
+jobs:
+  checks:
+    name: Analyze and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+          pub-cache: false
+
+      - name: Resolve dependencies
+        run: flutter pub get --enforce-lockfile --no-example
+
+      - name: Icon consistency
+        run: dart run scripts/checks/check_icon_consistency.dart
+
+      - name: Analyze
+        run: flutter analyze --no-pub lib test
+
+      - name: Plezzant design-system tests
+        run: flutter test --no-pub test/theme
+
+  build-apk:
+    name: Build APKs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Java
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+          pub-cache: false
+
+      - name: Cache Gradle
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: plezzant-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      # Every build must carry the same signature, otherwise Android refuses
+      # to install a new build over the previous one. A repository secret
+      # (PLEZZANT_KEYSTORE_BASE64 + passwords) wins; without one, a stable
+      # debug keystore is kept in the Actions cache.
+      - name: Restore stable debug keystore
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.android/debug.keystore
+          key: plezzant-debug-keystore-v1
+
+      - name: Create debug keystore when missing
+        run: |
+          if [ ! -f ~/.android/debug.keystore ]; then
+            mkdir -p ~/.android
+            keytool -genkeypair -v -keystore ~/.android/debug.keystore -storepass android -keypass android \
+              -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Plezzant Test Build,O=Plezzant,C=US"
+          fi
+
+      - name: Configure release signing from secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.PLEZZANT_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.PLEZZANT_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.PLEZZANT_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.PLEZZANT_KEY_ALIAS }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+            {
+              echo "storePassword=$STORE_PASSWORD"
+              echo "keyPassword=$KEY_PASSWORD"
+              echo "keyAlias=$KEY_ALIAS"
+              echo "storeFile=upload-keystore.jks"
+            } > android/key.properties
+          fi
+
+      - name: Resolve dependencies
+        run: flutter pub get --enforce-lockfile --no-example
+
+      - name: Build APKs
+        run: flutter build apk --release --split-per-abi --dart-define=GIT_COMMIT=${{ github.sha }}
+
+      - name: Rename APKs
+        run: |
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk dist/plezzant-arm64-v8a.apk
+          cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk dist/plezzant-armeabi-v7a.apk
+          cp build/app/outputs/flutter-apk/app-x86_64-release.apk dist/plezzant-x86_64.apk
+          ls -la dist
+
+      - name: Clean up signing material
+        if: always()
+        run: rm -f android/app/upload-keystore.jks android/key.properties
+
+      - name: Upload APKs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: plezzant-apks
+          path: dist/*.apk
+          if-no-files-found: error
+          retention-days: 30
