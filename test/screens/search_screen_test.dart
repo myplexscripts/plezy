@@ -434,6 +434,7 @@ void main() {
   testWidgets('search rows show the library name when the server has several libraries', (tester) async {
     final (client, key) = await _pumpTvSearchScreen(
       tester,
+      tv: false,
       items: [
         testMediaItem(
           id: 'movie_1',
@@ -476,6 +477,7 @@ void main() {
     // title must resolve against the loaded libraries without a request.
     final (_, key) = await _pumpTvSearchScreen(
       tester,
+      tv: false,
       items: _twoLibraryMovies(),
       libraries: [_library('1', 'Movies'), _library('2', 'Anime')],
     );
@@ -491,6 +493,7 @@ void main() {
   testWidgets('no library label on a single-library server', (tester) async {
     final (_, key) = await _pumpTvSearchScreen(
       tester,
+      tv: false,
       items: [
         testMediaItem(
           id: 'movie_1',
@@ -515,6 +518,17 @@ void main() {
     expect(find.byType(BackendBadge), findsNothing);
   });
 
+  testWidgets('TV results render as a poster grid', (tester) async {
+    final (_, key) = await _pumpTvSearchScreen(tester, items: _twoLibraryMovies());
+    await tester.pumpAndSettle();
+
+    (key.currentState! as SearchInputFocusable).submitSearchQuery('movie');
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SliverGrid), findsOneWidget);
+    expect(find.byType(FocusableMediaCard), findsNWidgets(2));
+  });
+
   testWidgets('card refresh keeps the library stamp', (tester) async {
     final stamped = testMediaItem(
       id: 'movie_1',
@@ -528,6 +542,7 @@ void main() {
     );
     final (client, key) = await _pumpTvSearchScreen(
       tester,
+      tv: false,
       items: [stamped],
       libraries: [_library('1', 'Movies'), _library('2', 'Anime')],
     );
@@ -703,8 +718,11 @@ Future<(_FakeMediaServerClient, GlobalKey<State<SearchScreen>>)> _pumpTvSearchSc
   List<_FakeMediaServerClient> additionalClients = const [],
   HiddenLibrariesProvider? hiddenLibraries,
   List<MediaLibrary> libraries = const [],
+  // TV shows results as a poster grid; the list rows that carry the source
+  // line are the non-TV layout.
+  bool tv = true,
 }) async {
-  TvDetectionService.debugSetAppleTVOverride(true);
+  TvDetectionService.debugSetAppleTVOverride(tv);
   tester.view.devicePixelRatio = 1.0;
   tester.view.physicalSize = const Size(1280, 720);
   addTearDown(() {

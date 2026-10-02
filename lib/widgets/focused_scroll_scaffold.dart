@@ -4,6 +4,8 @@ import '../focus/key_event_utils.dart';
 import 'desktop_app_bar.dart';
 import 'ios_status_bar_tap_scroll_to_top.dart';
 import 'system_bottom_inset.dart';
+import 'tv_readable_sliver.dart';
+import '../utils/platform_detector.dart';
 
 /// A scaffold widget that wraps Focus + Scaffold + CustomScrollView
 /// with consistent keyboard navigation handling and app bar styling.
@@ -92,6 +94,7 @@ class _FocusedScrollScaffoldState extends State<FocusedScrollScaffold> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _requestInitialFocus());
     }
 
+    final tvLayout = PlatformDetector.isTV() && (widget.actions?.isEmpty ?? true);
     return Focus(
       canRequestFocus: false,
       onKeyEvent: (_, event) {
@@ -106,23 +109,31 @@ class _FocusedScrollScaffoldState extends State<FocusedScrollScaffold> {
           child: Scaffold(
             body: CustomScrollView(
               slivers: [
-                if (!widget.focusableAppBarActions || !_appBarFocusEnabled)
-                  ExcludeFocus(
-                    child: CustomAppBar(
+                // TV pages without app-bar actions take the tvOS shape: a
+                // large centred title over a centred column; the remote's back
+                // key replaces the back arrow.
+                if (tvLayout) ...[
+                  TvPageTitleSliver(title: widget.title),
+                  for (final sliver in widget.slivers) TvReadableSliver(sliver: sliver),
+                ] else ...[
+                  if (!widget.focusableAppBarActions || !_appBarFocusEnabled)
+                    ExcludeFocus(
+                      child: CustomAppBar(
+                        title: widget.title,
+                        pinned: widget.pinned,
+                        actions: widget.actions,
+                        automaticallyImplyLeading: widget.automaticallyImplyLeading,
+                      ),
+                    )
+                  else
+                    CustomAppBar(
                       title: widget.title,
                       pinned: widget.pinned,
                       actions: widget.actions,
                       automaticallyImplyLeading: widget.automaticallyImplyLeading,
                     ),
-                  )
-                else
-                  CustomAppBar(
-                    title: widget.title,
-                    pinned: widget.pinned,
-                    actions: widget.actions,
-                    automaticallyImplyLeading: widget.automaticallyImplyLeading,
-                  ),
-                ...widget.slivers,
+                  ...widget.slivers,
+                ],
                 // Keeps the last row scrollable clear of the Android
                 // navigation bar / iOS home indicator; zero-height elsewhere.
                 const SliverSystemBottomInset(),

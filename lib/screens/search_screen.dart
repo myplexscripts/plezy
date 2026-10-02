@@ -18,6 +18,7 @@ import '../providers/hidden_libraries_provider.dart';
 import '../providers/libraries_provider.dart';
 import '../providers/multi_server_provider.dart';
 import '../services/data_aggregation_service.dart';
+import '../services/settings_service.dart';
 import '../utils/app_logger.dart';
 import '../utils/platform_detector.dart';
 import '../utils/snackbar_helper.dart';
@@ -25,6 +26,7 @@ import '../utils/media_server_http_client.dart';
 import '../utils/search_relevance.dart';
 import '../widgets/desktop_app_bar.dart';
 import '../widgets/loading_indicator_box.dart';
+import '../widgets/media_card_sliver_layout.dart';
 import '../widgets/search_input_field.dart';
 import '../widgets/focusable_media_card.dart';
 import '../widgets/focusable_tab_chip.dart';
@@ -398,7 +400,7 @@ class _SearchScreenState extends State<SearchScreen>
         // The search field's own bottom padding provides the gap above; the
         // results sliver below shrinks its top padding to match (16/16 visual
         // rhythm around the strip instead of the default 24/24).
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.only(left: 16, right: PlatformDetector.isTV() ? _tvTrailingGutter : 16),
         child: TabChipStrip(
           children: [
             for (final (index, kind) in kinds.indexed) ...[
@@ -428,6 +430,7 @@ class _SearchScreenState extends State<SearchScreen>
     final libraries = context.watch<LibrariesProvider>();
     final showServerName = multiServer.totalServerCount > 1;
     final visible = _visibleResults;
+    if (PlatformDetector.isTV()) return _buildTvResultsGrid(visible);
     return buildResultsSliver(
       childCount: visible.length,
       // Half the default top padding when the chip strip sits directly above:
@@ -452,33 +455,76 @@ class _SearchScreenState extends State<SearchScreen>
     );
   }
 
+  /// TV results: a poster grid like the library screens instead of the dense
+  /// phone list, so search reads like the rest of the ten-foot UI.
+  Widget _buildTvResultsGrid(List<MediaItem> visible) {
+    return MediaCardSliverLayout(
+      viewMode: ViewMode.grid,
+      itemCount: visible.length,
+      density: SettingsService.instance.read(SettingsService.libraryDensity),
+      padding: EdgeInsets.fromLTRB(8, _showKindChips ? 4 : 8, _tvTrailingGutter, 24),
+      findChildIndexCallback: (key) {
+        final id = (key as ValueKey<String>).value;
+        final index = visible.indexWhere((item) => item.globalKey == id);
+        return index < 0 ? null : index;
+      },
+      itemBuilder: (context, position) {
+        final index = position.index;
+        final item = visible[index];
+        return FocusableMediaCard(
+          key: Key(item.globalKey),
+          item: item,
+          disableScale: position.disableScale,
+          focusNode: index == 0 ? firstResultFocusNode : null,
+          onRefresh: updateItem,
+          onListRefresh: refresh,
+          mixedHubContext: true,
+          onNavigateLeft: position.isFirstColumn ? _navigateToSidebar : null,
+          onNavigateUp: position.isFirstRow ? (_showKindChips ? _focusKindChips : focusSearchInput) : null,
+          onBack: _navigateToSidebar,
+        );
+      },
+    );
+  }
+
+  /// Keeps TV content off the right screen edge, matching the browse rails.
+  static const double _tvTrailingGutter = 40;
+
   @override
   Widget build(BuildContext context) {
+    final isTV = PlatformDetector.isTV();
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           primary: false,
           slivers: [
-            DesktopSliverAppBar(title: Text(t.common.search), floating: true),
+            // On TV the section pill above the content already names the page.
+            if (isTV)
+              const SliverToBoxAdapter(child: SizedBox(height: 8))
+            else
+              DesktopSliverAppBar(title: Text(t.common.search), floating: true),
             SliverToBoxAdapter(
-              child: SearchInputField(
-                controller: searchController,
-                focusNode: searchFocusNode,
-                debugLabel: searchDebugLabel,
-                hintText: t.search.hint,
-                tvTextInputController: _tvTextInputController,
-                onNavigateLeft: _navigateToSidebar,
-                onNavigateDown: searchResults.isNotEmpty && !isSearching
-                    ? (_showKindChips ? _focusKindChips : firstResultFocusNode.requestFocus)
-                    : null,
-                onEditingComplete: PlatformDetector.isTV() ? handleSearchSubmit : null,
-                onBack: () {
-                  if (searchController.text.isNotEmpty) {
-                    searchController.clear();
-                  } else {
-                    _navigateToSidebar();
-                  }
-                },
+              child: Padding(
+                padding: EdgeInsets.only(right: isTV ? _tvTrailingGutter - 16 : 0),
+                child: SearchInputField(
+                  controller: searchController,
+                  focusNode: searchFocusNode,
+                  debugLabel: searchDebugLabel,
+                  hintText: t.search.hint,
+                  tvTextInputController: _tvTextInputController,
+                  onNavigateLeft: _navigateToSidebar,
+                  onNavigateDown: searchResults.isNotEmpty && !isSearching
+                      ? (_showKindChips ? _focusKindChips : firstResultFocusNode.requestFocus)
+                      : null,
+                  onEditingComplete: PlatformDetector.isTV() ? handleSearchSubmit : null,
+                  onBack: () {
+                    if (searchController.text.isNotEmpty) {
+                      searchController.clear();
+                    } else {
+                      _navigateToSidebar();
+                    }
+                  },
+                ),
               ),
             ),
             if (isSearching)

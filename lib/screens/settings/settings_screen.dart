@@ -32,6 +32,7 @@ import '../../services/keyboard_shortcuts_service.dart';
 import '../../services/background_work_diagnostics_service.dart';
 import '../../services/settings_service.dart' as settings;
 import '../../services/settings_mutation_service.dart';
+import '../../widgets/tv_readable_sliver.dart';
 import '../../widgets/background_download_warning_banner.dart';
 import '../../services/update_service.dart';
 import '../../utils/dialogs.dart';
@@ -192,50 +193,56 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
         child: CustomScrollView(
           primary: false,
           slivers: [
-            ExcludeFocus(child: CustomAppBar(title: Text(t.settings.title), pinned: true)),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                const SizedBox(height: 8),
-                SettingsGroup(
-                  children: [
-                    if (DonationService.isEnabled) _buildDonateTile(),
-                    _buildGeneralTile(),
-                    _buildAppearanceTile(),
-                    _buildPlaybackTile(),
-                    if (hasLibraries) _buildManageLibrariesTile(sheetContext),
-                    _buildServicesTile(),
-                  ],
-                ),
+            // On TV the section pill above the content already names the page.
+            if (PlatformDetector.isTV())
+              const SliverToBoxAdapter(child: SizedBox(height: 8))
+            else
+              ExcludeFocus(child: CustomAppBar(title: Text(t.settings.title), pinned: true)),
+            TvReadableSliver(
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  const SizedBox(height: 8),
+                  SettingsGroup(
+                    children: [
+                      if (DonationService.isEnabled) _buildDonateTile(),
+                      _buildGeneralTile(),
+                      _buildAppearanceTile(),
+                      _buildPlaybackTile(),
+                      if (hasLibraries) _buildManageLibrariesTile(sheetContext),
+                      _buildServicesTile(),
+                    ],
+                  ),
 
-                _buildConnectionsSection(sheetContext),
+                  _buildConnectionsSection(sheetContext),
 
-                if (!PlatformDetector.isAppleTV()) _buildDownloadsSection(),
+                  if (!PlatformDetector.isAppleTV()) _buildDownloadsSection(),
 
-                if (_keyboardShortcutsSupported || PlatformDetector.shouldActAsRemoteHost(sheetContext))
-                  _buildControlsSection(sheetContext),
+                  if (_keyboardShortcutsSupported || PlatformDetector.shouldActAsRemoteHost(sheetContext))
+                    _buildControlsSection(sheetContext),
 
-                _buildAdvancedSection(),
+                  _buildAdvancedSection(),
 
-                if (UpdateService.isUpdateCheckAvailable) ...[_buildUpdateSection()],
+                  if (UpdateService.isUpdateCheckAvailable) ...[_buildUpdateSection()],
 
-                // Hidden on Android TV / tvOS (no document picker); desktop in
-                // force-TV mode keeps it — FilePickerService works there.
-                if (!PlatformDetector.isTV() || PlatformDetector.isDesktopOS()) _buildBackupSection(),
+                  // Hidden on Android TV / tvOS (no document picker); desktop in
+                  // force-TV mode keeps it — FilePickerService works there.
+                  if (!PlatformDetector.isTV() || PlatformDetector.isDesktopOS()) _buildBackupSection(),
 
-                const SizedBox(height: 24),
-                SettingsGroup(
-                  children: [
-                    SettingNavigationTile(
-                      focusNode: _focusTracker.get(_kAbout),
-                      icon: LucideIcons.info,
-                      title: t.settings.about,
-                      subtitle: t.settings.aboutDescription,
-                      destinationBuilder: (context) => const AboutScreen(),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-              ]),
+                  const SizedBox(height: 24),
+                  SettingsGroup(
+                    children: [
+                      SettingNavigationTile(
+                        focusNode: _focusTracker.get(_kAbout),
+                        icon: LucideIcons.info,
+                        title: t.settings.about,
+                        subtitle: t.settings.aboutDescription,
+                        destinationBuilder: (context) => const AboutScreen(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                ]),
+              ),
             ),
             const SliverSystemBottomInset(),
           ],
