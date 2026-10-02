@@ -38,8 +38,18 @@ jobs:
           cache: true
           pub-cache: false
 
+      # Some git dependencies pin commits that are not on any branch tip, so
+      # pub's mirror clone does not contain them. Fetch each locked ref into
+      # the cached mirrors explicitly, then resolve again.
       - name: Resolve dependencies
-        run: flutter pub get --enforce-lockfile --no-example
+        run: |
+          if ! flutter pub get --enforce-lockfile --no-example; then
+            refs=$(grep -E '^\s+resolved-ref:' pubspec.lock | awk '{print $2}' | tr -d '"')
+            for dir in "${PUB_CACHE:-$HOME/.pub-cache}"/git/cache/*/; do
+              for ref in $refs; do git -C "$dir" fetch --quiet origin "$ref" 2>/dev/null || true; done
+            done
+            flutter pub get --enforce-lockfile --no-example
+          fi
 
       - name: Icon consistency
         run: dart run scripts/checks/check_icon_consistency.dart
@@ -117,8 +127,18 @@ jobs:
             } > android/key.properties
           fi
 
+      # Some git dependencies pin commits that are not on any branch tip, so
+      # pub's mirror clone does not contain them. Fetch each locked ref into
+      # the cached mirrors explicitly, then resolve again.
       - name: Resolve dependencies
-        run: flutter pub get --enforce-lockfile --no-example
+        run: |
+          if ! flutter pub get --enforce-lockfile --no-example; then
+            refs=$(grep -E '^\s+resolved-ref:' pubspec.lock | awk '{print $2}' | tr -d '"')
+            for dir in "${PUB_CACHE:-$HOME/.pub-cache}"/git/cache/*/; do
+              for ref in $refs; do git -C "$dir" fetch --quiet origin "$ref" 2>/dev/null || true; done
+            done
+            flutter pub get --enforce-lockfile --no-example
+          fi
 
       - name: Build APKs
         run: flutter build apk --release --split-per-abi --dart-define=GIT_COMMIT=${{ github.sha }}
