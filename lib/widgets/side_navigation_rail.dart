@@ -33,6 +33,7 @@ import '../services/fullscreen_state_manager.dart';
 import '../theme/mono_tokens.dart';
 import '../widgets/backend_badge.dart';
 import '../i18n/strings.g.dart';
+import '../theme/plezzant/plezzant_glass.dart';
 
 enum _LibraryNavSection { visible, hidden }
 
@@ -962,25 +963,33 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                         // over the content part-way through the collapse.
                         duration: expandDuration,
                         curve: expandCurve,
-                        child: AnimatedContainer(
-                          duration: expandDuration,
-                          curve: expandCurve,
-                          decoration: BoxDecoration(
-                            color: t.surface,
-                            // Open rails read as an M3E panel: rounded
-                            // trailing corners, extra-rounded plus an edge
-                            // shadow while floating over content (modal)
-                            // instead of pushing it.
-                            borderRadius: isCollapsed
-                                ? BorderRadius.zero
-                                : BorderRadius.horizontal(
-                                    right: Radius.circular(_isFloatingPanel ? overlayCornerRadius : t.radiusLg),
-                                  ),
-                            boxShadow: _isFloatingPanel
-                                ? [BoxShadow(color: Colors.black.withValues(alpha: 0.35), blurRadius: 24)]
-                                : const [],
-                          ),
-                        ),
+                        child: PlatformDetector.isTV()
+                            ? PlezzantGlass(
+                                style: PlezzantGlassStyle.chrome,
+                                borderRadius: isCollapsed
+                                    ? BorderRadius.zero
+                                    : BorderRadius.horizontal(right: Radius.circular(overlayCornerRadius)),
+                                child: const SizedBox.expand(),
+                              )
+                            : AnimatedContainer(
+                                duration: expandDuration,
+                                curve: expandCurve,
+                                decoration: BoxDecoration(
+                                  color: t.surface,
+                                  // Open rails read as an M3E panel: rounded
+                                  // trailing corners, extra-rounded plus an edge
+                                  // shadow while floating over content (modal)
+                                  // instead of pushing it.
+                                  borderRadius: isCollapsed
+                                      ? BorderRadius.zero
+                                      : BorderRadius.horizontal(
+                                          right: Radius.circular(_isFloatingPanel ? overlayCornerRadius : t.radiusLg),
+                                        ),
+                                  boxShadow: _isFloatingPanel
+                                      ? [BoxShadow(color: Colors.black.withValues(alpha: 0.35), blurRadius: 24)]
+                                      : const [],
+                                ),
+                              ),
                       ),
                     ),
                     IgnorePointer(

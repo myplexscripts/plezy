@@ -7,6 +7,9 @@ import '../../../../i18n/strings.g.dart';
 import '../../../../mpv/mpv.dart';
 import '../../../../widgets/app_icon.dart';
 import 'performance_stats.dart';
+import 'playback_method_label.dart';
+
+export 'playback_method_label.dart';
 import 'performance_stats_service.dart';
 
 /// A toggleable overlay displaying real-time video player performance statistics.
@@ -22,7 +25,10 @@ class PlayerPerformanceOverlay extends StatefulWidget {
   /// tick behind a fully transparent widget.
   final bool active;
 
-  const PlayerPerformanceOverlay({super.key, required this.player, required this.active});
+  /// How the server delivers the open source (see [PlaybackMethodLabel]).
+  final PlaybackMethodLabel? playbackMethod;
+
+  const PlayerPerformanceOverlay({super.key, required this.player, required this.active, this.playbackMethod});
 
   @override
   State<PlayerPerformanceOverlay> createState() => _PlayerPerformanceOverlayState();
@@ -69,7 +75,12 @@ class _PlayerPerformanceOverlayState extends State<PlayerPerformanceOverlay> {
   Widget build(BuildContext context) {
     final isMpv = _stats.playerType == 'mpv';
 
+    final method = widget.playbackMethod;
     final sections = <Widget>[
+      if (method != null)
+        _buildSection(LucideIcons.radio, t.performanceOverlay.playback, [
+          _metric(t.performanceOverlay.method, method.label),
+        ]),
       _buildSection(LucideIcons.video, t.fileInfo.video, [
         _metric(t.fileInfo.codec, _stats.videoCodec ?? t.common.notAvailable),
         _metric(t.fileInfo.resolution, _stats.resolution),

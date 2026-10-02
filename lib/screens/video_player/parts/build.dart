@@ -283,6 +283,8 @@ extension _VideoPlayerBuildMethods on VideoPlayerScreenState {
                     final sourceSubtitleSidecars = _sourceSubtitleSidecarsForControls();
                     final sourceSubtitleTracks = _sourceSubtitleTracksForControls();
 
+                    // Player accents (timeline) follow the playing title's artwork.
+                    if (!_isOfflinePlayback) requestAmbienceForItem(_currentMetadata, _getMediaServerClient(context));
                     return Video(
                       player: player!,
                       hasFirstFrame: _firstFrame.uiReady,
@@ -297,6 +299,7 @@ extension _VideoPlayerBuildMethods on VideoPlayerScreenState {
                         selectedQualityPreset: _selectedQualityPreset,
                         serverSupportsTranscoding: _serverSupportsTranscoding,
                         isTranscoding: _isTranscoding,
+                        playMethod: _playbackSession?.playMethod,
                         isOfflinePlayback: _isOfflinePlayback,
                         sourceAudioTracks: sourceAudioTracks,
                         selectedAudioStreamId: _selectedAudioStreamId,

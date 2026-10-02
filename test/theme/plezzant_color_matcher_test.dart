@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -152,6 +153,30 @@ void main() {
     test('grey artwork stays neutral after matching', () {
       final pixels = image([(const Color(0xFF777777), 500)]);
       expect(PlezzantColorMatcher.matchOrNull(ArtworkColorExtractor.dominantColor(pixels)), isNull);
+    });
+  });
+
+  group('ArtworkColorExtractor.extract', () {
+    testWidgets('completes, memoises and snaps decoded artwork onto the palette', (tester) async {
+      final pixels = Uint8List(32 * 32 * 4);
+      for (var i = 0; i < pixels.length; i += 4) {
+        pixels
+          ..[i] = 30
+          ..[i + 1] = 90
+          ..[i + 2] = 220
+          ..[i + 3] = 255;
+      }
+      final match = await tester.runAsync(() async {
+        final buffer = await ui.ImmutableBuffer.fromUint8List(pixels);
+        final descriptor = ui.ImageDescriptor.raw(buffer, width: 32, height: 32, pixelFormat: ui.PixelFormat.rgba8888);
+        final codec = await descriptor.instantiateCodec();
+        final frame = await codec.getNextFrame();
+        final png = await frame.image.toByteData(format: ui.ImageByteFormat.png);
+        final provider = MemoryImage(png!.buffer.asUint8List());
+        return ArtworkColorExtractor.instance.extract('regression-key', provider).timeout(const Duration(seconds: 10));
+      });
+      expect(match?.hue, PlezzantPalette.cobalt);
+      expect(ArtworkColorExtractor.instance.hasCached('regression-key'), isTrue);
     });
   });
 }

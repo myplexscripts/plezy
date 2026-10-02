@@ -1299,9 +1299,8 @@ void main() {
     expect(profile, isNot(contains('container=mp4')));
   });
 
-  Future<({({String? startPath, TranscodeDecisionOutcome outcome}) result, List<Uri> decisions})> runGuardedDecision(
-    String Function(int decisionNumber) containerFor,
-  ) async {
+  Future<({({String? startPath, TranscodeDecisionOutcome outcome, bool videoCopy}) result, List<Uri> decisions})>
+  runGuardedDecision(String Function(int decisionNumber) containerFor) async {
     final decisions = <Uri>[];
     final client = makeClient((request) async {
       decisions.add(request.url);

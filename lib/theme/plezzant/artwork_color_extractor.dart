@@ -55,7 +55,11 @@ class ArtworkColorExtractor {
           appLogger.d('Artwork colour extraction failed for $key', error: e);
           return null;
         })
-        .whenComplete(() => _inFlight.remove(key));
+        .whenComplete(() {
+          // Block body on purpose: `remove` returns this very future, and
+          // whenComplete would wait on a returned future — i.e. on itself.
+          _inFlight.remove(key);
+        });
     _inFlight[key] = future;
     return future;
   }
@@ -73,14 +77,16 @@ class ArtworkColorExtractor {
     late final ImageStreamListener listener;
     listener = ImageStreamListener(
       (info, _) async {
-        stream.removeListener(listener);
+        // Read the pixels before detaching: dropping the last listener lets
+        // the completer tear down while the read is still in flight.
         try {
           final data = await info.image.toByteData(format: ui.ImageByteFormat.rawRgba);
-          completer.complete(data?.buffer.asUint8List());
+          if (!completer.isCompleted) completer.complete(data?.buffer.asUint8List());
         } catch (e) {
-          completer.complete(null);
+          if (!completer.isCompleted) completer.complete(null);
         } finally {
           info.dispose();
+          stream.removeListener(listener);
         }
       },
       onError: (Object error, StackTrace? stackTrace) {

@@ -19,7 +19,7 @@ class FocusTheme {
   /// Crisp neutral edge. Kept thin and slightly translucent so focus reads
   /// as light on the card rather than as an outline.
   static Color getFocusBorderColor(BuildContext context) {
-    return Theme.of(context).colorScheme.primary.withValues(alpha: 0.9);
+    return Theme.of(context).colorScheme.primary.withValues(alpha: 0.82);
   }
 
   /// Soft halo under the focused item, tinted by the current palette ambience
@@ -79,11 +79,11 @@ class FocusTheme {
   static List<BoxShadow> focusGlowShadows(Color color) {
     return [
       BoxShadow(
-        color: color.withValues(alpha: 0.34),
+        color: color.withValues(alpha: 0.5),
         blurRadius: focusGlowInnerBlurRadius,
         spreadRadius: focusGlowSpreadRadius,
       ),
-      BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: focusGlowOuterBlurRadius),
+      BoxShadow(color: color.withValues(alpha: 0.28), blurRadius: focusGlowOuterBlurRadius),
     ];
   }
 

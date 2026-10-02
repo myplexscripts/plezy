@@ -9,6 +9,8 @@ import '../../../services/scrub_preview_source.dart';
 import '../../../utils/formatters.dart';
 import '../helpers/eager_horizontal_drag_recognizer.dart';
 import '../painters/buffer_range_painter.dart';
+import '../../../theme/plezzant/plezzant_ambience.dart';
+import '../../../theme/plezzant/plezzant_palette.dart';
 
 /// Timeline slider with chapter markers for video playback
 ///
@@ -382,7 +384,9 @@ class _TimelineSliderState extends State<TimelineSlider> {
                       min: 0.0,
                       max: max,
                       onChanged: _noopSliderChanged,
-                      activeColor: Colors.white,
+                      // Palette accent of the playing title (lighter shade
+                      // reads on dark video); brand hue when neutral.
+                      activeColor: PlezzantAmbience.instance.accent(PlezzantShade.lighter),
                       inactiveColor: Colors.transparent,
                     ),
                   ),

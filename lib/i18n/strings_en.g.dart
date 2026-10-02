@@ -1277,6 +1277,36 @@ class Translations$settings$en {
 
 	/// en: 'Export Plezzant settings'
 	String get exportDialogTitle => 'Export Plezzant settings';
+
+	/// en: 'Ambience'
+	String get ambience => 'Ambience';
+
+	/// en: 'How strongly colour from the focused artwork tints the background'
+	String get ambienceDescription => 'How strongly colour from the focused artwork tints the background';
+
+	/// en: 'Off'
+	String get ambienceOff => 'Off';
+
+	/// en: 'Subtle'
+	String get ambienceSubtle => 'Subtle';
+
+	/// en: 'Rich'
+	String get ambienceRich => 'Rich';
+
+	/// en: 'Glass surfaces'
+	String get glass => 'Glass surfaces';
+
+	/// en: 'Translucency of menus, navigation and player controls. Weaker devices always use solid surfaces.'
+	String get glassDescription => 'Translucency of menus, navigation and player controls. Weaker devices always use solid surfaces.';
+
+	/// en: 'Solid'
+	String get glassOff => 'Solid';
+
+	/// en: 'Subtle'
+	String get glassSubtle => 'Subtle';
+
+	/// en: 'Full'
+	String get glassFull => 'Full';
 }
 
 // Path: search
@@ -4810,6 +4840,24 @@ class Translations$performanceOverlay$en {
 
 	/// en: '${converted} (${failures} failed)'
 	String dvRpuFailed({required Object converted, required Object failures}) => '${converted} (${failures} failed)';
+
+	/// en: 'Playback'
+	String get playback => 'Playback';
+
+	/// en: 'Method'
+	String get method => 'Method';
+
+	/// en: 'Direct Play'
+	String get directPlay => 'Direct Play';
+
+	/// en: 'Direct Stream'
+	String get directStream => 'Direct Stream';
+
+	/// en: 'Transcode'
+	String get transcode => 'Transcode';
+
+	/// en: 'Local file'
+	String get localFile => 'Local file';
 }
 
 // Path: externalPlayer
@@ -7430,6 +7478,16 @@ extension on Translations {
 			'settings.playerScopeLibrary' => 'Per library',
 			'settings.playerScopeTitle' => 'Per show or movie',
 			'settings.exportDialogTitle' => 'Export Plezzant settings',
+			'settings.ambience' => 'Ambience',
+			'settings.ambienceDescription' => 'How strongly colour from the focused artwork tints the background',
+			'settings.ambienceOff' => 'Off',
+			'settings.ambienceSubtle' => 'Subtle',
+			'settings.ambienceRich' => 'Rich',
+			'settings.glass' => 'Glass surfaces',
+			'settings.glassDescription' => 'Translucency of menus, navigation and player controls. Weaker devices always use solid surfaces.',
+			'settings.glassOff' => 'Solid',
+			'settings.glassSubtle' => 'Subtle',
+			'settings.glassFull' => 'Full',
 			'search.hint' => 'Search movies, shows, music...',
 			'search.tryDifferentTerm' => 'Try a different search term',
 			'search.searchYourMedia' => 'Search your media',
@@ -7533,6 +7591,8 @@ extension on Translations {
 			'fileInfo.textBased' => 'Text Based',
 			'fileInfo.subtitleFormat' => 'Sidecar Format',
 			'fileInfo.provider' => 'Provider',
+			_ => null,
+		} ?? switch (path) {
 			'fileInfo.matchScore' => 'Match Score',
 			'fileInfo.externalDelivery' => 'Can Be Served Separately',
 			'fileInfo.sidecarPath' => 'Sidecar Path',
@@ -7543,8 +7603,6 @@ extension on Translations {
 			'fileInfo.path' => 'Path',
 			'fileInfo.fileName' => 'File Name',
 			'fileInfo.size' => 'Size',
-			_ => null,
-		} ?? switch (path) {
 			'fileInfo.totalSize' => 'Total Size',
 			'fileInfo.container' => 'Container',
 			'fileInfo.duration' => 'Duration',
@@ -8047,6 +8105,8 @@ extension on Translations {
 			'libraries.manageLibraries' => 'Manage Libraries',
 			'libraries.sort' => 'Sort',
 			'libraries.sortBy' => 'Sort By',
+			_ => null,
+		} ?? switch (path) {
 			'libraries.filters' => 'Filters',
 			'libraries.confirmActionMessage' => 'Are you sure you want to perform this action?',
 			'libraries.showLibrary' => 'Show library',
@@ -8057,8 +8117,6 @@ extension on Translations {
 			'libraries.filtersWithCount' => ({required Object count}) => 'Filters (${count})',
 			'libraries.noRecommendations' => 'No recommendations available',
 			'libraries.noCollections' => 'No collections in this library',
-			_ => null,
-		} ?? switch (path) {
 			'libraries.noFoldersFound' => 'No folders found',
 			'libraries.folders' => 'folders',
 			'libraries.tabs.recommended' => 'Recommended',
@@ -8561,6 +8619,8 @@ extension on Translations {
 			'downloads.deleteConfirm' => ({required Object title}) => 'Delete "${title}" from this device?',
 			'downloads.cancelledDownloadTitle' => 'Canceled Download',
 			'downloads.cancelledDownloadMessage' => 'This download was canceled. What would you like to do?',
+			_ => null,
+		} ?? switch (path) {
 			'downloads.allEpisodesAlreadyDownloaded' => 'All episodes already downloaded',
 			'downloads.resumeDownload' => 'Resume download',
 			'downloads.cancelledDownload' => 'Canceled download',
@@ -8571,8 +8631,6 @@ extension on Translations {
 			'downloads.deletingWithProgress' => ({required Object title, required Object current, required Object total}) => 'Deleting ${title}... (${current} of ${total})',
 			'downloads.queuedTooltip' => 'Queued',
 			'downloads.queuedFilesTooltip' => ({required Object files}) => 'Queued ${files}',
-			_ => null,
-		} ?? switch (path) {
 			'downloads.downloadingTooltip' => 'Downloading...',
 			'downloads.downloadingFilesTooltip' => ({required Object files}) => 'Downloading ${files}',
 			'downloads.noDownloadsTree' => 'No downloads',
@@ -8804,6 +8862,12 @@ extension on Translations {
 			'performanceOverlay.decoderHardware' => 'Hardware',
 			'performanceOverlay.tunnelingActive' => 'Active',
 			'performanceOverlay.dvRpuFailed' => ({required Object converted, required Object failures}) => '${converted} (${failures} failed)',
+			'performanceOverlay.playback' => 'Playback',
+			'performanceOverlay.method' => 'Method',
+			'performanceOverlay.directPlay' => 'Direct Play',
+			'performanceOverlay.directStream' => 'Direct Stream',
+			'performanceOverlay.transcode' => 'Transcode',
+			'performanceOverlay.localFile' => 'Local file',
 			'externalPlayer.title' => 'External Player',
 			'externalPlayer.useExternalPlayer' => 'Use External Player',
 			'externalPlayer.useExternalPlayerDescription' => 'Open videos in another app',

@@ -2804,7 +2804,7 @@ class PlexClient
   /// couple of seconds. PMS can leave the segment response that races such a
   /// restart open without data or error, which the player waits out as
   /// endless buffering (#1859).
-  Future<({String? startPath, TranscodeDecisionOutcome outcome})> buildTranscodeStartPath({
+  Future<({String? startPath, TranscodeDecisionOutcome outcome, bool videoCopy})> buildTranscodeStartPath({
     required String ratingKey,
     required int mediaIndex,
     int partIndex = 0,
@@ -2836,7 +2836,7 @@ class PlexClient
         requiredContainer: _plexHlsVodContainer,
       );
       if (primary.containerHonored) {
-        return (startPath: primary.startPath, outcome: primary.outcome);
+        return (startPath: primary.startPath, outcome: primary.outcome, videoCopy: primary.videoCopy);
       }
 
       // The decision succeeded but ignored the fMP4 target. Never hand the
@@ -2851,13 +2851,13 @@ class PlexClient
         requiredContainer: _plexHlsVodTsContainer,
       );
       if (fallback.containerHonored) {
-        return (startPath: fallback.startPath, outcome: fallback.outcome);
+        return (startPath: fallback.startPath, outcome: fallback.outcome, videoCopy: fallback.videoCopy);
       }
       appLogger.w('Transcode decision honoured neither requested container; falling back to direct play');
-      return (startPath: null, outcome: TranscodeDecisionOutcome.failed);
+      return (startPath: null, outcome: TranscodeDecisionOutcome.failed, videoCopy: false);
     } catch (e, st) {
       appLogger.e('Failed to build transcode start path', error: e, stackTrace: st);
-      return (startPath: null, outcome: TranscodeDecisionOutcome.failed);
+      return (startPath: null, outcome: TranscodeDecisionOutcome.failed, videoCopy: false);
     }
   }
 
@@ -2938,7 +2938,8 @@ class PlexClient
   /// otherwise. PMS applies whatever transcode target the client profile
   /// names, so a mismatch means the server substituted a container the
   /// player never negotiated — the caller must not open that stream.
-  Future<({String? startPath, TranscodeDecisionOutcome outcome, bool containerHonored})> _runTranscodeDecision({
+  Future<({String? startPath, TranscodeDecisionOutcome outcome, bool containerHonored, bool videoCopy})>
+  _runTranscodeDecision({
     required String startEndpoint,
     required Map<String, String> allParams,
     required bool isOriginal,
@@ -2960,12 +2961,12 @@ class PlexClient
 
     if (decisionResponse.statusCode != 200) {
       appLogger.w('Transcode decision returned ${decisionResponse.statusCode}');
-      return (startPath: null, outcome: TranscodeDecisionOutcome.failed, containerHonored: true);
+      return (startPath: null, outcome: TranscodeDecisionOutcome.failed, containerHonored: true, videoCopy: false);
     }
 
     final outcome = _parseTranscodeDecisionOutcome(decisionResponse.data, isOriginal: isOriginal);
     if (outcome == TranscodeDecisionOutcome.failed) {
-      return (startPath: null, outcome: outcome, containerHonored: true);
+      return (startPath: null, outcome: outcome, containerHonored: true, videoCopy: false);
     }
 
     var containerHonored = true;
@@ -2981,7 +2982,33 @@ class PlexClient
       startPath: _buildTranscodeStartPathFromParams(allParams, endpoint: startEndpoint),
       outcome: outcome,
       containerHonored: containerHonored,
+      videoCopy: decisionCopiesVideo(decisionResponse.data),
     );
+  }
+
+  /// Whether a transcode decision keeps the source video bitstream
+  /// (`decision: copy` on the selected part's video stream), i.e. the session
+  /// is a Direct Stream remux rather than a video re-encode. Audio may still
+  /// be converted. False when the body carries no video stream decision.
+  @visibleForTesting
+  static bool decisionCopiesVideo(dynamic data) {
+    if (data is! Map) return false;
+    final container = data['MediaContainer'];
+    final metadata = container is Map ? container['Metadata'] : null;
+    final media = metadata is List && metadata.isNotEmpty && metadata.first is Map
+        ? (metadata.first as Map)['Media']
+        : null;
+    final selected = media is List && media.isNotEmpty && media.first is Map ? media.first as Map : null;
+    final parts = selected?['Part'];
+    final part = parts is List && parts.isNotEmpty && parts.first is Map ? parts.first as Map : null;
+    final streams = part?['Stream'];
+    if (streams is! List) return false;
+    for (final stream in streams) {
+      if (stream is Map && stream['streamType']?.toString() == '1') {
+        return stream['decision']?.toString() == 'copy';
+      }
+    }
+    return false;
   }
 
   /// Container of the selected media entry in a transcode decision body, or
@@ -3739,7 +3766,7 @@ class PlexClient
             isOffline: false,
             isTranscoding: true,
             activeAudioStreamId: resolvedAudioId,
-            playMethod: 'Transcode',
+            playMethod: result.videoCopy ? 'DirectStream' : 'Transcode',
             playSessionId: options.sessionIdentifier,
             selectedMediaIndex: data.selectedMediaIndex,
           );

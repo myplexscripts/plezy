@@ -412,7 +412,17 @@
     "playerScopeGlobal": "Everywhere",
     "playerScopeLibrary": "Per library",
     "playerScopeTitle": "Per show or movie",
-    "exportDialogTitle": "Export Plezzant settings"
+    "exportDialogTitle": "Export Plezzant settings",
+    "ambience": "Ambience",
+    "ambienceDescription": "How strongly colour from the focused artwork tints the background",
+    "ambienceOff": "Off",
+    "ambienceSubtle": "Subtle",
+    "ambienceRich": "Rich",
+    "glass": "Glass surfaces",
+    "glassDescription": "Translucency of menus, navigation and player controls. Weaker devices always use solid surfaces.",
+    "glassOff": "Solid",
+    "glassSubtle": "Subtle",
+    "glassFull": "Full"
   },
   "search": {
     "hint": "Search movies, shows, music...",
@@ -1948,7 +1958,13 @@
     "decoderSoftware": "Software",
     "decoderHardware": "Hardware",
     "tunnelingActive": "Active",
-    "dvRpuFailed": "${converted} (${failures} failed)"
+    "dvRpuFailed": "${converted} (${failures} failed)",
+    "playback": "Playback",
+    "method": "Method",
+    "directPlay": "Direct Play",
+    "directStream": "Direct Stream",
+    "transcode": "Transcode",
+    "localFile": "Local file"
   },
   "externalPlayer": {
     "title": "External Player",

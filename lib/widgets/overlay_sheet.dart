@@ -9,6 +9,7 @@ import '../focus/dpad_navigator.dart';
 import '../focus/input_mode_tracker.dart';
 import '../focus/key_event_utils.dart';
 import '../utils/platform_detector.dart';
+import '../theme/plezzant/plezzant_glass.dart';
 
 /// Entry in the sheet page stack.
 class _OverlaySheetEntry {
@@ -765,28 +766,34 @@ class _OverlaySheetHostState extends State<OverlaySheetHost> with SingleTickerPr
                 right: true,
                 top: false,
                 bottom: false,
-                child: Material(
-                  key: _sheetKey,
-                  color: _explicitBackgroundColor ?? colorScheme.surface,
+                child: _glassBackedSheet(
+                  explicitColor: _explicitBackgroundColor != null,
                   borderRadius: borderRadius,
-                  clipBehavior: Clip.antiAlias,
-                  child: SafeArea(
-                    top: isTop,
-                    bottom: !isTop,
-                    left: false,
-                    right: false,
-                    // Content is sized by the sheet body, so pushing a nested
-                    // page or resolving async content changes the sheet's
-                    // height. Ease the box between those heights instead of
-                    // snapping. The child is laid out at its final size and
-                    // pinned to the anchored edge throughout, so it is revealed
-                    // rather than stretched.
-                    child: AnimatedSize(
-                      key: ValueKey(_sheetSession),
-                      duration: const Duration(milliseconds: 180),
-                      curve: Curves.easeOutCubic,
-                      alignment: isTop ? Alignment.topCenter : Alignment.bottomCenter,
-                      child: ConstrainedBox(constraints: effectiveConstraints, child: sheetContent),
+                  child: Material(
+                    key: _sheetKey,
+                    // Sheets float over content (often video), so they sit on a
+                    // Plezzant glass panel unless the caller pinned a colour.
+                    color: _explicitBackgroundColor ?? Colors.transparent,
+                    borderRadius: borderRadius,
+                    clipBehavior: Clip.antiAlias,
+                    child: SafeArea(
+                      top: isTop,
+                      bottom: !isTop,
+                      left: false,
+                      right: false,
+                      // Content is sized by the sheet body, so pushing a nested
+                      // page or resolving async content changes the sheet's
+                      // height. Ease the box between those heights instead of
+                      // snapping. The child is laid out at its final size and
+                      // pinned to the anchored edge throughout, so it is revealed
+                      // rather than stretched.
+                      child: AnimatedSize(
+                        key: ValueKey(_sheetSession),
+                        duration: const Duration(milliseconds: 180),
+                        curve: Curves.easeOutCubic,
+                        alignment: isTop ? Alignment.topCenter : Alignment.bottomCenter,
+                        child: ConstrainedBox(constraints: effectiveConstraints, child: sheetContent),
+                      ),
                     ),
                   ),
                 ),
@@ -829,6 +836,12 @@ class _OverlaySheetHostState extends State<OverlaySheetHost> with SingleTickerPr
 
     return sheet;
   }
+}
+
+/// Wraps a sheet in a Plezzant glass panel unless it carries its own colour.
+Widget _glassBackedSheet({required bool explicitColor, required BorderRadius borderRadius, required Widget child}) {
+  if (explicitColor) return child;
+  return PlezzantGlass(style: PlezzantGlassStyle.panel, borderRadius: borderRadius, child: child);
 }
 
 class _OverlaySheetLayoutDelegate extends SingleChildLayoutDelegate {

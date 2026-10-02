@@ -157,9 +157,11 @@ void main() {
         find.descendant(of: focusableFinder, matching: find.byType(ListTile)),
       );
 
-      expect(focusable.dense, isTrue, reason: '${row.title} must use the shared compact row density');
+      // Plezzant rows are not `dense` (Flutter's dense text is 13/12px, below
+      // the 14px floor); compactness comes from the shared visual density.
+      expect(focusable.dense, isFalse, reason: '${row.title} must use the shared row density');
       expect(focusable.visualDensity, const VisualDensity(vertical: -3));
-      expect(materialTile.dense, isTrue);
+      expect(materialTile.dense, isFalse);
       expect(materialTile.visualDensity, const VisualDensity(vertical: -3));
       expect(focusable.onTap, isNotNull, reason: '${row.title} must remain pointer activatable');
       expect(materialTile.onTap, isNotNull);
@@ -220,9 +222,9 @@ void main() {
       final subtitle = downloadTile.subtitle! as Text;
 
       expect(_navigationTileFor(t.settings.downloadLocationDefault), findsNothing);
-      expect(materialDownloadTile.dense, isTrue);
+      expect(materialDownloadTile.dense, isFalse);
       expect(materialDownloadTile.visualDensity, const VisualDensity(vertical: -3));
-      expect(downloadTile.dense, isTrue);
+      expect(downloadTile.dense, isFalse);
       expect(downloadTile.visualDensity, const VisualDensity(vertical: -3));
       expect(downloadTile.leading, isA<AppIcon>());
       expect(downloadTile.trailing, isA<AppIcon>());

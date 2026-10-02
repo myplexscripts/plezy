@@ -421,7 +421,11 @@ extension _VideoPlayerPlaybackServiceMethods on VideoPlayerScreenState {
         canReportPlayback: () => _firstFrame.rendered && !_hasFatalPlaybackError,
         hasRenderedPlayback: () => _firstFrame.rendered,
         subtitleOffIsDeliberate: () => _playbackSession?.subtitleSelection.declinedPreference == null,
-        onPausedKeepalive: mediaClient is PlexClient && effectivePlayMethod == 'Transcode'
+        // Direct Stream is a transcoder session too (video copied, container
+        // remuxed); PMS reaps either kind when a long pause stops segment
+        // requests.
+        onPausedKeepalive:
+            mediaClient is PlexClient && (effectivePlayMethod == 'Transcode' || effectivePlayMethod == 'DirectStream')
             ? () => mediaClient.pingTranscodeSession(_playbackTranscodeSessionId)
             : null,
         onScrobbled: () async {

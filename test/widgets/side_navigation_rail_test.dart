@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 import '../test_helpers/multi_server_fixtures.dart';
 import '../test_helpers/prefs.dart';
 import '../test_helpers/theme.dart';
+import 'package:plezy/theme/plezzant/plezzant_glass.dart';
 
 /// Minimal source-bearing stand-in: the rail only reads [hasAnySource].
 class _FakeCatalogSourcesProvider extends CatalogSourcesProvider {
@@ -64,7 +65,9 @@ AnimatedOpacity _railSurfaceOpacity(WidgetTester tester) {
       .widgetList<AnimatedOpacity>(
         find.descendant(of: find.byType(SideNavigationRail), matching: find.byType(AnimatedOpacity)),
       )
-      .singleWhere((widget) => widget.child is AnimatedContainer);
+      // TV paints the rail surface as Plezzant glass; other platforms keep the
+      // animated solid panel.
+      .singleWhere((widget) => widget.child is AnimatedContainer || widget.child is PlezzantGlass);
 }
 
 /// The Libraries header's expand/collapse chevron, matched by the symbol that

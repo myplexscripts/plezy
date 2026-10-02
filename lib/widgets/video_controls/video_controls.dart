@@ -559,6 +559,10 @@ class PlexVideoControls extends StatefulWidget {
   final TranscodeQualityPreset selectedQualityPreset;
   final bool serverSupportsTranscoding;
   final bool isTranscoding;
+
+  /// Backend playback method of the open source: `DirectPlay`,
+  /// `DirectStream` or `Transcode` (null when unknown).
+  final String? playMethod;
   final bool isOfflinePlayback;
   final List<MediaAudioTrack> sourceAudioTracks;
   final int? selectedAudioStreamId;
@@ -700,6 +704,7 @@ class PlexVideoControls extends StatefulWidget {
     this.selectedQualityPreset = TranscodeQualityPreset.original,
     this.serverSupportsTranscoding = false,
     this.isTranscoding = false,
+    this.playMethod,
     this.isOfflinePlayback = false,
     this.sourceAudioTracks = const [],
     this.selectedAudioStreamId,
@@ -1509,7 +1514,15 @@ class _PlexVideoControlsState extends State<PlexVideoControls>
                           opacity: performanceOverlayVisible ? 1.0 : 0.0,
                           duration: const Duration(milliseconds: 200),
                           child: IgnorePointer(
-                            child: PlayerPerformanceOverlay(player: widget.player, active: performanceOverlayVisible),
+                            child: PlayerPerformanceOverlay(
+                              player: widget.player,
+                              active: performanceOverlayVisible,
+                              playbackMethod: PlaybackMethodLabel.resolve(
+                                playMethod: widget.playMethod,
+                                isTranscoding: widget.isTranscoding,
+                                isOffline: widget.isOfflinePlayback,
+                              ),
+                            ),
                           ),
                         ),
                       ),

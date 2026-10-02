@@ -12,6 +12,7 @@ import '../../services/settings_service.dart' as settings show ThemeMode;
 import '../../focus/focusable_slider.dart';
 import '../../services/device_performance.dart';
 import '../../utils/platform_detector.dart';
+import '../../theme/plezzant/plezzant_preferences.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/setting_tile.dart';
 import '../../widgets/settings_page.dart';
@@ -34,6 +35,8 @@ class AppearanceSettingsScreen extends StatelessWidget {
           title: t.settings.display,
           children: [
             _themeSelector(),
+            _ambienceSelector(),
+            _glassSelector(),
             if (PlatformDetector.isAutomotive()) _displayScaleSelector(),
             if (Platform.isAndroid) _visualEffectsSelector(context),
           ],
@@ -191,6 +194,36 @@ class AppearanceSettingsScreen extends StatelessWidget {
           options: settings.ThemeMode.values.map((m) => DialogOption(value: m, title: themeModeLabel(m))).toList(),
         );
       },
+    );
+  }
+
+  Widget _ambienceSelector() {
+    String label(AmbienceIntensity v) => switch (v) {
+      AmbienceIntensity.off => t.settings.ambienceOff,
+      AmbienceIntensity.subtle => t.settings.ambienceSubtle,
+      AmbienceIntensity.rich => t.settings.ambienceRich,
+    };
+    return SettingSelectionTile<AmbienceIntensity>(
+      pref: SettingsService.ambienceIntensity,
+      icon: LucideIcons.sunMoon,
+      title: t.settings.ambience,
+      subtitleBuilder: (v) => '${label(v)} · ${t.settings.ambienceDescription}',
+      options: AmbienceIntensity.values.map((v) => DialogOption(value: v, title: label(v))).toList(),
+    );
+  }
+
+  Widget _glassSelector() {
+    String label(GlassIntensity v) => switch (v) {
+      GlassIntensity.off => t.settings.glassOff,
+      GlassIntensity.subtle => t.settings.glassSubtle,
+      GlassIntensity.full => t.settings.glassFull,
+    };
+    return SettingSelectionTile<GlassIntensity>(
+      pref: SettingsService.glassIntensity,
+      icon: LucideIcons.layers,
+      title: t.settings.glass,
+      subtitleBuilder: (v) => '${label(v)} · ${t.settings.glassDescription}',
+      options: GlassIntensity.values.map((v) => DialogOption(value: v, title: label(v))).toList(),
     );
   }
 
