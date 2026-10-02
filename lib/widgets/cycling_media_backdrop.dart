@@ -33,7 +33,7 @@ class CyclingMediaBackdrop extends StatefulWidget {
     this.fit = BoxFit.cover,
     this.alignment = Alignment.center,
     this.rotationInterval = const Duration(seconds: 10),
-    this.fadeDuration = const Duration(milliseconds: 280),
+    this.fadeDuration = const Duration(milliseconds: 420),
   });
 
   final Object? mediaKey;

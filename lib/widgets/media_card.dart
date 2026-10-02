@@ -1097,8 +1097,17 @@ Widget _buildPosterImage(
       CardShape.poster => ImageType.poster,
       null => MediaImageHelper.cardImageType(item, episodePosterMode, mixedHubContext: mixedHubContext),
     };
-    final defaultPosterUrl = item.posterThumb(mode: episodePosterMode, mixedHubContext: mixedHubContext);
-    final defaultFallbackUrl = item.posterThumbFallback(mode: episodePosterMode, mixedHubContext: mixedHubContext);
+    final forceWideArtwork = cardShapeOverride == CardShape.wide;
+    final defaultPosterUrl = forceWideArtwork
+        ? item.kind == MediaKind.episode
+              ? item.thumbPath ?? item.grandparentArtPath ?? item.artPath
+              : item.artPath ?? item.grandparentArtPath ?? item.thumbPath
+        : item.posterThumb(mode: episodePosterMode, mixedHubContext: mixedHubContext);
+    final defaultFallbackUrl = forceWideArtwork
+        ? item.thumbPath != null && item.thumbPath != defaultPosterUrl
+              ? item.thumbPath
+              : null
+        : item.posterThumbFallback(mode: episodePosterMode, mixedHubContext: mixedHubContext);
     final targetPx = knownWidth != null && knownWidth.isFinite && knownWidth > 0
         ? MediaImageHelper.artworkTargetPx(context, knownWidth, imageType: imageType)
         : null;

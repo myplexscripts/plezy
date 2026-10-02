@@ -34,6 +34,7 @@ import '../theme/mono_tokens.dart';
 import '../widgets/backend_badge.dart';
 import '../i18n/strings.g.dart';
 import '../theme/plezzant/plezzant_glass.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 import '../theme/plezzant/plezzant_typography.dart';
 import '../profiles/active_profile_provider.dart';
 import '../profiles/profile_avatar.dart';
@@ -166,8 +167,8 @@ class NavigationRailItem extends StatelessWidget {
     this.expandedContentWidth = SideNavigationRailState.expandedWidth - 24,
     this.expandedHeight = 48,
     this.suppressSelectedBackground = false,
-    this.focusAlpha = 0.12,
-    this.selectedFocusAlpha = 0.15,
+    this.focusAlpha = 0.16,
+    this.selectedFocusAlpha = 0.20,
     this.onNavigateRight,
   });
 
@@ -468,8 +469,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
   bool _lastReportedInteractionExpanded = false;
   Timer? _collapseTimer;
   static const double collapsedWidth = 80.0;
-  static const double tvCollapsedWidth = 48.0;
-  static const double expandedWidth = 220.0;
+  static const double tvCollapsedWidth = 64.0;
+  static const double expandedWidth = 248.0;
   static const double _horizontalPadding = 12.0;
   static const double _collapsedHorizontalPadding = 4.0;
   static const double _itemGap = 4.0;
@@ -485,17 +486,14 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
   /// track tick for tick.
   /// Reduced-tier devices resolve this to zero; keep every consumer on this
   /// getter so the shell and rail continue to move in lockstep.
-  static Duration get expandDuration => DevicePerformance.reducedDuration(const Duration(milliseconds: 250));
-  static const Curve expandCurve = Curves.easeInOutCubicEmphasized;
+  static Duration get expandDuration => DevicePerformance.reducedDuration(PlezzantMotion.navigation);
+  static const Curve expandCurve = PlezzantMotion.standard;
 
   static double collapsedWidthForContext(BuildContext _) => PlatformDetector.isTV() ? tvCollapsedWidth : collapsedWidth;
 
   /// TV opens the rail as a floating glass panel inset from the screen edge
   /// (Apple TV style), so it needs room for the inset around the items.
   static const double tvExpandedWidth = 268.0;
-
-  /// Inset of the floating TV panel from the screen edges.
-  static const double tvPanelInset = 16.0;
 
   static double expandedWidthForContext(BuildContext _) => PlatformDetector.isTV() ? tvExpandedWidth : expandedWidth;
 
@@ -987,7 +985,11 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                 curve: expandCurve,
                 width: isCollapsed ? effectiveCollapsedWidth : expandedWidthForContext(context),
                 clipBehavior: Clip.hardEdge,
-                decoration: const BoxDecoration(),
+                decoration: BoxDecoration(
+                  borderRadius: PlatformDetector.isTV()
+                      ? BorderRadius.circular(isCollapsed ? 22 : 28)
+                      : BorderRadius.zero,
+                ),
                 child: Stack(
                   children: [
                     // Rail surface. A docked rail is transparent on TV so the
@@ -1006,13 +1008,12 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                         duration: expandDuration,
                         curve: expandCurve,
                         child: PlatformDetector.isTV()
-                            ? const Padding(
-                                padding: EdgeInsets.all(tvPanelInset),
-                                child: PlezzantGlass(
-                                  style: PlezzantGlassStyle.panel,
-                                  borderRadius: BorderRadius.all(Radius.circular(28)),
-                                  child: SizedBox.expand(),
-                                ),
+                            // The shell insets the rail from the screen edge;
+                            // the open panel is a rounded glass card.
+                            ? PlezzantGlass(
+                                style: PlezzantGlassStyle.panel,
+                                borderRadius: BorderRadius.circular(isCollapsed ? 22 : 28),
+                                child: const SizedBox.expand(),
                               )
                             : AnimatedContainer(
                                 duration: expandDuration,
@@ -1043,7 +1044,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                         onKeyEvent: (node, event) => _handleVerticalNavigation(node, event, focusOrder),
                         child: Column(
                           children: [
-                            SizedBox(height: _getTopPadding(context) + (PlatformDetector.isTV() ? 22 : 0)),
+                            SizedBox(height: _getTopPadding(context) + (PlatformDetector.isTV() ? 6 : 0)),
                             if (PlatformDetector.isTV() && !isCollapsed) ...[
                               // Laid out at full panel width throughout the
                               // open morph, so it never squeezes mid-animation.

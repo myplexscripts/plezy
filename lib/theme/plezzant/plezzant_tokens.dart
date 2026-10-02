@@ -36,36 +36,49 @@ abstract final class PlezzantRadius {
 /// Motion timings and curves. Reduced-performance devices collapse these to
 /// zero through `DevicePerformance.reducedDuration`.
 abstract final class PlezzantMotion {
-  /// Focus response: fast enough to never trail the D-pad.
-  static const Duration focus = Duration(milliseconds: 140);
+  /// Focus should feel immediate, but still have enough travel to read as a
+  /// physical change in depth.
+  static const Duration focus = Duration(milliseconds: 180);
 
-  /// Colour / ambience cross-fades.
-  static const Duration ambience = Duration(milliseconds: 520);
+  /// Colour and ambience cross-fades are deliberately slower than controls.
+  static const Duration ambience = Duration(milliseconds: 620);
 
-  /// Panels, sheets and chrome reveal.
-  static const Duration reveal = Duration(milliseconds: 260);
-  static const Duration revealOut = Duration(milliseconds: 180);
+  /// Panels, sheets and floating chrome.
+  static const Duration reveal = Duration(milliseconds: 340);
+  static const Duration revealOut = Duration(milliseconds: 220);
 
   /// Metadata reveal on focused cards.
-  static const Duration metadata = Duration(milliseconds: 200);
+  static const Duration metadata = Duration(milliseconds: 240);
 
-  static const Curve standard = Curves.easeOutCubic;
+  /// Root navigation and pushed-page transitions.
+  static const Duration navigation = Duration(milliseconds: 320);
+  static const Duration route = Duration(milliseconds: 420);
+  static const Duration routeOut = Duration(milliseconds: 260);
+
+  /// Hero artwork and metadata changes should drift rather than snap.
+  static const Duration hero = Duration(milliseconds: 440);
+
+  /// A soft deceleration similar to the way tvOS lets objects settle.
+  static const Curve standard = Cubic(0.16, 1.0, 0.3, 1.0);
   static const Curve emphasized = Cubic(0.2, 0.0, 0.0, 1.0);
-  static const Curve exit = Curves.easeInCubic;
+  static const Curve exit = Cubic(0.4, 0.0, 1.0, 1.0);
 }
 
 /// Focus treatment: restrained scale + luminance lift + palette-tinted halo.
 abstract final class PlezzantFocus {
-  /// Card scale on focus. Small on purpose: no giant zooms, no reflow.
-  static const double cardScale = 1.045;
-  static const double controlScale = 1.03;
+  /// tvOS communicates focus primarily through depth. The scale remains small
+  /// enough to avoid reflow while reading more clearly from couch distance.
+  static const double cardScale = 1.055;
+  static const double fullCardScale = 1.065;
+  static const double controlScale = 1.035;
+  static const double lift = 3.5;
 
-  /// Halo stroke drawn just outside a focused card, palette lighter shade.
-  static const double haloWidth = 2.0;
-  static const double haloGap = 3.0;
-  static const double haloAlpha = 0.85;
+  /// A thin catch-light and a wide, low-opacity bloom read more like reflected
+  /// light than a conventional selection outline.
+  static const double haloWidth = 1.25;
+  static const double haloGap = 2.0;
+  static const double haloAlpha = 0.78;
 
-  /// Soft palette glow below the halo.
-  static const double glowAlpha = 0.28;
-  static const double glowBlur = 28;
+  static const double glowAlpha = 0.22;
+  static const double glowBlur = 38;
 }

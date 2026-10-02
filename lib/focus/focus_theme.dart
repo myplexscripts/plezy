@@ -3,23 +3,28 @@ import '../services/device_performance.dart';
 import '../theme/mono_tokens.dart';
 import '../theme/plezzant/plezzant_ambience.dart';
 import '../theme/plezzant/plezzant_palette.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 import '../utils/platform_detector.dart';
 
 class FocusTheme {
   FocusTheme._();
 
-  static const double focusScale = 1.02;
-  static const double fullCardFocusScale = 1.03;
-  static const double focusBorderWidth = 2.0;
+  static const double focusScale = PlezzantFocus.cardScale;
+  static const double fullCardFocusScale = PlezzantFocus.fullCardScale;
+  static const double focusLift = PlezzantFocus.lift;
+  static const double focusBorderWidth = PlezzantFocus.haloWidth;
   static const double defaultBorderRadius = 8.0;
-  static const double focusGlowInnerBlurRadius = 18;
-  static const double focusGlowOuterBlurRadius = 34;
-  static const double focusGlowSpreadRadius = 1.5;
+  static const double focusGlowInnerBlurRadius = 22;
+  static const double focusGlowOuterBlurRadius = PlezzantFocus.glowBlur;
+  static const double focusGlowSpreadRadius = 1.0;
 
   /// Crisp neutral edge. Kept thin and slightly translucent so focus reads
   /// as light on the card rather than as an outline.
   static Color getFocusBorderColor(BuildContext context) {
-    return Theme.of(context).colorScheme.primary.withValues(alpha: 0.82);
+    final theme = Theme.of(context);
+    final neutral = theme.brightness == Brightness.dark ? Colors.white : Colors.black;
+    final accent = PlezzantAmbience.instance.accent(PlezzantShade.lighter);
+    return Color.lerp(neutral, accent, 0.24)!.withValues(alpha: theme.brightness == Brightness.dark ? 0.82 : 0.64);
   }
 
   /// Soft halo under the focused item, tinted by the current palette ambience
@@ -79,11 +84,11 @@ class FocusTheme {
   static List<BoxShadow> focusGlowShadows(Color color) {
     return [
       BoxShadow(
-        color: color.withValues(alpha: 0.5),
+        color: color.withValues(alpha: 0.34),
         blurRadius: focusGlowInnerBlurRadius,
         spreadRadius: focusGlowSpreadRadius,
       ),
-      BoxShadow(color: color.withValues(alpha: 0.28), blurRadius: focusGlowOuterBlurRadius),
+      BoxShadow(color: color.withValues(alpha: 0.18), blurRadius: focusGlowOuterBlurRadius, spreadRadius: 1),
     ];
   }
 

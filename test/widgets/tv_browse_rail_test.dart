@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plezy/focus/focus_theme.dart';
 import 'package:plezy/focus/dpad_navigator.dart';
 import 'package:plezy/focus/input_mode_tracker.dart';
 import 'package:plezy/database/app_database.dart';
@@ -725,7 +726,7 @@ void main() {
       find.descendant(of: find.byType(CompositedTransformFollower), matching: find.byType(CustomPaint)),
       findsOneWidget,
     );
-    expect(focusScale.scale, closeTo(1.03, 0.0001));
+    expect(focusScale.scale, closeTo(FocusTheme.fullCardFocusScale, 0.0001));
     expect(cardSize.width, closeTo(metrics.cardWidth, 0.001));
     expect(cardSize.height, closeTo(metrics.posterHeight, 0.001));
   });
@@ -2406,7 +2407,7 @@ void main() {
     );
 
     expect(backgroundPosition.left, -SideNavigationRailState.expandedWidth);
-    expect(backgroundPosition.width, 1280);
+    expect(backgroundPosition.width, 1060 + SideNavigationRailState.expandedWidth);
   });
 
   testWidgets('background bleed updates do not renotify rail focus', (tester) async {

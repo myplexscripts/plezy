@@ -62,11 +62,13 @@ class _RenderPaintScale extends RenderProxyBox {
       return;
     }
 
+    final focusProgress = (((_scale - 1) / (FocusTheme.focusScale - 1)).clamp(0.0, 1.0)).toDouble();
+    final lift = FocusTheme.focusLift * focusProgress;
     _transform
       ..setIdentity()
       ..setEntry(0, 0, _scale)
       ..setEntry(1, 1, _scale)
-      ..setTranslationRaw((1 - _scale) * size.width / 2, (1 - _scale) * size.height / 2, 0);
+      ..setTranslationRaw((1 - _scale) * size.width / 2, (1 - _scale) * size.height / 2 - lift, 0);
     layer = context.pushTransform(
       needsCompositing,
       offset,

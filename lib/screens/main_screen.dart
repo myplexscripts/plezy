@@ -16,13 +16,14 @@ import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import '../i18n/strings.g.dart';
 import '../services/app_exit_service.dart';
+import '../services/device_performance.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 import '../services/tvos_system_navigation_service.dart';
 import '../services/update_service.dart';
 import '../utils/app_logger.dart';
 import '../widgets/auth_error_banner.dart';
 import '../widgets/app_icon.dart';
 import '../theme/plezzant/plezzant_glass.dart';
-import '../theme/plezzant/plezzant_tokens.dart';
 import '../theme/plezzant/plezzant_typography.dart';
 import '../utils/platform_detector.dart';
 import '../utils/snackbar_helper.dart';
@@ -372,8 +373,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen>
-    with RouteAware, WindowListener, WidgetsBindingObserver, MountedSetStateMixin {
+    with RouteAware, WindowListener, WidgetsBindingObserver, MountedSetStateMixin, SingleTickerProviderStateMixin {
   NavigationTabId _currentTab = NavigationTabId.discover;
+  late final AnimationController _tabTransitionController;
   String? _selectedLibraryGlobalKey;
   Future<void>? _windowCloseFuture;
 
@@ -507,6 +509,11 @@ class _MainScreenState extends State<MainScreen>
   @override
   void initState() {
     super.initState();
+    _tabTransitionController = AnimationController(
+      vsync: this,
+      duration: DevicePerformance.reducedDuration(PlezzantMotion.navigation),
+      value: 1,
+    );
     _isOffline = widget.isOfflineMode;
     _offlineUntilConnected = widget.isOfflineMode;
 
@@ -1087,6 +1094,7 @@ class _MainScreenState extends State<MainScreen>
     _contentFocusScope.removeListener(_syncSidebarFocusWithContent);
     _contentFocusScope.dispose();
     _setTvosMenuPassthrough(false);
+    _tabTransitionController.dispose();
 
     // Clean up only callbacks still owned by this screen. A replacement
     // MainScreen may already have installed its callbacks this frame.
@@ -1205,12 +1213,25 @@ class _MainScreenState extends State<MainScreen>
       children: [
         const AuthErrorBanner(),
         Expanded(
-          child: IndexedStack(
-            index: _currentIndex,
-            clipBehavior: Clip.none,
-            children: [
-              for (var i = 0; i < _screens.length; i++) TickerMode(enabled: i == _currentIndex, child: _screens[i]),
-            ],
+          child: AnimatedBuilder(
+            animation: _tabTransitionController,
+            child: IndexedStack(
+              index: _currentIndex,
+              clipBehavior: Clip.none,
+              children: [
+                for (var i = 0; i < _screens.length; i++) TickerMode(enabled: i == _currentIndex, child: _screens[i]),
+              ],
+            ),
+            builder: (context, child) {
+              final progress = PlezzantMotion.standard.transform(_tabTransitionController.value);
+              return Opacity(
+                opacity: 0.82 + (0.18 * progress),
+                child: Transform.translate(
+                  offset: Offset(0, 10 * (1 - progress)),
+                  child: Transform.scale(scale: 0.994 + (0.006 * progress), alignment: Alignment.center, child: child),
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -1773,6 +1794,11 @@ class _MainScreenState extends State<MainScreen>
         _autoSwitchedToDownloads = false;
       }
     });
+    if (previousTab != tab) {
+      _tabTransitionController
+        ..duration = DevicePerformance.reducedDuration(PlezzantMotion.navigation)
+        ..forward(from: 0);
+    }
     _updateTvosMenuPassthrough();
 
     if (previousTab != tab) {
@@ -2060,10 +2086,21 @@ class _MainScreenState extends State<MainScreen>
       return SettingValueBuilder<bool>(
         pref: SettingsService.alwaysKeepSidebarOpen,
         builder: (context, alwaysExpanded, _) {
+          final tvOverlayNavigation = PlatformDetector.isTV();
+          final tvNavigationLeftInset = tvOverlayNavigation ? 24.0 : 0.0;
           final targetContentOffset = _sideNavigationWidth(context, alwaysExpanded: alwaysExpanded);
-          final tvFloatingRail = PlatformDetector.isTV() && !alwaysExpanded;
-          final reservedContentOffset = tvFloatingRail
-              ? SideNavigationRailState.collapsedWidthForContext(context)
+          final tvFloatingRail = tvOverlayNavigation && !alwaysExpanded;
+
+          // TV content keeps a fixed left margin (backdrops bleed back under
+          // it) and is never pushed by the floating navigation; non-home tabs
+          // also start below the section pill.
+          final tvContentShift = tvOverlayNavigation ? targetContentOffset : 0.0;
+          // The scope's navigation width is the content offset every bleed
+          // builder compensates for; the collapsed TV navigation is a pill,
+          // so nothing on Home needs to clear it.
+          final scopeNavigationWidth = tvOverlayNavigation ? tvContentShift : targetContentOffset;
+          final reservedContentOffset = tvOverlayNavigation
+              ? tvContentShift
               : alwaysExpanded
               ? SideNavigationRailState.expandedWidthForContext(context)
               : SideNavigationRailState.collapsedWidthForContext(context);
@@ -2101,12 +2138,12 @@ class _MainScreenState extends State<MainScreen>
                   // paint-only translate on the content below instead.
                   final contentLayout = mainScreenSideNavigationContentLayout(
                     viewportWidth: viewportWidth,
-                    currentSideNavigationWidth: targetContentOffset,
+                    currentSideNavigationWidth: tvOverlayNavigation ? tvContentShift : targetContentOffset,
                     reservedSideNavigationWidth: reservedContentOffset,
                   );
                   return MainScreenFocusScope(
                     focusSidebar: _focusSidebar,
-                    sideNavigationWidth: targetContentOffset,
+                    sideNavigationWidth: scopeNavigationWidth,
                     reservedSideNavigationWidth: reservedContentOffset,
                     foregroundLeft: contentLayout.left,
                     foregroundWidth: contentLayout.width,
@@ -2126,7 +2163,7 @@ class _MainScreenState extends State<MainScreen>
                             child: TweenAnimationBuilder<double>(
                               duration: SideNavigationRailState.expandDuration,
                               curve: SideNavigationRailState.expandCurve,
-                              tween: Tween<double>(end: targetContentOffset),
+                              tween: Tween<double>(end: tvOverlayNavigation ? tvContentShift : targetContentOffset),
                               child: FocusScope(
                                 node: _contentFocusScope,
                                 // No autofocus - we control focus programmatically to prevent
@@ -2171,9 +2208,9 @@ class _MainScreenState extends State<MainScreen>
                               ),
                             ),
                           Positioned(
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
+                            top: tvOverlayNavigation ? 24 : 0,
+                            bottom: tvOverlayNavigation ? 24 : 0,
+                            left: tvOverlayNavigation ? tvNavigationLeftInset : 0,
                             child: FocusScope(
                               node: _sidebarFocusScope,
                               child: SideNavigationRail(

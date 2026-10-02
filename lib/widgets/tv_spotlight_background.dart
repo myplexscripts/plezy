@@ -14,6 +14,7 @@ import '../utils/media_image_helper.dart';
 import '../services/settings_service.dart';
 import '../utils/tone_mapped_logo_image.dart';
 import '../theme/plezzant/plezzant_ambient_glow.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 import 'cycling_media_backdrop.dart';
 import 'fitting_title_text.dart';
 import 'fitted_metadata_line.dart';
@@ -100,12 +101,14 @@ class TvSpotlightBackground extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black.withValues(alpha: 0.45), Colors.transparent, bgColor.withValues(alpha: 0.96)],
-                stops: const [0.0, 0.38, 1.0],
+                colors: [Colors.black.withValues(alpha: 0.28), Colors.transparent, bgColor.withValues(alpha: 0.84)],
+                stops: const [0.0, 0.42, 1.0],
               ),
             ),
             if (media != null && showInfo)
-              Positioned(
+              AnimatedPositioned(
+                duration: DevicePerformance.reducedDuration(PlezzantMotion.navigation),
+                curve: PlezzantMotion.standard,
                 left: contentLeft ?? TvLayoutConstants.horizontalInset,
                 right: MediaQuery.sizeOf(context).width * 0.43,
                 top: contentTop,
@@ -113,9 +116,24 @@ class TvSpotlightBackground extends StatelessWidget {
                 // The info block still cross-fades via AnimatedSwitcher, but its
                 // saveLayers are bounded to the text region, not the screen.
                 child: AnimatedSwitcher(
-                  duration: DevicePerformance.reducedDuration(const Duration(milliseconds: 280)),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeOutCubic,
+                  duration: DevicePerformance.reducedDuration(PlezzantMotion.hero),
+                  reverseDuration: DevicePerformance.reducedDuration(PlezzantMotion.revealOut),
+                  switchInCurve: PlezzantMotion.standard,
+                  switchOutCurve: PlezzantMotion.exit,
+                  transitionBuilder: (child, animation) {
+                    final curved = CurvedAnimation(
+                      parent: animation,
+                      curve: PlezzantMotion.standard,
+                      reverseCurve: PlezzantMotion.exit,
+                    );
+                    return FadeTransition(
+                      opacity: curved,
+                      child: SlideTransition(
+                        position: Tween<Offset>(begin: const Offset(0, 0.018), end: Offset.zero).animate(curved),
+                        child: child,
+                      ),
+                    );
+                  },
                   // Expand instead of the default loose centered Stack so the
                   // info keeps filling the region and bottom-left aligning.
                   layoutBuilder: (currentChild, previousChildren) =>
@@ -180,8 +198,8 @@ class TvSpotlightBackground extends StatelessWidget {
       gradient: LinearGradient(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [bgColor.withValues(alpha: 0.86), bgColor.withValues(alpha: 0.32), Colors.transparent],
-        stops: const [0.0, 0.56, 1.0],
+        colors: [bgColor.withValues(alpha: 0.72), bgColor.withValues(alpha: 0.18), Colors.transparent],
+        stops: const [0.0, 0.50, 1.0],
       ),
     );
   }

@@ -1092,6 +1092,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       onNavigateUp: _focusTopActions,
       onNavigateToSidebar: _navigateToSidebar,
       tallPosterScale: TvBrowseRailLayout.compactTallPosterScale,
+      forceWideLayout: true,
     );
   }
 
@@ -1108,6 +1109,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       resolveSpotlight: () => _spotlight.resolve(browseHubs),
       resolveClient: _getMediaClientForItem,
       hideSpoilers: hideSpoilers,
+      forceWideRailLayout: true,
       foreground: Stack(
         fit: StackFit.expand,
         clipBehavior: Clip.none,
