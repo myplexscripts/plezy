@@ -524,7 +524,7 @@ void main() {
 
     expect(find.text('Season 1'), findsOneWidget);
     expect(find.text('Specials'), findsNothing);
-    expect(find.text('S1E1'), findsOneWidget);
+    expect(_playLabel('S1E1'), findsOneWidget);
   });
 
   testWidgets('TV detail exposes each season as its episode hub leading options item', (tester) async {
@@ -1154,14 +1154,14 @@ void main() {
     expect(find.descendant(of: cards, matching: find.text('The Show')), findsNothing);
 
     // Play agrees with the hero: the focused episode, not a stale on-deck.
-    expect(find.text('S1E1'), findsOneWidget);
+    expect(_playLabel('S1E1'), findsOneWidget);
     await tester.sendKeyDownEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
     await tester.sendKeyUpEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump(const Duration(milliseconds: 200));
     expect(tester.widget<Text>(heroTitle).data, 'The One After');
-    expect(find.text('S1E2'), findsOneWidget);
-    expect(find.text('S1E1'), findsNothing);
+    expect(_playLabel('S1E2'), findsOneWidget);
+    expect(_playLabel('S1E1'), findsNothing);
     semantics.dispose();
   });
 
@@ -1467,7 +1467,7 @@ void main() {
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
       await settleSelection(tester);
-      expect(find.text('S1E2'), findsOneWidget);
+      expect(_playLabel('S1E2'), findsOneWidget);
       expect(status(tester), contains('4K'));
       expect(status(tester), contains('Japanese'));
       expect(status(tester), isNot(contains('English')));
@@ -1832,8 +1832,8 @@ void main() {
       }
       await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.text('S1E2'), findsOneWidget, reason: 'fallback survives a settled empty on-deck');
-      expect(find.text('S1E1'), findsNothing);
+      expect(_playLabel('S1E2'), findsOneWidget, reason: 'fallback survives a settled empty on-deck');
+      expect(_playLabel('S1E1'), findsNothing);
     });
 
     testWidgets('returning from playback refreshes watch state without the full-screen loader', (tester) async {
@@ -1856,7 +1856,7 @@ void main() {
 
       await pumpPhoneDetail(tester, client, show, observer: observer);
 
-      expect(find.text('S1E1'), findsOneWidget, reason: 'play button targets the on-deck episode');
+      expect(_playLabel('S1E1'), findsOneWidget, reason: 'play button targets the on-deck episode');
       expect(find.text('1. Episode S1E1'), findsOneWidget);
       final childrenCallsBeforePlayback = client.childrenPageCalls.length;
       observer.pushedRouteNames.clear();
@@ -1886,7 +1886,7 @@ void main() {
 
       expect(observer.pushedRouteNames, contains(kVideoPlayerRouteName));
       // Watch state did refresh: the play button now targets the next episode.
-      expect(find.text('S1E2'), findsOneWidget);
+      expect(_playLabel('S1E2'), findsOneWidget);
       // The lightweight refresh fetches the item + on-deck only — no season
       // or episode page refetch, no early-paint (both are full-loader work).
       expect(client.childrenPageCalls.length, childrenCallsBeforePlayback);
@@ -3167,3 +3167,13 @@ class _RecordingNavigatorObserver extends NavigatorObserver {
     }
   }
 }
+
+/// The Play button's episode label: bare on phone/desktop, prefixed with the
+/// action ("Play S1E2" / "Resume S1E2") on TV.
+Finder _playLabel(String episode) => find.byWidgetPredicate(
+  (widget) =>
+      widget is Text &&
+      (widget.data == episode ||
+          widget.data == '${t.common.play} $episode' ||
+          widget.data == '${t.common.resume} $episode'),
+);

@@ -111,8 +111,10 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
     final focusBg = colorScheme.inverseSurface;
     final focusFg = colorScheme.onInverseSurface;
     final tonalBg = colorScheme.secondaryContainer;
-    final idleBg = isTv ? tonalBg.withValues(alpha: 0.38) : tonalBg;
-    final tonalFg = colorScheme.onSecondaryContainer;
+    // TV (Apple TV style): idle actions are translucent discs over the
+    // backdrop; focus turns them solid white.
+    final idleBg = isTv ? Colors.white.withValues(alpha: 0.16) : tonalBg;
+    final tonalFg = isTv ? Colors.white : colorScheme.onSecondaryContainer;
     final noOverlay = WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.focused)) return Colors.transparent;
       return null; // default for other states
@@ -170,10 +172,23 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
             onPressed: onPlayPressed,
             style: actionButtonStyle(
               showFocus: state.showFocus,
-              padding: .symmetric(horizontal: isTv ? 17 * tvScale : 16, vertical: isTv ? 9 * tvScale : 0),
+              padding: .symmetric(horizontal: isTv ? 28 * tvScale : 16, vertical: isTv ? 9 * tvScale : 0),
               shape: playShape,
             ),
-            child: playButtonLabel.isNotEmpty
+            // TV always names the action, like Apple TV's "Play" / "Resume".
+            child: isTv
+                ? Row(
+                    mainAxisSize: .min,
+                    children: [
+                      playButtonIcon,
+                      SizedBox(width: 8 * tvScale),
+                      Text(
+                        playButtonLabel.isEmpty ? playActionLabel : '$playActionLabel $playButtonLabel',
+                        style: playTextStyle,
+                      ),
+                    ],
+                  )
+                : playButtonLabel.isNotEmpty
                 ? Row(
                     mainAxisSize: .min,
                     children: [

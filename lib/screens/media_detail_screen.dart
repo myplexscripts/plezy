@@ -100,6 +100,7 @@ import '../widgets/ios_status_bar_tap_scroll_to_top.dart';
 import '../widgets/loading_indicator_box.dart';
 import '../widgets/rasterized_gradient.dart';
 import '../widgets/tv_browse_rail.dart';
+import '../widgets/side_navigation_rail.dart' show SideNavigationRailState;
 import '../widgets/tv_spotlight_background.dart';
 import '../providers/account_preferences_controller.dart';
 import '../services/playback_track_preview.dart';
@@ -3658,7 +3659,10 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
     final railHeight = stableRailHeight == null || rawRailHeight > stableRailHeight ? rawRailHeight : stableRailHeight;
     final railTopPadding = 12 * detailScale;
     final foregroundBottom = (railHeight - railTopPadding) + (_tvDetailActionRailGap * detailScale);
-    final spotlightLeft = (24 * detailScale).clamp(18.0, 40.0).toDouble();
+    // Same left margin as the main TV tabs (Apple TV style), so moving from
+    // Home into a title keeps the text column where the eye already is.
+    const tvContentMargin = SideNavigationRailState.tvCollapsedWidth;
+    final spotlightLeft = (24 * detailScale).clamp(18.0, 40.0).toDouble() + tvContentMargin;
 
     final revealContent = Stack(
       fit: StackFit.expand,
@@ -3680,7 +3684,9 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
         // (#2217).
         Positioned(
           left: size.width * 0.60 + spotlightLeft,
-          right: spotlightLeft,
+          // The left margin aligns the text column; the right edge keeps
+          // the original inset.
+          right: spotlightLeft - tvContentMargin,
           bottom: foregroundBottom,
           height: _tvDetailActionSize * detailScale,
           child: ValueListenableBuilder<MediaItem?>(
@@ -3711,11 +3717,12 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
         ),
         if (detailHubs.isNotEmpty)
           Positioned(
-            left: 0,
+            left: tvContentMargin,
             right: 0,
             bottom: 0,
             child: TvBrowseRail(
               key: _tvDetailRailKey,
+              backgroundBleedLeft: tvContentMargin,
               hubs: detailHubs,
               focusMemory: _hubFocusMemory,
               iconForHub: _getTvDetailHubIcon,
