@@ -10,6 +10,7 @@ import '../focus/focusable_tile_mixin.dart';
 import '../focus/input_mode_tracker.dart';
 import '../focus/key_event_utils.dart';
 import '../theme/mono_tokens.dart';
+import '../theme/plezzant/plezzant_glass.dart';
 import '../utils/focus_utils.dart';
 import 'app_icon.dart';
 import 'clickable_cursor.dart';
@@ -693,22 +694,25 @@ class _AppMenuSurface<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final surface = Color.alphaBlend(colorScheme.onSurface.withValues(alpha: 0.08), colorScheme.surface);
-    return Material(
-      elevation: 3,
-      shadowColor: colorScheme.shadow,
-      color: surface,
-      borderRadius: BorderRadius.circular(tokens(context).radiusMd),
-      clipBehavior: Clip.antiAlias,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minWidth: width, maxWidth: width, maxHeight: maxHeight),
-        child: PrimaryScrollController.none(
-          child: SingleChildScrollView(
-            child: AppMenuList<T>(
-              entries: entries,
-              focusFirstItem: focusFirstItem,
-              onSelected: (value) => Navigator.pop(context, value),
+    final borderRadius = BorderRadius.circular(tokens(context).radiusMd);
+    // Context menus float over content, so they share the glass panel recipe
+    // (solid near-black on weak hardware or with glass turned off).
+    return PlezzantGlass(
+      style: PlezzantGlassStyle.panel,
+      borderRadius: borderRadius,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: borderRadius,
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minWidth: width, maxWidth: width, maxHeight: maxHeight),
+          child: PrimaryScrollController.none(
+            child: SingleChildScrollView(
+              child: AppMenuList<T>(
+                entries: entries,
+                focusFirstItem: focusFirstItem,
+                onSelected: (value) => Navigator.pop(context, value),
+              ),
             ),
           ),
         ),

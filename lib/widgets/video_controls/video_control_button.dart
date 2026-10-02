@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
 
 import '../../focus/focusable_wrapper.dart';
+import '../../focus/input_mode_tracker.dart';
+import '../../utils/platform_detector.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 /// A standardized button for video player controls with improved tap targets.
@@ -75,7 +77,44 @@ class VideoControlButton extends StatelessWidget {
     final effectiveSemanticLabel = semanticLabel ?? tooltip;
     Widget result = button;
 
-    if (focusNode != null) {
+    if (focusNode != null && PlatformDetector.isTV()) {
+      // TV: the focused control inverts to a white disc with a dark glyph, the
+      // same language as the play/pause button, so the remote's position is
+      // obvious from across the room.
+      final node = focusNode!;
+      result = FocusableWrapper(
+        focusNode: node,
+        onSelect: onPressed,
+        onKeyEvent: onKeyEvent,
+        onFocusChange: onFocusChange,
+        autofocus: autofocus,
+        semanticLabel: effectiveSemanticLabel,
+        semanticValue: semanticValue,
+        checked: checked,
+        borderRadius: 24,
+        autoScroll: false,
+        delegateFocusBorder: true,
+        child: ListenableBuilder(
+          listenable: node,
+          builder: (context, _) {
+            final focused = node.hasFocus && InputModeTracker.isKeyboardMode(context);
+            final disc = Material(
+              type: MaterialType.circle,
+              color: focused ? Colors.white : Colors.transparent,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onPressed,
+                child: SizedBox.square(
+                  dimension: 46,
+                  child: Center(child: AppIcon(icon, fill: 1, color: focused ? Colors.black : effectiveColor)),
+                ),
+              ),
+            );
+            return tooltip == null ? disc : Tooltip(message: tooltip!, child: disc);
+          },
+        ),
+      );
+    } else if (focusNode != null) {
       result = FocusableWrapper(
         focusNode: focusNode,
         onSelect: onPressed,

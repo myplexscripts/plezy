@@ -1,4 +1,4 @@
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show FontFeature, ImageFilter;
 
 import 'package:flutter/foundation.dart' show ValueListenable, listEquals;
 import 'package:flutter/material.dart';
@@ -232,7 +232,7 @@ class VideoPlayerPlayNextOverlay extends StatelessWidget {
       backdrop: backdrop,
       children: [
         // Clear region that keeps the still visible above the scrimmed text.
-        if (backdrop != null) const SizedBox(height: 110),
+        if (backdrop != null) SizedBox(height: PlatformDetector.isTV() ? 150 : 110),
         _PlayNextEpisodeHeader(episode: episode),
         const SizedBox(height: 12),
         _VideoPlayerPromptActions(
@@ -242,19 +242,28 @@ class VideoPlayerPlayNextOverlay extends StatelessWidget {
           confirmFocusNode: confirmFocusNode,
           onConfirm: onPlayNext,
           confirmChildren: [
-            ValueListenableBuilder<int>(
-              valueListenable: autoPlayCountdown,
-              builder: (context, countdown, child) {
-                if (countdown <= 0) return Text(t.videoControls.playNext);
-                return Row(
-                  mainAxisSize: .min,
-                  children: [
-                    Text('$countdown'),
-                    const SizedBox(width: 4),
-                    const AppIcon(LucideIcons.play, fill: 1, size: 18),
-                  ],
-                );
-              },
+            Flexible(
+              child: ValueListenableBuilder<int>(
+                valueListenable: autoPlayCountdown,
+                builder: (context, countdown, child) {
+                  // Say what the button does; the countdown rides along quietly.
+                  return Row(
+                    mainAxisSize: .min,
+                    children: [
+                      const AppIcon(LucideIcons.play, fill: 1, size: 18),
+                      const SizedBox(width: 6),
+                      Flexible(child: Text(t.videoControls.playNext, maxLines: 1, overflow: .ellipsis)),
+                      if (countdown > 0) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          '$countdown',
+                          style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()], color: Colors.black54),
+                        ),
+                      ],
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -305,6 +314,13 @@ class _PlayNextEpisodeHeader extends StatelessWidget {
 
   const _PlayNextEpisodeHeader({required this.episode});
 
+  // Read from across the room on a TV; the compact card keeps 14 px.
+  TextStyle get _titleStyle => TextStyle(
+    color: Colors.white,
+    fontSize: PlatformDetector.isTV() ? 18 : 14,
+    fontWeight: PlatformDetector.isTV() ? FontWeight.w700 : FontWeight.w600,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -334,17 +350,12 @@ class _PlayNextEpisodeHeader extends StatelessWidget {
               if (episode.parentIndex != null && episode.index != null)
                 Text(
                   'S${episode.parentIndex} E${episode.index} · ${episode.title}',
-                  style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: .w600),
+                  style: _titleStyle,
                   maxLines: 2,
                   overflow: .ellipsis,
                 )
               else
-                Text(
-                  episode.title!,
-                  style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: .w600),
-                  maxLines: 2,
-                  overflow: .ellipsis,
-                ),
+                Text(episode.title!, style: _titleStyle, maxLines: 2, overflow: .ellipsis),
             ],
           ),
         ),
@@ -531,11 +542,14 @@ class _VideoPlayerPromptPosition extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: chromeController,
       builder: (context, controlsShown, child) {
+        // On a TV the controls float on a taller glass panel; the card rises
+        // clear of it rather than covering the timeline.
+        final tv = PlatformDetector.isTV();
         return AnimatedPositioned(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
-          right: 24,
-          bottom: controlsShown ? 100 : 24,
+          right: tv ? 32 : 24,
+          bottom: controlsShown ? (tv ? 184 : 100) : (tv ? 32 : 24),
           child: child!,
         );
       },
@@ -554,16 +568,20 @@ class _VideoPlayerPromptCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final backdrop = this.backdrop;
-    final content = Padding(padding: const EdgeInsets.all(16), child: child);
+    final tv = PlatformDetector.isTV();
+    final width = tv ? 400.0 : 320.0;
+    final content = Padding(padding: EdgeInsets.all(tv ? 20 : 16), child: child);
     final decoration = BoxDecoration(
       color: Colors.black.withValues(alpha: 0.9),
-      borderRadius: const BorderRadius.all(Radius.circular(12)),
+      borderRadius: BorderRadius.all(Radius.circular(tv ? 16 : 12)),
+      // The same hairline edge the glass panels carry.
+      border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
     );
     if (backdrop == null) {
-      return Container(width: 320, decoration: decoration, child: content);
+      return Container(width: width, decoration: decoration, child: content);
     }
     return Container(
-      width: 320,
+      width: width,
       clipBehavior: Clip.antiAlias,
       decoration: decoration,
       child: Stack(

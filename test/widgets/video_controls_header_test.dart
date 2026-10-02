@@ -28,6 +28,16 @@ void main() {
     }
   });
 
+  testWidgets('cinematic header pairs a movie title with its year', (tester) async {
+    final item = _mappedItem({'Id': 'cinematic-movie', 'Type': 'Movie', 'Name': 'Cobalt', 'ProductionYear': 2022});
+
+    await _pumpHeader(tester, metadata: item, style: VideoHeaderStyle.cinematic);
+
+    expect(find.text('Cobalt'), findsOneWidget);
+    expect(find.textContaining('2022'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('title-less mapped episode keeps series identity and uses fallback in both layouts', (tester) async {
     final item = _mappedItem({
       'Id': 'episode-without-name',
@@ -42,7 +52,7 @@ void main() {
 
       final expectedEpisodeLine = switch (style) {
         VideoHeaderStyle.singleLine => 'Mapped Series · S2E3 · ${t.common.unknown}',
-        VideoHeaderStyle.multiLine => 'S2 · E3 · ${t.common.unknown}',
+        VideoHeaderStyle.multiLine || VideoHeaderStyle.cinematic => 'S2 · E3 · ${t.common.unknown}',
       };
       expect(find.text(expectedEpisodeLine), findsOneWidget, reason: style.name);
       expect(tester.takeException(), isNull, reason: style.name);
@@ -64,7 +74,7 @@ void main() {
 
       final expectedEpisodeLine = switch (style) {
         VideoHeaderStyle.singleLine => 'Mapped Series · S1E4 · The Arrival',
-        VideoHeaderStyle.multiLine => 'S1 · E4 · The Arrival',
+        VideoHeaderStyle.multiLine || VideoHeaderStyle.cinematic => 'S1 · E4 · The Arrival',
       };
       expect(find.text(expectedEpisodeLine), findsOneWidget, reason: style.name);
       expect(find.text(t.common.unknown), findsNothing, reason: style.name);

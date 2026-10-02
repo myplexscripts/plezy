@@ -8,6 +8,7 @@ import '../../../watch_together/widgets/watch_together_overlay.dart';
 import '../../../watch_together/providers/watch_together_provider.dart';
 import '../../app_bar_back_button.dart';
 import '../../system_clock.dart';
+import '../../../theme/plezzant/plezzant_typography.dart';
 
 /// Header layout style for video controls
 enum VideoHeaderStyle {
@@ -16,6 +17,9 @@ enum VideoHeaderStyle {
 
   /// Single-line: All info combined with separators (for macOS)
   singleLine,
+
+  /// TV: a large title over a quieter detail line, read from across a room.
+  cinematic,
 }
 
 /// Shared header widget for video controls with back button and title.
@@ -58,9 +62,11 @@ class VideoControlsHeader extends StatelessWidget {
         AppBarBackButton(style: BackButtonStyle.video, onPressed: onBack ?? () => Navigator.of(context).pop(true)),
         const SizedBox(width: 16),
         Expanded(
-          child: style == VideoHeaderStyle.singleLine
-              ? _buildSingleLineTitle(itemTitle)
-              : _buildMultiLineTitle(itemTitle),
+          child: switch (style) {
+            VideoHeaderStyle.singleLine => _buildSingleLineTitle(itemTitle),
+            VideoHeaderStyle.multiLine => _buildMultiLineTitle(itemTitle),
+            VideoHeaderStyle.cinematic => _buildCinematicTitle(itemTitle),
+          },
         ),
         Selector<WatchTogetherProvider, bool>(
           selector: (_, p) => p.isInSession,
@@ -103,6 +109,38 @@ class VideoControlsHeader extends StatelessWidget {
       style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: .w500),
       maxLines: 1,
       overflow: .ellipsis,
+    );
+  }
+
+  Widget _buildCinematicTitle(String itemTitle) {
+    final isEpisode = metadata.parentIndex != null && metadata.index != null;
+    final details = <String>[
+      if (isEpisode) ...['S${metadata.parentIndex} · E${metadata.index}', itemTitle],
+      if (!isEpisode && metadata.year != null) '${metadata.year}',
+      if (metadata.durationMs != null) formatDurationTextual(metadata.durationMs!),
+    ];
+    const shadow = [Shadow(color: Color(0x99000000), blurRadius: 12)];
+    return Column(
+      crossAxisAlignment: .start,
+      mainAxisSize: .min,
+      children: [
+        Text(
+          metadata.grandparentTitle ?? itemTitle,
+          style: PlezzantType.headlineSmall.copyWith(color: Colors.white, shadows: shadow),
+          maxLines: 1,
+          overflow: .ellipsis,
+        ),
+        if (details.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(
+              toBulletedString(details),
+              style: PlezzantType.bodyLarge.copyWith(color: Colors.white.withValues(alpha: 0.78), shadows: shadow),
+              maxLines: 1,
+              overflow: .ellipsis,
+            ),
+          ),
+      ],
     );
   }
 

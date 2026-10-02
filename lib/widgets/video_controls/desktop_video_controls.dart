@@ -22,6 +22,7 @@ import '../../focus/focusable_wrapper.dart';
 import '../../models/livetv_capture_buffer.dart';
 import 'models/track_controls_state.dart';
 import 'player_chrome_controller.dart';
+import 'video_control_button.dart';
 import 'widgets/content_strip.dart';
 import 'widgets/content_strip_panel.dart';
 import 'widgets/live_timeline_bar.dart';
@@ -34,6 +35,8 @@ import 'widgets/track_chapter_controls.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 import '../../theme/plezzant/plezzant_glass.dart';
 import '../../theme/plezzant/plezzant_tokens.dart';
+import '../../theme/plezzant/plezzant_typography.dart';
+import '../../focus/input_mode_tracker.dart';
 
 /// Desktop-specific video controls layout with top bar and bottom controls
 class DesktopVideoControls extends StatefulWidget {
@@ -685,14 +688,17 @@ class DesktopVideoControlsState extends State<DesktopVideoControls> {
   }
 
   Widget _buildTopBarContent(BuildContext _, double leftPadding) {
+    final tv = widget.useDpadNavigation;
     final topBar = Padding(
-      padding: .only(left: leftPadding, right: 16),
+      padding: tv ? const EdgeInsets.fromLTRB(32, 24, 40, 56) : .only(left: leftPadding, right: 16),
       child: Row(
         children: [
           Expanded(
             child: VideoControlsHeader(
               metadata: widget.metadata,
-              style: Platform.isMacOS ? VideoHeaderStyle.singleLine : VideoHeaderStyle.multiLine,
+              style: tv
+                  ? VideoHeaderStyle.cinematic
+                  : (Platform.isMacOS ? VideoHeaderStyle.singleLine : VideoHeaderStyle.multiLine),
               onBack: widget.onBack,
               onCancelAutoHide: widget.onCancelAutoHide,
               onStartAutoHide: widget.onStartAutoHide,
@@ -716,6 +722,21 @@ class DesktopVideoControlsState extends State<DesktopVideoControls> {
       ),
     );
 
+    if (tv) {
+      // A soft scrim keeps the title legible over bright picture without a
+      // hard bar edge; it fades out with the rest of the chrome.
+      return DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xB3000000), Color(0x59000000), Color(0x00000000)],
+            stops: [0, 0.55, 1],
+          ),
+        ),
+        child: DesktopAppBarHelper.wrapWithGestureDetector(topBar, opaque: true),
+      );
+    }
     return DesktopAppBarHelper.wrapWithGestureDetector(topBar, opaque: true);
   }
 
@@ -737,7 +758,282 @@ class DesktopVideoControlsState extends State<DesktopVideoControls> {
     return Padding(padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16), child: controls);
   }
 
+  Widget _buildTimeline(bool canInteract) {
+    if (_isLive && widget.captureBuffer != null) {
+      return LiveTimelineBar(
+        player: widget.player,
+        captureBuffer: widget.captureBuffer!,
+        epochForPosition: widget.liveEpochForPosition!,
+        isAtLiveEdge: widget.isAtLiveEdge,
+        onSeekEnd: widget.onLiveSeek,
+        horizontalLayout: true,
+        focusNode: _timelineFocusNode,
+        onKeyEvent: _handleTimelineKeyEvent,
+        onFocusChange: _onFocusChange,
+        enabled: canInteract,
+      );
+    }
+    if (_isLive) return const SizedBox.shrink();
+    return VideoTimelineBar(
+      player: widget.player,
+      chapters: widget.chapters,
+      chaptersLoaded: widget.chaptersLoaded,
+      showChapterMarkersOnTimeline: widget.showChapterMarkersOnTimeline,
+      onSeek: widget.onSeek,
+      onSeekEnd: widget.onSeekEnd,
+      onScrubStart: widget.onScrubStart,
+      onScrubEnd: widget.onScrubEnd,
+      horizontalLayout: true,
+      focusNode: _timelineFocusNode,
+      onKeyEvent: _handleTimelineKeyEvent,
+      onFocusChange: _onFocusChange,
+      enabled: canInteract,
+      thumbnailDataBuilder: widget.thumbnailDataBuilder,
+      showKeyRepeatThumbnail: _showKeyRepeatThumbnail,
+      previewPosition: _timelineSeek.pendingPosition,
+    );
+  }
+
+  Widget _buildTrackControls() {
+    return TrackChapterControls(
+      player: widget.player,
+      chapters: widget.chapters,
+      chaptersLoaded: widget.chaptersLoaded,
+      trackControlsState: _trackControlsState,
+      onSeekRequested: widget.onSeekRequested,
+      onSeekCompleted: widget.onSeekCompleted,
+      focusNodes: _trackControlFocusNodes,
+      onFocusChange: _onFocusChange,
+      onNavigateLeft: navigateFromTrackToVolume,
+      onNavigateUp: () {
+        _timelineFocusNode.requestFocus();
+        widget.onFocusActivity?.call();
+      },
+      onNavigateDown: () {
+        if (widget.useDpadNavigation && _hasStripContent) {
+          _showContentStrip();
+        }
+      },
+      hideChaptersAndQueue: widget.useDpadNavigation && _hasStripContent,
+    );
+  }
+
+  /// "Ends at 21:40", following duration, position and playback rate. Empty
+  /// once nothing remains.
+  Widget _buildFinishTime({TextStyle style = const TextStyle(color: Colors.white70, fontSize: 14)}) {
+    return StreamBuilder<Duration>(
+      stream: widget.player.streams.duration,
+      initialData: widget.player.state.duration,
+      builder: (context, durationSnapshot) {
+        final duration = durationSnapshot.data ?? Duration.zero;
+        return StreamBuilder<double>(
+          stream: widget.player.streams.rate,
+          initialData: widget.player.state.rate,
+          builder: (context, rateSnapshot) {
+            final rate = rateSnapshot.data ?? 1.0;
+            final initialRemaining = duration - widget.player.state.position;
+            return StreamBuilder<Duration>(
+              stream: widget.player.streams.position.map((position) => duration - position).distinct((previous, next) {
+                final previousHasRemaining = previous.inSeconds > 0;
+                final nextHasRemaining = next.inSeconds > 0;
+                return previousHasRemaining == nextHasRemaining &&
+                    (!previousHasRemaining || previous.inMinutes == next.inMinutes);
+              }),
+              initialData: initialRemaining,
+              builder: (context, remainingSnapshot) {
+                final remaining = remainingSnapshot.data ?? Duration.zero;
+                if (remaining.inSeconds <= 0) return const SizedBox.shrink();
+
+                final text = t.videoControls.endsAt(
+                  time: formatFinishTime(remaining, rate: rate, is24Hour: MediaQuery.alwaysUse24HourFormatOf(context)),
+                );
+                return Text(text, style: style, maxLines: 1, softWrap: false, overflow: .fade);
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// Title of the chapter playing now, or nothing for unchaptered media.
+  Widget _buildCurrentChapterLabel() {
+    if (widget.chapters.isEmpty) return const SizedBox.shrink();
+    String? labelAt(Duration position) {
+      final ms = position.inMilliseconds;
+      String? label;
+      for (final chapter in widget.chapters) {
+        if ((chapter.startTimeOffset ?? 0) <= ms) label = chapter.label;
+      }
+      return label;
+    }
+
+    return StreamBuilder<String?>(
+      stream: widget.player.streams.position.map(labelAt).distinct(),
+      initialData: labelAt(widget.player.state.position),
+      builder: (context, snapshot) {
+        final label = snapshot.data;
+        if (label == null || label.isEmpty) return const SizedBox.shrink();
+        return Text(
+          label,
+          style: PlezzantType.titleSmall.copyWith(color: Colors.white),
+          maxLines: 1,
+          overflow: .ellipsis,
+        );
+      },
+    );
+  }
+
+  /// The play/pause control on the TV bar: a filled disc that inverts when
+  /// focused, so the one button a viewer reaches for most stands apart from
+  /// the quieter round icon buttons around it.
+  Widget _buildPrimaryTransportButton({
+    required FocusNode focusNode,
+    required int index,
+    required IconData icon,
+    required VoidCallback? onPressed,
+    required String semanticLabel,
+  }) {
+    return FocusableWrapper(
+      focusNode: focusNode,
+      onSelect: onPressed,
+      onKeyEvent: (node, event) => _handleButtonKeyEvent(node, event, index),
+      onFocusChange: _onFocusChange,
+      borderRadius: 32,
+      autoScroll: false,
+      delegateFocusBorder: true,
+      semanticLabel: semanticLabel,
+      child: ListenableBuilder(
+        listenable: focusNode,
+        builder: (context, _) {
+          final focused = focusNode.hasFocus && InputModeTracker.isKeyboardMode(context);
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Semantics(
+              label: semanticLabel,
+              button: true,
+              excludeSemantics: true,
+              child: Material(
+                type: MaterialType.circle,
+                color: focused ? Colors.white : Colors.white.withValues(alpha: 0.16),
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: onPressed,
+                  child: SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: Center(
+                      child: AppIcon(icon, fill: 1, color: focused ? Colors.black : Colors.white, size: 30),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  /// D-pad (TV) layout: timeline on top; below it, what is playing on the
+  /// left, a centred transport cluster, and track controls on the right.
+  /// Chapter skipping lives in the chapter strip (DOWN) and on the remote's
+  /// skip keys, so the bar carries only the controls a viewer reaches for.
+  Widget _buildTvBottomControls(bool canInteract) {
+    final opacity = _canControl ? 1.0 : 0.5;
+    final hasPrevious = !_isLive && widget.onPrevious != null;
+    final hasNext = !_isLive && widget.onNext != null;
+    final canSkip = !_isLive || widget.captureBuffer != null;
+    return Column(
+      mainAxisSize: .min,
+      children: [
+        _buildTimeline(canInteract),
+        const SizedBox(height: 4),
+        Focus(
+          onFocusChange: _onButtonRowFocusChange,
+          skipTraversal: true,
+          child: Row(
+            children: [
+              Expanded(
+                child: _isLive
+                    ? const SizedBox.shrink()
+                    : Column(
+                        crossAxisAlignment: .start,
+                        mainAxisSize: .min,
+                        children: [_buildCurrentChapterLabel(), _buildFinishTime()],
+                      ),
+              ),
+              Opacity(
+                opacity: opacity,
+                child: Row(
+                  mainAxisSize: .min,
+                  children: [
+                    if (hasPrevious)
+                      _buildFocusableButton(
+                        focusNode: _prevItemFocusNode,
+                        index: 0,
+                        icon: LucideIcons.skipBack,
+                        onPressed: _canControl ? widget.onPrevious : null,
+                        semanticLabel: t.videoControls.previousButton,
+                      ),
+                    if (canSkip)
+                      _buildFocusableButton(
+                        focusNode: _skipBackFocusNode,
+                        index: 2,
+                        icon: widget.getReplayIcon(widget.seekTimeSmall),
+                        onPressed: _canControl ? widget.onSeekBackward : null,
+                        semanticLabel: t.videoControls.seekBackwardButton(seconds: widget.seekTimeSmall),
+                      ),
+                    PlayPauseStreamBuilder(
+                      player: widget.player,
+                      builder: (context, isPlaying) => _buildPrimaryTransportButton(
+                        focusNode: _playPauseFocusNode,
+                        index: 3,
+                        icon: isPlaying ? LucideIcons.pause : LucideIcons.play,
+                        onPressed: _canControl ? widget.onPlayPause : null,
+                        semanticLabel: isPlaying ? t.videoControls.pauseButton : t.videoControls.playButton,
+                      ),
+                    ),
+                    if (canSkip)
+                      _buildFocusableButton(
+                        focusNode: _skipForwardFocusNode,
+                        index: 4,
+                        icon: widget.getForwardIcon(widget.seekTimeSmall),
+                        onPressed: _canControl ? widget.onSeekForward : null,
+                        semanticLabel: t.videoControls.seekForwardButton(seconds: widget.seekTimeSmall),
+                      ),
+                    if (hasNext)
+                      _buildFocusableButton(
+                        focusNode: _nextItemFocusNode,
+                        index: 6,
+                        icon: LucideIcons.skipForward,
+                        onPressed: _canControl ? widget.onNext : null,
+                        semanticLabel: t.videoControls.nextButton,
+                      ),
+                    if (_isLive && widget.captureBuffer != null && !widget.isAtLiveEdge && widget.onJumpToLive != null)
+                      _buildFocusableButton(
+                        focusNode: _goToLiveFocusNode,
+                        index: 7,
+                        icon: LucideIcons.radio,
+                        onPressed: _canControl ? widget.onJumpToLive : null,
+                        semanticLabel: t.liveTv.goToLive,
+                        tooltip: t.liveTv.goToLive,
+                      ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Align(alignment: Alignment.centerRight, child: _buildTrackControls()),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildBottomControlsColumn(bool canInteract) {
+    if (widget.useDpadNavigation) return _buildTvBottomControls(canInteract);
     return Column(
       children: [
         if (_isLive && widget.captureBuffer != null) ...[
@@ -902,51 +1198,7 @@ class DesktopVideoControlsState extends State<DesktopVideoControls> {
                 const Spacer()
               else
                 Expanded(
-                  child: StreamBuilder<Duration>(
-                    stream: widget.player.streams.duration,
-                    initialData: widget.player.state.duration,
-                    builder: (context, durationSnapshot) {
-                      final duration = durationSnapshot.data ?? Duration.zero;
-                      return StreamBuilder<double>(
-                        stream: widget.player.streams.rate,
-                        initialData: widget.player.state.rate,
-                        builder: (context, rateSnapshot) {
-                          final rate = rateSnapshot.data ?? 1.0;
-                          final initialRemaining = duration - widget.player.state.position;
-                          return StreamBuilder<Duration>(
-                            stream: widget.player.streams.position.map((position) => duration - position).distinct((
-                              previous,
-                              next,
-                            ) {
-                              final previousHasRemaining = previous.inSeconds > 0;
-                              final nextHasRemaining = next.inSeconds > 0;
-                              return previousHasRemaining == nextHasRemaining &&
-                                  (!previousHasRemaining || previous.inMinutes == next.inMinutes);
-                            }),
-                            initialData: initialRemaining,
-                            builder: (context, remainingSnapshot) {
-                              final remaining = remainingSnapshot.data ?? Duration.zero;
-                              if (remaining.inSeconds <= 0) return const SizedBox.shrink();
-
-                              final text = t.videoControls.endsAt(
-                                time: formatFinishTime(
-                                  remaining,
-                                  rate: rate,
-                                  is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
-                                ),
-                              );
-                              const style = TextStyle(color: Colors.white70, fontSize: 14);
-
-                              return Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: Text(text, style: style, maxLines: 1, softWrap: false, overflow: .fade),
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
-                  ),
+                  child: Padding(padding: const EdgeInsets.only(left: 8), child: _buildFinishTime()),
                 ),
               // Volume control (hidden on TV — hardware handles volume)
               if (!PlatformDetector.isTV()) ...[
@@ -960,27 +1212,7 @@ class DesktopVideoControlsState extends State<DesktopVideoControls> {
                 const SizedBox(width: 16),
               ],
               // Audio track, subtitle, and chapter controls
-              TrackChapterControls(
-                player: widget.player,
-                chapters: widget.chapters,
-                chaptersLoaded: widget.chaptersLoaded,
-                trackControlsState: _trackControlsState,
-                onSeekRequested: widget.onSeekRequested,
-                onSeekCompleted: widget.onSeekCompleted,
-                focusNodes: _trackControlFocusNodes,
-                onFocusChange: _onFocusChange,
-                onNavigateLeft: navigateFromTrackToVolume,
-                onNavigateUp: () {
-                  _timelineFocusNode.requestFocus();
-                  widget.onFocusActivity?.call();
-                },
-                onNavigateDown: () {
-                  if (widget.useDpadNavigation && _hasStripContent) {
-                    _showContentStrip();
-                  }
-                },
-                hideChaptersAndQueue: widget.useDpadNavigation && _hasStripContent,
-              ),
+              _buildTrackControls(),
             ],
           ),
         ),
@@ -1010,6 +1242,21 @@ class DesktopVideoControlsState extends State<DesktopVideoControls> {
     double iconSize = 24,
     String? tooltip,
   }) {
+    if (PlatformDetector.isTV()) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        child: VideoControlButton(
+          icon: icon,
+          color: color,
+          onPressed: onPressed,
+          tooltip: tooltip,
+          semanticLabel: semanticLabel,
+          focusNode: focusNode,
+          onKeyEvent: (node, event) => _handleButtonKeyEvent(node, event, index),
+          onFocusChange: _onFocusChange,
+        ),
+      );
+    }
     return FocusableWrapper(
       focusNode: focusNode,
       onSelect: onPressed,

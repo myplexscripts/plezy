@@ -4,6 +4,9 @@ import '../../../media/ids.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+import '../../../theme/plezzant/plezzant_ambience.dart';
+import '../../../theme/plezzant/plezzant_palette.dart';
 import 'package:provider/provider.dart';
 
 import '../../../focus/dpad_navigator.dart';
@@ -438,9 +441,11 @@ class ContentStripState extends State<ContentStrip> {
             onFocusChange: (hasFocus) {
               if (hasFocus) widget.onFocusActivity?.call();
             },
-            borderRadius: 6,
+            borderRadius: 8,
             autoScroll: false,
-            useBackgroundFocus: true,
+            // Same lifted outline as every other card on a TV, so the strip
+            // reads as part of the app rather than a separate widget kit.
+            useBackgroundFocus: false,
             child: item,
           ),
         );
@@ -491,6 +496,7 @@ class ContentStripState extends State<ContentStrip> {
                     : null,
                 title: chapter.label,
                 subtitle: formatDurationTimestamp(chapter.startTime),
+                placeholderLabel: '${index + 1}',
                 onTap: onTap,
               ),
               onTap,
@@ -579,11 +585,38 @@ class ContentStripState extends State<ContentStrip> {
     required VoidCallback? onTap,
     bool blurThumbnail = false,
     bool isTablet = false,
+    String? placeholderLabel,
   }) {
+    final tv = widget.useFocusNavigation;
     final itemWidth = isTablet ? 200.0 : 120.0;
     final thumbHeight = isTablet ? 112.0 : 68.0;
-    final titleFontSize = isTablet ? 13.0 : 11.0;
-    final subtitleFontSize = isTablet ? 12.0 : 10.0;
+    // D-pad layouts are read from a sofa: keep the type at the 14 px floor.
+    final titleFontSize = tv ? 15.0 : (isTablet ? 13.0 : 11.0);
+    final subtitleFontSize = tv ? 14.0 : (isTablet ? 12.0 : 10.0);
+    final Widget? effectiveThumbnail =
+        thumbnail ??
+        (tv && placeholderLabel != null
+            ? DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.white.withValues(alpha: 0.14), Colors.white.withValues(alpha: 0.04)],
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    placeholderLabel,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: isCurrent ? 0.9 : 0.55),
+                      fontSize: 34,
+                      fontWeight: FontWeight.w700,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ),
+              )
+            : null);
 
     final verticalMargin = widget.useFocusNavigation ? 4.0 : 0.0;
     return ClickableCursor(
@@ -597,14 +630,34 @@ class ContentStripState extends State<ContentStrip> {
             mainAxisSize: .min,
             crossAxisAlignment: .start,
             children: [
-              MediaSelectorThumbnail(
-                width: itemWidth,
-                height: thumbHeight,
-                thumbnail: thumbnail,
-                isCurrent: isCurrent,
-                borderColor: Colors.white,
-                radius: 6,
-                blurThumbnail: blurThumbnail,
+              Stack(
+                children: [
+                  MediaSelectorThumbnail(
+                    width: itemWidth,
+                    height: thumbHeight,
+                    thumbnail: effectiveThumbnail,
+                    // On a TV the outline means focus; "playing now" is the
+                    // accent bar below instead, so the two never look alike.
+                    isCurrent: isCurrent && !tv,
+                    borderColor: Colors.white,
+                    radius: tv ? 8 : 6,
+                    blurThumbnail: blurThumbnail,
+                  ),
+                  if (tv && isCurrent)
+                    Positioned(
+                      left: 10,
+                      right: 10,
+                      bottom: 8,
+                      child: Container(
+                        height: 4,
+                        decoration: BoxDecoration(
+                          // The playing title's palette accent, as on the timeline.
+                          color: PlezzantAmbience.instance.accent(PlezzantShade.lighter),
+                          borderRadius: const BorderRadius.all(Radius.circular(2)),
+                        ),
+                      ),
+                    ),
+                ],
               ),
               const SizedBox(height: 4),
               Text(

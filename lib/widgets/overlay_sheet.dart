@@ -10,6 +10,7 @@ import '../focus/input_mode_tracker.dart';
 import '../focus/key_event_utils.dart';
 import '../utils/platform_detector.dart';
 import '../theme/plezzant/plezzant_glass.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 
 /// Entry in the sheet page stack.
 class _OverlaySheetEntry {
@@ -669,7 +670,11 @@ class _OverlaySheetHostState extends State<OverlaySheetHost> with SingleTickerPr
     // hit testing never depends on the sheet child's just-invalidated layout.
     final slideDirection = isTop ? -1.0 : 1.0;
     final slideDistance = size.height;
-    final borderRadius = isTop
+    // TV sheets float like the player's control panel: inset from the screen
+    // edge with every corner rounded, rather than docked to the bezel.
+    final borderRadius = isTV
+        ? PlezzantRadius.panelAll
+        : isTop
         ? const BorderRadius.vertical(bottom: Radius.circular(16))
         : const BorderRadius.vertical(top: Radius.circular(16));
 
@@ -766,6 +771,7 @@ class _OverlaySheetHostState extends State<OverlaySheetHost> with SingleTickerPr
                 right: true,
                 top: false,
                 bottom: false,
+                minimum: isTV ? EdgeInsets.only(top: isTop ? 32 : 0, bottom: isTop ? 0 : 32) : EdgeInsets.zero,
                 child: _glassBackedSheet(
                   explicitColor: _explicitBackgroundColor != null,
                   borderRadius: borderRadius,

@@ -141,6 +141,31 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
       year2023: false,
     ),
     dividerTheme: DividerThemeData(space: 0, thickness: 1, color: c.outline),
+    // Dialogs and popup menus use the glass panel's solid recipe: a lifted,
+    // near-opaque surface with the hairline specular edge and panel radius.
+    // Blur adds nothing visible at this opacity and costs frames on TVs.
+    dialogTheme: DialogThemeData(
+      backgroundColor: Color.alphaBlend(c.text.withValues(alpha: 0.06), c.surface).withValues(alpha: 0.97),
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      barrierColor: Colors.black.withValues(alpha: 0.62),
+      shape: RoundedRectangleBorder(
+        borderRadius: PlezzantRadius.panelAll,
+        side: BorderSide(color: c.text.withValues(alpha: 0.10)),
+      ),
+      titleTextStyle: PlezzantType.headlineSmall.copyWith(color: c.text),
+      contentTextStyle: PlezzantType.bodyMedium.copyWith(color: c.textMuted),
+    ),
+    popupMenuTheme: PopupMenuThemeData(
+      color: Color.alphaBlend(c.text.withValues(alpha: 0.06), c.surface).withValues(alpha: 0.97),
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: PlezzantRadius.controlAll,
+        side: BorderSide(color: c.text.withValues(alpha: 0.10)),
+      ),
+      textStyle: PlezzantType.bodyMedium.copyWith(color: c.text),
+    ),
     // Not `dense`: Flutter hard-codes dense rows to 13/12 px text, below the
     // Plezzant 14 px floor. Compact visual density keeps rows tight instead.
     listTileTheme: ListTileThemeData(

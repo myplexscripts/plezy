@@ -2,6 +2,7 @@ import 'dart:async';
 import '../services/playback_launch_observer.dart';
 import '../media/ids.dart';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -1019,6 +1020,58 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindin
     initiallyVisible: playerChromeStartsVisible(isTv: PlatformDetector.isTV()),
   );
 
+  /// Whether subtitles are currently raised clear of the visible controls.
+  bool _subtitlesLifted = false;
+
+  /// Highest `sub-pos` (percent of the picture height) a subtitle may sit at
+  /// while the chrome is up: the TV control bar floats on a taller glass panel
+  /// than the desktop edge bar. Phones keep their own layout and never lift.
+  static double? _subtitleLiftCeiling(BuildContext context) {
+    if (PlatformDetector.isTV()) return 80;
+    if (PlatformDetector.isDesktop(context)) return 88;
+    return null;
+  }
+
+  /// Raise subtitles above the control bar while it is shown, and return them
+  /// to the viewer's chosen position once it hides, so a line of dialogue is
+  /// never drawn through the transport controls.
+  void _syncSubtitleLift() {
+    if (!mounted) return;
+    final currentPlayer = player;
+    final settings = SettingsService.instanceOrNull;
+    if (currentPlayer == null || settings == null) return;
+    final ceiling = _subtitleLiftCeiling(context);
+    final lift = ceiling != null && _chromeController.controlsVisible;
+    if (lift == _subtitlesLifted) return;
+    _subtitlesLifted = lift;
+    final chosen = settings.read(SettingsService.subtitlePosition);
+    final position = lift ? math.min(chosen, ceiling.round()) : chosen;
+    unawaited(_applySubtitlePosition(currentPlayer, settings, position));
+  }
+
+  Future<void> _applySubtitlePosition(Player currentPlayer, SettingsService settings, int position) async {
+    try {
+      if (currentPlayer.playerType == 'exoplayer') {
+        await currentPlayer.setSubtitleStyle(
+          fontSize: settings.read(SettingsService.subtitleFontSize).toDouble(),
+          textColor: settings.read(SettingsService.subtitleTextColor),
+          borderSize: settings.read(SettingsService.subtitleBorderSize).toDouble(),
+          borderColor: settings.read(SettingsService.subtitleBorderColor),
+          bgColor: settings.read(SettingsService.subtitleBackgroundColor),
+          bgOpacity: settings.read(SettingsService.subtitleBackgroundOpacity),
+          subtitlePosition: position,
+          bold: settings.read(SettingsService.subtitleBold),
+          italic: settings.read(SettingsService.subtitleItalic),
+          anchorToScreen: settings.read(SettingsService.subtitleAnchorToScreen),
+        );
+      }
+      // mpv backends (and the Android mpv fallback) place subtitles via sub-pos.
+      await currentPlayer.setProperty('sub-pos', position.toString());
+    } catch (e) {
+      appLogger.d('VideoPlayerScreen: subtitle lift not applied', error: e);
+    }
+  }
+
   /// Lets startup-policy coverage assert the chrome this route actually opened
   /// with, rather than a controller the test seeded itself.
   @visibleForTesting
@@ -1068,6 +1121,7 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindin
   @override
   void initState() {
     super.initState();
+    _chromeController.addListener(_syncSubtitleLift);
     PlaybackCoordinator.instance.registerVideoSession(shutdown: _shutdownVideo, stopAndExit: _stopVideoAndExit);
     SleepTimerService().bindPlayback(
       owner: this,
@@ -1651,6 +1705,9 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindin
       await currentPlayer.setProperty('sub-ass-override', settingsService.read(SettingsService.subAssOverride).name);
       await currentPlayer.setProperty('sub-ass-video-aspect-override', '1');
       await currentPlayer.setProperty('sub-pos', settingsService.read(SettingsService.subtitlePosition).toString());
+      // Startup wrote the chosen position; re-apply the lift if the chrome is up.
+      _subtitlesLifted = false;
+      _syncSubtitleLift();
 
       // Placement policy is MPV-only and independent of ASS styling. Keep the
       // last accepted/default value on refusal; custom mpv.conf still wins below.
@@ -2150,6 +2207,7 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindin
     _isBuffering.dispose();
     _firstFrame.dispose();
     _isExiting.dispose();
+    _chromeController.removeListener(_syncSubtitleLift);
     _chromeController.dispose();
     _toastController.dispose();
 
