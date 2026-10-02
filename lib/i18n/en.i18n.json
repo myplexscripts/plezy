@@ -1042,6 +1042,8 @@
   },
   "discover": {
     "title": "Discover",
+    "goToShow": "Go to Show",
+    "goToMovie": "Go to Movie",
     "noContentAvailable": "No content available",
     "addMediaToLibraries": "Add some media to your libraries",
     "continueWatching": "Continue Watching",

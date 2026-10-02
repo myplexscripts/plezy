@@ -201,8 +201,6 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     items: _onDeck,
   );
 
-  void _setSpotlightItem(MediaItem item) => _spotlight.select(item);
-
   void _scrollToTop() {
     if (!_scrollController.hasClients) return;
     _scrollController.animateTo(0, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
@@ -1082,7 +1080,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       focusMemory: _hubFocusMemory,
       showServerName: showServerName,
       iconForHub: (hub, _) => hubIconFor(hub),
-      onFocusedItemChanged: _setSpotlightItem,
+      onFocusedHubItemChanged: (hub, item) => _spotlight.select(item, playsDirectly: hub.usesContinueWatchingAction),
       onRefresh: _discover.updateItem,
       onRemoveFromContinueWatching: _discover.refreshContinueWatching,
       isContinueWatchingHub: (hub) => hub.isContinueWatchingHub,
@@ -1110,6 +1108,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       resolveClient: _getMediaClientForItem,
       hideSpoilers: hideSpoilers,
       forceWideRailLayout: true,
+      showActionHint: true,
       foreground: Stack(
         fit: StackFit.expand,
         clipBehavior: Clip.none,

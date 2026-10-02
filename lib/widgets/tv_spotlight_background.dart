@@ -17,6 +17,8 @@ import '../theme/plezzant/plezzant_ambient_glow.dart';
 import '../theme/plezzant/plezzant_tokens.dart';
 import 'cycling_media_backdrop.dart';
 import 'fitting_title_text.dart';
+import 'app_icon.dart';
+import '../theme/plezzant/plezzant_typography.dart';
 import 'fitted_metadata_line.dart';
 import 'settings_builder.dart';
 import 'media_ambience.dart';
@@ -39,6 +41,11 @@ class TvSpotlightBackground extends StatelessWidget {
   /// Optional caller-owned fact appended to the existing metadata line.
   final Widget? metadataTrailing;
 
+  /// Apple TV style call to action under the synopsis: names what OK does on
+  /// the focused card. Purely a label; the card owns the focus and the press.
+  final String? actionLabel;
+  final IconData? actionIcon;
+
   const TvSpotlightBackground({
     super.key,
     required this.item,
@@ -52,6 +59,8 @@ class TvSpotlightBackground extends StatelessWidget {
     this.localArtworkPathResolver,
     this.allowNetwork = true,
     this.metadataTrailing,
+    this.actionLabel,
+    this.actionIcon,
   });
 
   double _scale(BuildContext context) => TvLayoutConstants.scaleOf(context);
@@ -243,6 +252,10 @@ class TvSpotlightBackground extends StatelessWidget {
             ),
           ),
         ],
+        if (actionLabel != null) ...[
+          SizedBox(height: _sectionGap(scale) * 1.4),
+          _ActionPill(label: actionLabel!, icon: actionIcon, scale: scale),
+        ],
       ],
     );
   }
@@ -412,4 +425,45 @@ class TvSpotlightBackground extends StatelessWidget {
   double _metadataFontSize(double scale) => (compact ? 16 : 18) * scale;
 
   double _summaryFontSize(double scale) => (compact ? 18 : 20) * scale;
+}
+
+/// The white "Play" / "Go to Show" pill of the Apple TV hero.
+class _ActionPill extends StatelessWidget {
+  final String label;
+  final IconData? icon;
+  final double scale;
+
+  const _ActionPill({required this.label, required this.icon, required this.scale});
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10 * scale),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 16 * scale)],
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 26 * scale, vertical: 11 * scale),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              AppIcon(icon!, fill: 1, size: 18 * scale, color: Colors.black),
+              SizedBox(width: 8 * scale),
+            ],
+            Text(
+              label,
+              maxLines: 1,
+              style: PlezzantType.labelLarge.copyWith(
+                color: Colors.black,
+                fontSize: 17 * scale,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

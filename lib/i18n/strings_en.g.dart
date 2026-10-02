@@ -2971,6 +2971,12 @@ class Translations$discover$en {
 	/// en: 'Discover'
 	String get title => 'Discover';
 
+	/// en: 'Go to Show'
+	String get goToShow => 'Go to Show';
+
+	/// en: 'Go to Movie'
+	String get goToMovie => 'Go to Movie';
+
 	/// en: 'No content available'
 	String get noContentAvailable => 'No content available';
 
@@ -8064,6 +8070,8 @@ extension on Translations {
 			'accountPreferences.mediaReviewsOptions.criticsOnly' => 'Critics only',
 			'accountPreferences.mediaReviewsOptions.nobody' => 'Hidden',
 			'discover.title' => 'Discover',
+			'discover.goToShow' => 'Go to Show',
+			'discover.goToMovie' => 'Go to Movie',
 			'discover.noContentAvailable' => 'No content available',
 			'discover.addMediaToLibraries' => 'Add some media to your libraries',
 			'discover.continueWatching' => 'Continue Watching',
@@ -8121,10 +8129,10 @@ extension on Translations {
 			'libraries.noItemsMatchFilters' => 'No items match the active filters',
 			'libraries.resetFilters' => 'Reset filters',
 			'libraries.all' => 'All',
-			'libraries.clearAll' => 'Clear All',
-			'libraries.scanLibraryConfirm' => ({required Object title}) => 'Are you sure you want to scan "${title}"?',
 			_ => null,
 		} ?? switch (path) {
+			'libraries.clearAll' => 'Clear All',
+			'libraries.scanLibraryConfirm' => ({required Object title}) => 'Are you sure you want to scan "${title}"?',
 			'libraries.analyzeLibraryConfirm' => ({required Object title}) => 'Are you sure you want to analyze "${title}"?',
 			'libraries.refreshMetadataConfirm' => ({required Object title}) => 'Are you sure you want to refresh metadata for "${title}"?',
 			'libraries.emptyTrashConfirm' => ({required Object title}) => 'Are you sure you want to empty trash for "${title}"?',
@@ -8635,10 +8643,10 @@ extension on Translations {
 			'downloads.deleteDownload' => 'Delete download',
 			'downloads.retryDownload' => 'Retry download',
 			'downloads.downloadQueued' => 'Download queued',
-			'downloads.downloadResumed' => 'Download resumed',
-			'downloads.serverErrorBitrate' => 'Server error: file may exceed the remote bitrate limit',
 			_ => null,
 		} ?? switch (path) {
+			'downloads.downloadResumed' => 'Download resumed',
+			'downloads.serverErrorBitrate' => 'Server error: file may exceed the remote bitrate limit',
 			'downloads.storageFull' => 'Downloads stopped because device storage is full. Free some space, then retry.',
 			'downloads.episodesQueued' => ({required Object count}) => '${count} episodes queued for download',
 			'downloads.downloadDeleted' => 'Download deleted',

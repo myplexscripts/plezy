@@ -12,6 +12,28 @@ MediaHub _hub(String id, List<MediaItem> items) =>
     MediaHub(id: id, title: id, type: 'movie', size: items.length, items: items);
 
 void main() {
+  test('spotlight controller tracks whether the spotlit card plays directly', () {
+    final controller = TvSpotlightController(settleDelay: Duration.zero);
+    addTearDown(controller.dispose);
+    var notifications = 0;
+    controller.addListener(() => notifications++);
+
+    final item = _item('same');
+    controller.select(item, playsDirectly: true);
+    expect(controller.playsDirectly, isTrue);
+    expect(notifications, 1);
+
+    // Same card reached from a details shelf: the hint must update.
+    controller.select(item, playsDirectly: false);
+    expect(controller.playsDirectly, isFalse);
+    expect(notifications, 2);
+
+    // A select without the flag keeps the last known action.
+    controller.select(item);
+    expect(controller.playsDirectly, isFalse);
+    expect(notifications, 2);
+  });
+
   test('spotlight controller cancels an intermediate debounced selection', () async {
     final first = _item('first');
     final second = _item('second');

@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../i18n/strings.g.dart';
 import '../media/catalog_item_ref.dart';
 import '../media/media_hub.dart';
 import '../media/media_item.dart';
+import '../media/media_item_types.dart';
 import '../media/media_server_client.dart';
 import '../models/catalog/catalog_item.dart';
 import '../navigation/main_screen_scope.dart';
@@ -23,10 +25,20 @@ class TvSpotlightController extends ValueNotifier<MediaItem?> {
 
   final Duration _settleDelay;
   final Debouncer _debouncer;
+  bool _playsDirectly = false;
 
-  void select(MediaItem item) {
+  /// Whether pressing OK on the spotlit item starts playback (Continue
+  /// Watching) rather than opening its details.
+  bool get playsDirectly => _playsDirectly;
+
+  void select(MediaItem item, {bool? playsDirectly}) {
     void apply() {
-      if (value?.globalKey == item.globalKey) return;
+      final flagChanged = playsDirectly != null && playsDirectly != _playsDirectly;
+      if (playsDirectly != null) _playsDirectly = playsDirectly;
+      if (value?.globalKey == item.globalKey) {
+        if (flagChanged) notifyListeners();
+        return;
+      }
       value = item;
     }
 
@@ -71,6 +83,7 @@ class TvSpotlightScaffold extends StatelessWidget {
     required this.foreground,
     this.hideSpoilers,
     this.forceWideRailLayout = false,
+    this.showActionHint = false,
   });
 
   final List<MediaHub> hubs;
@@ -80,6 +93,21 @@ class TvSpotlightScaffold extends StatelessWidget {
   final Widget foreground;
   final bool? hideSpoilers;
   final bool forceWideRailLayout;
+
+  /// Apple TV style: a white pill under the synopsis naming what OK does on
+  /// the focused card. Needs a [TvSpotlightController] as the listenable.
+  final bool showActionHint;
+
+  static (String, IconData?)? _actionFor(MediaItem? item, ValueListenable<MediaItem?> listenable) {
+    if (item == null || listenable is! TvSpotlightController) return null;
+    if (listenable.playsDirectly) {
+      final inProgress = (item.viewOffsetMs ?? 0) > 0;
+      return (inProgress ? t.common.resume : t.common.play, LucideIcons.play);
+    }
+    if (item.isShow || item.isSeason) return (t.discover.goToShow, null);
+    if (item.isMovie) return (t.discover.goToMovie, null);
+    return (t.mediaMenu.viewDetails, null);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +156,7 @@ class TvSpotlightScaffold extends StatelessWidget {
                       final spotlight = resolveSpotlight();
                       return _CatalogSpotlightBackground(
                         item: spotlight,
+                        action: showActionHint ? _actionFor(spotlight, spotlightListenable) : null,
                         client: resolveClient(spotlight),
                         hideSpoilers: hideSpoilers ?? settings.read(SettingsService.hideSpoilers),
                         contentTop: spotlightTop,
@@ -159,9 +188,11 @@ class _CatalogSpotlightBackground extends StatefulWidget {
     required this.contentBottom,
     required this.contentLeft,
     required this.targetWidthPx,
+    this.action,
   });
 
   final MediaItem? item;
+  final (String, IconData?)? action;
   final MediaServerClient? client;
   final bool hideSpoilers;
   final double contentTop;
@@ -262,6 +293,8 @@ class _CatalogSpotlightBackgroundState extends State<_CatalogSpotlightBackground
       contentLeft: widget.contentLeft,
       compact: true,
       metadataTrailing: _buildNextEpisodeMetadata(context),
+      actionLabel: widget.action?.$1,
+      actionIcon: widget.action?.$2,
     );
     if (accentColor == null) return background;
     return Theme(
