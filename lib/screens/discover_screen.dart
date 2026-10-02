@@ -1092,6 +1092,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       onNavigateUp: _focusTopActions,
       onNavigateToSidebar: _navigateToSidebar,
       tallPosterScale: TvBrowseRailLayout.compactTallPosterScale,
+      forceWideLayout: true,
     );
   }
 
@@ -1108,6 +1109,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       resolveSpotlight: () => _spotlight.resolve(browseHubs),
       resolveClient: _getMediaClientForItem,
       hideSpoilers: hideSpoilers,
+      forceWideRailLayout: true,
       foreground: Stack(
         fit: StackFit.expand,
         clipBehavior: Clip.none,
@@ -1132,7 +1134,22 @@ class _DiscoverScreenState extends State<DiscoverScreen>
               left: 0,
               right: 0,
               bottom: 0,
-              child: _cachedTvBrowseRail(browseHubs, showServerName: showServerNameOnHubs || hubsSpanMultipleServers),
+              child: Builder(
+                builder: (context) {
+                  final navigationOverlap = MainScreenFocusScope.sideNavigationBleedOf(context);
+                  return SideNavigationBleedBuilder(
+                    targetBleed: navigationOverlap,
+                    child: _cachedTvBrowseRail(
+                      browseHubs,
+                      showServerName: showServerNameOnHubs || hubsSpanMultipleServers,
+                    ),
+                    builder: (context, bleed, child) => Transform.translate(
+                      offset: Offset(bleed, 0),
+                      child: child,
+                    ),
+                  );
+                },
+              ),
             ),
           TvToolbarOverlay(child: _buildOverlaidAppBar()),
           if (_switchingProfile) const ProfileSwitchingOverlay(),

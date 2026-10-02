@@ -132,6 +132,7 @@ class TvBrowseRailLayout {
     GridSpacing gridSpacing = GridSpacing.tight,
     double tallPosterScale = 1.0,
     double widePosterScale = 1.0,
+    bool forceWideLayout = false,
     bool hasLeading = false,
   }) {
     final focusExtra = FocusTheme.focusBorderWidth * 2 * scale;
@@ -147,13 +148,16 @@ class TvBrowseRailLayout {
         !isPersonHub &&
         (emptyEpisodeThumbnailHub || hub.items.any((item) => item.usesWideAspectRatio(episodePosterMode)));
     final hasTall = !isPersonHub && hub.items.any((item) => !item.usesWideAspectRatio(episodePosterMode));
-    final isMixedHub = hasWide && hasTall;
-    final useWideLayout = hasWide && (!hasTall || episodePosterMode == EpisodePosterMode.episodeThumbnail);
     // Music hubs render square album/artist artwork (person hubs are already square).
     final isSquareHub =
         !isPersonHub &&
         hub.items.isNotEmpty &&
         hub.items.every((item) => item.cardShape(episodePosterMode) == CardShape.square);
+    final isMixedHub = !forceWideLayout && hasWide && hasTall;
+    final useWideLayout =
+        forceWideLayout && !isPersonHub && !isSquareHub
+            ? true
+            : hasWide && (!hasTall || episodePosterMode == EpisodePosterMode.episodeThumbnail);
     final baseCardWidth = cardWidthFor(
       availableWidth: availableWidth,
       density: density,
@@ -199,6 +203,7 @@ class TvBrowseRailLayout {
     GridSpacing gridSpacing = GridSpacing.tight,
     double tallPosterScale = 1.0,
     double widePosterScale = 1.0,
+    bool forceWideLayout = false,
   }) {
     var maxHeight = 0.0;
     for (final hub in hubs) {
@@ -212,6 +217,7 @@ class TvBrowseRailLayout {
         gridSpacing: gridSpacing,
         tallPosterScale: tallPosterScale,
         widePosterScale: widePosterScaleForHub?.call(hub) ?? widePosterScale,
+        forceWideLayout: forceWideLayout,
       );
       if (metrics.height > maxHeight) maxHeight = metrics.height;
     }
@@ -275,6 +281,7 @@ class TvBrowseRailLayout {
     GridSpacing gridSpacing = GridSpacing.tight,
     double tallPosterScale = 1.0,
     double widePosterScale = 1.0,
+    bool forceWideLayout = false,
   }) {
     if (hubs.isEmpty) return 0;
 
@@ -294,6 +301,7 @@ class TvBrowseRailLayout {
       gridSpacing: gridSpacing,
       tallPosterScale: tallPosterScale,
       widePosterScale: widePosterScale,
+      forceWideLayout: forceWideLayout,
     );
 
     final sectionHeight = hubSectionHeightFor(scale: scale, activeRailHeight: railHeight);
@@ -344,6 +352,10 @@ class TvBrowseRail extends StatefulWidget {
   final FutureOr<bool> Function(MediaHub hub, MediaItem item)? onActivateItem;
   final double tallPosterScale;
   final double widePosterScale;
+
+  /// Forces non-music, non-person TV shelf items into cinematic 16:9 cards.
+  final bool forceWideLayout;
+
   final String? initialHubId;
   final String? initialItemId;
   final bool autofocus;
@@ -383,6 +395,7 @@ class TvBrowseRail extends StatefulWidget {
     this.onActivateItem,
     this.tallPosterScale = 1.0,
     this.widePosterScale = 1.0,
+    this.forceWideLayout = false,
     this.initialHubId,
     this.initialItemId,
     this.autofocus = false,
@@ -1164,6 +1177,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                 gridSpacing: gridSpacing,
                 tallPosterScale: widget.tallPosterScale,
                 widePosterScale: wideScales[i],
+                forceWideLayout: widget.forceWideLayout,
                 hasLeading: _hasLeadingFor(widget.hubs[i]),
               ),
           ];
@@ -1725,6 +1739,10 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
             mixedHubContext: metrics.isMixedHub,
             episodePosterModeOverride: episodePosterMode,
             showTitleImplied: widget.showTitleImpliedForHub?.call(hub) ?? false,
+            cardShapeOverride:
+                widget.forceWideLayout && item.cardShape(episodePosterMode) != CardShape.square
+                    ? CardShape.wide
+                    : null,
           );
   }
 

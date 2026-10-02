@@ -2061,8 +2061,13 @@ class _MainScreenState extends State<MainScreen>
       return SettingValueBuilder<bool>(
         pref: SettingsService.alwaysKeepSidebarOpen,
         builder: (context, alwaysExpanded, _) {
+          final tvOverlayNavigation = PlatformDetector.isTV();
+          final tvNavigationLeftInset = tvOverlayNavigation ? 24.0 : 0.0;
           final targetContentOffset = _sideNavigationWidth(context, alwaysExpanded: alwaysExpanded);
-          final reservedContentOffset = alwaysExpanded
+          final scopeNavigationWidth = targetContentOffset + tvNavigationLeftInset;
+          final reservedContentOffset = tvOverlayNavigation
+              ? 0.0
+              : alwaysExpanded
               ? SideNavigationRailState.expandedWidth
               : SideNavigationRailState.collapsedWidthForContext(context);
 
@@ -2096,12 +2101,12 @@ class _MainScreenState extends State<MainScreen>
                   // paint-only translate on the content below instead.
                   final contentLayout = mainScreenSideNavigationContentLayout(
                     viewportWidth: viewportWidth,
-                    currentSideNavigationWidth: targetContentOffset,
+                    currentSideNavigationWidth: tvOverlayNavigation ? 0.0 : targetContentOffset,
                     reservedSideNavigationWidth: reservedContentOffset,
                   );
                   return MainScreenFocusScope(
                     focusSidebar: _focusSidebar,
-                    sideNavigationWidth: targetContentOffset,
+                    sideNavigationWidth: scopeNavigationWidth,
                     reservedSideNavigationWidth: reservedContentOffset,
                     foregroundLeft: contentLayout.left,
                     foregroundWidth: contentLayout.width,
@@ -2121,7 +2126,7 @@ class _MainScreenState extends State<MainScreen>
                             child: TweenAnimationBuilder<double>(
                               duration: SideNavigationRailState.expandDuration,
                               curve: SideNavigationRailState.expandCurve,
-                              tween: Tween<double>(end: targetContentOffset),
+                              tween: Tween<double>(end: tvOverlayNavigation ? 0.0 : targetContentOffset),
                               child: FocusScope(
                                 node: _contentFocusScope,
                                 // No autofocus - we control focus programmatically to prevent
@@ -2153,9 +2158,9 @@ class _MainScreenState extends State<MainScreen>
                             ),
                           ),
                           Positioned(
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
+                            top: tvOverlayNavigation ? 24 : 0,
+                            bottom: tvOverlayNavigation ? 24 : 0,
+                            left: tvOverlayNavigation ? tvNavigationLeftInset : 0,
                             child: FocusScope(
                               node: _sidebarFocusScope,
                               child: SideNavigationRail(

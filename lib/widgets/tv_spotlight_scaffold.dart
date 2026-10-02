@@ -70,6 +70,7 @@ class TvSpotlightScaffold extends StatelessWidget {
     required this.resolveClient,
     required this.foreground,
     this.hideSpoilers,
+    this.forceWideRailLayout = false,
   });
 
   final List<MediaHub> hubs;
@@ -78,6 +79,7 @@ class TvSpotlightScaffold extends StatelessWidget {
   final TvSpotlightClientResolver resolveClient;
   final Widget foreground;
   final bool? hideSpoilers;
+  final bool forceWideRailLayout;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +98,7 @@ class TvSpotlightScaffold extends StatelessWidget {
             fullCardLayout: settings.read(SettingsService.tvFullCardLayout),
             gridSpacing: settings.read(SettingsService.gridSpacing),
             tallPosterScale: TvBrowseRailLayout.compactTallPosterScale,
+            forceWideLayout: forceWideRailLayout,
           );
     final spotlightTop = (size.height * 0.075).clamp(64.0 * scale, 120.0 * scale).toDouble();
     final minimumSpotlightBottom = railHeight + (8 * scale);
@@ -117,6 +120,7 @@ class TvSpotlightScaffold extends StatelessWidget {
             Builder(
               builder: (context) {
                 final foregroundLeft = MainScreenFocusScope.foregroundLeftOf(context);
+                final navigationOverlap = MainScreenFocusScope.sideNavigationBleedOf(context);
                 return SideNavigationBleedBuilder(
                   targetBleed: foregroundLeft,
                   child: ValueListenableBuilder<MediaItem?>(
@@ -129,7 +133,7 @@ class TvSpotlightScaffold extends StatelessWidget {
                         hideSpoilers: hideSpoilers ?? settings.read(SettingsService.hideSpoilers),
                         contentTop: spotlightTop,
                         contentBottom: spotlightBottom,
-                        contentLeft: spotlightLeft + foregroundLeft,
+                        contentLeft: spotlightLeft + foregroundLeft + navigationOverlap,
                         targetWidthPx: (size.width * MediaQuery.devicePixelRatioOf(context)).ceil(),
                       );
                     },

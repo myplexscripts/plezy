@@ -439,8 +439,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
   bool _lastReportedInteractionExpanded = false;
   Timer? _collapseTimer;
   static const double collapsedWidth = 80.0;
-  static const double tvCollapsedWidth = 48.0;
-  static const double expandedWidth = 220.0;
+  static const double tvCollapsedWidth = 64.0;
+  static const double expandedWidth = 248.0;
   static const double _horizontalPadding = 12.0;
   static const double _collapsedHorizontalPadding = 4.0;
   static const double _itemGap = 4.0;
@@ -948,7 +948,11 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                 curve: expandCurve,
                 width: isCollapsed ? effectiveCollapsedWidth : expandedWidth,
                 clipBehavior: Clip.hardEdge,
-                decoration: const BoxDecoration(),
+                decoration: BoxDecoration(
+                  borderRadius: PlatformDetector.isTV()
+                      ? BorderRadius.circular(isCollapsed ? 22 : 28)
+                      : BorderRadius.zero,
+                ),
                 child: Stack(
                   children: [
                     // Rail surface. A docked rail is transparent on TV so the
@@ -958,7 +962,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                     // platform (#2079).
                     Positioned.fill(
                       child: AnimatedOpacity(
-                        opacity: PlatformDetector.isTV() && !_isFloatingPanel ? 0.0 : 1.0,
+                        opacity: 1.0,
                         // Shares the width morph's duration/curve: a shorter
                         // fade strands a fully grown, fully transparent panel
                         // over the content part-way through the collapse.
@@ -967,9 +971,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                         child: PlatformDetector.isTV()
                             ? PlezzantGlass(
                                 style: PlezzantGlassStyle.chrome,
-                                borderRadius: isCollapsed
-                                    ? BorderRadius.zero
-                                    : BorderRadius.horizontal(right: Radius.circular(overlayCornerRadius)),
+                                borderRadius: BorderRadius.circular(isCollapsed ? 22 : 28),
                                 child: const SizedBox.expand(),
                               )
                             : AnimatedContainer(

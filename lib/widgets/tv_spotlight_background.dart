@@ -101,12 +101,14 @@ class TvSpotlightBackground extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black.withValues(alpha: 0.45), Colors.transparent, bgColor.withValues(alpha: 0.96)],
-                stops: const [0.0, 0.38, 1.0],
+                colors: [Colors.black.withValues(alpha: 0.28), Colors.transparent, bgColor.withValues(alpha: 0.84)],
+                stops: const [0.0, 0.42, 1.0],
               ),
             ),
             if (media != null && showInfo)
-              Positioned(
+              AnimatedPositioned(
+                duration: DevicePerformance.reducedDuration(PlezzantMotion.navigation),
+                curve: PlezzantMotion.standard,
                 left: contentLeft ?? TvLayoutConstants.horizontalInset,
                 right: MediaQuery.sizeOf(context).width * 0.43,
                 top: contentTop,
@@ -199,8 +201,8 @@ class TvSpotlightBackground extends StatelessWidget {
       gradient: LinearGradient(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [bgColor.withValues(alpha: 0.86), bgColor.withValues(alpha: 0.32), Colors.transparent],
-        stops: const [0.0, 0.56, 1.0],
+        colors: [bgColor.withValues(alpha: 0.72), bgColor.withValues(alpha: 0.18), Colors.transparent],
+        stops: const [0.0, 0.50, 1.0],
       ),
     );
   }
