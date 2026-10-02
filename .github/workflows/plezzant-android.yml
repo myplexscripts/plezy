@@ -141,15 +141,26 @@ jobs:
           fi
 
       - name: Build APKs
-        run: flutter build apk --release --split-per-abi --dart-define=GIT_COMMIT=${{ github.sha }}
-
-      - name: Rename APKs
         run: |
           mkdir -p dist
+          # One universal APK that installs on any device, plus smaller
+          # per-CPU APKs for people who know which one they need.
+          flutter build apk --release --dart-define=GIT_COMMIT=${{ github.sha }}
+          cp build/app/outputs/flutter-apk/app-release.apk dist/plezzant-universal.apk
+          flutter build apk --release --split-per-abi --dart-define=GIT_COMMIT=${{ github.sha }}
           cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk dist/plezzant-arm64-v8a.apk
           cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk dist/plezzant-armeabi-v7a.apk
           cp build/app/outputs/flutter-apk/app-x86_64-release.apk dist/plezzant-x86_64.apk
           ls -la dist
+
+      # Android refuses unsigned APKs with a bare "App not installed", so a
+      # build that is not signed must fail here rather than on someone's TV.
+      - name: Verify APK signatures
+        run: |
+          apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          for apk in dist/*.apk; do
+            "$apksigner" verify --print-certs "$apk" | head -3
+          done
 
       - name: Clean up signing material
         if: always()
