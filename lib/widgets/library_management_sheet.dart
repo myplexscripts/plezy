@@ -11,6 +11,7 @@ import '../i18n/strings.g.dart';
 import '../media/media_backend.dart';
 import '../media/media_library.dart';
 import '../media/media_server_client.dart';
+import '../navigation/main_screen_scope.dart';
 import '../providers/hidden_libraries_provider.dart';
 import '../providers/libraries_provider.dart';
 import '../utils/app_logger.dart';
@@ -61,6 +62,9 @@ Future<void> showLibraryManagementSheet(
   final librariesProvider = context.read<LibrariesProvider>();
   final hiddenLibrariesProvider = context.read<HiddenLibrariesProvider>();
   final allLibraries = librariesProvider.libraries;
+  // Hidden libraries aren't in the navigation, so this sheet is where they
+  // are opened from.
+  final selectLibrary = MainScreenFocusScope.of(context, listen: false)?.selectLibrary;
 
   Future<void> defaultToggleVisibility(MediaLibrary library) async {
     final isHidden = hiddenLibrariesProvider.hiddenLibraryKeys.contains(library.globalKey);
@@ -80,8 +84,19 @@ Future<void> showLibraryManagementSheet(
       onOrderChanged?.call();
     },
     onToggleVisibility: onToggleVisibility ?? defaultToggleVisibility,
-    getLibraryMenuItems: _getLibraryMenuItems,
-    onLibraryMenuAction: (action, library) => _handleLibraryMenuAction(context, action, library),
+    getLibraryMenuItems: (library) => [
+      if (selectLibrary != null)
+        ContextMenuItem(value: _openLibraryAction, icon: LucideIcons.arrowUpRight, label: t.libraries.openLibrary),
+      ..._getLibraryMenuItems(library),
+    ],
+    onLibraryMenuAction: (action, library) {
+      if (action == _openLibraryAction && selectLibrary != null) {
+        Navigator.of(context, rootNavigator: true).maybePop();
+        selectLibrary(library.globalKey);
+        return;
+      }
+      unawaited(_handleLibraryMenuAction(context, action, library));
+    },
   );
 
   if (PlatformDetector.isTV()) {
@@ -97,6 +112,8 @@ Future<void> showLibraryManagementSheet(
     builder: (context) => buildSheet(isDialog: false),
   );
 }
+
+const _openLibraryAction = 'open';
 
 List<ContextMenuItem> _getLibraryMenuItems(MediaLibrary library) {
   // Refresh metadata is the only admin action every backend supports — Plex

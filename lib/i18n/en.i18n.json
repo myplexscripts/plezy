@@ -1188,7 +1188,8 @@
       "dateShared": "Date Shared",
       "latestEpisodeAirDate": "Latest Episode Air Date",
       "lastEpisodeDateAdded": "Last Episode Date Added"
-    }
+    },
+    "openLibrary": "Open Library"
   },
   "about": {
     "title": "About",

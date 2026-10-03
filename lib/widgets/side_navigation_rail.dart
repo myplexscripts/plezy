@@ -501,7 +501,11 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
   /// Libraries section expansion, held in settings rather than widget state so
   /// it survives relaunch, remount and layout switches (#1896). The rail's
   /// [ListenableBuilder] below listens to the pref, so the toggle just writes.
-  bool get _librariesExpanded => SettingsService.instance.read(SettingsService.librariesSectionExpanded);
+  ///
+  /// On a TV the section is always open: every library is one press away and
+  /// the header is a destination, not a fold that costs extra presses.
+  bool get _librariesExpanded =>
+      PlatformDetector.isTV() || SettingsService.instance.read(SettingsService.librariesSectionExpanded);
 
   bool _isHovered = false;
   bool _isTouchExpanded = false;
@@ -666,7 +670,12 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
   /// If [targetKey] is provided, try it first (used when the caller captured
   /// the intended target before a focus-scope switch overwrote it).
   void focusActiveItem({String? targetKey}) {
-    final node = _resolveFocusNode(targetKey) ?? _mountedFocusNodeFor(_kHome);
+    // TV: the menu always opens on where you are (the current tab or
+    // library), so one press shows your place and one more moves on.
+    final node =
+        (PlatformDetector.isTV() ? _mountedFocusNodeFor(_resolveSelectedFocusKey()) : null) ??
+        _resolveFocusNode(targetKey) ??
+        _mountedFocusNodeFor(_kHome);
     if (node == null) return;
     _requestFocusAndReveal(node);
   }
@@ -945,13 +954,11 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
     final visibleLibraries = <MediaLibrary>[];
     final hiddenLibraries = <MediaLibrary>[];
     final serverIds = <String>{};
+    // Hidden libraries stay out of the navigation entirely; they are managed
+    // (and opened) from Settings → Manage Libraries.
     for (final lib in allLibraries) {
       if (lib.serverId != null) serverIds.add(lib.serverId!);
-      if (hiddenKeys.contains(lib.globalKey)) {
-        hiddenLibraries.add(lib);
-      } else {
-        visibleLibraries.add(lib);
-      }
+      if (!hiddenKeys.contains(lib.globalKey)) visibleLibraries.add(lib);
     }
 
     final isCollapsed = !_shouldExpand;
@@ -1413,12 +1420,19 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           ),
           labelColor: headerLabelColor,
           collapsedLabel: Translations.of(context).navigation.libraries,
-          trailing: buildChevron(1),
-          trailingBuilder: buildChevron,
+          trailing: PlatformDetector.isTV() ? null : buildChevron(1),
+          trailingBuilder: PlatformDetector.isTV() ? null : buildChevron,
           isSelected: isLibrariesTabSelected,
           isCollapsed: isCollapsed,
-          onTap: () =>
-              unawaited(SettingsService.instance.write(SettingsService.librariesSectionExpanded, !_librariesExpanded)),
+          onTap: () {
+            if (PlatformDetector.isTV()) {
+              // TV: the header opens the current (or first) library.
+              final target = widget.selectedLibraryKey ?? _firstLibraryKey(visibleRows);
+              if (target != null) widget.onLibrarySelected(target);
+              return;
+            }
+            unawaited(SettingsService.instance.write(SettingsService.librariesSectionExpanded, !_librariesExpanded));
+          },
           focusNode: _focusTracker.get(_kLibraries),
           // A selected library owns the highlight; the header only shows it
           // for the bare Libraries tab.
@@ -1481,6 +1495,13 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
         ),
       ],
     );
+  }
+
+  String? _firstLibraryKey(List<_LibraryNavRow> rows) {
+    for (final row in rows) {
+      if (row is _LibraryItemRow) return row.library.globalKey;
+    }
+    return null;
   }
 
   /// Get set of library names that appear more than once (not globally unique)

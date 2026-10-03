@@ -33,6 +33,7 @@ import '../main_screen.dart';
 import '../libraries/state_messages.dart';
 import '../../i18n/strings.g.dart';
 import 'sync_rules_screen.dart';
+import '../../navigation/main_screen_scope.dart';
 
 class DownloadsScreen extends StatefulWidget {
   const DownloadsScreen({super.key});
@@ -128,6 +129,15 @@ class DownloadsScreenState extends State<DownloadsScreen>
     }
 
     return Text(t.downloads.title);
+  }
+
+  /// BACK from a tab's content: straight to the menu on a TV.
+  void _backFromContent() {
+    if (PlatformDetector.isTV()) {
+      MainScreenFocusScope.focusSidebarOf(context);
+      return;
+    }
+    focusTabBar();
   }
 
   @override
@@ -227,7 +237,7 @@ class DownloadsScreenState extends State<DownloadsScreen>
                             onCancel: downloadProvider.cancelDownload,
                             onDelete: downloadProvider.deleteDownload,
                             onNavigateLeft: () => MainScreenFocusScope.focusSidebarOf(context),
-                            onBack: focusTabBar,
+                            onBack: _backFromContent,
                             suppressAutoFocus: suppressAutoFocus,
                           );
                         },
@@ -235,14 +245,14 @@ class DownloadsScreenState extends State<DownloadsScreen>
                       _DownloadsGridContent(
                         type: DownloadType.tvShows,
                         suppressAutoFocus: suppressAutoFocus,
-                        onBack: focusTabBar,
+                        onBack: _backFromContent,
                       ),
                       _DownloadsGridContent(
                         type: DownloadType.movies,
                         suppressAutoFocus: suppressAutoFocus,
-                        onBack: focusTabBar,
+                        onBack: _backFromContent,
                       ),
-                      _DownloadedMusicContent(suppressAutoFocus: suppressAutoFocus, onBack: focusTabBar),
+                      _DownloadedMusicContent(suppressAutoFocus: suppressAutoFocus, onBack: _backFromContent),
                     ],
                   ),
                 ),

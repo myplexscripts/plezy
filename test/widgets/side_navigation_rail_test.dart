@@ -728,7 +728,7 @@ void main() {
     expect(selectedTab, NavigationTabId.settings);
   });
 
-  testWidgets('D-pad down from a hidden server header focuses that hidden server library', (tester) async {
+  testWidgets('hidden libraries stay out of the navigation entirely', (tester) async {
     await SettingsService.getInstance();
 
     final visibleServerALibrary = _library(
@@ -792,21 +792,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    sideNavKey.currentState!.focusActiveItem();
-    await tester.pumpAndSettle();
-
-    // Home -> Libraries -> Server A header -> visible A -> Server B header -> visible B -> Hidden Libraries.
-    for (var i = 0; i < 6; i++) {
-      await _press(tester, LogicalKeyboardKey.arrowDown);
-    }
-    await _press(tester, LogicalKeyboardKey.enter);
-
-    // Hidden Libraries -> hidden Server A header -> hidden Server A library.
-    await _press(tester, LogicalKeyboardKey.arrowDown);
-    await _press(tester, LogicalKeyboardKey.arrowDown);
-    await _press(tester, LogicalKeyboardKey.enter);
-
-    expect(selectedLibraryKey, hiddenServerALibrary.globalKey);
+    // Managed from Settings → Manage Libraries; no "Hidden" section, no row.
+    expect(find.text('Hidden Server A'), findsNothing);
+    expect(find.text('Visible Server A'), findsOneWidget);
+    expect(find.text('Visible Server B'), findsOneWidget);
+    expect(selectedLibraryKey, isEmpty);
   });
 
   testWidgets('rail item focus repaints locally without rebuilding its parent', (tester) async {

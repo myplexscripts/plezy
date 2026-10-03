@@ -19,6 +19,7 @@ import '../../providers/multi_server_provider.dart';
 import '../../services/settings_service.dart';
 import '../../widgets/settings_builder.dart';
 import '../../utils/app_logger.dart';
+import '../../navigation/main_screen_scope.dart';
 import '../../utils/platform_detector.dart';
 import '../../utils/content_utils.dart';
 import '../../widgets/app_menu.dart';
@@ -125,6 +126,16 @@ class _LibrariesScreenState extends State<LibrariesScreen>
   void focusTabBar() {
     _resetOuterScroll();
     super.focusTabBar();
+  }
+
+  /// BACK from a tab's content. On a TV it opens the menu in one press (the
+  /// grid keeps its place); UP still reaches the tab chips.
+  void _backFromContent() {
+    if (PlatformDetector.isTV()) {
+      MainScreenFocusScope.focusSidebarOf(context);
+      return;
+    }
+    focusTabBar();
   }
 
   @override
@@ -389,7 +400,7 @@ class _LibrariesScreenState extends State<LibrariesScreen>
         isActive: isActive,
         suppressAutoFocus: suppressAutoFocus,
         onDataLoaded: () => _handleTabDataLoaded(tabIndex),
-        onBack: focusTabBar,
+        onBack: _backFromContent,
         onNavigateToChrome: focusTabBar,
       ),
       LibraryTabType.browse => LibraryBrowseTab(
@@ -399,7 +410,7 @@ class _LibrariesScreenState extends State<LibrariesScreen>
         isActive: isActive,
         suppressAutoFocus: suppressAutoFocus,
         onDataLoaded: () => _handleTabDataLoaded(tabIndex),
-        onBack: focusTabBar,
+        onBack: _backFromContent,
         onResetScroll: _resetOuterScroll,
         onFiltersActiveChanged: _handleBrowseFiltersActiveChanged,
       ),
@@ -409,7 +420,7 @@ class _LibrariesScreenState extends State<LibrariesScreen>
         isActive: isActive,
         suppressAutoFocus: suppressAutoFocus,
         onDataLoaded: () => _handleTabDataLoaded(tabIndex),
-        onBack: focusTabBar,
+        onBack: _backFromContent,
       ),
       LibraryTabType.playlists => LibraryPlaylistsTab(
         key: _playlistsTabKey,
@@ -417,7 +428,7 @@ class _LibrariesScreenState extends State<LibrariesScreen>
         isActive: isActive,
         suppressAutoFocus: suppressAutoFocus,
         onDataLoaded: () => _handleTabDataLoaded(tabIndex),
-        onBack: focusTabBar,
+        onBack: _backFromContent,
       ),
     };
   }
