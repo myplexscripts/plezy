@@ -19,6 +19,10 @@ import 'base_media_list_detail_screen.dart';
 import 'focusable_detail_screen_mixin.dart';
 import '../mixins/grid_focus_node_mixin.dart';
 import '../focus/focusable_action_bar.dart';
+import '../utils/platform_detector.dart';
+import '../utils/layout_constants.dart';
+import '../widgets/detail_back_button.dart';
+import '../widgets/list_detail_header.dart';
 
 /// Screen to browse all media featuring a specific actor.
 class ActorMediaScreen extends StatefulWidget {
@@ -161,8 +165,51 @@ class _ActorMediaScreenState extends BaseMediaListDetailScreen<ActorMediaScreen>
     );
   }
 
+  /// TV: the shared list-page header (round portrait, name, role and count)
+  /// under the back chip, with the grid on the safe frame.
+  Widget _buildTvScaffold(BuildContext context) {
+    final meta = [?widget.characterName, if (totalSize > 0) t.discover.titleCount(n: totalSize)].join('  ·  ');
+    return buildDetailScaffold(
+      slivers: [
+        SliverToBoxAdapter(
+          child: ListDetailHeader(
+            artwork: (height) => ClipOval(
+              child: OptimizedMediaImage(
+                client: _mediaClient,
+                imagePath: widget.actorThumb,
+                width: height,
+                height: height,
+                fit: BoxFit.cover,
+                imageType: ImageType.avatar,
+                fallbackIcon: LucideIcons.user,
+              ),
+            ),
+            title: widget.actorName,
+            meta: meta,
+            actionBar: buildFocusableAppBarActions().single,
+          ),
+        ),
+        ...buildStateSlivers(),
+        if (hasItems)
+          SliverPadding(
+            padding: EdgeInsets.symmetric(
+              horizontal: ListDetailHeader.insetOf(context) - GridLayoutConstants.cardInternalPadding,
+            ),
+            sliver: buildSparseFocusableGrid(
+              totalItems: totalSize,
+              itemAt: (index) => loadedItems[index],
+              onRefresh: updateItem,
+              onSkeletonVisible: (index) => ensureIndexLoaded(index, pageSize: _pageSize),
+            ),
+          ),
+      ],
+      above: [PositionedDetailBackButton(onPressed: () => Navigator.pop(context))],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (PlatformDetector.isTV()) return _buildTvScaffold(context);
     return buildDetailScaffold(
       slivers: [
         CustomAppBar(title: Text(widget.actorName), pinned: true, actions: buildFocusableAppBarActions()),

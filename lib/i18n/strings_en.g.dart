@@ -3954,6 +3954,12 @@ class Translations$photos$en {
 
 	/// en: 'Select to play'
 	String get selectToPlay => 'Select to play';
+
+	/// en: 'View Photo'
+	String get viewPhoto => 'View Photo';
+
+	/// en: 'Open Album'
+	String get openAlbum => 'Open Album';
 }
 
 // Path: playlists
@@ -8589,6 +8595,8 @@ extension on Translations {
 			'photos.selectForSlideshow' => 'Select for slideshow',
 			'photos.selectToPause' => 'Select to pause',
 			'photos.selectToPlay' => 'Select to play',
+			'photos.viewPhoto' => 'View Photo',
+			'photos.openAlbum' => 'Open Album',
 			'playlists.title' => 'Playlists',
 			'playlists.playlist' => 'Playlist',
 			'playlists.noPlaylists' => 'No playlists found',
@@ -8714,10 +8722,10 @@ extension on Translations {
 			'watchTogether.waitingForName' => ({required Object name}) => 'Waiting for ${name}...',
 			'watchTogether.recentRooms' => 'Recent Rooms',
 			'watchTogether.renameRoom' => 'Rename Room',
-			'watchTogether.removeRoom' => 'Remove',
-			'watchTogether.guestSwitchUnavailable' => 'Couldn\'t switch — server unavailable for sync',
 			_ => null,
 		} ?? switch (path) {
+			'watchTogether.removeRoom' => 'Remove',
+			'watchTogether.guestSwitchUnavailable' => 'Couldn\'t switch — server unavailable for sync',
 			'watchTogether.guestSwitchFailed' => 'Couldn\'t switch — content not found on this server',
 			'watchTogether.defaultDisplayName' => 'User',
 			'watchTogether.errors.timedOut' => 'The relay did not respond in time',
@@ -9228,10 +9236,10 @@ extension on Translations {
 			'addServer.quickConnectRejected' => 'Quick Connect was rejected by the server',
 			'addServer.quickConnectNotJson' => 'The Quick Connect response was not valid JSON',
 			'addServer.quickConnectMissingFields' => 'The Quick Connect response is missing a code or secret',
-			'addServer.quickConnectPollRejected' => 'Quick Connect polling was rejected by the server',
-			'addServer.serverTimedOut' => 'The server did not respond in time',
 			_ => null,
 		} ?? switch (path) {
+			'addServer.quickConnectPollRejected' => 'Quick Connect polling was rejected by the server',
+			'addServer.serverTimedOut' => 'The server did not respond in time',
 			'addServer.responseNotJson' => 'The server response was not valid JSON',
 			'addServer.responseMissingIdentity' => ({required Object product}) => 'The response is missing an ID or server name — is this a ${product} server?',
 			'addServer.probeFailed' => ({required Object error}) => 'Could not reach the server: ${error}',

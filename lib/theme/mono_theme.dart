@@ -100,8 +100,9 @@ ThemeData _buildMonoTheme({required bool dark, required bool oled, required Targ
     splashFactory: NoSplash.splashFactory,
     highlightColor: Colors.transparent,
     // Explicit mono-derived tile highlights: ListTile's native focus/hover
-    // fill is the dpad focus visual inside M3E grouped-list cards.
-    focusColor: c.text.withValues(alpha: 0.12),
+    // fill is the dpad focus visual inside M3E grouped-list cards. Dark
+    // surfaces need the stronger fill to read from across a room on a TV.
+    focusColor: c.text.withValues(alpha: dark ? 0.2 : 0.12),
     hoverColor: c.text.withValues(alpha: 0.05),
     dividerColor: c.outline,
     scaffoldBackgroundColor: c.bg,

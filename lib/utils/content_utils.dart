@@ -36,6 +36,9 @@ class ContentTypeHelper {
         return LucideIcons.music;
       case 'photo':
         return LucideIcons.image;
+      // Home videos (Plex "Other Videos", MediaBrowser home videos & photos).
+      case 'clip':
+        return LucideIcons.video;
       case 'mixed':
         return LucideIcons.share2;
       default:

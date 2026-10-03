@@ -108,6 +108,8 @@ class TvSpotlightScaffold extends StatelessWidget {
     }
     if (item.isShow || item.isSeason) return (t.discover.goToShow, null);
     if (item.isMovie) return (t.discover.goToMovie, null);
+    if (item.isPhoto) return (t.photos.viewPhoto, LucideIcons.image);
+    if (item.isPhotoAlbum) return (t.photos.openAlbum, LucideIcons.images);
     return (t.mediaMenu.viewDetails, null);
   }
 

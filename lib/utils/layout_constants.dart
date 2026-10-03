@@ -62,6 +62,18 @@ class GridLayoutConstants {
 
   static double fullCardGridSpacingForScale(double scale) => (12 * scale).clamp(8, 18).toDouble();
 
+  /// Horizontal insets for TV library grids. The content column already
+  /// starts [PlezzantTv.sidebarCollapsedWidth] in and runs to the screen edge,
+  /// and each card carries [cardInternalPadding] of its own, so these put the
+  /// first and last columns' artwork on the safe frame on both sides.
+  static EdgeInsets tvGridInsets(double scale) => EdgeInsets.only(
+    left: (PlezzantTv.safeX - PlezzantTv.sidebarCollapsedWidth) * scale - cardInternalPadding,
+    right: PlezzantTv.safeX * scale - cardInternalPadding,
+  );
+
+  /// Padding every media card draws inside its cell.
+  static const double cardInternalPadding = 3;
+
   /// Standard grid padding
   static EdgeInsets get gridPadding =>
       PlatformDetector.isAutomotive() ? const EdgeInsets.all(24) : const EdgeInsets.only(left: 2, right: 2, bottom: 2);

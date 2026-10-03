@@ -35,6 +35,13 @@ import '../../mixins/grid_focus_node_mixin.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/system_bottom_inset.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
+import '../../theme/plezzant/plezzant_tokens.dart';
+import '../../utils/formatters.dart';
+import '../../utils/layout_constants.dart';
+import '../../utils/media_image_helper.dart';
+import '../../widgets/optimized_media_image.dart';
+import '../../widgets/detail_back_button.dart';
+import '../../widgets/list_detail_header.dart';
 
 /// Screen to display the contents of a playlist
 class PlaylistDetailScreen extends StatefulWidget {
@@ -655,39 +662,60 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
     // (Focus is a RenderObject widget and cannot directly wrap a sliver)
     final needsListFocus = !_isReadOnly && items.isNotEmpty;
 
+    final isTv = PlatformDetector.isTV();
     Widget scrollView = CustomScrollView(
       primary: true,
       slivers: [
-        CustomAppBar(
-          title: Column(
-            crossAxisAlignment: .start,
-            children: [
-              Text(widget.playlist.title, style: const TextStyle(fontSize: 16)),
-              if (widget.playlist.smart)
-                Row(
-                  mainAxisSize: .min,
-                  children: [
-                    AppIcon(LucideIcons.sparkles, fill: 1, size: 12, color: Theme.of(context).colorScheme.primary),
-                    const SizedBox(width: 4),
-                    Text(
-                      t.playlists.smartPlaylist,
-                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.primary, fontWeight: .normal),
-                    ),
-                  ],
-                ),
-            ],
+        if (isTv)
+          SliverToBoxAdapter(child: _buildTvHeader(context))
+        else
+          CustomAppBar(
+            title: Column(
+              crossAxisAlignment: .start,
+              children: [
+                Text(widget.playlist.title, style: const TextStyle(fontSize: 16)),
+                if (widget.playlist.smart)
+                  Row(
+                    mainAxisSize: .min,
+                    children: [
+                      AppIcon(LucideIcons.sparkles, fill: 1, size: 12, color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(width: 4),
+                      Text(
+                        t.playlists.smartPlaylist,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: .normal,
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+            actions: buildFocusableAppBarActions(),
           ),
-          actions: buildFocusableAppBarActions(),
-        ),
         ...buildStateSlivers(),
         if (items.isNotEmpty) ...[
           if (_isReadOnly)
             // Smart playlists / Jellyfin playlists: focusable grid view
             // (read-only, no reordering or removal)
-            buildFocusableGrid(items: items, onRefresh: updateItem, shape: _isAudioPlaylist ? CardShape.square : null)
+            SliverPadding(
+              padding: EdgeInsets.symmetric(
+                horizontal: isTv ? ListDetailHeader.insetOf(context) - GridLayoutConstants.cardInternalPadding : 0,
+              ),
+              sliver: buildFocusableGrid(
+                items: items,
+                onRefresh: updateItem,
+                shape: _isAudioPlaylist ? CardShape.square : null,
+              ),
+            )
           else
-            // Plex regular playlists: sliver reorderable list
-            _buildReorderableList(),
+            // Plex regular playlists: sliver reorderable list. On a TV the
+            // rows (8 px card margin each) sit on the safe frame.
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: isTv ? ListDetailHeader.insetOf(context) - 8 : 0),
+              sliver: _buildReorderableList(),
+            ),
           if (_continuation.isLoading || _continuation.error != null)
             ContinuationStatusSliver(
               error: _continuation.error,
@@ -736,9 +764,69 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
         controller: scrollController,
         child: IosStatusBarTapScrollToTop(
           controller: scrollController,
-          child: Scaffold(body: scrollView),
+          child: Scaffold(
+            body: isTv
+                ? Stack(
+                    children: [
+                      scrollView,
+                      PositionedDetailBackButton(
+                        onPressed: () {
+                          if (_handleBackNavigation() && mounted) Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  )
+                : scrollView,
+          ),
         ),
       ),
+    );
+  }
+
+  /// TV header: the same artwork, title, metadata and action row as the
+  /// collection and album pages, under the shared back chip.
+  Widget _buildTvHeader(BuildContext context) {
+    final playlist = widget.playlist;
+    final count = playlist.leafCount ?? items.length;
+    final duration = playlist.durationMs;
+    final meta = [
+      count == 1 ? t.playlists.oneItem : t.playlists.itemCount(count: count),
+      if (duration != null && duration > 0) formatDurationTextual(duration),
+    ].join('  ·  ');
+    final accent = Theme.of(context).colorScheme.primary;
+    return ListDetailHeader(
+      artwork: (height) => ClipRRect(
+        borderRadius: BorderRadius.circular(PlezzantRadius.card),
+        child: OptimizedMediaImage(
+          client: mediaClient,
+          imagePath: playlist.displayImagePath,
+          imageType: ImageType.square,
+          width: height,
+          height: height,
+          fallbackIcon: _isAudioPlaylist ? LucideIcons.listMusic : LucideIcons.listVideo,
+        ),
+      ),
+      title: playlist.title,
+      meta: meta,
+      badge: playlist.smart
+          ? Row(
+              mainAxisSize: .min,
+              children: [
+                AppIcon(LucideIcons.sparkles, fill: 1, size: 16, color: accent),
+                const SizedBox(width: 6),
+                Text(t.playlists.smartPlaylist, style: ListDetailHeader.metaStyle(context)?.copyWith(color: accent)),
+              ],
+            )
+          : null,
+      summary: playlist.summary != null && playlist.summary!.isNotEmpty
+          ? Text(
+              playlist.summary!,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: ListDetailHeader.summaryStyle(context),
+            )
+          : null,
+      actionBar: buildFocusableAppBarActions().single,
     );
   }
 

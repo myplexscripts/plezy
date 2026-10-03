@@ -1846,12 +1846,13 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
         padding: .fromLTRB(3 * scale, 3 * scale, 3 * scale, scale),
         child: Column(
           mainAxisSize: .min,
-          crossAxisAlignment: .start,
+          crossAxisAlignment: .center,
           children: [
+            // Round portraits, like the person page header and the Apple TV
+            // app's cast row; the focus ring follows the circle.
             CardFocusBorder(
-              borderRadius: tokens(context).radiusSm,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(tokens(context).radiusSm),
+              borderRadius: imageSize,
+              child: ClipOval(
                 child: OptimizedMediaImage(
                   client: context.tryGetMediaClientWithFallback(serverIdOrNull(item.serverId)),
                   imagePath: item.thumbPath,
@@ -1869,6 +1870,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
               item.displayTitle,
               maxLines: 1,
               overflow: .ellipsis,
+              textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: tokens(context).text,
                 fontSize: PlezzantTvType.cardTitle.fontSize! * scale,
@@ -1882,6 +1884,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                 characterName,
                 maxLines: 1,
                 overflow: .ellipsis,
+                textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: tokens(context).textMuted,
                   fontSize: PlezzantTvType.cardSubtitle.fontSize! * scale,

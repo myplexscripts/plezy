@@ -23,6 +23,7 @@ import '../../../utils/error_message_utils.dart';
 import '../../../utils/app_logger.dart';
 import '../../../utils/grid_size_calculator.dart';
 import '../../../utils/layout_constants.dart';
+import '../../../theme/plezzant/plezzant_tokens.dart';
 import '../../../utils/media_image_helper.dart';
 import '../../../utils/provider_extensions.dart';
 import '../alpha_jump_bar.dart';
@@ -2199,7 +2200,9 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
       viewMode: viewMode,
       itemCount: itemCount,
       density: libraryDensity,
-      padding: EdgeInsets.fromLTRB(8, topPadding, rightPadding, 8),
+      padding: PlatformDetector.isTV()
+          ? GridLayoutConstants.tvGridInsets(PlezzantTv.scaleOf(context)).copyWith(top: topPadding, bottom: 8)
+          : EdgeInsets.fromLTRB(8, topPadding, rightPadding, 8),
       useWideAspectRatio: useWideRatio,
       shape: browseShape,
       fullBleedImage: useFullCardLayout,

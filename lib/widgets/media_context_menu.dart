@@ -591,7 +591,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       // "not available" snackbar. Hidden when the item has no backend marker
       // so we don't fan out to an arbitrary client.
       if (itemBackend != null && mediaKind != null && mediaKind.hasFileInfo) {
-        menuActions.add(_MenuAction(value: 'fileinfo', icon: LucideIcons.info, label: t.mediaMenu.fileInfo));
+        menuActions.add(_MenuAction(value: 'fileinfo', icon: LucideIcons.fileText, label: t.mediaMenu.fileInfo));
       }
 
       if (PlatformDetector.supportsExternalPlayers() &&

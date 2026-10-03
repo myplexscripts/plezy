@@ -3725,9 +3725,8 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
         // (#2217).
         Positioned(
           left: size.width * 0.60 + spotlightLeft,
-          // The left margin aligns the text column; the right edge keeps
-          // the original inset.
-          right: spotlightLeft - tvContentMargin,
+          // Mirrors the text column: both edges on the safe frame.
+          right: spotlightLeft,
           bottom: foregroundBottom,
           height: _tvDetailActionSize * detailScale,
           child: ValueListenableBuilder<MediaItem?>(

@@ -11,21 +11,20 @@ import '../../media/media_kind.dart';
 import '../../mixins/grid_focus_node_mixin.dart';
 import '../../mixins/paginated_item_loader.dart';
 import '../../mixins/standard_paginated_view.dart';
-import '../../theme/mono_tokens.dart';
 import '../../theme/plezzant/plezzant_tokens.dart';
-import '../../utils/desktop_window_padding.dart';
 import '../../utils/error_message_utils.dart';
 import '../../utils/media_image_helper.dart';
 import '../../utils/media_server_http_client.dart';
 import '../../utils/platform_detector.dart';
-import '../../widgets/app_bar_back_button.dart';
 import '../../widgets/optimized_media_image.dart';
 import '../../widgets/rasterized_gradient.dart';
-import '../../widgets/tv_reference_scale.dart';
 import '../base_media_list_detail_screen.dart';
 import '../focusable_detail_screen_mixin.dart';
 import 'photo_sequence_scope.dart';
 import 'photo_viewer_screen.dart';
+import '../../utils/layout_constants.dart';
+import '../../widgets/detail_back_button.dart';
+import '../../widgets/list_detail_header.dart';
 
 /// A photo album: cover, title and count over a grid of its photos, laid out
 /// like the collection page, with Slideshow and Shuffle in the action row.
@@ -111,56 +110,28 @@ class _PhotoAlbumScreenState extends BaseMediaListDetailScreen<PhotoAlbumScreen>
 
   String? get _coverPath => widget.album.thumbPath ?? _orderedItems.where((i) => i.isPhoto).firstOrNull?.thumbPath;
 
-  Widget _buildHeader(BuildContext context, {required bool isTv}) {
-    final theme = Theme.of(context);
-    final scale = PlezzantTv.scaleOf(context);
-    final inset = isTv ? PlezzantTv.safeX * scale : 16.0;
-    final topInset = MediaQuery.paddingOf(context).top + (isTv ? PlezzantTv.sectionPillBand * scale : kToolbarHeight);
-    final coverHeight = isTv ? 220 * scale : 160.0;
+  Widget _buildHeader(BuildContext context) {
     final count = totalSize > 0 ? totalSize : (widget.album.leafCount ?? widget.album.childCount ?? 0);
-    return Padding(
-      padding: EdgeInsets.fromLTRB(inset, topInset, inset, isTv ? 24 * scale : 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(PlezzantRadius.card),
-            child: OptimizedMediaImage(
-              client: mediaClient,
-              imagePath: _coverPath,
-              imageType: ImageType.thumb,
-              width: coverHeight * 16 / 9,
-              height: coverHeight,
-              fallbackIcon: LucideIcons.images,
-            ),
-          ),
-          SizedBox(width: isTv ? 32 * scale : 24),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.album.displayTitle,
-                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  t.photos.photoCount(n: count),
-                  style: theme.textTheme.bodyMedium?.copyWith(color: tokens(context).textMuted),
-                ),
-                const SizedBox(height: 16),
-                FocusableActionBar(
-                  key: actionBarKey,
-                  spacing: 4,
-                  actions: getAppBarActions(),
-                  onNavigateDown: navigateToGrid,
-                  onBack: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-          ),
-        ],
+    return ListDetailHeader(
+      artwork: (height) => ClipRRect(
+        borderRadius: BorderRadius.circular(PlezzantRadius.card),
+        child: OptimizedMediaImage(
+          client: mediaClient,
+          imagePath: _coverPath,
+          imageType: ImageType.thumb,
+          width: height * 16 / 9,
+          height: height,
+          fallbackIcon: LucideIcons.images,
+        ),
+      ),
+      title: widget.album.displayTitle,
+      meta: t.photos.photoCount(n: count),
+      actionBar: FocusableActionBar(
+        key: actionBarKey,
+        spacing: 4,
+        actions: getAppBarActions(),
+        onNavigateDown: navigateToGrid,
+        onBack: () => Navigator.pop(context),
       ),
     );
   }
@@ -219,18 +190,17 @@ class _PhotoAlbumScreenState extends BaseMediaListDetailScreen<PhotoAlbumScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final isTv = PlatformDetector.isTV();
-    final scale = PlezzantTv.scaleOf(context);
-    final inset = isTv ? PlezzantTv.safeX * scale : 16.0;
+    final inset = ListDetailHeader.insetOf(context);
     return PhotoSequenceScope(
       items: () => _orderedItems,
       child: buildDetailScaffold(
         behind: [_buildBackdropLayer(context, size: size, height: size.height * 0.6)],
         slivers: [
-          SliverToBoxAdapter(child: _buildHeader(context, isTv: isTv)),
+          SliverToBoxAdapter(child: _buildHeader(context)),
           ...buildStateSlivers(),
           if (hasItems)
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: isTv ? inset - 8 * scale : 8),
+              padding: EdgeInsets.symmetric(horizontal: isTv ? inset - GridLayoutConstants.cardInternalPadding : 8),
               sliver: buildSparseFocusableGrid(
                 totalItems: totalSize,
                 itemAt: (index) => loadedItems[index],
@@ -241,18 +211,7 @@ class _PhotoAlbumScreenState extends BaseMediaListDetailScreen<PhotoAlbumScreen>
               ),
             ),
         ],
-        above: [
-          Positioned(
-            top: isTv ? (PlezzantTv.sectionPillTop - 12) * scale : 0,
-            left: isTv ? (PlezzantTv.sectionPillLeft - 12) * scale : 0,
-            child: TvReferenceScale(
-              child: DesktopAppBarHelper.buildAdjustedLeading(
-                AppBarBackButton(style: BackButtonStyle.circular, onPressed: () => Navigator.pop(context)),
-                context: context,
-              )!,
-            ),
-          ),
-        ],
+        above: [PositionedDetailBackButton(onPressed: () => Navigator.pop(context))],
       ),
     );
   }

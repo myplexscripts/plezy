@@ -9,6 +9,7 @@ import '../../../theme/plezzant/plezzant_ambience.dart';
 import '../../../theme/plezzant/plezzant_palette.dart';
 import 'package:provider/provider.dart';
 
+import '../../../focus/card_focus_scope.dart';
 import '../../../focus/dpad_navigator.dart';
 import '../../../focus/focusable_wrapper.dart';
 import '../../../i18n/strings.g.dart';
@@ -272,6 +273,10 @@ class ContentStripState extends State<ContentStrip> {
     return context.tryGetMediaClientForServer(serverId);
   }
 
+  /// TV: the first card lines up with the control bar's glass panel (32 px
+  /// in; each item carries a 6 px margin of its own).
+  static const double _tvLeadingPadding = 26;
+
   double _itemWidth(bool isTablet) => isTablet ? 212.0 : 132.0; // thumb + 12 padding
 
   GlobalKey _itemKeyFor(Map<int, GlobalKey> keys, int index) {
@@ -304,7 +309,7 @@ class ContentStripState extends State<ContentStrip> {
         controller,
         index,
         itemExtent: _itemWidth(isTablet),
-        leadingPadding: widget.useFocusNavigation ? 12 : 4,
+        leadingPadding: widget.useFocusNavigation ? _tvLeadingPadding : 4,
         animate: false,
       );
       scrollKeyedChildToHorizontalCenter(
@@ -426,7 +431,7 @@ class ContentStripState extends State<ContentStrip> {
       scrollDirection: Axis.horizontal,
       clipBehavior: widget.useFocusNavigation ? Clip.none : Clip.hardEdge,
       itemCount: itemCount,
-      padding: .symmetric(horizontal: widget.useFocusNavigation ? 12 : 4),
+      padding: .symmetric(horizontal: widget.useFocusNavigation ? _tvLeadingPadding : 4),
       itemBuilder: (context, index) {
         final (item, onTap) = itemBuilder(context, index, _itemKeyFor(keys, index));
 
@@ -443,9 +448,11 @@ class ContentStripState extends State<ContentStrip> {
             },
             borderRadius: 8,
             autoScroll: false,
-            // Same lifted outline as every other card on a TV, so the strip
-            // reads as part of the app rather than a separate widget kit.
+            // Same lifted outline as every other card on a TV, on the
+            // thumbnail only with the captions below, so the strip reads as
+            // part of the app rather than a separate widget kit.
             useBackgroundFocus: false,
+            delegateFocusBorder: true,
             child: item,
           ),
         );
@@ -632,16 +639,19 @@ class ContentStripState extends State<ContentStrip> {
             children: [
               Stack(
                 children: [
-                  MediaSelectorThumbnail(
-                    width: itemWidth,
-                    height: thumbHeight,
-                    thumbnail: effectiveThumbnail,
-                    // On a TV the outline means focus; "playing now" is the
-                    // accent bar below instead, so the two never look alike.
-                    isCurrent: isCurrent && !tv,
-                    borderColor: Colors.white,
-                    radius: tv ? 8 : 6,
-                    blurThumbnail: blurThumbnail,
+                  CardFocusBorder(
+                    borderRadius: tv ? 8 : 6,
+                    child: MediaSelectorThumbnail(
+                      width: itemWidth,
+                      height: thumbHeight,
+                      thumbnail: effectiveThumbnail,
+                      // On a TV the outline means focus; "playing now" is the
+                      // accent bar below instead, so the two never look alike.
+                      isCurrent: isCurrent && !tv,
+                      borderColor: Colors.white,
+                      radius: tv ? 8 : 6,
+                      blurThumbnail: blurThumbnail,
+                    ),
                   ),
                   if (tv && isCurrent)
                     Positioned(

@@ -10,19 +10,16 @@ import '../media/media_item.dart';
 import '../mixins/paginated_item_loader.dart';
 import '../mixins/standard_paginated_view.dart';
 import '../providers/download_provider.dart';
-import '../theme/mono_tokens.dart';
 import '../utils/app_logger.dart';
 import '../utils/content_utils.dart';
 import '../utils/dialogs.dart';
 import '../utils/error_message_utils.dart';
 import '../utils/download_utils.dart';
-import '../utils/desktop_window_padding.dart';
 import '../utils/layout_constants.dart';
 import '../utils/media_image_helper.dart';
 import '../utils/media_server_http_client.dart';
 import '../utils/platform_detector.dart';
 import '../utils/snackbar_helper.dart';
-import '../widgets/app_bar_back_button.dart';
 import '../widgets/collapsible_text.dart';
 import '../widgets/cycling_media_backdrop.dart';
 import '../widgets/optimized_media_image.dart';
@@ -33,6 +30,9 @@ import 'focusable_detail_screen_mixin.dart';
 import '../mixins/grid_focus_node_mixin.dart';
 import '../services/playlist_items_loader.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
+import '../widgets/detail_back_button.dart';
+import '../widgets/list_detail_header.dart';
 
 /// Screen to display the contents of a collection.
 ///
@@ -220,99 +220,40 @@ class _CollectionDetailScreenState extends BaseMediaListDetailScreen<CollectionD
   Widget _buildArtwork(double height) {
     final square = _isMusic;
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(PlezzantRadius.card),
       child: OptimizedMediaImage(
         client: mediaClient,
         imagePath: widget.collection.thumbPath,
         imageType: square ? ImageType.square : ImageType.poster,
         width: square ? height : height * 2 / 3,
         height: height,
-        fallbackIcon: LucideIcons.libraryBig,
+        fallbackIcon: LucideIcons.film,
       ),
     );
   }
 
-  Widget _buildInfo(BuildContext context, {required bool centered, required bool isTv}) {
-    final theme = Theme.of(context);
-    final tk = tokens(context);
+  Widget _buildHeader(BuildContext context, {required bool compact}) {
     final summary = widget.collection.summary;
-    final align = centered ? TextAlign.center : TextAlign.start;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: centered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.collection.displayTitle,
-          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, fontSize: isTv ? 34 : null),
-          textAlign: align,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          _metaLine(),
-          style: theme.textTheme.bodyMedium?.copyWith(color: tk.textMuted, fontSize: isTv ? 18 : null),
-          textAlign: align,
-        ),
-        if (summary != null && summary.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: CollapsibleText(
+    return ListDetailHeader(
+      compact: compact,
+      artwork: _buildArtwork,
+      title: widget.collection.displayTitle,
+      meta: _metaLine(),
+      summary: summary != null && summary.isNotEmpty
+          ? CollapsibleText(
               text: summary,
               maxLines: 3,
-              style: theme.textTheme.bodyMedium?.copyWith(color: tk.textMuted, fontSize: isTv ? 18 : null),
+              style: ListDetailHeader.summaryStyle(context),
               focusNode: _summaryFocusNode,
               skipTraversal: false,
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, {required bool compact, required bool isTv, required double inset}) {
-    final topInset = MediaQuery.paddingOf(context).top + kToolbarHeight;
-    final actionBar = FocusableActionBar(
-      key: actionBarKey,
-      spacing: 4,
-      actions: getAppBarActions(),
-      onNavigateDown: navigateToGrid,
-      onBack: () => Navigator.pop(context),
-    );
-
-    if (compact) {
-      return Padding(
-        padding: EdgeInsets.fromLTRB(inset, topInset + 8, inset, 12),
-        child: Column(
-          children: [
-            _buildArtwork(240),
-            const SizedBox(height: 16),
-            _buildInfo(context, centered: true, isTv: isTv),
-            const SizedBox(height: 16),
-            actionBar,
-          ],
-        ),
-      );
-    }
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(inset, topInset + 8, inset, 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          _buildArtwork(isTv ? 300 : 240),
-          const SizedBox(width: 24),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildInfo(context, centered: false, isTv: isTv),
-                const SizedBox(height: 16),
-                actionBar,
-              ],
-            ),
-          ),
-        ],
+            )
+          : null,
+      actionBar: FocusableActionBar(
+        key: actionBarKey,
+        spacing: 4,
+        actions: getAppBarActions(),
+        onNavigateDown: navigateToGrid,
+        onBack: () => Navigator.pop(context),
       ),
     );
   }
@@ -393,45 +334,39 @@ class _CollectionDetailScreenState extends BaseMediaListDetailScreen<CollectionD
     final theme = Theme.of(context);
     final statusBar = MediaQuery.paddingOf(context).top;
     return [
-      Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        height: statusBar + kToolbarHeight,
-        child: AnimatedBuilder(
-          animation: scrollController,
-          builder: (context, child) {
-            final offset = scrollController.hasClients ? scrollController.offset : 0.0;
-            final progress = ((offset - _titleFadeStart) / _titleFadeDistance).clamp(0.0, 1.0);
-            return IgnorePointer(
-              ignoring: progress < 0.5,
-              child: ColoredBox(
-                color: theme.scaffoldBackgroundColor.withValues(alpha: progress),
-                child: Opacity(opacity: progress, child: child),
-              ),
-            );
-          },
-          child: Padding(
-            padding: EdgeInsets.only(top: statusBar),
-            child: Center(
-              child: Text(
-                widget.collection.displayTitle,
-                style: theme.textTheme.titleLarge,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+      if (!PlatformDetector.isTV())
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: statusBar + kToolbarHeight,
+          child: AnimatedBuilder(
+            animation: scrollController,
+            builder: (context, child) {
+              final offset = scrollController.hasClients ? scrollController.offset : 0.0;
+              final progress = ((offset - _titleFadeStart) / _titleFadeDistance).clamp(0.0, 1.0);
+              return IgnorePointer(
+                ignoring: progress < 0.5,
+                child: ColoredBox(
+                  color: theme.scaffoldBackgroundColor.withValues(alpha: progress),
+                  child: Opacity(opacity: progress, child: child),
+                ),
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.only(top: statusBar),
+              child: Center(
+                child: Text(
+                  widget.collection.displayTitle,
+                  style: theme.textTheme.titleLarge,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
           ),
         ),
-      ),
-      Positioned(
-        top: 0,
-        left: 0,
-        child: DesktopAppBarHelper.buildAdjustedLeading(
-          AppBarBackButton(style: BackButtonStyle.circular, onPressed: () => Navigator.pop(context)),
-          context: context,
-        )!,
-      ),
+      PositionedDetailBackButton(onPressed: () => Navigator.pop(context)),
     ];
   }
 
@@ -440,19 +375,17 @@ class _CollectionDetailScreenState extends BaseMediaListDetailScreen<CollectionD
     final size = MediaQuery.sizeOf(context);
     final isTv = PlatformDetector.isTV();
     final compact = size.width < ScreenBreakpoints.mobile;
-    final inset = isTv ? TvLayoutConstants.horizontalInset : 16.0;
+    final inset = ListDetailHeader.insetOf(context);
     final artHeight = compact ? size.height * 0.62 : (isTv ? size.height * 0.7 : 460.0);
 
     return buildDetailScaffold(
       behind: [_buildBackdropLayer(context, size: size, height: artHeight)],
       slivers: [
-        SliverToBoxAdapter(
-          child: _buildHeader(context, compact: compact, isTv: isTv, inset: inset),
-        ),
+        SliverToBoxAdapter(child: _buildHeader(context, compact: compact)),
         ...buildStateSlivers(),
         if (hasItems)
           SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: isTv ? inset - 8 : 8),
+            padding: EdgeInsets.symmetric(horizontal: isTv ? inset - GridLayoutConstants.cardInternalPadding : 8),
             sliver: buildSparseFocusableGrid(
               totalItems: totalSize,
               itemAt: (index) => loadedItems[index],

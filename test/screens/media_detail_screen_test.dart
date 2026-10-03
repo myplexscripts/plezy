@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plezy/theme/plezzant/plezzant_tokens.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/database/app_database.dart';
@@ -1280,7 +1281,8 @@ void main() {
     // hero's own ink rather than the muted chip colour.
     final bar = tester.getRect(find.byType(FocusableActionBar));
     final statusRect = tester.getRect(status);
-    expect(statusRect.right, closeTo(1920 - 24, 1)); // spotlightLeft at this scale
+    // On the safe frame, mirroring the text column's left edge.
+    expect(statusRect.right, closeTo(1920 - PlezzantTv.safeX, 1));
     expect(statusRect.left, greaterThan(1920 * 0.60));
     expect(statusRect.bottom, closeTo(bar.bottom, 1));
     expect(statusRect.center.dy, greaterThan(bar.center.dy));

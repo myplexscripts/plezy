@@ -59,6 +59,8 @@ class _LibraryPlaylistsTabState extends PaginatedCardGridTabState<MediaPlaylist,
     return client.fetchPlaylistsPage(playlistType: playlistType, start: start, size: size, abort: abort);
   }
 
+  /// Playlist artwork is a square composite on both servers (as in the
+  /// official apps), so poster cells would crop it.
   @override
-  bool get usesSquareCards => widget.library.kind.isMusic;
+  bool get usesSquareCards => true;
 }

@@ -26,8 +26,8 @@ class BottomSheetHeader extends StatelessWidget {
   /// Only used if [leading] and [onBack] are null
   final IconData? icon;
 
-  /// Optional color for the icon
-  /// Only used when [icon] is provided
+  /// Optional color for the icon (e.g. the "something is active" tint).
+  /// Only used when [icon] is provided; navigation glyphs stay neutral.
   final Color? iconColor;
 
   /// Optional callback for back button
@@ -77,7 +77,7 @@ class BottomSheetHeader extends StatelessWidget {
         height: kMinInteractiveDimension,
         child: Align(
           alignment: Alignment.centerLeft,
-          child: ExcludeSemantics(child: AppIcon(LucideIcons.arrowLeft, fill: 1, color: iconColor)),
+          child: ExcludeSemantics(child: AppIcon(LucideIcons.arrowLeft, fill: 1)),
         ),
       );
     } else if (icon != null) {
@@ -106,7 +106,7 @@ class BottomSheetHeader extends StatelessWidget {
                   child: IconButton(
                     focusNode: closeFocusNode,
                     tooltip: t.common.close,
-                    icon: AppIcon(LucideIcons.x, fill: 1, color: iconColor),
+                    icon: const AppIcon(LucideIcons.x, fill: 1),
                     onPressed: onClose ?? () => OverlaySheetController.closeAdaptive(context),
                   ),
                 ),

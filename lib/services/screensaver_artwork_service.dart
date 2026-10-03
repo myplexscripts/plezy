@@ -21,14 +21,14 @@ class ScreensaverArtworkService {
   static const MethodChannel _channel = MethodChannel('com.plezy/screensaver');
   static const int _maxItems = 40;
 
-  Timer? _debounce;
   String? _lastSignature;
 
-  /// Publishes backdrops from [hubs] a moment after they settle.
+  /// Publishes backdrops from [hubs]. Hubs land in a few waves while Home
+  /// loads; an unchanged set is skipped, so only real changes cross the
+  /// channel.
   void publishFromHubs(List<MediaHub> hubs, MediaServerClient? Function(ServerId serverId) clientFor) {
     if (defaultTargetPlatform != TargetPlatform.android) return;
-    _debounce?.cancel();
-    _debounce = Timer(const Duration(seconds: 3), () => unawaited(_publish(hubs, clientFor)));
+    unawaited(_publish(hubs, clientFor));
   }
 
   Future<void> _publish(List<MediaHub> hubs, MediaServerClient? Function(ServerId serverId) clientFor) async {

@@ -63,7 +63,10 @@ String formatDurationTextual(int milliseconds, {bool abbreviated = true}) {
     locale: durationLocale,
     delimiter: abbreviated ? ' ' : ', ',
     spacer: '',
-    tersity: DurationTersity.minute,
+    // Clips, trailers and samples under a minute read "45s", not "0m".
+    tersity: duration > Duration.zero && duration < const Duration(minutes: 1)
+        ? DurationTersity.second
+        : DurationTersity.minute,
   );
 }
 

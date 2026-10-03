@@ -1565,7 +1565,9 @@
     "shuffleSlideshow": "Shuffle slideshow",
     "selectForSlideshow": "Select for slideshow",
     "selectToPause": "Select to pause",
-    "selectToPlay": "Select to play"
+    "selectToPlay": "Select to play",
+    "viewPhoto": "View Photo",
+    "openAlbum": "Open Album"
   },
   "playlists": {
     "title": "Playlists",

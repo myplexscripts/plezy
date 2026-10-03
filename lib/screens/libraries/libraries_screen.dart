@@ -20,6 +20,7 @@ import '../../services/settings_service.dart';
 import '../../widgets/settings_builder.dart';
 import '../../utils/app_logger.dart';
 import '../../utils/platform_detector.dart';
+import '../../theme/plezzant/plezzant_tokens.dart';
 import '../../utils/content_utils.dart';
 import '../../widgets/app_menu.dart';
 import '../../widgets/desktop_app_bar.dart';
@@ -807,11 +808,18 @@ class _LibrariesScreenState extends State<LibrariesScreen>
       shadowColor: Colors.transparent,
       scrolledUnderElevation: 0,
       actions: [
-        FocusableActionBar(
-          key: _actionBarKey,
-          onNavigateLeft: () => getTabChipFocusNode(_visibleTabs.length - 1).requestFocus(),
-          onNavigateDown: _focusCurrentTab,
-          actions: appBarActions(),
+        Padding(
+          // TV: the last glyph ends on the safe frame, like Home's top-right
+          // cluster (the bar already sits ~10 px in from the edge).
+          padding: EdgeInsets.only(
+            right: PlatformDetector.isTV() ? PlezzantTv.safeX * PlezzantTv.scaleOf(context) - 10 : 0,
+          ),
+          child: FocusableActionBar(
+            key: _actionBarKey,
+            onNavigateLeft: () => getTabChipFocusNode(_visibleTabs.length - 1).requestFocus(),
+            onNavigateDown: _focusCurrentTab,
+            actions: appBarActions(),
+          ),
         ),
       ],
     );

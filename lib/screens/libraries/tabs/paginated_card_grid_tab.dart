@@ -8,6 +8,7 @@ import '../../../mixins/standard_paginated_view.dart';
 import '../../../services/settings_service.dart';
 import '../../../utils/error_message_utils.dart';
 import '../../../utils/layout_constants.dart';
+import '../../../theme/plezzant/plezzant_tokens.dart';
 import '../../../utils/platform_detector.dart';
 import '../../../widgets/card_inflation_budget.dart';
 import '../../../widgets/focusable_media_card.dart';
@@ -124,6 +125,11 @@ abstract class PaginatedCardGridTabState<T extends Object, W extends BaseLibrary
 
   EdgeInsets get _effectivePadding {
     final base = GridLayoutConstants.gridPadding;
+    if (PlatformDetector.isTV()) {
+      return GridLayoutConstants.tvGridInsets(
+        PlezzantTv.scaleOf(context),
+      ).copyWith(top: base.top + _focusDecorationPadding, bottom: base.bottom);
+    }
     return base.copyWith(top: base.top + _focusDecorationPadding);
   }
 
