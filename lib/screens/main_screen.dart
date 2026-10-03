@@ -15,6 +15,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import '../i18n/strings.g.dart';
+import '../services/voice_search_service.dart';
 import '../services/app_exit_service.dart';
 import '../services/device_performance.dart';
 import '../theme/plezzant/plezzant_tokens.dart';
@@ -520,6 +521,11 @@ class _MainScreenState extends State<MainScreen>
 
     WidgetsBinding.instance.addObserver(this);
     _contentFocusScope.addListener(_syncSidebarFocusWithContent);
+    // Assistant / system search ("search … in Plezzant"), including a query
+    // that launched the app; delivered once the first frame is up.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(VoiceSearchService.instance.attach(_openSearch));
+    });
 
     if (PlatformDetector.isDesktopOS()) {
       windowManager.addListener(this);
@@ -1047,18 +1053,24 @@ class _MainScreenState extends State<MainScreen>
         if (mounted) _sideNavKey.currentState?.focusHomeItem();
       });
     };
-    receiver.onSearchAction = (query) {
-      final trimmed = query?.trim() ?? '';
-      final hasQuery = trimmed.isNotEmpty;
-      // With a query, don't focus the input (which would auto-open the TV
-      // keyboard); submitSearchQuery runs the search and focuses results.
-      _selectTab(NavigationTabId.search, focusSearchInput: !hasQuery);
-      if (hasQuery) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _onScreen<SearchInputFocusable>(NavigationTabId.search, (screen) => screen.submitSearchQuery(trimmed));
-        });
-      }
-    };
+    receiver.onSearchAction = _openSearch;
+  }
+
+  /// Opens Search, running [query] when one is given (companion remote, voice
+  /// search). Without a query the input takes focus, which opens the TV
+  /// keyboard and its microphone.
+  void _openSearch(String? query) {
+    if (!mounted || _isOffline) return;
+    final trimmed = query?.trim() ?? '';
+    final hasQuery = trimmed.isNotEmpty;
+    // With a query, don't focus the input (which would auto-open the TV
+    // keyboard); submitSearchQuery runs the search and focuses results.
+    _selectTab(NavigationTabId.search, focusSearchInput: !hasQuery);
+    if (hasQuery) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onScreen<SearchInputFocusable>(NavigationTabId.search, (screen) => screen.submitSearchQuery(trimmed));
+      });
+    }
   }
 
   Future<void> _autoStartCompanionRemoteServer() async {
@@ -1074,6 +1086,7 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   void dispose() {
+    VoiceSearchService.instance.detach(_openSearch);
     WidgetsBinding.instance.removeObserver(this);
     _profileRouteObserver?.unsubscribe(this);
     if (PlatformDetector.isDesktopOS()) {
@@ -1654,6 +1667,11 @@ class _MainScreenState extends State<MainScreen>
   /// Handle Cmd+F (macOS) / Ctrl+F (Windows/Linux) to navigate to search.
   KeyEventResult _handleSearchShortcut(KeyEvent event) {
     if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    // The remote's dedicated search key.
+    if (event.logicalKey == LogicalKeyboardKey.browserSearch) {
+      _openSearch(null);
+      return KeyEventResult.handled;
+    }
     if (event.logicalKey != LogicalKeyboardKey.keyF) return KeyEventResult.ignored;
 
     final isMetaPressed = HardwareKeyboard.instance.isMetaPressed;

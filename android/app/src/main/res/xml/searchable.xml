@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lets the Assistant and system search hand Plezzant a query; see
+     MainActivity.handleSearchIntent. -->
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+    android:label="@string/search_label"
+    android:hint="@string/search_hint"
+    android:voiceSearchMode="showVoiceSearchButton|launchRecognizer" />

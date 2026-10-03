@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.app.AppOpsManager
 import android.app.PictureInPictureParams
 import android.content.Context
+import android.app.SearchManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -92,6 +93,10 @@ class MainActivity : FlutterActivity() {
 
   private val PIP_CHANNEL = "com.plezy/pip"
   private val THEME_CHANNEL = "com.plezy/theme"
+  private val VOICE_SEARCH_CHANNEL = "com.plezy/voice_search"
+  private var voiceSearchChannel: MethodChannel? = null
+  // A query from a cold-start search intent, collected by Dart once it is up.
+  private var pendingVoiceQuery: String? = null
   private val DEVICE_CHANNEL = "com.plezy/device"
   private val DEVICE_ADJUSTMENT_CHANNEL = "com.plezy/device_adjustment"
   private val TEXT_INPUT_CHANNEL = "com.plezy/text_input"
@@ -560,12 +565,32 @@ class MainActivity : FlutterActivity() {
 
     // Handle Watch Next deep link from initial launch
     handleWatchNextIntent(intent)
+    handleSearchIntent(intent, coldStart = true)
   }
 
   override fun onNewIntent(intent: Intent) {
     super.onNewIntent(intent)
     // Handle Watch Next deep link when app is already running
     handleWatchNextIntent(intent)
+    handleSearchIntent(intent)
+  }
+
+  /// Voice and global search: "Search for … in Plezzant" from the Assistant
+  /// (SEARCH_ACTION) or the system search (ACTION_SEARCH) opens Search with
+  /// the spoken query.
+  private fun handleSearchIntent(intent: Intent?, coldStart: Boolean = false) {
+    val action = intent?.action ?: return
+    if (action != Intent.ACTION_SEARCH && action != "com.google.android.gms.actions.SEARCH_ACTION") return
+    val query = intent.getStringExtra(SearchManager.QUERY)?.trim().orEmpty()
+    if (query.isEmpty()) return
+    // On a cold start Dart has not attached its handler yet; it collects the
+    // query with takePendingQuery once its first frame is up.
+    val channel = voiceSearchChannel
+    if (coldStart || channel == null) {
+      pendingVoiceQuery = query
+    } else {
+      channel.invokeMethod("onSearch", query)
+    }
   }
 
   override fun dispatchKeyEvent(event: KeyEvent): Boolean {
@@ -738,6 +763,18 @@ class MainActivity : FlutterActivity() {
     flutterEngine.plugins.add(MpvPlayerPlugin())
     flutterEngine.plugins.add(ExoPlayerPlugin())
     flutterEngine.plugins.add(MpvAudioPlayerPlugin())
+
+    voiceSearchChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, VOICE_SEARCH_CHANNEL).also {
+      it.setMethodCallHandler { call, result ->
+        when (call.method) {
+          "takePendingQuery" -> {
+            result.success(pendingVoiceQuery)
+            pendingVoiceQuery = null
+          }
+          else -> result.notImplemented()
+        }
+      }
+    }
 
     MethodChannel(flutterEngine.dartExecutor.binaryMessenger, DEVICE_CHANNEL).setMethodCallHandler { call, result ->
       when (call.method) {
