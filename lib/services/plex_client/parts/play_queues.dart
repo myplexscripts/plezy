@@ -58,10 +58,14 @@ mixin _PlexPlayQueueMethods on _PlexClientInternals {
     int continuous = 0,
     String? librarySectionID,
     String? librarySectionTitle,
+    int? extrasPrefixCount,
   }) async {
     try {
       final queryParameters = <String, dynamic>{
         'type': type,
+        // Cinema trailers: the server prepends this many trailers (as
+        // configured on the server) before the item.
+        'extrasPrefixCount': ?extrasPrefixCount,
         'shuffle': shuffle,
         'repeat': repeat,
         'continuous': continuous,

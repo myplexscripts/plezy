@@ -10,6 +10,7 @@ import '../media/media_playlist.dart';
 import '../models/plex/play_queue_response.dart';
 import '../providers/multi_server_provider.dart';
 import '../providers/playback_state_provider.dart';
+import '../utils/app_logger.dart';
 import '../utils/video_player_navigation.dart';
 import '../i18n/strings.g.dart';
 import 'media_list_playback_launcher.dart';
@@ -166,6 +167,36 @@ class PlexPlayQueueLauncher extends MediaListPlaybackLauncher {
   }
 
   /// Launch shuffled playback for a show or season.
+  /// Plays [movie] with the server's cinema trailers in front of it, like the
+  /// official apps. Returns [PlayQueueEmpty] when the server prepended no
+  /// trailers, so the caller can start the movie the ordinary way.
+  Future<PlayQueueResult> launchMovieWithTrailers({required MediaItem movie, required int trailerCount}) async {
+    try {
+      final uri = await client.buildMetadataUri(movie.id);
+      final playQueue = await client.createPlayQueue(
+        uri: uri,
+        type: 'video',
+        extrasPrefixCount: trailerCount,
+        librarySectionID: movie.libraryId,
+        librarySectionTitle: movie.libraryTitle,
+      );
+      final items = playQueue.items ?? const [];
+      if (items.length < 2 || items.first.kind != MediaKind.clip) return const PlayQueueEmpty();
+      return await _launchFromQueue(
+        playQueue: playQueue,
+        ratingKey: movie.id,
+        serverId: serverIdOrNull(movie.serverId),
+        serverName: movie.serverName,
+        libraryId: movie.libraryId,
+        libraryTitle: movie.libraryTitle,
+        copyServerInfo: true,
+      );
+    } catch (e) {
+      appLogger.w('Cinema trailers unavailable, playing the movie directly', error: e);
+      return const PlayQueueEmpty();
+    }
+  }
+
   @override
   Future<PlayQueueResult> launchShuffledShow({required MediaItem metadata, bool showLoadingIndicator = true}) async {
     final kind = metadata.kind;

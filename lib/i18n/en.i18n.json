@@ -212,6 +212,14 @@
     "secondsUnit": "${seconds} seconds",
     "defaultSleepTimer": "Default Sleep Timer",
     "minutesUnit": "${minutes} minutes",
+    "playThemeMusic": "Play theme music",
+    "cinemaTrailers": "Cinema trailers",
+    "cinemaTrailersCount": {
+      "one": "${n} trailer",
+      "other": "${n} trailers"
+    },
+    "cinemaTrailersDescription": "Trailers before a movie, from your Plex server's trailer settings",
+    "playThemeMusicDescription": "Play a show or movie's theme song quietly on its details page",
     "rememberTrackSelections": "Remember track selections per show/movie",
     "rememberTrackSelectionsDescription": "Remember audio and subtitle choices per title",
     "followServerTrackSelections": "Use server's per-episode track selections",

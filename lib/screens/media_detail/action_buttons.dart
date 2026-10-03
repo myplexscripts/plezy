@@ -1,6 +1,23 @@
 part of '../media_detail_screen.dart';
 
 extension _MediaDetailActionButtons on _MediaDetailScreenState {
+  /// Plex movie started from the beginning: the server's cinema trailers
+  /// first, when the viewer has asked for them. False means "play normally".
+  Future<bool> _playMovieWithCinemaTrailers(MediaItem movie) async {
+    final count = SettingsService.instance.read(SettingsService.cinemaTrailerCount);
+    if (count <= 0 || !movie.isMovie || widget.isOffline || movie.backend != MediaBackend.plex) return false;
+    if ((movie.viewOffsetMs ?? 0) > 0 || context.read<WatchTogetherProvider?>()?.isInSession == true) return false;
+    final result = await PlexPlayQueueLauncher.forContext(
+      context,
+      movie,
+    ).launchMovieWithTrailers(movie: movie, trailerCount: count);
+    if (result is PlayQueueSuccess) {
+      unawaited(_refreshWatchState());
+      return true;
+    }
+    return false;
+  }
+
   Widget _buildActionButtons(MediaItem metadata) {
     // Tie asynchronous playback prompts to the actionable subtree, not the
     // route's State: a deleted first-route detail intentionally stays mounted.
@@ -81,6 +98,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
         }
       } else {
         appLogger.d('Playing: ${metadata.title}');
+        if (await _playMovieWithCinemaTrailers(metadata) || !context.mounted) return;
         // For movies or episodes, play directly
         await navigateToVideoPlayerWithRefresh(
           context,

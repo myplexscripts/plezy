@@ -145,6 +145,10 @@ sealed class MediaItem with _$MediaItem {
     String? artPath,
     List<String>? backdropPaths,
     String? clearLogoPath,
+
+    /// Theme song (Plex `theme`, falling back to the show's), played quietly
+    /// on the details page like the official apps.
+    String? themePath,
     String? backgroundSquarePath,
     @JsonKey(fromJson: flexibleInt) int? durationMs,
     @JsonKey(fromJson: flexibleInt) int? viewOffsetMs,
@@ -234,6 +238,10 @@ sealed class MediaItem with _$MediaItem {
     String? artPath,
     List<String>? backdropPaths,
     String? clearLogoPath,
+
+    /// Theme song (Plex `theme`, falling back to the show's), played quietly
+    /// on the details page like the official apps.
+    String? themePath,
     String? backgroundSquarePath,
     @JsonKey(fromJson: flexibleInt) int? durationMs,
     @JsonKey(fromJson: flexibleInt) int? viewOffsetMs,

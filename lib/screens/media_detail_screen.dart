@@ -6,6 +6,11 @@ import '../media/ids.dart';
 import 'package:flutter/material.dart';
 
 import '../navigation/profile_navigation_scope.dart';
+import '../media/media_backend.dart';
+import '../watch_together/providers/watch_together_provider.dart';
+import '../services/play_queue_launcher.dart';
+import '../services/music/music_playback_service.dart';
+import '../services/theme_music_service.dart';
 import '../services/device_performance.dart';
 import '../services/fullscreen_state_manager.dart';
 import 'package:flutter/services.dart';
@@ -336,6 +341,10 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
   int _episodesLoadGeneration = 0;
   bool _showEpisodesDirectly = false;
   MediaItem? _fullMetadata;
+
+  /// Theme song requested for this page; cleared when the page is covered so
+  /// coming back restarts it.
+  String? _themeRequested;
   MediaItem? _onDeckEpisode;
   bool _isLoadingMetadata = true;
   bool _isDeleted = false;
@@ -878,6 +887,32 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
   }
 
   @override
+  void didPushNext() {
+    _themeRequested = null;
+    unawaited(ThemeMusicService.instance.stop(owner: this));
+  }
+
+  void _scheduleThemeMusic(MediaItem metadata) {
+    final path = metadata.themePath;
+    if (path == null || path.isEmpty || path == _themeRequested) return;
+    _themeRequested = path;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _themeRequested != path || ModalRoute.of(context)?.isCurrent != true) return;
+      final client = _getMediaClientForMetadata(context);
+      if (client is! PlexClient) return;
+      final music = context.read<MusicPlaybackService?>();
+      unawaited(
+        ThemeMusicService.instance.play(
+          owner: this,
+          url: '${client.config.baseUrl}$path',
+          headers: client.streamHeaders,
+          otherAudioActive: music?.currentTrack != null,
+        ),
+      );
+    });
+  }
+
+  @override
   void didPopNext() {
     _invalidatePlaybackProbes(refreshItems: true);
     setStateIfMounted(() {});
@@ -989,6 +1024,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
 
   @override
   void dispose() {
+    unawaited(ThemeMusicService.instance.stop(owner: this));
     _libraryContentSubscription?.cancel();
     for (final source in _watchlistListenedSources) {
       source.watchlistChanges.removeListener(_onWatchlistSourceChanged);
@@ -3652,6 +3688,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
       _maybeLoadMoreForInitialEpisode();
     }
     final hideSpoilers = SettingsService.instance.read(SettingsService.hideSpoilers);
+    _scheduleThemeMusic(metadata);
     final detailScale = TvLayoutConstants.scaleForSize(size);
     final spotlightTop = (size.height * 0.08).clamp(56.0 * detailScale, 110.0 * detailScale).toDouble();
     final rawRailHeight = _estimateTvDetailRailHeight(size, detailHubs);

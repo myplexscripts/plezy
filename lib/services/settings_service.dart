@@ -618,6 +618,13 @@ class SettingsService extends BaseSharedPreferencesService {
   static const showPerformanceOverlay = BoolPref('show_performance_overlay');
   static const autoHidePerformanceOverlay = BoolPref('auto_hide_performance_overlay', defaultValue: true);
 
+  /// Quiet theme song on show and movie details pages (Plex `theme`).
+  static const playThemeMusic = BoolPref('play_theme_music', defaultValue: true);
+
+  /// Cinema trailers played before a movie started from the beginning (Plex
+  /// servers with trailers enabled). 0 turns them off.
+  static const cinemaTrailerCount = IntPref('cinema_trailer_count', defaultValue: 0);
+
   /// Flutter's frame-timing graph over the whole app, for checking UI speed
   /// on the TV itself.
   static const showFrameTimingOverlay = BoolPref('show_frame_timing_overlay');
@@ -1341,6 +1348,8 @@ class SettingsService extends BaseSharedPreferencesService {
     autoCheckUpdatesOnStartup,
     showPerformanceOverlay,
     autoHidePerformanceOverlay,
+    playThemeMusic,
+    cinemaTrailerCount,
     showFrameTimingOverlay,
     enableDiscordRPC,
     enableTraktWatchedSync,

@@ -610,6 +610,8 @@ class PlexMetadataDto {
   @JsonKey(fromJson: flexibleInt)
   final int? index;
   final String? grandparentTheme;
+  final String? parentTheme;
+  final String? theme;
   @JsonKey(fromJson: flexibleInt)
   final int? viewOffset;
   @JsonKey(fromJson: flexibleInt)
@@ -709,6 +711,8 @@ class PlexMetadataDto {
     this.parentIndex,
     this.index,
     this.grandparentTheme,
+    this.parentTheme,
+    this.theme,
     this.viewOffset,
     this.viewCount,
     this.leafCount,
@@ -833,6 +837,8 @@ class PlexMetadataDto {
     int? parentIndex,
     int? index,
     String? grandparentTheme,
+    String? parentTheme,
+    String? theme,
     int? viewOffset,
     int? viewCount,
     int? leafCount,
@@ -904,6 +910,8 @@ class PlexMetadataDto {
       parentIndex: parentIndex ?? this.parentIndex,
       index: index ?? this.index,
       grandparentTheme: grandparentTheme ?? this.grandparentTheme,
+      parentTheme: parentTheme ?? this.parentTheme,
+      theme: theme ?? this.theme,
       viewOffset: viewOffset ?? this.viewOffset,
       viewCount: viewCount ?? this.viewCount,
       leafCount: leafCount ?? this.leafCount,
@@ -1092,6 +1100,7 @@ class PlexMappers {
       thumbPath: dto.thumb,
       artPath: dto.art,
       clearLogoPath: dto.clearLogo,
+      themePath: dto.theme ?? dto.parentTheme ?? dto.grandparentTheme,
       backgroundSquarePath: dto.backgroundSquare,
       durationMs: dto.duration,
       viewOffsetMs: dto.viewOffset,

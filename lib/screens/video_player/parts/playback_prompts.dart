@@ -78,6 +78,12 @@ extension _VideoPlayerPlaybackPromptMethods on VideoPlayerScreenState {
         !_episode.completionLatch.triggered) {
       _episode.completionLatch.latch();
 
+      // Cinema trailers run straight into the next trailer or the feature.
+      if (_currentMetadata.kind == MediaKind.clip) {
+        unawaited(_playNext());
+        return;
+      }
+
       // PiP: skip dialog (user can't interact), auto-play immediately
       if (PipService().isPipActive.value) {
         unawaited(_playNext());

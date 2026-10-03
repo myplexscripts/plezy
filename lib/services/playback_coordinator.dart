@@ -17,6 +17,23 @@ class PlaybackCoordinator {
   static final PlaybackCoordinator instance = PlaybackCoordinator._();
 
   Future<void> Function()? _stopMusicSession;
+  Future<void> Function()? _stopThemeMusic;
+
+  /// Details-page theme songs share the audio pipeline with music; they are
+  /// stopped before any real playback claims it.
+  void registerThemeMusic({required Future<void> Function() stop}) {
+    _stopThemeMusic = stop;
+  }
+
+  Future<void> _stopTheme() async {
+    final stop = _stopThemeMusic;
+    if (stop == null) return;
+    try {
+      await stop();
+    } catch (e, st) {
+      appLogger.w('PlaybackCoordinator: theme music teardown failed', error: e, stackTrace: st);
+    }
+  }
 
   Future<void> Function()? _shutdownVideoSession;
   Future<bool> Function()? _exitVideoSession;
@@ -92,6 +109,7 @@ class PlaybackCoordinator {
   /// Video playback is about to construct its native core: stop and dispose
   /// any live music session first. Completes once the audio core is gone.
   Future<void> claimVideo() async {
+    await _stopTheme();
     final stop = _stopMusicSession;
     if (stop == null) return;
     try {
@@ -121,5 +139,8 @@ class PlaybackCoordinator {
   /// per-session native rework exists to prevent.
   ///
   /// Kept as a seam so a future reverse teardown has one place to live.
-  Future<void> claimMusic() async {}
+  ///
+  /// The one exception is a details-page theme song, which uses the same
+  /// audio channel as music and is ours to stop.
+  Future<void> claimMusic() => _stopTheme();
 }

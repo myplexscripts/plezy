@@ -213,6 +213,26 @@ class PlaybackSettingsScreen extends StatelessWidget {
     title: t.settings.behavior,
     children: [
       SettingSwitchTile(
+        pref: SettingsService.playThemeMusic,
+        icon: LucideIcons.music,
+        title: t.settings.playThemeMusic,
+        subtitle: t.settings.playThemeMusicDescription,
+      ),
+      SettingSelectionTile<int>(
+        pref: SettingsService.cinemaTrailerCount,
+        icon: LucideIcons.clapperboard,
+        title: t.settings.cinemaTrailers,
+        subtitleBuilder: (v) =>
+            '${v == 0 ? t.common.off : t.settings.cinemaTrailersCount(n: v)} · ${t.settings.cinemaTrailersDescription}',
+        options: [
+          for (final v in const [0, 1, 2, 3])
+            DialogOption(
+              value: v,
+              title: v == 0 ? t.common.off : t.settings.cinemaTrailersCount(n: v),
+            ),
+        ],
+      ),
+      SettingSwitchTile(
         pref: SettingsService.rememberTrackSelections,
         icon: LucideIcons.bookmark,
         title: t.settings.rememberTrackSelections,

@@ -675,6 +675,24 @@ class Translations$settings$en {
 	/// en: '${minutes} minutes'
 	String minutesUnit({required Object minutes}) => '${minutes} minutes';
 
+	/// en: 'Play theme music'
+	String get playThemeMusic => 'Play theme music';
+
+	/// en: 'Cinema trailers'
+	String get cinemaTrailers => 'Cinema trailers';
+
+	/// en: '(one) {${n} trailer} (other) {${n} trailers}'
+	String cinemaTrailersCount({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} trailer',
+		other: '${n} trailers',
+	);
+
+	/// en: 'Trailers before a movie, from your Plex server's trailer settings'
+	String get cinemaTrailersDescription => 'Trailers before a movie, from your Plex server\'s trailer settings';
+
+	/// en: 'Play a show or movie's theme song quietly on its details page'
+	String get playThemeMusicDescription => 'Play a show or movie\'s theme song quietly on its details page';
+
 	/// en: 'Remember track selections per show/movie'
 	String get rememberTrackSelections => 'Remember track selections per show/movie';
 
@@ -7313,6 +7331,11 @@ extension on Translations {
 			'settings.secondsUnit' => ({required Object seconds}) => '${seconds} seconds',
 			'settings.defaultSleepTimer' => 'Default Sleep Timer',
 			'settings.minutesUnit' => ({required Object minutes}) => '${minutes} minutes',
+			'settings.playThemeMusic' => 'Play theme music',
+			'settings.cinemaTrailers' => 'Cinema trailers',
+			'settings.cinemaTrailersCount' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: '${n} trailer', other: '${n} trailers', ), 
+			'settings.cinemaTrailersDescription' => 'Trailers before a movie, from your Plex server\'s trailer settings',
+			'settings.playThemeMusicDescription' => 'Play a show or movie\'s theme song quietly on its details page',
 			'settings.rememberTrackSelections' => 'Remember track selections per show/movie',
 			'settings.rememberTrackSelectionsDescription' => 'Remember audio and subtitle choices per title',
 			'settings.followServerTrackSelections' => 'Use server\'s per-episode track selections',
@@ -7622,13 +7645,13 @@ extension on Translations {
 			'fileInfo.avcBitstream' => 'AVC Bitstream',
 			'fileInfo.nalLengthSize' => 'NAL Length Size',
 			'fileInfo.scalingMatrix' => 'Custom Scaling Matrix',
+			_ => null,
+		} ?? switch (path) {
 			'fileInfo.streamIdentifier' => 'Stream Identifier',
 			'fileInfo.streamIndex' => 'Stream Index',
 			'fileInfo.streamId' => 'Stream ID',
 			'fileInfo.language' => 'Language',
 			'fileInfo.languageCode' => 'Language Code',
-			_ => null,
-		} ?? switch (path) {
 			'fileInfo.streamTitle' => 'Track Title',
 			'fileInfo.channels' => 'Channels',
 			'fileInfo.sampleRate' => 'Sample Rate',
@@ -8136,13 +8159,13 @@ extension on Translations {
 			'libraries.trashEmptied' => ({required Object title}) => 'Trash emptied for "${title}"',
 			'libraries.failedToEmptyTrash' => ({required Object error}) => 'Failed to empty trash: ${error}',
 			'libraries.analyzing' => ({required Object title}) => 'Analyzing "${title}"...',
+			_ => null,
+		} ?? switch (path) {
 			'libraries.analysisStarted' => ({required Object title}) => 'Analysis started for "${title}"',
 			'libraries.failedToAnalyze' => ({required Object error}) => 'Failed to analyze library: ${error}',
 			'libraries.noLibrariesFound' => 'No libraries found',
 			'libraries.allLibrariesHidden' => 'All libraries are hidden',
 			'libraries.hiddenLibrariesCount' => ({required Object count}) => 'Hidden libraries (${count})',
-			_ => null,
-		} ?? switch (path) {
 			'libraries.thisLibraryIsEmpty' => 'This library is empty',
 			'libraries.noItemsMatchFilters' => 'No items match the active filters',
 			'libraries.resetFilters' => 'Reset filters',
@@ -8650,13 +8673,13 @@ extension on Translations {
 			'downloads.title' => 'Downloads',
 			'downloads.manage' => 'Manage',
 			'downloads.tvShows' => 'TV Shows',
+			_ => null,
+		} ?? switch (path) {
 			'downloads.movies' => 'Movies',
 			'downloads.music' => 'Music',
 			'downloads.tracksQueued' => ({required Object count}) => '${count} tracks queued for download',
 			'downloads.noDownloads' => 'No downloads yet',
 			'downloads.noDownloadsDescription' => 'Downloaded content will appear here for offline viewing',
-			_ => null,
-		} ?? switch (path) {
 			'downloads.downloadNow' => 'Download',
 			'downloads.deleteDownload' => 'Delete download',
 			'downloads.retryDownload' => 'Retry download',
@@ -9164,6 +9187,8 @@ extension on Translations {
 			'addServer.redirectUnsupported' => 'The server redirected to an unsupported URL',
 			'addServer.redirectDifferentHost' => ({required Object product}) => 'The server redirected to a different host. Enter the final ${product} URL directly.',
 			'addServer.redirectInsecure' => 'The server redirected from HTTPS to an insecure URL',
+			_ => null,
+		} ?? switch (path) {
 			'addServer.redirectUnsupportedEnterFinal' => ({required Object product}) => 'The server redirected to an unsupported URL. Enter the final ${product} URL directly.',
 			_ => null,
 		};

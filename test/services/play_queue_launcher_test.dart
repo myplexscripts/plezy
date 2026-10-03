@@ -23,6 +23,12 @@ class _StubPlexClient implements PlexClient {
   _StubPlexClient({this.response});
 
   final PlayQueueResponse? response;
+  int? lastExtrasPrefixCount;
+  String? lastUri;
+
+  @override
+  Future<String> buildMetadataUri(String ratingKey) async =>
+      'server://abc/com.plexapp.plugins.library/library/metadata/$ratingKey';
 
   @override
   Future<PlayQueueResponse> createPlayQueue({
@@ -35,7 +41,10 @@ class _StubPlexClient implements PlexClient {
     int continuous = 0,
     String? librarySectionID,
     String? librarySectionTitle,
+    int? extrasPrefixCount,
   }) async {
+    lastExtrasPrefixCount = extrasPrefixCount;
+    lastUri = uri;
     return response!;
   }
 
@@ -72,6 +81,54 @@ PlayQueueResponse _queueWith(MediaItem item) {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  group('cinema trailers', () {
+    testWidgets('plays the server trailers before the movie', (tester) async {
+      final context = await _pumpContext(tester);
+      const trailer = MediaItem.plex(id: 'trailer-1', kind: MediaKind.clip, title: 'Trailer', playQueueItemId: 40);
+      const movie = MediaItem.plex(id: 'movie-1', kind: MediaKind.movie, title: 'Movie', playQueueItemId: 41);
+      final client = _StubPlexClient(
+        response: PlayQueueResponse(
+          playQueueID: 73,
+          playQueueSelectedItemID: 40,
+          playQueueShuffled: false,
+          playQueueTotalCount: 2,
+          items: const [trailer, movie],
+        ),
+      );
+      final navigated = <MediaItem>[];
+      final launcher = PlexPlayQueueLauncher(
+        context: context,
+        client: client,
+        playbackStateForTesting: PlaybackStateProvider(),
+        navigateForTesting: (selected) async => navigated.add(selected),
+      );
+
+      final result = await launcher.launchMovieWithTrailers(movie: movie, trailerCount: 2);
+
+      expect(result, isA<PlayQueueSuccess>());
+      expect(client.lastExtrasPrefixCount, 2);
+      expect(client.lastUri, endsWith('/library/metadata/movie-1'));
+      expect(navigated.single.id, 'trailer-1');
+    });
+
+    testWidgets('falls back when the server prepends no trailers', (tester) async {
+      final context = await _pumpContext(tester);
+      const movie = MediaItem.plex(id: 'movie-1', kind: MediaKind.movie, title: 'Movie', playQueueItemId: 41);
+      final navigated = <MediaItem>[];
+      final launcher = PlexPlayQueueLauncher(
+        context: context,
+        client: _StubPlexClient(response: _queueWith(movie)),
+        playbackStateForTesting: PlaybackStateProvider(),
+        navigateForTesting: (selected) async => navigated.add(selected),
+      );
+
+      final result = await launcher.launchMovieWithTrailers(movie: movie, trailerCount: 1);
+
+      expect(result, isA<PlayQueueEmpty>());
+      expect(navigated, isEmpty);
+    });
+  });
 
   group('launchShuffledShow pre-flight guard', () {
     testWidgets('returns PlayQueueError when metadata is not a show or season', (tester) async {
