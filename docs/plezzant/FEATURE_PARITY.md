@@ -54,10 +54,15 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Search (cross-server) | ✅ 🎨 | Debounced; TV virtual keyboard |
 | Media details: metadata, ratings, cast & crew | ✅ 🎨 | |
 | Extras / trailers | ✅ | |
+| Theme music on details | 🆕 | Show, season and movie pages play the title's theme quietly (fade in, fade out on leave or play). Settings → Playback → *Play Theme Music* |
+| Photo libraries | 🆕 | Albums and loose photos as landscape cards; album pages with Slideshow / Shuffle; full-screen viewer (LEFT/RIGHT, SELECT pauses or plays a video, UP/DOWN info). Jellyfin "Home Videos & Photos" libraries list photos under All. No Unwatched filter on photos |
+| Voice search | 🆕 | Google Assistant "search for … on Plezzant" and the remote's search key open Search with the query |
 | Related media | ✅ | |
 | Watched / unwatched toggles | ✅ | Optimistic `watch_state_store` |
 | Ratings and favourites | ✅ 🎨 | Colours moved onto the palette |
 | Explore / Discover catalogue (TMDB etc.) | ✅ | |
+| Watchlist | ✅ | Explore; needs plex.tv |
+| Plex free streaming (Movies & TV on Plex, free Live TV channels) | 🚫 | Needs Plex's ad-supported playback and licensing endpoints, which third-party clients can't use. Catalogue rows and the Watchlist do appear in Explore |
 
 ## Playback
 
@@ -83,12 +88,14 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Resume position | ✅ | |
 | Timeline reporting / sessions | ✅ | `PlaybackReportSession` start→progress→stop |
 | Auto-play next episode, countdown | ✅ | |
+| Cinema trailers before movies | 🆕 🖥 | Settings → Playback → *Cinema Trailers* (0–3). Plex servers with Cinema Trailers set up; plays from the start only, not on resume, Watch Together or offline |
 | BIF / trickplay scrub thumbnails | ✅ 🖥 | Needs server-generated video preview thumbnails |
 | Frame-rate / dynamic-range matching | ✅ | `FrameRateMatcher`, display mode services |
 | ExoPlayer ↔ mpv fallback | ✅ | Automatic native fallback |
 | Dolby Vision conversion paths | ✅ | |
 | Performance / diagnostics overlay | ✅ 🆕 | Playback method row added |
-| Player chrome | 🟡 🎨 | TV control bar floats on glass. Timeline accent follows the playing title's palette colour; Manrope and Lucide throughout. Post-play screen and chapter strip are restyled only through the shared tokens |
+| Player chrome | 🎨 | TV control bar floats on glass. Timeline accent follows the playing title's palette colour. Chapter/queue strip uses the same card focus as the rest of the app and lines up with the bar; player sheets share one header, focus fill and check-mark selection |
+| Cast from the Plex app (Plex Companion target) | ⛔ | Plezzant can be driven from another Plezzant device (Companion remote), but does not yet advertise itself as a Plex player to the official Plex apps |
 
 ## Live TV & DVR
 
@@ -124,6 +131,9 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Apple TV style profile picker | 🆕 | "Who's watching?": round avatars on a soft gradient |
 | TV search | 🆕 | Poster grid with kind chips (All / Movies / TV Shows / Episodes) |
 | TV settings | 🆕 | tvOS-style large centred titles over a centred list |
+| Consistent list pages | 🆕 | Collections, playlists, photo albums, person pages and "View all" share one header (artwork, title, metadata, actions) and back chip; their grids sit on the safe frame |
+| Consistent grids and menus | 🆕 | Library grids, app-bar actions and the folder view sit on the safe frame; playlists are square everywhere; cast portraits are round; popup menus open at their button on every TV density; single-choice lists use a trailing check |
+| Screensaver | 🆕 | Android TV screen saver "Plezzant": library backdrops cross-fading with their titles (Settings → System → Screen saver on the TV) |
 
 ## Diagnostics & settings
 

@@ -379,6 +379,20 @@ Tick each item as you check it. Note anything odd, with the time it happened.
 - [ ] Glass surfaces (navigation rail, menus, player panels) look translucent but readable
 - [ ] Performance: moving around feels quick, with no stutter
 
+### New in 1.4.0
+
+- [ ] Theme music: open a show or movie with a theme (Plex) — it fades in quietly, and stops when you press Play or go back
+- [ ] Cinema trailers: Settings → Playback → *Cinema Trailers* = 1, then play an unwatched movie from the start — a trailer plays first and the movie follows
+- [ ] Photos: open a photo library, then an album; *Slideshow* runs full-screen; LEFT/RIGHT step through photos; SELECT pauses; BACK closes
+- [ ] Voice: hold the remote's Assistant button and say "search for *a title* on Plezzant" — Search opens with the words filled in
+- [ ] Screensaver: TV Settings → System → Ambient mode / Screen saver → *Plezzant*; let the TV idle — your library's backdrops cross-fade with titles
+- [ ] Collections, playlists, photo albums, a cast member's page and a row's "View all" all look alike: artwork on the left, big title, a line of details, round action buttons, the small back arrow top-left
+- [ ] Every grid lines up with the page title on the left and ends the same distance from the right edge
+- [ ] Cast pictures on a movie page are round; playlists are square
+- [ ] Filters / Sort / grouping menus open right next to the button you pressed
+- [ ] Settings pickers (e.g. Default Quality) mark the current choice with a tick on the right, like the player's Audio & Subtitles menu
+- [ ] In the player, press DOWN: the chapter strip's cards get the same white outline as cards elsewhere
+
 ## How to check that the app runs smoothly
 
 1. Open **Settings → Advanced** and turn on **Frame timing graph**.
