@@ -764,6 +764,8 @@ class MainActivity : FlutterActivity() {
     flutterEngine.plugins.add(ExoPlayerPlugin())
     flutterEngine.plugins.add(MpvAudioPlayerPlugin())
 
+    com.edde746.plezy.screensaver.ScreensaverArtworkStore.register(flutterEngine.dartExecutor.binaryMessenger, this)
+
     voiceSearchChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, VOICE_SEARCH_CHANNEL).also {
       it.setMethodCallHandler { call, result ->
         when (call.method) {

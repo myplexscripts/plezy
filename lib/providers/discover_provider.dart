@@ -9,6 +9,7 @@ import '../media/media_item.dart';
 import '../media/media_server_client.dart';
 import '../mixins/disposable_change_notifier_mixin.dart';
 import '../mixins/event_aware.dart';
+import '../services/screensaver_artwork_service.dart';
 import '../services/settings_service.dart';
 import '../services/data_aggregation_service.dart';
 import '../services/system_shelf_service.dart';
@@ -896,6 +897,7 @@ class DiscoverProvider extends ChangeNotifier with DisposableChangeNotifierMixin
   void _replaceHubs(List<MediaHub> hubs) {
     _hubs = hubs;
     ++_commitRevision;
+    ScreensaverArtworkService.instance.publishFromHubs(hubs, _multiServer.getClientForServer);
   }
 
   // --- Event reactions -----------------------------------------------------

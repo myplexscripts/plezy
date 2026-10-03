@@ -515,6 +515,21 @@ sealed class MediaItem with _$MediaItem {
   /// server, detail navigation) stay available, but they render like clips:
   /// 16:9 cards showing the generated video-frame thumb instead of a cropped
   /// 2:3 poster (#2036).
+  /// A photo album (Plex `Directory type=photo`, Jellyfin `PhotoAlbum`):
+  /// browsed like a folder, shown with photo-style cards.
+  bool get isPhotoAlbum {
+    if (kind == MediaKind.photo) {
+      // Plex albums share the photo type but carry no media parts.
+      return (mediaVersions == null || mediaVersions!.isEmpty) &&
+          raw?['key'] is String &&
+          (raw!['key'] as String).endsWith('/children');
+    }
+    return kind == MediaKind.folder && (raw?['Type'] as String?)?.toLowerCase() == 'photoalbum';
+  }
+
+  /// An individual photo (not an album).
+  bool get isPhoto => kind == MediaKind.photo && !isPhotoAlbum;
+
   bool get _isPlexHomeVideo {
     if (this case PlexMediaItem(subtype: 'clip', kind: MediaKind.movie)) return true;
     return false;
@@ -569,7 +584,7 @@ sealed class MediaItem with _$MediaItem {
 
   /// True when the item should render in 16:9.
   bool usesWideAspectRatio(EpisodePosterMode mode, {bool mixedHubContext = false}) {
-    if (kind == MediaKind.clip || _isPlexHomeVideo) return true;
+    if (kind == MediaKind.clip || _isPlexHomeVideo || kind == MediaKind.photo || isPhotoAlbum) return true;
     if (kind == MediaKind.episode && mode == EpisodePosterMode.episodeThumbnail) {
       return true;
     }

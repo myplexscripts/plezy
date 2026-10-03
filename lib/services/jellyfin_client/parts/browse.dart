@@ -355,6 +355,15 @@ mixin _JellyfinBrowseMethods on _JellyfinClientInternals {
     // accepts the same paging/sort/filter/prefix params /Items does
     // (ParentId, StartIndex, Limit, SortBy/SortOrder, NameStartsWith/
     // NameLessThan, Filters, Fields) and ignores the /Items-only keys.
+    // Photo libraries open on their top level, albums and loose photos
+    // together, the way Plex's section listing does; albums drill in.
+    if (query.kind == MediaKind.photo && (query.search == null || query.search!.isEmpty)) {
+      params['IncludeItemTypes'] = 'PhotoAlbum,Photo,Video';
+      params['Recursive'] = 'false';
+      params['SortBy'] = 'IsFolder,${params['SortBy'] ?? 'SortName'}';
+      params['SortOrder'] = 'Descending,${params['SortOrder'] ?? 'Ascending'}';
+    }
+
     final isArtistQuery = query.kind == MediaKind.artist;
     final endpoint = isArtistQuery ? '/Artists/AlbumArtists' : '/Items';
     if (isArtistQuery) {

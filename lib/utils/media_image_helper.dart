@@ -22,6 +22,7 @@ enum ImageType {
   heroLogo, // Large hero clear logos
   avatar, // Small square-ish avatars (user profiles, inline person headers)
   square, // 1:1 grid-cell artwork (albums, artists, tracks, cast cards)
+  photo, // A full photo in the viewer: fits inside the screen, never cropped
 }
 
 /// Backend-neutral image URL helper.
@@ -139,7 +140,7 @@ class MediaImageHelper {
   /// that hide the softness this compensates for. The reduced tier opts out
   /// wholesale, like every other memory budget.
   static double _supersampleFor(ImageType imageType, double dpr) {
-    if (DevicePerformance.isReduced || imageType == ImageType.art) return 1.0;
+    if (DevicePerformance.isReduced || imageType == ImageType.art || imageType == ImageType.photo) return 1.0;
     return (_supersampleDensityTarget / dpr).clamp(1.0, _maxArtworkSupersample);
   }
 
@@ -202,6 +203,7 @@ class MediaImageHelper {
 
       case ImageType.logo:
       case ImageType.heroLogo:
+      case ImageType.photo:
         final logoWidth = targetWidth;
         final logoHeight = targetHeight;
         return roundDimensions(logoWidth, logoHeight);
@@ -229,7 +231,7 @@ class MediaImageHelper {
   /// their slot overshoots the long axis by 20-30% in bytes, and the decode
   /// bounds throw those pixels away again.
   static bool _coversSlot(ImageType type) => switch (type) {
-    ImageType.logo || ImageType.heroLogo => false,
+    ImageType.logo || ImageType.heroLogo || ImageType.photo => false,
     ImageType.art || ImageType.thumb || ImageType.poster || ImageType.avatar || ImageType.square => true,
   };
 
@@ -350,8 +352,8 @@ class MediaImageHelper {
       // Reduced-tier backdrops match the ~720p fetch cap so oversized
       // originals (failed transcodes, external images) can't decode past
       // the low-RAM art budget.
-      ImageType.art when DevicePerformance.isReduced => (_reducedMaxArtWidth, _reducedMaxArtHeight),
-      ImageType.art => (scaled(1920), scaled(1080)),
+      ImageType.art || ImageType.photo when DevicePerformance.isReduced => (_reducedMaxArtWidth, _reducedMaxArtHeight),
+      ImageType.art || ImageType.photo => (scaled(1920), scaled(1080)),
       ImageType.logo => (scaled(600), scaled(300)),
       ImageType.heroLogo => (scaled(1000), scaled(500)),
       ImageType.avatar => (scaled(300), scaled(300)),

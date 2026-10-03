@@ -1552,6 +1552,21 @@
     "removeFromCollectionError": "Error removing from collection: ${error}",
     "searchCollections": "Search collections..."
   },
+  "photos": {
+    "photos": "Photos",
+    "albums": "Albums",
+    "noPhotos": "No photos yet",
+    "noAlbums": "No albums",
+    "photoCount": {
+      "one": "${n} photo",
+      "other": "${n} photos"
+    },
+    "slideshow": "Slideshow",
+    "shuffleSlideshow": "Shuffle slideshow",
+    "selectForSlideshow": "Select for slideshow",
+    "selectToPause": "Select to pause",
+    "selectToPlay": "Select to play"
+  },
   "playlists": {
     "title": "Playlists",
     "playlist": "Playlist",

@@ -26,6 +26,8 @@ class PlexMetadataType {
   static const int artist = 8;
   static const int album = 9;
   static const int track = 10;
+  static const int clip = 12;
+  static const int photo = 13;
 
   /// `type=1,2,3,4` — the standard "everything except music" filter used
   /// by the All / shared-library views, where music libraries surface as
@@ -41,6 +43,8 @@ class PlexMetadataType {
     MediaKind.artist => artist,
     MediaKind.album => album,
     MediaKind.track => track,
+    MediaKind.clip => clip,
+    MediaKind.photo => photo,
     _ => null,
   };
 
@@ -53,6 +57,8 @@ class PlexMetadataType {
     artist => MediaKind.artist,
     album => MediaKind.album,
     track => MediaKind.track,
+    clip => MediaKind.clip,
+    photo => MediaKind.photo,
     _ => null,
   };
 }

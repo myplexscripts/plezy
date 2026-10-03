@@ -75,6 +75,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$explore$en explore = Translations$explore$en.internal(_root);
 	late final Translations$liveTv$en liveTv = Translations$liveTv$en.internal(_root);
 	late final Translations$collections$en collections = Translations$collections$en.internal(_root);
+	late final Translations$photos$en photos = Translations$photos$en.internal(_root);
 	late final Translations$playlists$en playlists = Translations$playlists$en.internal(_root);
 	late final Translations$music$en music = Translations$music$en.internal(_root);
 	late final Translations$watchTogether$en watchTogether = Translations$watchTogether$en.internal(_root);
@@ -3911,6 +3912,48 @@ class Translations$collections$en {
 
 	/// en: 'Search collections...'
 	String get searchCollections => 'Search collections...';
+}
+
+// Path: photos
+class Translations$photos$en {
+	Translations$photos$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Photos'
+	String get photos => 'Photos';
+
+	/// en: 'Albums'
+	String get albums => 'Albums';
+
+	/// en: 'No photos yet'
+	String get noPhotos => 'No photos yet';
+
+	/// en: 'No albums'
+	String get noAlbums => 'No albums';
+
+	/// en: '(one) {${n} photo} (other) {${n} photos}'
+	String photoCount({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} photo',
+		other: '${n} photos',
+	);
+
+	/// en: 'Slideshow'
+	String get slideshow => 'Slideshow';
+
+	/// en: 'Shuffle slideshow'
+	String get shuffleSlideshow => 'Shuffle slideshow';
+
+	/// en: 'Select for slideshow'
+	String get selectForSlideshow => 'Select for slideshow';
+
+	/// en: 'Select to pause'
+	String get selectToPause => 'Select to pause';
+
+	/// en: 'Select to play'
+	String get selectToPlay => 'Select to play';
 }
 
 // Path: playlists
@@ -8536,6 +8579,16 @@ extension on Translations {
 			'collections.removeFromCollectionFailed' => 'Failed to remove from collection',
 			'collections.removeFromCollectionError' => ({required Object error}) => 'Error removing from collection: ${error}',
 			'collections.searchCollections' => 'Search collections...',
+			'photos.photos' => 'Photos',
+			'photos.albums' => 'Albums',
+			'photos.noPhotos' => 'No photos yet',
+			'photos.noAlbums' => 'No albums',
+			'photos.photoCount' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: '${n} photo', other: '${n} photos', ), 
+			'photos.slideshow' => 'Slideshow',
+			'photos.shuffleSlideshow' => 'Shuffle slideshow',
+			'photos.selectForSlideshow' => 'Select for slideshow',
+			'photos.selectToPause' => 'Select to pause',
+			'photos.selectToPlay' => 'Select to play',
 			'playlists.title' => 'Playlists',
 			'playlists.playlist' => 'Playlist',
 			'playlists.noPlaylists' => 'No playlists found',
@@ -8663,6 +8716,8 @@ extension on Translations {
 			'watchTogether.renameRoom' => 'Rename Room',
 			'watchTogether.removeRoom' => 'Remove',
 			'watchTogether.guestSwitchUnavailable' => 'Couldn\'t switch — server unavailable for sync',
+			_ => null,
+		} ?? switch (path) {
 			'watchTogether.guestSwitchFailed' => 'Couldn\'t switch — content not found on this server',
 			'watchTogether.defaultDisplayName' => 'User',
 			'watchTogether.errors.timedOut' => 'The relay did not respond in time',
@@ -8673,8 +8728,6 @@ extension on Translations {
 			'downloads.title' => 'Downloads',
 			'downloads.manage' => 'Manage',
 			'downloads.tvShows' => 'TV Shows',
-			_ => null,
-		} ?? switch (path) {
 			'downloads.movies' => 'Movies',
 			'downloads.music' => 'Music',
 			'downloads.tracksQueued' => ({required Object count}) => '${count} tracks queued for download',
@@ -9177,6 +9230,8 @@ extension on Translations {
 			'addServer.quickConnectMissingFields' => 'The Quick Connect response is missing a code or secret',
 			'addServer.quickConnectPollRejected' => 'Quick Connect polling was rejected by the server',
 			'addServer.serverTimedOut' => 'The server did not respond in time',
+			_ => null,
+		} ?? switch (path) {
 			'addServer.responseNotJson' => 'The server response was not valid JSON',
 			'addServer.responseMissingIdentity' => ({required Object product}) => 'The response is missing an ID or server name — is this a ${product} server?',
 			'addServer.probeFailed' => ({required Object error}) => 'Could not reach the server: ${error}',
@@ -9187,8 +9242,6 @@ extension on Translations {
 			'addServer.redirectUnsupported' => 'The server redirected to an unsupported URL',
 			'addServer.redirectDifferentHost' => ({required Object product}) => 'The server redirected to a different host. Enter the final ${product} URL directly.',
 			'addServer.redirectInsecure' => 'The server redirected from HTTPS to an insecure URL',
-			_ => null,
-		} ?? switch (path) {
 			'addServer.redirectUnsupportedEnterFinal' => ({required Object product}) => 'The server redirected to an unsupported URL. Enter the final ${product} URL directly.',
 			_ => null,
 		};

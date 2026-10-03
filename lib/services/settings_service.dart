@@ -625,6 +625,9 @@ class SettingsService extends BaseSharedPreferencesService {
   /// servers with trailers enabled). 0 turns them off.
   static const cinemaTrailerCount = IntPref('cinema_trailer_count', defaultValue: 0);
 
+  /// Seconds each photo stays up in a slideshow.
+  static const photoSlideshowSeconds = IntPref('photo_slideshow_seconds', defaultValue: 6);
+
   /// Flutter's frame-timing graph over the whole app, for checking UI speed
   /// on the TV itself.
   static const showFrameTimingOverlay = BoolPref('show_frame_timing_overlay');
@@ -1350,6 +1353,7 @@ class SettingsService extends BaseSharedPreferencesService {
     autoHidePerformanceOverlay,
     playThemeMusic,
     cinemaTrailerCount,
+    photoSlideshowSeconds,
     showFrameTimingOverlay,
     enableDiscordRPC,
     enableTraktWatchedSync,

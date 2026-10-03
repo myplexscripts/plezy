@@ -96,7 +96,7 @@ enum MediaKind {
       'playlist' => MediaKind.playlist,
       'clip' || 'trailer' || 'video' || 'musicvideo' => MediaKind.clip,
       'photo' => MediaKind.photo,
-      'folder' || 'collectionfolder' => MediaKind.folder,
+      'folder' || 'collectionfolder' || 'photoalbum' => MediaKind.folder,
       _ => MediaKind.unknown,
     };
   }

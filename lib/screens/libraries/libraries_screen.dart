@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import '../../media/media_kind.dart';
 import '../../focus/focusable_action_bar.dart';
 import '../../focus/dpad_navigator.dart';
 import '../../focus/input_mode_tracker.dart';
@@ -39,6 +40,10 @@ enum LibraryTabType { recommended, browse, collections, playlists }
 
 List<LibraryTabType> visibleLibraryTabs(MediaLibrary library) {
   if (library.isShared) return [LibraryTabType.browse, LibraryTabType.playlists];
+  // Photo libraries have no collections; recent photos, albums and playlists.
+  if (library.kind == MediaKind.photo) {
+    return [LibraryTabType.recommended, LibraryTabType.browse, LibraryTabType.playlists];
+  }
   return LibraryTabType.values;
 }
 

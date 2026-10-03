@@ -1027,6 +1027,8 @@ Widget _buildPosterLoadingPlaceholder(BuildContext context, String _) {
 }
 
 IconData _mediaPosterFallbackIcon(MediaItem item) {
+  if (item.isPhotoAlbum) return LucideIcons.images;
+  if (item.kind == MediaKind.photo) return LucideIcons.image;
   if (item.kind == MediaKind.artist) return LucideIcons.micVocal;
   if (item.kind == MediaKind.album) return LucideIcons.disc3;
   if (item.kind == MediaKind.track) return LucideIcons.music;
@@ -1187,7 +1189,14 @@ Widget _buildPosterImage(
   }
 
   return SkeletonLoader(
-    child: const Center(child: AppIcon(LucideIcons.film, fill: 1, size: 40, color: Colors.white54)),
+    child: Center(
+      child: AppIcon(
+        item is MediaItem ? _mediaPosterFallbackIcon(item) : LucideIcons.film,
+        fill: 1,
+        size: 40,
+        color: Colors.white54,
+      ),
+    ),
   );
 }
 

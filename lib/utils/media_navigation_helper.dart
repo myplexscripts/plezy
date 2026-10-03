@@ -6,11 +6,15 @@ import '../media/media_item.dart';
 import '../media/media_item_types.dart';
 import '../media/media_kind.dart';
 import '../media/media_playlist.dart';
+import '../screens/photos/photo_viewer_screen.dart';
+import '../screens/photos/photo_sequence_scope.dart';
+import '../screens/photos/photo_album_screen.dart';
 import '../screens/collection_detail_screen.dart';
 import '../screens/main_screen.dart';
 import '../screens/media_detail_screen.dart';
 import '../screens/playlist/playlist_detail_screen.dart';
 import '../services/settings_service.dart';
+import '../utils/provider_extensions.dart';
 import '../utils/global_key_utils.dart';
 import 'catalog_navigation_helper.dart';
 import 'music_navigation.dart';
@@ -205,6 +209,16 @@ Future<MediaNavigationResult> navigateToMediaItem(
     return MediaNavigationResult.unsupported;
   }
 
+  // Photo libraries: albums open as a grid, photos in the viewer.
+  if (mi.isPhotoAlbum) {
+    await Navigator.push<void>(context, MaterialPageRoute(builder: (_) => PhotoAlbumScreen(album: mi)));
+    return MediaNavigationResult.navigated;
+  }
+  if (mi.isPhoto) {
+    await openPhotoViewer(context, mi);
+    return MediaNavigationResult.navigated;
+  }
+
   switch (mi.kind) {
     case MediaKind.collection:
       final result = await Navigator.push<bool>(
@@ -292,4 +306,27 @@ Future<MediaNavigationResult> navigateToMediaItemDetails(
     onRefresh?.call(mi);
   }
   return MediaNavigationResult.navigated;
+}
+
+/// Opens [photo] in the viewer, stepping through the grid it came from when
+/// that grid provides a [PhotoSequenceScope].
+Future<void> openPhotoViewer(BuildContext context, MediaItem photo) async {
+  final sequence = [
+    for (final item in PhotoSequenceScope.maybeOf(context)?.items() ?? const <MediaItem>[])
+      if (isPhotoViewerItem(item)) item,
+  ];
+  var index = sequence.indexWhere((item) => item.globalKey == photo.globalKey);
+  if (index < 0) {
+    sequence
+      ..clear()
+      ..add(photo);
+    index = 0;
+  }
+  final client = context.tryGetMediaClientWithFallback(serverIdOrNull(photo.serverId));
+  await Navigator.push<void>(
+    context,
+    MaterialPageRoute(
+      builder: (_) => PhotoViewerScreen(items: sequence, initialIndex: index, client: client),
+    ),
+  );
 }

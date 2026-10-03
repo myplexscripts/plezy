@@ -1,5 +1,6 @@
 import 'dart:async';
 import '../../../media/ids.dart';
+import '../../photos/photo_sequence_scope.dart';
 
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -1719,55 +1720,59 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
     // build phase and triggers a setState-in-build assertion.
     final overlayTopPadding = MediaQuery.paddingOf(context).top + kToolbarHeight;
 
-    return Stack(
-      children: [
-        Positioned.fill(child: _buildScrollableContent()),
-        if (_shouldShowAlphaJumpBar)
-          Positioned(
-            top: overlayTopPadding,
-            right: 0,
-            bottom: 0,
-            // Select the derived letter rather than listening to the raw
-            // index: the index changes every scrolled row, but the bar only
-            // needs a rebuild when the letter itself flips.
-            // Horizontal-only SafeArea: on landscape phones the trailing
-            // inset (notch/rounded corner) is not consumed by the nav rail,
-            // so the handle must clear it itself. Vertical insets are
-            // already covered by overlayTopPadding and the parent scaffold.
-            child: SafeArea(
-              top: false,
-              bottom: false,
-              child: _isPhone(context)
-                  ? ListenableSelector<String>(
-                      listenable: _currentFirstVisibleIndex,
-                      selector: () => _alphaLetterFor(_currentFirstVisibleIndex.value),
-                      builder: (context, currentLetter, _) => ValueListenableBuilder<bool>(
-                        valueListenable: _isScrollActive,
-                        builder: (context, scrolling, _) => AlphaScrollHandle(
+    // Photos opened from this grid step through its loaded items.
+    return PhotoSequenceScope(
+      items: () => [for (var i = 0; i < totalSize; i++) ?loadedItems[i]],
+      child: Stack(
+        children: [
+          Positioned.fill(child: _buildScrollableContent()),
+          if (_shouldShowAlphaJumpBar)
+            Positioned(
+              top: overlayTopPadding,
+              right: 0,
+              bottom: 0,
+              // Select the derived letter rather than listening to the raw
+              // index: the index changes every scrolled row, but the bar only
+              // needs a rebuild when the letter itself flips.
+              // Horizontal-only SafeArea: on landscape phones the trailing
+              // inset (notch/rounded corner) is not consumed by the nav rail,
+              // so the handle must clear it itself. Vertical insets are
+              // already covered by overlayTopPadding and the parent scaffold.
+              child: SafeArea(
+                top: false,
+                bottom: false,
+                child: _isPhone(context)
+                    ? ListenableSelector<String>(
+                        listenable: _currentFirstVisibleIndex,
+                        selector: () => _alphaLetterFor(_currentFirstVisibleIndex.value),
+                        builder: (context, currentLetter, _) => ValueListenableBuilder<bool>(
+                          valueListenable: _isScrollActive,
+                          builder: (context, scrolling, _) => AlphaScrollHandle(
+                            firstCharacters: _firstCharacters,
+                            onJump: _jumpToIndex,
+                            currentLetter: currentLetter,
+                            descending: _isTitleSortDescending,
+                            isScrolling: scrolling,
+                          ),
+                        ),
+                      )
+                    : ListenableSelector<String>(
+                        listenable: _currentFirstVisibleIndex,
+                        selector: () => _alphaLetterFor(_currentFirstVisibleIndex.value),
+                        builder: (context, currentLetter, _) => AlphaJumpBar(
                           firstCharacters: _firstCharacters,
                           onJump: _jumpToIndex,
                           currentLetter: currentLetter,
                           descending: _isTitleSortDescending,
-                          isScrolling: scrolling,
+                          focusNode: _alphaJumpBarFocusNode,
+                          onNavigateLeft: _navigateToGridNearScroll,
+                          onBack: _navigateToGridNearScroll,
                         ),
                       ),
-                    )
-                  : ListenableSelector<String>(
-                      listenable: _currentFirstVisibleIndex,
-                      selector: () => _alphaLetterFor(_currentFirstVisibleIndex.value),
-                      builder: (context, currentLetter, _) => AlphaJumpBar(
-                        firstCharacters: _firstCharacters,
-                        onJump: _jumpToIndex,
-                        currentLetter: currentLetter,
-                        descending: _isTitleSortDescending,
-                        focusNode: _alphaJumpBarFocusNode,
-                        onNavigateLeft: _navigateToGridNearScroll,
-                        onBack: _navigateToGridNearScroll,
-                      ),
-                    ),
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -2172,7 +2177,8 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
     // Clip libraries (MediaBrowser home videos, Plex "Other Videos") hold
     // homogeneous 16:9 items, so the flat grid uses wide cells; poster cells
     // would letterbox every card (#2036).
-    final isClipLibrary = widget.library.kind == MediaKind.clip;
+    // Photo libraries likewise: photos and albums are landscape.
+    final isClipLibrary = widget.library.kind == MediaKind.clip || widget.library.kind == MediaKind.photo;
     final browseShape = isMusicGrouping
         ? CardShape.square
         : isClipLibrary
