@@ -35,10 +35,10 @@ class FocusTheme {
   }
 
   static Duration getAnimationDuration(BuildContext context) {
-    // Reduced tier: snap focus transitions (scale/border/glow) instead of
-    // animating — each animation frame re-rasterizes the focused card.
-    if (DevicePerformance.isReduced) return Duration.zero;
-    return Theme.of(context).extension<MonoTokens>()?.fast ?? const Duration(milliseconds: 150);
+    if (DevicePerformance.isReduced || MediaQuery.disableAnimationsOf(context)) {
+      return Duration.zero;
+    }
+    return PlezzantMotion.focus;
   }
 
   /// How long a TV row (or the hub list) glides after one D-pad focus step.

@@ -172,6 +172,12 @@ class NavigationRailItem extends StatelessWidget {
     this.onNavigateRight,
   });
 
+  double _resolvedExpandedContentWidth(BuildContext context) =>
+      PlatformDetector.isTV() ? SideNavigationRailState.expandedContentWidthForContext(context) : expandedContentWidth;
+
+  double _resolvedExpandedHeight(BuildContext context) =>
+      PlatformDetector.isTV() ? PlezzantTv.navRowHeight : expandedHeight;
+
   Color? _indicatorColorForLayout(MonoTokens t, {required bool focused, required bool collapsedLayout}) {
     // The collapsed TV rail is a transparent overlay strip; a persistent
     // active pill over artwork is noise there, so it shows focus only.
@@ -311,11 +317,13 @@ class NavigationRailItem extends StatelessWidget {
   /// single icon moves with the pill geometry while label and indicator color
   /// alpha provide the crossfade without subtree opacity layers.
   Widget _buildMorphingLayouts(BuildContext context, MonoTokens t, {required bool focused, required double expansion}) {
+    final resolvedWidth = _resolvedExpandedContentWidth(context);
+    final resolvedHeight = _resolvedExpandedHeight(context);
     if (expansion <= 0) return _buildCollapsedLayout(context, t, focused: focused);
     if (expansion >= 1) {
       return SizedBox(
-        width: expandedContentWidth,
-        height: expandedHeight,
+        width: resolvedWidth,
+        height: resolvedHeight,
         child: _buildExpandedLayout(context, t, focused: focused, fixedHeight: true),
       );
     }
@@ -326,18 +334,18 @@ class NavigationRailItem extends StatelessWidget {
     final indicatorLeft = lerpDouble((collapsedWidth - collapsedPillWidth) / 2, 0, expansion);
     final indicatorTop = lerpDouble((collapsedHeight - collapsedIndicatorHeight) / 2, 0, expansion);
     final iconLeft = lerpDouble((collapsedWidth - iconSize) / 2, horizontalPadding, expansion);
-    final iconTop = lerpDouble((collapsedHeight - iconSize) / 2, (expandedHeight - iconSize) / 2, expansion);
+    final iconTop = lerpDouble((collapsedHeight - iconSize) / 2, (resolvedHeight - iconSize) / 2, expansion);
 
     return SizedBox(
-      width: lerpDouble(collapsedWidth, expandedContentWidth, expansion),
-      height: lerpDouble(collapsedHeight, expandedHeight, expansion),
+      width: lerpDouble(collapsedWidth, resolvedWidth, expansion),
+      height: lerpDouble(collapsedHeight, resolvedHeight, expansion),
       child: Stack(
         children: [
           Positioned(
             left: indicatorLeft,
             top: indicatorTop,
             child: Container(
-              width: lerpDouble(collapsedPillWidth, expandedContentWidth, expansion),
+              width: lerpDouble(collapsedPillWidth, resolvedWidth, expansion),
               height: lerpDouble(collapsedIndicatorHeight, expandedHeight, expansion),
               decoration: BoxDecoration(
                 color: _indicatorColor(t, focused: focused, expansion: expansion),
@@ -349,8 +357,8 @@ class NavigationRailItem extends StatelessWidget {
             left: 0,
             top: 0,
             child: SizedBox(
-              width: expandedContentWidth,
-              height: expandedHeight,
+              width: resolvedWidth,
+              height: resolvedHeight,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                 child: _buildExpandedContent(context, t, labelOpacity: expansion, showLeading: false),
@@ -381,7 +389,7 @@ class NavigationRailItem extends StatelessWidget {
         final focused = focusNode.hasFocus && InputModeTracker.isKeyboardMode(context);
         final content = collapsedLabel == null
             ? SizedBox(
-                width: expandedContentWidth,
+                width: _resolvedExpandedContentWidth(context),
                 child: _buildExpandedLayout(context, t, focused: focused, fixedHeight: false),
               )
             : TweenAnimationBuilder<double>(
@@ -394,6 +402,7 @@ class NavigationRailItem extends StatelessWidget {
                   return PlatformDetector.isTV() ? Opacity(opacity: expansion.clamp(0.0, 1.0), child: layout) : layout;
                 },
               );
+        final tvFocused = focused && PlatformDetector.isTV() && !isCollapsed;
         return Focus(
           focusNode: focusNode,
           autofocus: autofocus,
@@ -404,11 +413,24 @@ class NavigationRailItem extends StatelessWidget {
               canRequestFocus: false,
               onTap: onTap,
               borderRadius: BorderRadius.circular(MonoTokens.radiusFull),
-              child: UnconstrainedBox(
-                alignment: .centerLeft,
-                constrainedAxis: Axis.vertical,
-                clipBehavior: Clip.hardEdge,
-                child: content,
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(end: tvFocused ? 1.0 : 0.0),
+                duration: DevicePerformance.reducedDuration(tvFocused ? PlezzantMotion.focus : PlezzantMotion.focusOut),
+                curve: PlezzantMotion.standard,
+                builder: (context, value, child) => Transform.translate(
+                  offset: Offset(4 * value, -1.5 * value),
+                  child: Transform.scale(
+                    scale: 1 + (0.025 * value),
+                    alignment: Alignment.centerLeft,
+                    child: child,
+                  ),
+                ),
+                child: UnconstrainedBox(
+                  alignment: .centerLeft,
+                  constrainedAxis: Axis.vertical,
+                  clipBehavior: Clip.none,
+                  child: content,
+                ),
               ),
             ),
           ),
@@ -469,11 +491,11 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
   bool _lastReportedInteractionExpanded = false;
   Timer? _collapseTimer;
   static const double collapsedWidth = 80.0;
-  static const double tvCollapsedWidth = 64.0;
+  static const double tvCollapsedWidth = PlezzantTv.sidebarCollapsedWidth;
   static const double expandedWidth = 248.0;
   static const double _horizontalPadding = 12.0;
   static const double _collapsedHorizontalPadding = 4.0;
-  static const double _itemGap = 4.0;
+  static const double _itemGap = 6.0;
   static const Duration _collapseDelay = Duration(milliseconds: 150);
 
   /// Trailing corner radius of the floating (hover/touch) overlay panel; the
@@ -493,16 +515,20 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
 
   /// TV opens the rail as a floating glass panel inset from the screen edge
   /// (Apple TV style), so it needs room for the inset around the items.
-  static const double tvExpandedWidth = 268.0;
+  static const double tvExpandedWidth = PlezzantTv.sidebarWidth;
 
   static double expandedWidthForContext(BuildContext _) => PlatformDetector.isTV() ? tvExpandedWidth : expandedWidth;
 
   /// Edge padding around the item column; collapsed rails center their items
   /// (72px in the 80px desktop strip, 40px in the 48px TV strip).
   static double horizontalPaddingForContext(BuildContext _, {required bool isCollapsed}) {
-    if (!isCollapsed && PlatformDetector.isTV()) return (tvExpandedWidth - (expandedWidth - 24)) / 2;
+    if (!isCollapsed && PlatformDetector.isTV()) return PlezzantTv.sidebarHorizontalPadding;
     return isCollapsed ? _collapsedHorizontalPadding : _horizontalPadding;
   }
+
+  static double expandedContentWidthForContext(BuildContext context) =>
+      expandedWidthForContext(context) -
+      (2 * horizontalPaddingForContext(context, isCollapsed: false));
 
   static const _kHome = 'home';
   static const _kExplore = 'explore';
@@ -984,10 +1010,10 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                 duration: expandDuration,
                 curve: expandCurve,
                 width: isCollapsed ? effectiveCollapsedWidth : expandedWidthForContext(context),
-                clipBehavior: Clip.hardEdge,
+                clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   borderRadius: PlatformDetector.isTV()
-                      ? BorderRadius.circular(isCollapsed ? 22 : 28)
+                      ? BorderRadius.circular(isCollapsed ? 22 : PlezzantTv.navPanelRadius)
                       : BorderRadius.zero,
                 ),
                 child: Stack(
@@ -1012,7 +1038,9 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                             // the open panel is a rounded glass card.
                             ? PlezzantGlass(
                                 style: PlezzantGlassStyle.panel,
-                                borderRadius: BorderRadius.circular(isCollapsed ? 22 : 28),
+                                borderRadius: BorderRadius.circular(
+                                  isCollapsed ? 22 : PlezzantTv.navPanelRadius,
+                                ),
                                 child: const SizedBox.expand(),
                               )
                             : AnimatedContainer(
@@ -1201,7 +1229,9 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
       selectedIcon: selectedIcon,
       label: Text(
         label,
-        style: TextStyle(fontSize: 14, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400),
+        style: PlatformDetector.isTV()
+            ? (isSelected ? PlezzantTvType.navigationSelected : PlezzantTvType.navigation)
+            : TextStyle(fontSize: 14, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400),
         overflow: .ellipsis,
         maxLines: 1,
       ),
@@ -1233,7 +1263,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           Text(
             nowPlayingLabel,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: PlatformDetector.isTV() ? 20 : 14,
               fontWeight: .w600,
               color: t.text.withValues(alpha: t.text.a * opacity),
             ),
@@ -1242,7 +1272,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           ),
           Text(
             trackTitle,
-            style: TextStyle(fontSize: 14, color: t.textMuted.withValues(alpha: t.textMuted.a * opacity)),
+            style: (PlatformDetector.isTV() ? PlezzantTvType.navigationSecondary : const TextStyle(fontSize: 14))
+                .copyWith(color: t.textMuted.withValues(alpha: t.textMuted.a * opacity)),
             overflow: .ellipsis,
             maxLines: 1,
           ),
@@ -1278,7 +1309,9 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: t.text))
           : Text(
               Translations.of(context).common.reconnect,
-              style: const TextStyle(fontSize: 14, fontWeight: .w400),
+              style: PlatformDetector.isTV()
+                  ? PlezzantTvType.navigation
+                  : const TextStyle(fontSize: 14, fontWeight: .w400),
               overflow: .ellipsis,
               maxLines: 1,
             ),
@@ -1304,7 +1337,9 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
       icon: isFullscreen ? LucideIcons.minimize : LucideIcons.maximize,
       label: Text(
         label,
-        style: const TextStyle(fontSize: 14, fontWeight: .w400),
+        style: PlatformDetector.isTV()
+            ? PlezzantTvType.navigation
+            : const TextStyle(fontSize: 14, fontWeight: .w400),
         overflow: .ellipsis,
         maxLines: 1,
       ),
@@ -1350,7 +1385,9 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           icon: LucideIcons.libraryBig,
           label: Text(
             Translations.of(context).navigation.libraries,
-            style: TextStyle(fontSize: 14, fontWeight: isLibrariesTabSelected ? FontWeight.w600 : FontWeight.w400),
+            style: PlatformDetector.isTV()
+                ? (isLibrariesTabSelected ? PlezzantTvType.navigationSelected : PlezzantTvType.navigation)
+                : TextStyle(fontSize: 14, fontWeight: isLibrariesTabSelected ? FontWeight.w600 : FontWeight.w400),
             overflow: .ellipsis,
             maxLines: 1,
           ),
@@ -1403,7 +1440,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
                     padding: const EdgeInsets.all(16),
                     child: Text(
                       Translations.of(context).libraries.noLibrariesFound,
-                      style: TextStyle(fontSize: 14, color: t.textMuted),
+                      style: (PlatformDetector.isTV() ? PlezzantTvType.navigationSecondary : const TextStyle(fontSize: 14))
+                          .copyWith(color: t.textMuted),
                     ),
                   )
                 else ...[
@@ -1463,7 +1501,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
       iconSize: 14,
       leading: backend == null ? null : BackendBadge(backend: backend, size: 14, color: t.textMuted),
       label: serverName,
-      labelStyle: TextStyle(fontSize: 14, fontWeight: .w600, letterSpacing: 0.4, color: t.textMuted),
+      labelStyle: (PlatformDetector.isTV() ? PlezzantTvType.navigationSecondary : const TextStyle(fontSize: 14))
+          .copyWith(fontWeight: .w600, letterSpacing: 0.2, color: t.textMuted),
       verticalPadding: 6,
       isExpanded: !_collapsedServerGroupKeys.contains(_serverGroupStateKey(section, serverId)),
       onToggle: () => _toggleServerCollapse(section, serverId),
@@ -1486,7 +1525,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
       icon: LucideIcons.eyeOff,
       iconSize: 16,
       label: Translations.of(context).libraries.hiddenLibrariesCount(count: count),
-      labelStyle: TextStyle(fontSize: 14, fontWeight: .w500, color: t.textMuted),
+      labelStyle: (PlatformDetector.isTV() ? PlezzantTvType.navigationSecondary : const TextStyle(fontSize: 14))
+          .copyWith(fontWeight: .w500, color: t.textMuted),
       verticalPadding: 8,
       isExpanded: _hiddenLibrariesExpanded,
       onToggle: () => setState(() => _hiddenLibrariesExpanded = !_hiddenLibrariesExpanded),
@@ -1579,7 +1619,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           Text(
             library.title,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: PlatformDetector.isTV() ? 21 : 14,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               color: isSelected ? t.text : t.textMuted,
             ),
@@ -1588,7 +1628,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
           if (showServerName)
             Text(
               library.serverName!,
-              style: TextStyle(fontSize: 14, color: t.textMuted.withValues(alpha: 0.4)),
+              style: (PlatformDetector.isTV() ? PlezzantTvType.navigationSecondary : const TextStyle(fontSize: 14))
+                  .copyWith(color: t.textMuted.withValues(alpha: 0.55)),
               overflow: .ellipsis,
             ),
         ],
@@ -1597,7 +1638,7 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
       onTap: () => widget.onLibrarySelected(library.globalKey),
       focusNode: focusNode,
       iconSize: 18,
-      expandedHeight: 40,
+      expandedHeight: PlatformDetector.isTV() ? 54 : 40,
       suppressSelectedBackground: widget.isSidebarFocused,
       onNavigateRight: widget.onNavigateToContent,
     );
@@ -1627,14 +1668,18 @@ class _TvPanelHeader extends StatelessWidget {
           Expanded(
             child: Text(
               profile.displayName,
-              style: PlezzantType.labelLarge.copyWith(color: t.text),
+              style: (PlatformDetector.isTV() ? PlezzantTvType.navigationSecondary : PlezzantType.labelLarge)
+                  .copyWith(color: t.text),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),
         ] else
           const Spacer(),
-        SystemClock(style: PlezzantType.labelMedium.copyWith(color: t.textMuted)),
+        SystemClock(
+          style: (PlatformDetector.isTV() ? PlezzantTvType.navigationSecondary : PlezzantType.labelMedium)
+              .copyWith(color: t.textMuted),
+        ),
       ],
     );
   }

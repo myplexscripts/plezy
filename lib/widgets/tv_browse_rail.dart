@@ -21,6 +21,8 @@ import '../screens/hub_detail_screen.dart';
 import '../services/device_performance.dart';
 import '../services/settings_service.dart';
 import '../theme/mono_tokens.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
+import '../theme/plezzant/plezzant_typography.dart';
 import '../utils/layout_constants.dart';
 import '../utils/media_image_helper.dart';
 import '../utils/media_navigation_helper.dart';
@@ -79,19 +81,22 @@ class TvBrowseRailLayout {
 
   static double scaleForSize(Size size) => TvLayoutConstants.scaleForSize(size);
 
-  static double horizontalInsetForScale(double scale) => (24 * scale).clamp(18, 40).toDouble();
+  static double horizontalInsetForScale(double scale) =>
+      (PlezzantTv.safeX * scale).clamp(56.0, 96.0).toDouble();
 
-  static double railTopPaddingForScale(double scale) => 12 * scale;
+  static double railTopPaddingForScale(double scale) => 16 * scale;
 
-  static double railBottomPaddingForScale(double scale) => 8 * scale;
+  static double railBottomPaddingForScale(double scale) => 20 * scale;
 
-  static double railInteractionExpansionForScale(double scale) => (12 * scale).clamp(8, 18).toDouble();
+  static double railInteractionExpansionForScale(double scale) =>
+      (PlezzantTv.focusOverflow * scale).clamp(12.0, 22.0).toDouble();
 
-  static double fullCardItemGapForScale(double scale) => (12 * scale).clamp(8, 18).toDouble();
+  static double fullCardItemGapForScale(double scale) =>
+      (PlezzantTv.homeCardGap * scale).clamp(18.0, 28.0).toDouble();
 
-  static double hubStripHeightForScale(double scale) => 30 * scale;
+  static double hubStripHeightForScale(double scale) => PlezzantTv.shelfTitleHeight * scale;
 
-  static double nextHubPeekHeightForScale(double scale) => 20 * scale;
+  static double nextHubPeekHeightForScale(double scale) => 24 * scale;
 
   static double hubSectionHeightFor({required double scale, required double activeRailHeight}) {
     return hubStripHeightForScale(scale) + activeRailHeight;
@@ -113,9 +118,9 @@ class TvBrowseRailLayout {
     required double itemGap,
   }) {
     final f = LibraryDensity.factor(density);
-    final minWidth = (useWideLayout ? 280 : 170) * scale;
-    final maxWidth = (useWideLayout ? 420 : 250) * scale;
-    final targetCards = useWideLayout ? 4.2 - (f * 1.4) : 7.0 - (f * 2.0);
+    final minWidth = (useWideLayout ? 300 : 176) * scale;
+    final maxWidth = (useWideLayout ? 340 : 248) * scale;
+    final targetCards = useWideLayout ? 4.6 - (f * 1.0) : 6.6 - (f * 1.8);
     final usableWidth = (availableWidth - horizontalPadding).clamp(1.0, double.infinity).toDouble();
     final gapCount = targetCards > 1 ? targetCards - 1 : 0.0;
     final fittedWidth = (usableWidth - (itemGap * gapCount)) / targetCards;
@@ -135,12 +140,16 @@ class TvBrowseRailLayout {
     bool forceWideLayout = false,
     bool hasLeading = false,
   }) {
-    final focusExtra = FocusTheme.focusBorderWidth * 2 * scale;
-    final railEdgePadding = focusExtra + (12 * scale);
+    final focusExtra = PlezzantTv.focusOverflow * scale;
+    final railEdgePadding = focusExtra + (8 * scale);
     // Full-card rails keep their own scale-derived gutter, like full-bleed
     // grids; every other rail follows the user's grid-spacing setting, scaled
     // with the rest of the rail metrics (#2226).
-    final itemGap = fullCardLayout ? fullCardItemGapForScale(scale) : gridSpacing.gridGap * scale;
+    final itemGap = forceWideLayout
+        ? (PlezzantTv.homeCardGap * scale).clamp(18.0, 28.0).toDouble()
+        : fullCardLayout
+        ? fullCardItemGapForScale(scale)
+        : gridSpacing.gridGap * scale;
     final isPersonHub = TvBrowseRailLayout.isPersonHub(hub);
     final emptyEpisodeThumbnailHub =
         hub.items.isEmpty && hub.type == 'episode' && episodePosterMode == EpisodePosterMode.episodeThumbnail;
@@ -170,9 +179,9 @@ class TvBrowseRailLayout {
     final posterHeight = (isPersonHub || isSquareHub)
         ? posterWidth
         : (useWideLayout ? posterWidth * 9 / 16 : posterWidth * 1.5);
-    final labelHeight = fullCardLayout ? 0.0 : ((isPersonHub ? 56 : 40) * scale);
+    final labelHeight = fullCardLayout ? 0.0 : ((isPersonHub ? 64 : useWideLayout ? 56 : 52) * scale);
     final containerHeight = (posterHeight + labelHeight).ceilToDouble();
-    final height = containerHeight + focusExtra + (10 * scale);
+    final height = containerHeight + (focusExtra * 2) + (8 * scale);
 
     return TvBrowseRailLayoutMetrics(
       isPersonHub: isPersonHub,
@@ -1445,9 +1454,12 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
     final iconColor = isActive ? colorScheme.onSurface : colorScheme.onSurface.withValues(alpha: 0.42);
     final showServerName = widget.showServerName && hub.serverName != null;
     final serverColor = colorScheme.primary.withValues(alpha: isActive ? 0.7 : 0.4);
-    final serverStyle = Theme.of(
-      context,
-    ).textTheme.titleMedium?.copyWith(color: serverColor, fontSize: 15 * scale, height: 1, fontWeight: FontWeight.w700);
+    final serverStyle = PlezzantTvType.navigationSecondary.copyWith(
+      color: serverColor,
+      fontSize: PlezzantTvType.navigationSecondary.fontSize! * scale,
+      height: 1,
+      fontWeight: FontWeight.w600,
+    );
 
     return SizedBox(
       height: TvBrowseRailLayout.hubStripHeightForScale(scale),
@@ -1465,12 +1477,10 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                         hub.title,
                         maxLines: 1,
                         overflow: .ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        style: PlezzantTvType.shelfTitle.copyWith(
                           color: titleColor,
-                          fontSize: 21 * scale,
+                          fontSize: PlezzantTvType.shelfTitle.fontSize! * scale,
                           height: 1,
-                          letterSpacing: -0.2,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),

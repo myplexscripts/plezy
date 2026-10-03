@@ -110,8 +110,8 @@ class TvSpotlightBackground extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black.withValues(alpha: 0.28), Colors.transparent, bgColor.withValues(alpha: 0.84)],
-                stops: const [0.0, 0.42, 1.0],
+                colors: [Colors.black.withValues(alpha: 0.20), Colors.transparent, bgColor.withValues(alpha: 0.72)],
+                stops: const [0.0, 0.46, 1.0],
               ),
             ),
             if (media != null && showInfo)
@@ -207,8 +207,8 @@ class TvSpotlightBackground extends StatelessWidget {
       gradient: LinearGradient(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [bgColor.withValues(alpha: 0.72), bgColor.withValues(alpha: 0.18), Colors.transparent],
-        stops: const [0.0, 0.50, 1.0],
+        colors: [bgColor.withValues(alpha: 0.62), bgColor.withValues(alpha: 0.12), Colors.transparent],
+        stops: const [0.0, 0.46, 1.0],
       ),
     );
   }

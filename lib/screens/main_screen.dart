@@ -2087,7 +2087,7 @@ class _MainScreenState extends State<MainScreen>
         pref: SettingsService.alwaysKeepSidebarOpen,
         builder: (context, alwaysExpanded, _) {
           final tvOverlayNavigation = PlatformDetector.isTV();
-          final tvNavigationLeftInset = tvOverlayNavigation ? 24.0 : 0.0;
+          final tvNavigationLeftInset = tvOverlayNavigation ? PlezzantTv.sidebarInset : 0.0;
           final targetContentOffset = _sideNavigationWidth(context, alwaysExpanded: alwaysExpanded);
           final tvFloatingRail = tvOverlayNavigation && !alwaysExpanded;
 
@@ -2152,7 +2152,7 @@ class _MainScreenState extends State<MainScreen>
                     openSettings: _openSettings,
                     child: SideNavigationScope(
                       child: Stack(
-                        clipBehavior: Clip.hardEdge,
+                        clipBehavior: Clip.none,
                         children: [
                           Positioned.fill(child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor)),
                           Positioned(
@@ -2190,14 +2190,14 @@ class _MainScreenState extends State<MainScreen>
                                 opacity: _isSidebarInteractionExpanded ? 1.0 : 0.0,
                                 duration: SideNavigationRailState.expandDuration,
                                 curve: SideNavigationRailState.expandCurve,
-                                child: const ColoredBox(color: Color(0x66000000)),
+                                child: const ColoredBox(color: Color(0x33000000)),
                               ),
                             ),
                           ),
                           if (tvFloatingRail)
                             Positioned(
-                              top: 24,
-                              left: 28,
+                              top: PlezzantTv.sidebarInset,
+                              left: PlezzantTv.sidebarInset,
                               child: IgnorePointer(
                                 child: AnimatedOpacity(
                                   opacity: _isSidebarFocused ? 0.0 : 1.0,
@@ -2208,8 +2208,8 @@ class _MainScreenState extends State<MainScreen>
                               ),
                             ),
                           Positioned(
-                            top: tvOverlayNavigation ? 24 : 0,
-                            bottom: tvOverlayNavigation ? 24 : 0,
+                            top: tvOverlayNavigation ? PlezzantTv.sidebarInset : 0,
+                            bottom: tvOverlayNavigation ? PlezzantTv.sidebarInset : 0,
                             left: tvOverlayNavigation ? tvNavigationLeftInset : 0,
                             child: FocusScope(
                               node: _sidebarFocusScope,
@@ -2383,20 +2383,23 @@ class _TvSectionPill extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AppIcon(LucideIcons.chevronLeft, fill: 1, size: 16, color: Colors.white.withValues(alpha: 0.55)),
-        const SizedBox(width: 4),
+        AppIcon(LucideIcons.chevronLeft, fill: 1, size: 18, color: Colors.white.withValues(alpha: 0.55)),
+        const SizedBox(width: 6),
         PlezzantGlass(
           style: PlezzantGlassStyle.chrome,
           borderRadius: const BorderRadius.all(Radius.circular(PlezzantRadius.pill)),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AppIcon(icon, fill: 1, size: 16, color: Colors.white),
-              const SizedBox(width: 8),
+              AppIcon(icon, fill: 1, size: 18, color: Colors.white),
+              const SizedBox(width: 10),
               Text(
                 label,
-                style: PlezzantType.labelLarge.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                style: PlezzantTvType.navigationSecondary.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),

@@ -41,7 +41,7 @@ class PlezzantGlassStyle {
 
   /// Navigation rails and top bars. Kept clear so artwork remains present.
   static const chrome = PlezzantGlassStyle(
-    blur: 26,
+    blur: 22,
     fillAlpha: 0.055,
     tintAlpha: 0.035,
     solidAlpha: 0.90,
@@ -51,7 +51,7 @@ class PlezzantGlassStyle {
 
   /// Player controls and compact floating panels over video.
   static const overlay = PlezzantGlassStyle(
-    blur: 30,
+    blur: 26,
     fillAlpha: 0.075,
     tintAlpha: 0.045,
     solidAlpha: 0.88,
@@ -61,7 +61,7 @@ class PlezzantGlassStyle {
 
   /// Menus, dialogs and sheets that need stronger separation.
   static const panel = PlezzantGlassStyle(
-    blur: 34,
+    blur: 28,
     fillAlpha: 0.105,
     tintAlpha: 0.04,
     solidAlpha: 0.95,
@@ -71,7 +71,7 @@ class PlezzantGlassStyle {
 
   /// Very clear glass for small controls floating directly over artwork.
   static const clear = PlezzantGlassStyle(
-    blur: 22,
+    blur: 20,
     fillAlpha: 0.035,
     tintAlpha: 0.025,
     solidAlpha: 0.84,
@@ -122,6 +122,7 @@ class PlezzantGlass extends StatelessWidget {
 
   Widget _build(BuildContext context, GlassIntensity intensity) {
     final dark = Theme.of(context).brightness == Brightness.dark;
+    final highContrast = MediaQuery.highContrastOf(context);
     final base = dark ? PlezzantNeutrals.surface : PlezzantNeutrals.lightSurface;
     final lift = dark ? Colors.white : Colors.black;
 
@@ -150,7 +151,10 @@ class PlezzantGlass extends StatelessWidget {
             final blur = full ? style.blur : style.blur * 0.72;
             final glassFill = Color.alphaBlend(
               tint.withValues(alpha: style.tintAlpha * (full ? 1.15 : 1.0)),
-              Color.alphaBlend(lift.withValues(alpha: style.fillAlpha), base.withValues(alpha: full ? 0.30 : 0.44)),
+              Color.alphaBlend(
+                lift.withValues(alpha: style.fillAlpha),
+                base.withValues(alpha: (full ? 0.30 : 0.44) + (highContrast ? 0.14 : 0.0)),
+              ),
             );
 
             final highlight = Color.alphaBlend(Colors.white.withValues(alpha: dark ? 0.08 : 0.16), glassFill);

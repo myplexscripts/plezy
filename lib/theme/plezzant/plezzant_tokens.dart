@@ -13,8 +13,30 @@ abstract final class PlezzantSpace {
   static const double xxl = 48;
   static const double xxxl = 64;
 
-  /// Horizontal safe inset for TV content (title-safe area on 1080p logical).
-  static const double tvInset = 72;
+  /// Legacy alias retained while TV call sites migrate to [PlezzantTv.safeX].
+  static const double tvInset = PlezzantTv.safeX;
+}
+
+/// Large-screen composition tokens for Plezzant's 1920x1080 reference canvas.
+///
+/// Artwork and ambience may bleed to the display edge. Critical foreground
+/// content follows the safe frame, and TV widgets scale these values instead
+/// of inventing local gutters.
+abstract final class PlezzantTv {
+  static const double safeX = 80;
+  static const double safeY = 60;
+
+  static const double sidebarInset = 32;
+  static const double sidebarWidth = 336;
+  static const double sidebarCollapsedWidth = safeX;
+  static const double sidebarHorizontalPadding = 20;
+  static const double navRowHeight = 58;
+  static const double navPanelRadius = 30;
+
+  static const double homeCardGap = 24;
+  static const double focusOverflow = 18;
+  static const double shelfTitleHeight = 42;
+  static const double heroTextWidth = 720;
 }
 
 /// Corner radii. Media artwork uses [card]; floating glass uses [panel];
@@ -36,49 +58,40 @@ abstract final class PlezzantRadius {
 /// Motion timings and curves. Reduced-performance devices collapse these to
 /// zero through `DevicePerformance.reducedDuration`.
 abstract final class PlezzantMotion {
-  /// Focus should feel immediate, but still have enough travel to read as a
-  /// physical change in depth.
-  static const Duration focus = Duration(milliseconds: 180);
+  static const Duration focus = Duration(milliseconds: 170);
+  static const Duration focusOut = Duration(milliseconds: 200);
+  static const Duration press = Duration(milliseconds: 100);
 
-  /// Colour and ambience cross-fades are deliberately slower than controls.
   static const Duration ambience = Duration(milliseconds: 620);
 
-  /// Panels, sheets and floating chrome.
   static const Duration reveal = Duration(milliseconds: 340);
-  static const Duration revealOut = Duration(milliseconds: 220);
+  static const Duration revealOut = Duration(milliseconds: 240);
 
-  /// Metadata reveal on focused cards.
-  static const Duration metadata = Duration(milliseconds: 240);
+  static const Duration metadata = Duration(milliseconds: 260);
 
-  /// Root navigation and pushed-page transitions.
-  static const Duration navigation = Duration(milliseconds: 320);
+  static const Duration navigation = Duration(milliseconds: 340);
   static const Duration route = Duration(milliseconds: 420);
-  static const Duration routeOut = Duration(milliseconds: 260);
+  static const Duration routeOut = Duration(milliseconds: 280);
 
-  /// Hero artwork and metadata changes should drift rather than snap.
   static const Duration hero = Duration(milliseconds: 440);
+  static const Duration heroCopy = Duration(milliseconds: 260);
 
-  /// A soft deceleration similar to the way tvOS lets objects settle.
   static const Curve standard = Cubic(0.16, 1.0, 0.3, 1.0);
   static const Curve emphasized = Cubic(0.2, 0.0, 0.0, 1.0);
   static const Curve exit = Cubic(0.4, 0.0, 1.0, 1.0);
 }
 
-/// Focus treatment: restrained scale + luminance lift + palette-tinted halo.
+/// Focus treatment: restrained scale, physical lift and soft illumination.
 abstract final class PlezzantFocus {
-  /// tvOS communicates focus primarily through depth. The scale remains small
-  /// enough to avoid reflow while reading more clearly from couch distance.
-  static const double cardScale = 1.055;
-  static const double fullCardScale = 1.065;
-  static const double controlScale = 1.035;
-  static const double lift = 3.5;
+  static const double cardScale = 1.05;
+  static const double fullCardScale = 1.055;
+  static const double controlScale = 1.03;
+  static const double lift = 6;
 
-  /// A thin catch-light and a wide, low-opacity bloom read more like reflected
-  /// light than a conventional selection outline.
-  static const double haloWidth = 1.25;
+  static const double haloWidth = 1.2;
   static const double haloGap = 2.0;
-  static const double haloAlpha = 0.78;
+  static const double haloAlpha = 0.72;
 
-  static const double glowAlpha = 0.22;
-  static const double glowBlur = 38;
+  static const double glowAlpha = 0.20;
+  static const double glowBlur = 32;
 }

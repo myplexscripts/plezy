@@ -156,3 +156,81 @@ abstract final class PlezzantType {
   /// this exists for the few legacy call sites that compute sizes.
   static double atLeastMinimum(double size) => size < minimumSize ? minimumSize : size;
 }
+
+
+/// Television-only type roles for couch-distance legibility.
+///
+/// The shared Material text theme remains compact for desktop and mobile.
+/// Large-screen surfaces opt into these roles explicitly.
+abstract final class PlezzantTvType {
+  static const String family = PlezzantType.family;
+
+  static const TextStyle hero = TextStyle(
+    fontFamily: family,
+    fontSize: 56,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -1.0,
+    height: 1.05,
+  );
+
+  static const TextStyle screenTitle = TextStyle(
+    fontFamily: family,
+    fontSize: 38,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -0.7,
+    height: 1.08,
+  );
+
+  static const TextStyle shelfTitle = TextStyle(
+    fontFamily: family,
+    fontSize: 30,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -0.35,
+    height: 1.12,
+  );
+
+  static const TextStyle navigation = TextStyle(
+    fontFamily: family,
+    fontSize: 23,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.1,
+    height: 1.15,
+  );
+
+  static const TextStyle navigationSelected = TextStyle(
+    fontFamily: family,
+    fontSize: 23,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -0.1,
+    height: 1.15,
+  );
+
+  static const TextStyle navigationSecondary = TextStyle(
+    fontFamily: family,
+    fontSize: 19,
+    fontWeight: FontWeight.w500,
+    height: 1.15,
+  );
+
+  static const TextStyle cardTitle = TextStyle(
+    fontFamily: family,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.15,
+    height: 1.2,
+  );
+
+  static const TextStyle body = TextStyle(
+    fontFamily: family,
+    fontSize: 24,
+    fontWeight: FontWeight.w400,
+    height: 1.35,
+  );
+
+  static const TextStyle metadata = TextStyle(
+    fontFamily: family,
+    fontSize: 23,
+    fontWeight: FontWeight.w500,
+    height: 1.2,
+  );
+}

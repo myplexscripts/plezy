@@ -13,6 +13,7 @@ import '../navigation/main_screen_scope.dart';
 import '../services/settings_service.dart';
 import '../utils/debouncer.dart';
 import '../utils/layout_constants.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 import '../utils/formatters.dart';
 import 'tv_browse_rail.dart';
 import 'tv_spotlight_background.dart';
@@ -128,15 +129,16 @@ class TvSpotlightScaffold extends StatelessWidget {
             tallPosterScale: TvBrowseRailLayout.compactTallPosterScale,
             forceWideLayout: forceWideRailLayout,
           );
-    final spotlightTop = (size.height * 0.075).clamp(64.0 * scale, 120.0 * scale).toDouble();
+    final spotlightTop = (PlezzantTv.safeY * scale).clamp(48.0, 76.0).toDouble();
     final minimumSpotlightBottom = railHeight + (8 * scale);
     final baseSpotlightBottom = (size.height * 0.48).clamp(160.0, 820.0).toDouble();
     final desiredSpotlightBottom = minimumSpotlightBottom > baseSpotlightBottom
         ? minimumSpotlightBottom
         : baseSpotlightBottom;
-    final maxSpotlightBottom = (size.height - spotlightTop - (96 * scale)).clamp(0.0, double.infinity).toDouble();
+    final maxSpotlightBottom =
+        (size.height - spotlightTop - (PlezzantTv.safeY * scale)).clamp(0.0, double.infinity).toDouble();
     final spotlightBottom = desiredSpotlightBottom > maxSpotlightBottom ? maxSpotlightBottom : desiredSpotlightBottom;
-    final spotlightLeft = (24 * scale).clamp(18.0, 40.0).toDouble();
+    final spotlightLeft = (PlezzantTv.safeX * scale).clamp(56.0, 96.0).toDouble();
 
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -148,6 +150,9 @@ class TvSpotlightScaffold extends StatelessWidget {
             Builder(
               builder: (context) {
                 final foregroundLeft = MainScreenFocusScope.foregroundLeftOf(context);
+                final heroContentLeft = foregroundLeft > spotlightLeft
+                    ? foregroundLeft + (PlezzantSpace.lg * scale)
+                    : spotlightLeft;
                 return SideNavigationBleedBuilder(
                   targetBleed: foregroundLeft,
                   child: ValueListenableBuilder<MediaItem?>(
@@ -161,7 +166,7 @@ class TvSpotlightScaffold extends StatelessWidget {
                         hideSpoilers: hideSpoilers ?? settings.read(SettingsService.hideSpoilers),
                         contentTop: spotlightTop,
                         contentBottom: spotlightBottom,
-                        contentLeft: spotlightLeft + foregroundLeft,
+                        contentLeft: heroContentLeft,
                         targetWidthPx: (size.width * MediaQuery.devicePixelRatioOf(context)).ceil(),
                       );
                     },

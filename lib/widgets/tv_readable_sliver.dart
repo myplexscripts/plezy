@@ -3,10 +3,12 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../utils/platform_detector.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
+import '../theme/plezzant/plezzant_typography.dart';
 
 /// Share of the viewport a TV list column occupies; the rest is split evenly
 /// either side so settings-style lists read as a centred column, like tvOS.
-const double tvReadableWidthFactor = 0.64;
+const double tvReadableWidthFactor = 0.70;
 
 /// Centres [sliver] in a readable column on TV; a pass-through elsewhere.
 class TvReadableSliver extends StatelessWidget {
@@ -21,7 +23,7 @@ class TvReadableSliver extends StatelessWidget {
     return SliverLayoutBuilder(
       builder: (context, constraints) {
         final extent = constraints.crossAxisExtent;
-        final inset = math.max(0.0, (extent - extent * widthFactor) / 2);
+        final inset = math.max(PlezzantTv.safeX, (extent - extent * widthFactor) / 2);
         return SliverPadding(
           padding: EdgeInsets.symmetric(horizontal: inset),
           sliver: sliver,
@@ -42,10 +44,10 @@ class TvPageTitleSliver extends StatelessWidget {
     final theme = Theme.of(context);
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 32, 24, 16),
+        padding: const EdgeInsets.fromLTRB(PlezzantTv.safeX, 48, PlezzantTv.safeX, 24),
         child: Center(
           child: DefaultTextStyle.merge(
-            style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: PlezzantTvType.screenTitle.copyWith(color: theme.colorScheme.onSurface),
             textAlign: TextAlign.center,
             child: title,
           ),
