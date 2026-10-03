@@ -15,14 +15,12 @@ import '../../theme/plezzant/plezzant_tokens.dart';
 import '../../utils/error_message_utils.dart';
 import '../../utils/media_image_helper.dart';
 import '../../utils/media_server_http_client.dart';
-import '../../utils/platform_detector.dart';
 import '../../widgets/optimized_media_image.dart';
 import '../../widgets/rasterized_gradient.dart';
 import '../base_media_list_detail_screen.dart';
 import '../focusable_detail_screen_mixin.dart';
 import 'photo_sequence_scope.dart';
 import 'photo_viewer_screen.dart';
-import '../../utils/layout_constants.dart';
 import '../../widgets/detail_back_button.dart';
 import '../../widgets/list_detail_header.dart';
 
@@ -189,8 +187,6 @@ class _PhotoAlbumScreenState extends BaseMediaListDetailScreen<PhotoAlbumScreen>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final isTv = PlatformDetector.isTV();
-    final inset = ListDetailHeader.insetOf(context);
     return PhotoSequenceScope(
       items: () => _orderedItems,
       child: buildDetailScaffold(
@@ -199,16 +195,13 @@ class _PhotoAlbumScreenState extends BaseMediaListDetailScreen<PhotoAlbumScreen>
           SliverToBoxAdapter(child: _buildHeader(context)),
           ...buildStateSlivers(),
           if (hasItems)
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: isTv ? inset - GridLayoutConstants.cardInternalPadding : 8),
-              sliver: buildSparseFocusableGrid(
-                totalItems: totalSize,
-                itemAt: (index) => loadedItems[index],
-                onRefresh: updateItem,
-                onSkeletonVisible: (index) => ensureIndexLoaded(index, pageSize: _pageSize),
-                onListRefresh: loadItems,
-                shape: CardShape.wide,
-              ),
+            buildSparseFocusableGrid(
+              totalItems: totalSize,
+              itemAt: (index) => loadedItems[index],
+              onRefresh: updateItem,
+              onSkeletonVisible: (index) => ensureIndexLoaded(index, pageSize: _pageSize),
+              onListRefresh: loadItems,
+              shape: CardShape.wide,
             ),
         ],
         above: [PositionedDetailBackButton(onPressed: () => Navigator.pop(context))],

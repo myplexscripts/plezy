@@ -20,7 +20,6 @@ import 'focusable_detail_screen_mixin.dart';
 import '../mixins/grid_focus_node_mixin.dart';
 import '../focus/focusable_action_bar.dart';
 import '../utils/platform_detector.dart';
-import '../utils/layout_constants.dart';
 import '../widgets/detail_back_button.dart';
 import '../widgets/list_detail_header.dart';
 
@@ -191,16 +190,11 @@ class _ActorMediaScreenState extends BaseMediaListDetailScreen<ActorMediaScreen>
         ),
         ...buildStateSlivers(),
         if (hasItems)
-          SliverPadding(
-            padding: EdgeInsets.symmetric(
-              horizontal: ListDetailHeader.insetOf(context) - GridLayoutConstants.cardInternalPadding,
-            ),
-            sliver: buildSparseFocusableGrid(
-              totalItems: totalSize,
-              itemAt: (index) => loadedItems[index],
-              onRefresh: updateItem,
-              onSkeletonVisible: (index) => ensureIndexLoaded(index, pageSize: _pageSize),
-            ),
+          buildSparseFocusableGrid(
+            totalItems: totalSize,
+            itemAt: (index) => loadedItems[index],
+            onRefresh: updateItem,
+            onSkeletonVisible: (index) => ensureIndexLoaded(index, pageSize: _pageSize),
           ),
       ],
       above: [PositionedDetailBackButton(onPressed: () => Navigator.pop(context))],

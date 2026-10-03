@@ -375,7 +375,6 @@ class _CollectionDetailScreenState extends BaseMediaListDetailScreen<CollectionD
     final size = MediaQuery.sizeOf(context);
     final isTv = PlatformDetector.isTV();
     final compact = size.width < ScreenBreakpoints.mobile;
-    final inset = ListDetailHeader.insetOf(context);
     final artHeight = compact ? size.height * 0.62 : (isTv ? size.height * 0.7 : 460.0);
 
     return buildDetailScaffold(
@@ -384,17 +383,14 @@ class _CollectionDetailScreenState extends BaseMediaListDetailScreen<CollectionD
         SliverToBoxAdapter(child: _buildHeader(context, compact: compact)),
         ...buildStateSlivers(),
         if (hasItems)
-          SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: isTv ? inset - GridLayoutConstants.cardInternalPadding : 8),
-            sliver: buildSparseFocusableGrid(
-              totalItems: totalSize,
-              itemAt: (index) => loadedItems[index],
-              onRefresh: updateItem,
-              onSkeletonVisible: (index) => ensureIndexLoaded(index, pageSize: _pageSize),
-              collectionId: widget.collection.id,
-              onListRefresh: loadItems,
-              shape: _isMusic ? CardShape.square : null,
-            ),
+          buildSparseFocusableGrid(
+            totalItems: totalSize,
+            itemAt: (index) => loadedItems[index],
+            onRefresh: updateItem,
+            onSkeletonVisible: (index) => ensureIndexLoaded(index, pageSize: _pageSize),
+            collectionId: widget.collection.id,
+            onListRefresh: loadItems,
+            shape: _isMusic ? CardShape.square : null,
           ),
       ],
       above: _buildChrome(context),

@@ -37,7 +37,6 @@ import '../../widgets/system_bottom_inset.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 import '../../theme/plezzant/plezzant_tokens.dart';
 import '../../utils/formatters.dart';
-import '../../utils/layout_constants.dart';
 import '../../utils/media_image_helper.dart';
 import '../../widgets/optimized_media_image.dart';
 import '../../widgets/detail_back_button.dart';
@@ -699,16 +698,7 @@ class _PlaylistDetailScreenState extends BaseMediaListDetailScreen<PlaylistDetai
           if (_isReadOnly)
             // Smart playlists / Jellyfin playlists: focusable grid view
             // (read-only, no reordering or removal)
-            SliverPadding(
-              padding: EdgeInsets.symmetric(
-                horizontal: isTv ? ListDetailHeader.insetOf(context) - GridLayoutConstants.cardInternalPadding : 0,
-              ),
-              sliver: buildFocusableGrid(
-                items: items,
-                onRefresh: updateItem,
-                shape: _isAudioPlaylist ? CardShape.square : null,
-              ),
-            )
+            buildFocusableGrid(items: items, onRefresh: updateItem, shape: _isAudioPlaylist ? CardShape.square : null)
           else
             // Plex regular playlists: sliver reorderable list. On a TV the
             // rows (8 px card margin each) sit on the safe frame.

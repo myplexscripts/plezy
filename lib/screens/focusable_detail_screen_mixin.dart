@@ -14,6 +14,8 @@ import '../widgets/media_card_sliver_layout.dart';
 import '../widgets/overlay_sheet.dart';
 import '../widgets/skeleton_media_card.dart';
 import '../widgets/system_bottom_inset.dart';
+import '../utils/layout_constants.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 
 /// Mixin that provides common focus navigation functionality for detail screens.
 /// Handles app bar focus, back navigation, scroll-to-top, and grid item focus management.
@@ -256,7 +258,14 @@ mixin FocusableDetailScreenMixin<T extends StatefulWidget> on State<T>, GridFocu
           viewMode: viewMode,
           itemCount: totalItems,
           density: libraryDensity,
-          padding: const EdgeInsets.all(8),
+          // TV pages are full-width routes: the outer columns' artwork sits on
+          // the safe frame (cards carry their own internal padding).
+          padding: PlatformDetector.isTV()
+              ? EdgeInsets.symmetric(
+                  horizontal: PlezzantTv.safeX * PlezzantTv.scaleOf(context) - GridLayoutConstants.cardInternalPadding,
+                  vertical: 8,
+                )
+              : const EdgeInsets.all(8),
           fullBleedImage: useFullCardLayout,
           shape: shape,
           itemBuilder: (context, position) => buildTile(position),
