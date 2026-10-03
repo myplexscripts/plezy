@@ -146,7 +146,12 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
                   focusNode: (widget.selectedSort?.key == sort.key || (widget.selectedSort == null && index == 0))
                       ? _initialFocusNode
                       : null,
-                  leading: AppIcon(isSelected ? LucideIcons.circleDot : LucideIcons.circle, fill: 1),
+                  // The trailing slot holds the direction toggle, so the check that
+                  // marks the choice elsewhere sits in front here.
+                  leading: SizedBox.square(
+                    dimension: 24,
+                    child: isSelected ? const AppIcon(LucideIcons.check, fill: 1) : null,
+                  ),
                   title: Text(sort.title),
                   trailing: Visibility(
                     visible: isSelected,

@@ -73,6 +73,15 @@ class AppMenuHeader<T> extends AppMenuEntry<T> {
     : assert(label != null || child != null, 'AppMenuHeader requires either label or child');
 }
 
+/// [box]'s rect in the coordinate space the menu popup is laid out in: the
+/// root navigator's overlay. That differs from window coordinates whenever an
+/// ancestor scales the app (the TV canvas normalisation), so anchors measured
+/// with a bare `localToGlobal` would land the menu away from its button.
+Rect menuAnchorRectFor(BuildContext context, RenderBox box) {
+  final overlay = Navigator.maybeOf(context, rootNavigator: true)?.overlay?.context.findRenderObject() as RenderBox?;
+  return box.localToGlobal(Offset.zero, ancestor: overlay) & box.size;
+}
+
 Future<T?> showAppMenu<T>(
   BuildContext context, {
   required List<AppMenuEntry<T>> entries,
@@ -196,8 +205,7 @@ class AppMenuButtonState<T> extends State<AppMenuButton<T>> {
     final renderBox = context.findRenderObject() as RenderBox?;
     if (renderBox == null) return null;
 
-    final topLeft = renderBox.localToGlobal(Offset.zero);
-    final anchorRect = Rect.fromLTWH(topLeft.dx, topLeft.dy, renderBox.size.width, renderBox.size.height);
+    final anchorRect = menuAnchorRectFor(context, renderBox);
     final selected = widget.adaptiveSheet
         ? await showAdaptiveAppMenu<T>(
             context,

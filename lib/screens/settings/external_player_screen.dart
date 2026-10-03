@@ -140,11 +140,7 @@ class _PlayerTile extends StatelessWidget {
                 onPressed: () => svc.removeCustomExternalPlayer(player.id),
               ),
             ),
-          AppIcon(
-            isSelected ? LucideIcons.circleDot : LucideIcons.circle,
-            fill: 1,
-            color: isSelected ? Theme.of(context).colorScheme.primary : null,
-          ),
+          SizedBox.square(dimension: 24, child: isSelected ? const AppIcon(LucideIcons.check, fill: 1) : null),
         ],
       ),
       onTap: () => svc.selectExternalPlayer(player),

@@ -1,6 +1,8 @@
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import '../services/fullscreen_state_manager.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
+import 'platform_detector.dart';
 
 /// InheritedWidget to indicate that a side navigation is present in the widget tree.
 /// When present, app bars should skip their left padding since the side nav
@@ -38,6 +40,15 @@ class DesktopWindowPadding {
 class DesktopAppBarHelper {
   /// Builds actions list with appropriate right padding for macOS and mobile
   static List<Widget>? buildAdjustedActions(List<Widget>? actions) {
+    // TV: the last action glyph ends on the safe frame, like Home's top-right
+    // cluster (an action button's own padding covers the last ~10 px).
+    if (PlatformDetector.isTV()) {
+      return [
+        ...?actions,
+        Builder(builder: (context) => SizedBox(width: PlezzantTv.safeX * PlezzantTv.scaleOf(context) - 10)),
+      ];
+    }
+
     double? rightPadding;
 
     if (Platform.isMacOS) {

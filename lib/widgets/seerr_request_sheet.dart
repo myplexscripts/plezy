@@ -910,7 +910,7 @@ class _PickerTile<T> extends StatelessWidget {
   Future<void> _open(BuildContext context) async {
     final box = context.findRenderObject() as RenderBox?;
     if (box == null) return;
-    final anchorRect = box.localToGlobal(Offset.zero) & box.size;
+    final anchorRect = menuAnchorRectFor(context, box);
     final picked = await showAppMenu<T>(
       context,
       anchorRect: anchorRect,

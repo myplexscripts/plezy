@@ -21,6 +21,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../theme/plezzant/plezzant_tokens.dart';
 import '../widgets/tv_reference_scale.dart';
+import '../widgets/app_menu.dart';
 import '../widgets/collapsible_text.dart';
 import '../widgets/rating_bottom_sheet.dart';
 

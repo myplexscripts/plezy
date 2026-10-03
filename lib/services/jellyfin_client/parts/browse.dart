@@ -364,6 +364,13 @@ mixin _JellyfinBrowseMethods on _JellyfinClientInternals {
       params['SortOrder'] = 'Descending,${params['SortOrder'] ?? 'Ascending'}';
     }
 
+    // Jellyfin's "Home Videos & Photos" libraries map to clip: "All" lists
+    // their photos alongside the videos rather than looking empty when a
+    // library holds only pictures.
+    if (query.kind == MediaKind.clip && params['IncludeItemTypes'] == 'Video,MusicVideo') {
+      params['IncludeItemTypes'] = 'Video,MusicVideo,Photo';
+    }
+
     final isArtistQuery = query.kind == MediaKind.artist;
     final endpoint = isArtistQuery ? '/Artists/AlbumArtists' : '/Items';
     if (isArtistQuery) {
@@ -397,15 +404,17 @@ mixin _JellyfinBrowseMethods on _JellyfinClientInternals {
   @override
   Future<LibraryFilterResult> fetchLibraryFiltersWithValues(String libraryId, {MediaKind? libraryKind}) async {
     final filters = <MediaFilter>[
-      MediaFilter(
-        filter: 'unwatched',
-        filterType: 'boolean',
-        key: 'jellyfin:unwatched',
-        title: libraryKind?.isMusic == true
-            ? t.libraries.filterCategories.unplayed
-            : t.libraries.filterCategories.unwatched,
-        type: 'filter',
-      ),
+      // Photos have no watched state, so a photo library offers no Unwatched.
+      if (libraryKind != MediaKind.photo)
+        MediaFilter(
+          filter: 'unwatched',
+          filterType: 'boolean',
+          key: 'jellyfin:unwatched',
+          title: libraryKind?.isMusic == true
+              ? t.libraries.filterCategories.unplayed
+              : t.libraries.filterCategories.unwatched,
+          type: 'filter',
+        ),
       MediaFilter(
         filter: 'favorite',
         filterType: 'boolean',

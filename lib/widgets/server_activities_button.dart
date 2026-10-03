@@ -80,9 +80,12 @@ class ServerActivitiesButtonState extends State<ServerActivitiesButton> {
 
     final renderBox = _buttonKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
-    final buttonOffset = renderBox.localToGlobal(Offset.zero);
+    // Measured in the overlay's own space, which differs from the window's
+    // when the app is scaled (TV canvas normalisation).
+    final overlayBox = Overlay.of(context).context.findRenderObject() as RenderBox?;
+    final buttonOffset = renderBox.localToGlobal(Offset.zero, ancestor: overlayBox);
     final buttonSize = renderBox.size;
-    final screenSize = MediaQuery.sizeOf(context);
+    final screenSize = overlayBox?.size ?? MediaQuery.sizeOf(context);
 
     final right = screenSize.width - (buttonOffset.dx + buttonSize.width);
     final top = buttonOffset.dy + buttonSize.height + 4;

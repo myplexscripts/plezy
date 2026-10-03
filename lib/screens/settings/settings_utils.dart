@@ -183,11 +183,9 @@ Future<DialogOption<T>?> showSelectionDialog<T>({
             final selected = option.value == currentValue;
             return FocusableListTile(
               key: ValueKey(option.value),
-              leading: AppIcon(
-                selected ? LucideIcons.circleDot : LucideIcons.circle,
-                color: selected ? Theme.of(dialogContext).colorScheme.primary : null,
-              ),
               title: Text(option.title),
+              // A trailing check marks the choice, as in the player's sheets.
+              trailing: selected ? const AppIcon(LucideIcons.check, fill: 1) : null,
               subtitle: option.subtitle != null ? Text(option.subtitle!) : null,
               selected: selected,
               autofocus: focusFirstItem && selected,

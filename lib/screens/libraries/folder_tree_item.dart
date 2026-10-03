@@ -129,9 +129,7 @@ class _FolderTreeItemState extends State<FolderTreeItem> with ContextMenuTapMixi
   Offset _rowCenter() {
     final renderBox = context.findRenderObject() as RenderBox?;
     if (renderBox == null) return Offset.zero;
-    final size = renderBox.size;
-    final topLeft = renderBox.localToGlobal(Offset.zero);
-    return Offset(topLeft.dx + size.width / 2, topLeft.dy + size.height / 2);
+    return menuAnchorRectFor(context, renderBox).center;
   }
 
   /// Ad-hoc Play/Shuffle menu for plain folder rows. These map to pseudo

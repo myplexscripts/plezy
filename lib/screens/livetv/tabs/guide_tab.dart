@@ -1239,9 +1239,7 @@ class GuideTabState extends State<GuideTab>
     final renderBox = _dayPickerKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null) return null;
 
-    final buttonPos = renderBox.localToGlobal(Offset.zero);
-    final buttonSize = renderBox.size;
-    return Rect.fromLTWH(buttonPos.dx, buttonPos.dy, buttonSize.width, buttonSize.height);
+    return menuAnchorRectFor(_dayPickerKey.currentContext!, renderBox);
   }
 
   Future<void> _showDayPicker() async {

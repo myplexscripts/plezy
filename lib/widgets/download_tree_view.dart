@@ -13,6 +13,7 @@ import '../utils/global_key_utils.dart';
 import '../mixins/unsuppress_focus_mixin.dart';
 import 'download_status_icon.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
+import '../screens/libraries/state_messages.dart';
 
 /// Represents a node in the download tree
 class DownloadTreeNode {
@@ -96,7 +97,13 @@ class _DownloadTreeViewState extends State<DownloadTreeView> with UnsuppressFocu
     final flattenedNodes = _flattenTree(tree);
 
     if (flattenedNodes.isEmpty) {
-      return Center(child: Text(t.downloads.noDownloadsTree));
+      // Same empty state as the other Downloads tabs.
+      return EmptyStateWidget(
+        message: t.downloads.noDownloads,
+        subtitle: t.downloads.noDownloadsDescription,
+        icon: LucideIcons.download,
+        iconSize: 80,
+      );
     }
 
     return ListView.builder(

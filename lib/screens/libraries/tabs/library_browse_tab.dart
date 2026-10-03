@@ -1016,8 +1016,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
   Rect? _chipAnchorRect(GlobalKey key) {
     final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null || !renderBox.hasSize) return null;
-    final topLeft = renderBox.localToGlobal(Offset.zero);
-    return Rect.fromLTWH(topLeft.dx, topLeft.dy, renderBox.size.width, renderBox.size.height);
+    return menuAnchorRectFor(key.currentContext!, renderBox);
   }
 
   bool get _focusChipMenuFirstItem => InputModeTracker.isKeyboardMode(context, listen: false);
@@ -1077,8 +1076,8 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
       return FocusableListTile(
         key: ValueKey(grouping),
         dense: false,
-        leading: AppIcon(isSelected ? LucideIcons.circleDot : LucideIcons.circle, fill: 1),
         title: Text(_getGroupingLabel(grouping)),
+        trailing: isSelected ? const AppIcon(LucideIcons.check, fill: 1) : null,
         onTap: () => onSelected(grouping),
       );
     }).toList();

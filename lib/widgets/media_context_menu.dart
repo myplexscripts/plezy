@@ -221,9 +221,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       // Calculate center of the widget for keyboard activation
       final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
       if (renderBox != null) {
-        final size = renderBox.size;
-        final topLeft = renderBox.localToGlobal(Offset.zero);
-        _tapPosition = Offset(topLeft.dx + size.width / 2, topLeft.dy + size.height / 2);
+        _tapPosition = menuAnchorRectFor(context, renderBox).center;
       }
     }
     _showContextMenu(menuContext);

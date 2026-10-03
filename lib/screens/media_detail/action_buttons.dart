@@ -500,7 +500,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
       context,
       kind: metadata.kind,
       candidates: candidates,
-      anchorRect: renderBox.localToGlobal(Offset.zero) & renderBox.size,
+      anchorRect: menuAnchorRectFor(context, renderBox),
       focusFirstItem: true,
     );
     if (choice == null || !_canUseDetail) return;

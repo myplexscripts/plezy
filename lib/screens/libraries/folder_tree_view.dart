@@ -14,6 +14,9 @@ import '../../utils/media_navigation_helper.dart';
 import '../../utils/provider_extensions.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../i18n/strings.g.dart';
+import '../../theme/plezzant/plezzant_tokens.dart';
+import '../../utils/layout_constants.dart';
+import '../../utils/platform_detector.dart';
 import 'folder_tree_item.dart';
 import 'state_messages.dart';
 
@@ -355,7 +358,10 @@ class FolderTreeViewState extends State<FolderTreeView> {
     _flattenTreeItems(_rootFolders, 0, '', null, flattened);
 
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      // TV: rows sit on the safe frame, like the library grids.
+      padding: PlatformDetector.isTV()
+          ? GridLayoutConstants.tvGridInsets(PlezzantTv.scaleOf(context))
+          : const EdgeInsets.symmetric(horizontal: 8),
       sliver: SliverList.builder(
         itemCount: flattened.length,
         itemBuilder: (context, index) {
