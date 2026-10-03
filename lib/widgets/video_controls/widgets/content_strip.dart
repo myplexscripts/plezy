@@ -31,6 +31,7 @@ import '../../clickable_cursor.dart';
 import '../../optimized_media_image.dart';
 import '../../settings_builder.dart';
 import 'media_selector_thumbnail.dart';
+import '../../spoiler_veil.dart';
 
 /// Horizontal scrollable strip of chapter/queue items shown on swipe-up.
 class ContentStrip extends StatefulWidget {
@@ -553,6 +554,7 @@ class ContentStripState extends State<ContentStrip> {
                       ? _buildStripThumbnail(client: client, imagePath: item.thumbPath, isTablet: isTablet)
                       : null,
                   blurThumbnail: hideSpoilers && item.shouldHideSpoiler,
+                  blurLabel: SpoilerVeil.labelFor(item),
                   title: item.title ?? '',
                   subtitle: formatQueueItemSubtitle(item),
                   onTap: onTap,
@@ -591,6 +593,7 @@ class ContentStripState extends State<ContentStrip> {
     required String subtitle,
     required VoidCallback? onTap,
     bool blurThumbnail = false,
+    String? blurLabel,
     bool isTablet = false,
     String? placeholderLabel,
   }) {
@@ -651,6 +654,7 @@ class ContentStripState extends State<ContentStrip> {
                       borderColor: Colors.white,
                       radius: tv ? 8 : 6,
                       blurThumbnail: blurThumbnail,
+                      blurLabel: blurLabel,
                     ),
                   ),
                   if (tv && isCurrent)

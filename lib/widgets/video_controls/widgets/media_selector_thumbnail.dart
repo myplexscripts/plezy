@@ -1,9 +1,9 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app_icon.dart';
+import '../../spoiler_veil.dart';
 
 class MediaSelectorThumbnail extends StatelessWidget {
   final double width;
@@ -18,6 +18,9 @@ class MediaSelectorThumbnail extends StatelessWidget {
   final IconData fallbackIcon;
   final bool blurThumbnail;
 
+  /// Label shown over a blurred thumbnail (e.g. "S1 E3").
+  final String? blurLabel;
+
   const MediaSelectorThumbnail({
     super.key,
     required this.width,
@@ -31,6 +34,7 @@ class MediaSelectorThumbnail extends StatelessWidget {
     this.fallbackIconSize = 28,
     this.fallbackIcon = LucideIcons.film,
     this.blurThumbnail = false,
+    this.blurLabel,
   });
 
   @override
@@ -67,8 +71,6 @@ class MediaSelectorThumbnail extends StatelessWidget {
 
   Widget _maybeBlurThumbnail(Widget child) {
     if (!blurThumbnail) return child;
-    return ClipRect(
-      child: ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 12, sigmaY: 12), child: child),
-    );
+    return SpoilerVeil(label: blurLabel, child: child);
   }
 }

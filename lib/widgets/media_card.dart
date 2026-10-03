@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import '../media/ids.dart';
 
 import 'package:flutter/material.dart';
@@ -42,6 +41,7 @@ import 'media_card_list_layout.dart';
 import 'backend_badge.dart';
 import 'optimized_media_image.dart';
 import '../utils/tv_card_style.dart';
+import 'spoiler_veil.dart';
 
 const _failedPosterUrlCacheLimit = 512;
 final _failedPosterUrls = <String>{};
@@ -1184,11 +1184,7 @@ Widget _buildPosterImage(
       );
     }
 
-    if (shouldBlur) {
-      return ClipRect(
-        child: ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 12, sigmaY: 12), child: image),
-      );
-    }
+    if (shouldBlur) return SpoilerVeil(label: SpoilerVeil.labelFor(item), child: image);
     return image;
   }
 

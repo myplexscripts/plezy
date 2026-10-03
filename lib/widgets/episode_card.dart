@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
@@ -27,6 +26,7 @@ import '../widgets/placeholder_container.dart';
 import '../theme/mono_tokens.dart';
 import '../media/media_server_client.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
+import 'spoiler_veil.dart';
 
 /// Episode card widget with D-pad long-press support
 class EpisodeCard extends StatefulWidget {
@@ -176,11 +176,9 @@ class _EpisodeCardState extends State<EpisodeCard> with ContextMenuTapMixin<Epis
                             child: AspectRatio(
                               aspectRatio: 16 / 9,
                               child: shouldBlur
-                                  ? ClipRect(
-                                      child: ImageFiltered(
-                                        imageFilter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                                        child: _buildEpisodeThumbnail(episode),
-                                      ),
+                                  ? SpoilerVeil(
+                                      label: SpoilerVeil.labelFor(episode),
+                                      child: _buildEpisodeThumbnail(episode),
                                     )
                                   : _buildEpisodeThumbnail(episode),
                             ),
