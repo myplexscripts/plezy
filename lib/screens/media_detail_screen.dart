@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import '../theme/plezzant/plezzant_typography.dart';
 import '../media/ids.dart';
 
 import 'package:flutter/material.dart';
@@ -4123,6 +4124,8 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
 
   Widget _buildTvDetailMetadataLine(BuildContext context, MediaItem metadata, double scale) {
     final textStyle = TextStyle(
+      // Painted by its own TextPainter, so it cannot inherit the theme font.
+      fontFamily: PlezzantType.family,
       color: _tvDetailForegroundColor(context),
       fontSize: 23 * scale,
       fontWeight: .w700,

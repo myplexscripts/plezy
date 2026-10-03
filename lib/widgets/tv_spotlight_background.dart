@@ -344,6 +344,8 @@ class TvSpotlightBackground extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final episodeLabel = formatSeasonEpisodeLabel(media.parentIndex, media.index);
     final textStyle = TextStyle(
+      // Painted by its own TextPainter, so it cannot inherit the theme font.
+      fontFamily: PlezzantType.family,
       color: colorScheme.onSurface,
       fontSize: _metadataFontSize(scale),
       fontWeight: .w600,

@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
@@ -104,8 +105,11 @@ class PlezzantGlass extends StatelessWidget {
     this.edge = true,
   });
 
-  static GlassIntensity _intensity() {
+  static GlassIntensity _intensity(BuildContext context) {
     if (DevicePerformance.isReduced) return GlassIntensity.off;
+    // High contrast: opaque surfaces, the closest Android equivalent of
+    // Apple's Reduce Transparency.
+    if (MediaQuery.highContrastOf(context)) return GlassIntensity.off;
     final settings = SettingsService.instanceOrNull;
     return settings?.read(SettingsService.glassIntensity) ?? GlassIntensity.subtle;
   }
@@ -113,16 +117,15 @@ class PlezzantGlass extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = SettingsService.instanceOrNull;
-    if (settings == null) return _build(context, _intensity());
+    if (settings == null) return _build(context, _intensity(context));
     return ValueListenableBuilder<GlassIntensity>(
       valueListenable: settings.listenable(SettingsService.glassIntensity),
-      builder: (context, _, _) => _build(context, _intensity()),
+      builder: (context, _, _) => _build(context, _intensity(context)),
     );
   }
 
   Widget _build(BuildContext context, GlassIntensity intensity) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final highContrast = MediaQuery.highContrastOf(context);
     final base = dark ? PlezzantNeutrals.surface : PlezzantNeutrals.lightSurface;
     final lift = dark ? Colors.white : Colors.black;
 
@@ -148,13 +151,10 @@ class PlezzantGlass extends StatelessWidget {
           case GlassIntensity.subtle:
           case GlassIntensity.full:
             final full = intensity == GlassIntensity.full;
-            final blur = full ? style.blur : style.blur * 0.72;
+            final blur = math.min(full ? style.blur : style.blur * 0.72, DevicePerformance.maxGlassBlur);
             final glassFill = Color.alphaBlend(
               tint.withValues(alpha: style.tintAlpha * (full ? 1.15 : 1.0)),
-              Color.alphaBlend(
-                lift.withValues(alpha: style.fillAlpha),
-                base.withValues(alpha: (full ? 0.30 : 0.44) + (highContrast ? 0.14 : 0.0)),
-              ),
+              Color.alphaBlend(lift.withValues(alpha: style.fillAlpha), base.withValues(alpha: full ? 0.30 : 0.44)),
             );
 
             final highlight = Color.alphaBlend(Colors.white.withValues(alpha: dark ? 0.08 : 0.16), glassFill);

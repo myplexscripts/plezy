@@ -85,12 +85,31 @@ class DevicePerformance {
     };
   }
 
-  /// [full] on the full tier, [Duration.zero] on the reduced tier.
+  /// Below this, a device that is not reduced still runs the balanced tier:
+  /// glass keeps its blur but at a lower radius (3 GB Android TV boxes).
+  static const int _balancedMemThresholdBytes = 3584 << 20;
+
+  /// Middle tier between full and reduced: automatic effects on a
+  /// mid-memory device. An explicit "full" setting opts out.
+  static bool get isBalanced {
+    final instance = _singleton.instance;
+    if (instance == null || isReduced) return false;
+    if (instance._override != VisualEffectsSetting.auto) return false;
+    final mem = instance._totalMemBytes;
+    return mem != null && mem < _balancedMemThresholdBytes;
+  }
+
+  /// Largest backdrop blur sigma glass may use: none on the reduced tier, a
+  /// cheaper radius on the balanced tier. Blur cost grows with the radius.
+  static double get maxGlassBlur => isReduced ? 0 : (isBalanced ? 18 : double.infinity);
+
   /// The system "remove animations" / reduce-motion preference. Independent
   /// of [isReduced]: a fast device can ask for less motion and keep its blur,
   /// a weak box can keep ordinary motion while dropping effects.
   static bool get reduceMotion => PlatformDispatcher.instance.accessibilityFeatures.disableAnimations;
 
+  /// [full] on the full tier, [Duration.zero] on the reduced tier or when
+  /// the system asks for less motion.
   static Duration reducedDuration(Duration full) => isReduced || reduceMotion ? Duration.zero : full;
 
   /// ~2.5 GiB: below what 3 GB Shield-class devices report (~2.8 GiB) so they

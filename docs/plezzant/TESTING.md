@@ -379,6 +379,20 @@ Tick each item as you check it. Note anything odd, with the time it happened.
 - [ ] Glass surfaces (navigation rail, menus, player panels) look translucent but readable
 - [ ] Performance: moving around feels quick, with no stutter
 
+## How to check that the app runs smoothly
+
+1. Open **Settings → Advanced** and turn on **Frame timing graph**.
+2. Two small graphs appear in the top-right corner. The top one is the
+   interface (UI), the bottom one is drawing (raster).
+3. Move around Home, open and close the sidebar, and scroll the shelves.
+4. Green bars below the line are good. Red bars poking above the line are
+   dropped frames, meaning the screen stuttered.
+5. If you see lots of red, open **Settings → Appearance** and set
+   **Glass surfaces** to **Solid (reduce transparency)**, or set
+   **Visual effects** to **Reduced**. Then try again.
+6. Tell Claude your TV model and what you saw. A photo of the graphs helps.
+7. Turn **Frame timing graph** off again when you're done.
+
 ## How to check the playback mode
 
 1. Start playing anything.

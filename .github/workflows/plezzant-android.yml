@@ -60,6 +60,12 @@ jobs:
       - name: Plezzant design-system tests
         run: flutter test --no-pub test/theme
 
+      # TV layout: scaling, safe frame and visual regression images rendered
+      # at the 960x540 canvas a Google TV uses. On an intentional visual
+      # change: flutter test --update-goldens test/tv_layout
+      - name: TV layout tests
+        run: flutter test --no-pub test/tv_layout
+
   build-apk:
     name: Build APKs
     runs-on: ubuntu-latest

@@ -112,6 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
   static const _kCrashReporting = 'crash_reporting';
   static const _kDebugLogging = 'debug_logging';
   static const _kAutoHidePerformanceOverlay = 'auto_hide_performance_overlay';
+  static const _kFrameTimingOverlay = 'frame_timing_overlay';
   static const _kViewLogs = 'view_logs';
   static const _kClearImageCache = 'clear_image_cache';
   static const _kResetSettings = 'reset_settings';
@@ -561,6 +562,13 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
           icon: LucideIcons.gauge,
           title: t.settings.autoHidePerformanceOverlay,
           subtitle: t.settings.autoHidePerformanceOverlayDescription,
+        ),
+        SettingSwitchTile(
+          focusNode: _focusTracker.get(_kFrameTimingOverlay),
+          pref: settings.SettingsService.showFrameTimingOverlay,
+          icon: LucideIcons.activity,
+          title: t.settings.frameTimingOverlay,
+          subtitle: t.settings.frameTimingOverlayDescription,
         ),
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kViewLogs),

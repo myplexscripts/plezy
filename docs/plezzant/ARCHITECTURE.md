@@ -188,8 +188,39 @@ tvOS, Layout, Focus and selection, Materials). Every TV token (`PlezzantTv`,
   `DevicePerformance.reducedDuration` also honours the system "remove
   animations" setting, independently of the effects tier.
 
-To review the TV UI on a desktop, run it at 960×540 logical pixels (for example,
-a 1920×1080 output at scale 2). A 1920×1080 logical window hides scale problems.
+**Every TV shows the same layout.** `FormFactorScale` (in `main.dart`) renders
+Android TV through a 540-tall logical canvas whenever a device reports another
+size, for example a box at mdpi density that reports 1920×1080, or a desktop
+"force TV" window. Inside that canvas, 1 dp always equals 2 reference units, so
+Material screens such as settings, search and library grids get consistent
+sizes on every TV. List titles (15 dp) come to 30 units, close to tvOS's
+29-point body text. Subtitles keep the app's 14 px readability floor rather
+than dropping to tvOS's 23 units.
+
+**Effects tiers.** `DevicePerformance` has three tiers:
+
+* **Full:** glass blur at the style's radius.
+* **Balanced:** automatic effects on a device with less than 3.5 GiB of
+  memory, such as 3 GB TV boxes. Glass is capped at sigma 18
+  (`maxGlassBlur`); blur cost grows with the radius.
+* **Reduced:** no live blur, no animation.
+
+Reduce Motion (`disableAnimations`) removes animation on any tier. High
+contrast turns glass solid (Android's closest equivalent of Reduce
+Transparency, also available in the app as "Solid (reduce transparency)") and
+doubles the focus outline. `BackdropGroup` was evaluated and not used: glass
+surfaces almost never appear side by side without overlapping, and
+overlapping surfaces in one group render incorrectly.
+
+**Checks.** `test/tv_layout/` holds golden images rendered at 960×540 at 2×
+density, using the real fonts: the open sidebar, the home hero, the profile
+picker and a settings page. It also holds scaling unit tests. CI runs them;
+regenerate with `flutter test --update-goldens test/tv_layout` after an
+intentional visual change. **Settings → Advanced → Frame timing graph** shows
+UI and raster frame times on the device itself.
+
+To review the TV UI on a desktop, run in TV mode at any window size; it
+renders the 960×540 canvas.
 
 ---
 

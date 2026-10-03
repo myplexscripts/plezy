@@ -70,7 +70,8 @@ class FocusTheme {
       borderRadius: radii ?? BorderRadius.circular(borderRadius),
       border: Border.all(
         color: isFocused ? focusColor : Colors.transparent,
-        width: focusBorderWidth,
+        // High contrast: focus must not rely on scale and glow alone.
+        width: MediaQuery.maybeHighContrastOf(context) == true ? focusBorderWidth * 2 : focusBorderWidth,
         strokeAlign: borderStrokeAlign,
       ),
     );

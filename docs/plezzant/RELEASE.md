@@ -20,6 +20,7 @@ an uninstall first.
 
 | Version | Build | Highlights |
 |---|---|---|
+| 1.3.0 | 153 | Same TV layout on every box, balanced effects tier, high-contrast solid glass, frame timing graph, TV golden tests in CI, Manrope in hero metadata |
 | 1.2.0 | 152 | tvOS layout system: correct TV scaling (Google TV renders at 960×540 logical), safe frame, TV type roles, larger sidebar, focus depth, full-screen profile picker, Reduce Motion |
 | 1.1.0 | 151 | Apple TV style redesign: navigation pill, floating sidebar, hero, details, profile picker, search grid, tvOS settings. Build-time service overrides |
 | 1.0.0 | 150 | First Plezzant release: design system, Plex gap fixes, signed universal APK |

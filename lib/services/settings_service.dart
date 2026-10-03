@@ -617,6 +617,10 @@ class SettingsService extends BaseSharedPreferencesService {
   static const autoCheckUpdatesOnStartup = BoolPref('auto_check_updates_on_startup', defaultValue: true);
   static const showPerformanceOverlay = BoolPref('show_performance_overlay');
   static const autoHidePerformanceOverlay = BoolPref('auto_hide_performance_overlay', defaultValue: true);
+
+  /// Flutter's frame-timing graph over the whole app, for checking UI speed
+  /// on the TV itself.
+  static const showFrameTimingOverlay = BoolPref('show_frame_timing_overlay');
   static const enableDiscordRPC = BoolPref('enable_discord_rpc');
   static const enableTraktWatchedSync = BoolPref('enable_trakt_watched_sync', defaultValue: true);
   static const matchContentFrameRate = BoolPref('match_content_frame_rate');
@@ -1337,6 +1341,7 @@ class SettingsService extends BaseSharedPreferencesService {
     autoCheckUpdatesOnStartup,
     showPerformanceOverlay,
     autoHidePerformanceOverlay,
+    showFrameTimingOverlay,
     enableDiscordRPC,
     enableTraktWatchedSync,
     // Scrobble toggle, one per tracker service.

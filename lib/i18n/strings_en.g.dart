@@ -1158,6 +1158,12 @@ class Translations$settings$en {
 	/// en: 'Fade the performance overlay with the playback controls'
 	String get autoHidePerformanceOverlayDescription => 'Fade the performance overlay with the playback controls';
 
+	/// en: 'Frame timing graph'
+	String get frameTimingOverlay => 'Frame timing graph';
+
+	/// en: 'Show how long each frame takes to draw. Bars above the line mean dropped frames'
+	String get frameTimingOverlayDescription => 'Show how long each frame takes to draw. Bars above the line mean dropped frames';
+
 	/// en: 'Show Navigation Bar Labels'
 	String get showNavBarLabels => 'Show Navigation Bar Labels';
 
@@ -1311,11 +1317,11 @@ class Translations$settings$en {
 	/// en: 'Glass surfaces'
 	String get glass => 'Glass surfaces';
 
-	/// en: 'Translucency of menus, navigation and player controls. Weaker devices always use solid surfaces.'
-	String get glassDescription => 'Translucency of menus, navigation and player controls. Weaker devices always use solid surfaces.';
+	/// en: 'Translucency of menus, navigation and player controls. Solid reduces transparency; weaker devices and high-contrast mode always use it.'
+	String get glassDescription => 'Translucency of menus, navigation and player controls. Solid reduces transparency; weaker devices and high-contrast mode always use it.';
 
-	/// en: 'Solid'
-	String get glassOff => 'Solid';
+	/// en: 'Solid (reduce transparency)'
+	String get glassOff => 'Solid (reduce transparency)';
 
 	/// en: 'Subtle'
 	String get glassSubtle => 'Subtle';
@@ -7468,6 +7474,8 @@ extension on Translations {
 			'settings.exitFullscreenOnPlayerCloseDescription' => 'Automatically exit fullscreen when closing the video player',
 			'settings.autoHidePerformanceOverlay' => 'Auto-Hide Performance Overlay',
 			'settings.autoHidePerformanceOverlayDescription' => 'Fade the performance overlay with the playback controls',
+			'settings.frameTimingOverlay' => 'Frame timing graph',
+			'settings.frameTimingOverlayDescription' => 'Show how long each frame takes to draw. Bars above the line mean dropped frames',
 			'settings.showNavBarLabels' => 'Show Navigation Bar Labels',
 			'settings.showNavBarLabelsDescription' => 'Display text labels under navigation bar icons',
 			'settings.startupSection' => 'Startup Section',
@@ -7519,8 +7527,8 @@ extension on Translations {
 			'settings.ambienceSubtle' => 'Subtle',
 			'settings.ambienceRich' => 'Rich',
 			'settings.glass' => 'Glass surfaces',
-			'settings.glassDescription' => 'Translucency of menus, navigation and player controls. Weaker devices always use solid surfaces.',
-			'settings.glassOff' => 'Solid',
+			'settings.glassDescription' => 'Translucency of menus, navigation and player controls. Solid reduces transparency; weaker devices and high-contrast mode always use it.',
+			'settings.glassOff' => 'Solid (reduce transparency)',
 			'settings.glassSubtle' => 'Subtle',
 			'settings.glassFull' => 'Full',
 			'search.hint' => 'Search movies, shows, music...',
@@ -7619,10 +7627,10 @@ extension on Translations {
 			'fileInfo.streamId' => 'Stream ID',
 			'fileInfo.language' => 'Language',
 			'fileInfo.languageCode' => 'Language Code',
-			'fileInfo.streamTitle' => 'Track Title',
-			'fileInfo.channels' => 'Channels',
 			_ => null,
 		} ?? switch (path) {
+			'fileInfo.streamTitle' => 'Track Title',
+			'fileInfo.channels' => 'Channels',
 			'fileInfo.sampleRate' => 'Sample Rate',
 			'fileInfo.spatialAudio' => 'Spatial Audio',
 			'fileInfo.textBased' => 'Text Based',
@@ -8133,10 +8141,10 @@ extension on Translations {
 			'libraries.noLibrariesFound' => 'No libraries found',
 			'libraries.allLibrariesHidden' => 'All libraries are hidden',
 			'libraries.hiddenLibrariesCount' => ({required Object count}) => 'Hidden libraries (${count})',
-			'libraries.thisLibraryIsEmpty' => 'This library is empty',
-			'libraries.noItemsMatchFilters' => 'No items match the active filters',
 			_ => null,
 		} ?? switch (path) {
+			'libraries.thisLibraryIsEmpty' => 'This library is empty',
+			'libraries.noItemsMatchFilters' => 'No items match the active filters',
 			'libraries.resetFilters' => 'Reset filters',
 			'libraries.all' => 'All',
 			'libraries.clearAll' => 'Clear All',
@@ -8647,10 +8655,10 @@ extension on Translations {
 			'downloads.tracksQueued' => ({required Object count}) => '${count} tracks queued for download',
 			'downloads.noDownloads' => 'No downloads yet',
 			'downloads.noDownloadsDescription' => 'Downloaded content will appear here for offline viewing',
-			'downloads.downloadNow' => 'Download',
-			'downloads.deleteDownload' => 'Delete download',
 			_ => null,
 		} ?? switch (path) {
+			'downloads.downloadNow' => 'Download',
+			'downloads.deleteDownload' => 'Delete download',
 			'downloads.retryDownload' => 'Retry download',
 			'downloads.downloadQueued' => 'Download queued',
 			'downloads.downloadResumed' => 'Download resumed',

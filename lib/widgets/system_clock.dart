@@ -1,8 +1,13 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/formatters.dart';
+
+/// Reads `package:clock` (or [SystemClock.debugNowOverride]) so tests can pin
+/// the time.
+DateTime _clockNow() => SystemClock.debugNowOverride?.call() ?? clock.now();
 
 /// Live wall-clock label that follows the system 12/24-hour preference.
 ///
@@ -16,7 +21,11 @@ import '../utils/formatters.dart';
 /// the clock also resynchronises on resume instead of waiting out the boundary
 /// that elapsed while it was away.
 class SystemClock extends StatefulWidget {
-  const SystemClock({super.key, this.style, this.now = DateTime.now});
+  const SystemClock({super.key, this.style, this.now = _clockNow});
+
+  /// Pins the default time source in tests (visual regression images).
+  @visibleForTesting
+  static DateTime Function()? debugNowOverride;
 
   /// Text style for the clock label. The two chrome surfaces that host it use
   /// different foregrounds, so the caller owns colour and size.

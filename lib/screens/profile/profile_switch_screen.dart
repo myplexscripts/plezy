@@ -91,7 +91,7 @@ class _ProfileSwitchScreenState extends State<ProfileSwitchScreen> with MountedS
             // Fill the screen: as a loose Stack child the picker would shrink
             // to its avatar row.
             Positioned.fill(
-              child: _TvWhoIsWatching(
+              child: TvWhoIsWatching(
                 profiles: profiles,
                 avatarUrlFor: activeProvider.avatarUrlFor,
                 focusNodeFor: _profileFocusNode,
@@ -621,14 +621,15 @@ class _ChipData {
 
 /// Apple TV style "who's watching": round avatars centred on a soft gradient,
 /// the focused one lifted with a white ring, and an add tile at the end.
-class _TvWhoIsWatching extends StatelessWidget {
+class TvWhoIsWatching extends StatelessWidget {
   final List<Profile> profiles;
   final String? Function(String profileId) avatarUrlFor;
   final FocusNode Function(Profile profile) focusNodeFor;
   final Future<void> Function(Profile profile)? onSelect;
   final Future<void> Function()? onAdd;
 
-  const _TvWhoIsWatching({
+  const TvWhoIsWatching({
+    super.key,
     required this.profiles,
     required this.avatarUrlFor,
     required this.focusNodeFor,

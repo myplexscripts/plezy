@@ -1878,11 +1878,27 @@ class _AppShell extends StatelessWidget {
 /// below would leave global snackbars at the car's native density while the rest of the
 /// interface grew.
 Widget rootShell(Widget? child) {
-  return FormFactorScale(
+  final shell = FormFactorScale(
     child: ScaffoldMessenger(
       key: rootScaffoldMessengerKey,
       child: Scaffold(backgroundColor: Colors.transparent, body: child),
     ),
+  );
+  // Optional frame-timing graph (Settings → Advanced), drawn unscaled over
+  // everything so speed can be checked on the TV itself.
+  if (SettingsService.instanceOrNull == null) return shell;
+  return SettingValueBuilder<bool>(
+    pref: SettingsService.showFrameTimingOverlay,
+    child: shell,
+    builder: (context, show, shell) => !show
+        ? shell!
+        : Stack(
+            fit: StackFit.expand,
+            children: [
+              shell!,
+              Positioned(top: 0, right: 0, width: 360, child: IgnorePointer(child: PerformanceOverlay.allEnabled())),
+            ],
+          ),
   );
 }
 
@@ -1893,6 +1909,17 @@ Widget rootShell(Widget? child) {
 class FormFactorScale extends StatelessWidget {
   final Widget? child;
   const FormFactorScale({super.key, required this.child});
+
+  /// Logical height of the canvas Android TV lays a 1080p panel out on.
+  static const double tvCanvasHeight = 540;
+
+  /// Scale that maps a TV surface of [size] onto the [tvCanvasHeight] canvas;
+  /// 1.0 when it already matches (within 5%).
+  static double tvSurfaceScaleFor(Size size) {
+    if (size.height <= 0) return 1.0;
+    final scale = (size.height / tvCanvasHeight).clamp(0.75, 4.0).toDouble();
+    return (scale - 1).abs() <= 0.05 ? 1.0 : scale;
+  }
 
   static const double _appleTvScale = 2.0;
 
@@ -1905,6 +1932,15 @@ class FormFactorScale extends StatelessWidget {
     // behavior and overscan handling remain unchanged.
     if (PlatformDetector.isAppleTV()) {
       return _scaledSurface(child: child, scale: _appleTvScale, zeroInsets: true);
+    }
+    // Android TV lays a 1080p panel out at 960x540 logical pixels, the canvas
+    // the TV layout (and its 1920x1080 reference tokens) is tuned for. Boxes
+    // that report another density, and desktop "force TV" windows, render
+    // through that same canvas so every TV shows the same layout.
+    if (PlatformDetector.isTV()) {
+      final scale = FormFactorScale.tvSurfaceScaleFor(MediaQuery.sizeOf(context));
+      if (scale == 1.0) return child;
+      return _scaledSurface(child: child, scale: scale, zeroInsets: false);
     }
     if (!PlatformDetector.isAutomotive()) return child;
 
