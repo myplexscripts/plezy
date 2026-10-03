@@ -33,6 +33,7 @@ import '../widgets/focusable_tab_chip.dart';
 import '../utils/focus_utils.dart';
 import 'libraries/state_messages.dart';
 import 'main_screen.dart';
+import '../utils/tv_card_style.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -458,10 +459,15 @@ class _SearchScreenState extends State<SearchScreen>
   /// TV results: a poster grid like the library screens instead of the dense
   /// phone list, so search reads like the rest of the ten-foot UI.
   Widget _buildTvResultsGrid(List<MediaItem> visible) {
+    // Card Style: 16:9 cells when every result is a movie, show or episode.
+    final landscapeCards =
+        tvLandscapeCards() && visible.isNotEmpty && visible.every((i) => tvCardShapeFor(i, landscape: true) != null);
     return MediaCardSliverLayout(
       viewMode: ViewMode.grid,
       itemCount: visible.length,
       density: SettingsService.instance.read(SettingsService.libraryDensity),
+      shape: landscapeCards ? CardShape.wide : null,
+      useWideAspectRatio: landscapeCards,
       padding: EdgeInsets.fromLTRB(8, _showKindChips ? 4 : 8, _tvTrailingGutter, 24),
       findChildIndexCallback: (key) {
         final id = (key as ValueKey<String>).value;
@@ -479,6 +485,7 @@ class _SearchScreenState extends State<SearchScreen>
           onRefresh: updateItem,
           onListRefresh: refresh,
           mixedHubContext: true,
+          cardShapeOverride: landscapeCards ? CardShape.wide : null,
           onNavigateLeft: position.isFirstColumn ? _navigateToSidebar : null,
           onNavigateUp: position.isFirstRow ? (_showKindChips ? _focusKindChips : focusSearchInput) : null,
           onBack: _navigateToSidebar,

@@ -437,7 +437,10 @@
     "glassDescription": "Translucency of menus, navigation and player controls. Solid reduces transparency; weaker devices and high-contrast mode always use it.",
     "glassOff": "Solid (reduce transparency)",
     "glassSubtle": "Subtle",
-    "glassFull": "Full"
+    "glassFull": "Full",
+    "tvCardStyle": "Card Style",
+    "tvCardStyleLandscape": "Landscape 16:9",
+    "tvCardStylePoster": "Posters 2:3"
   },
   "search": {
     "hint": "Search movies, shows, music...",

@@ -68,6 +68,7 @@ import '../widgets/companion_remote/remote_session_dialog.dart';
 import 'companion_remote/mobile_remote_screen.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 import 'package:plezy/theme/plezzant/plezzant_typography.dart';
+import '../utils/tv_card_style.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -934,6 +935,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
         SettingsService.hideSpoilers,
         SettingsService.libraryDensity,
         SettingsService.episodePosterMode,
+        SettingsService.tvCardStyle,
       ],
       builder: (context) => _buildContent(context),
     );
@@ -1097,7 +1099,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       onNavigateUp: _focusTopActions,
       onNavigateToSidebar: _navigateToSidebar,
       tallPosterScale: TvBrowseRailLayout.compactTallPosterScale,
-      forceWideLayout: true,
+      // Card Style: 16:9 rows, or posters with their natural shapes.
+      forceWideLayout: tvLandscapeCards(),
     );
   }
 
@@ -1114,7 +1117,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       resolveSpotlight: () => _spotlight.resolve(browseHubs),
       resolveClient: _getMediaClientForItem,
       hideSpoilers: hideSpoilers,
-      forceWideRailLayout: true,
+      forceWideRailLayout: tvLandscapeCards(),
       showActionHint: true,
       foreground: Stack(
         fit: StackFit.expand,

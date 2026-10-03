@@ -79,6 +79,9 @@ enum ViewMode { grid, list }
 
 enum EpisodePosterMode { seriesPoster, seasonPoster, episodeThumbnail }
 
+/// TV artwork shape for movies, shows and episodes across Home and the grids.
+enum TvCardStyle { landscape, poster }
+
 enum ContinueWatchingAction { play, details }
 
 enum EpisodeAction { play, details }
@@ -533,6 +536,11 @@ class SettingsService extends BaseSharedPreferencesService {
   static const rewindOnResume = IntPref('rewind_on_resume');
   static const showHeroSection = BoolPref('show_hero_section', defaultValue: true);
   static const tvFullCardLayout = BoolPref('tv_full_card_layout', defaultValue: false);
+  static const tvCardStyle = EnumPref<TvCardStyle>(
+    'tv_card_style',
+    values: TvCardStyle.values,
+    defaultValue: TvCardStyle.landscape,
+  );
   static const focusGlow = BoolPref('focus_glow', defaultValue: true);
   static const useGlobalHubs = BoolPref('use_global_hubs', defaultValue: true);
   static const showServerNameOnHubs = BoolPref('show_server_name_on_hubs');
@@ -1433,6 +1441,7 @@ class SettingsService extends BaseSharedPreferencesService {
   static final List<Pref<Object?>> _portableOnlyPrefs = [
     rewindOnResume,
     tvFullCardLayout,
+    tvCardStyle,
     focusGlow,
     useGlobalHubs,
     showServerNameOnHubs,

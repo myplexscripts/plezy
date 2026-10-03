@@ -48,6 +48,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
             _viewModeSelector(),
             _densitySelector(),
             _gridSpacingSelector(),
+            if (PlatformDetector.isTV()) _tvCardStyleSelector(),
             _episodePosterModeSelector(),
             SettingSwitchTile(
               pref: SettingsService.showEpisodeNumberOnCards,
@@ -319,6 +320,16 @@ class AppearanceSettingsScreen extends StatelessWidget {
       ButtonSegment(value: GridSpacing.tight, label: Text(t.settings.gridSpacingTight)),
       ButtonSegment(value: GridSpacing.normal, label: Text(t.settings.gridSpacingNormal)),
       ButtonSegment(value: GridSpacing.spacious, label: Text(t.settings.gridSpacingSpacious)),
+    ],
+  );
+
+  Widget _tvCardStyleSelector() => SettingSegmentedTile<TvCardStyle>(
+    pref: SettingsService.tvCardStyle,
+    icon: LucideIcons.galleryHorizontal,
+    title: t.settings.tvCardStyle,
+    segments: [
+      ButtonSegment(value: TvCardStyle.landscape, label: Text(t.settings.tvCardStyleLandscape)),
+      ButtonSegment(value: TvCardStyle.poster, label: Text(t.settings.tvCardStylePoster)),
     ],
   );
 

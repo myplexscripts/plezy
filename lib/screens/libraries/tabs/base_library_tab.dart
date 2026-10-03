@@ -51,6 +51,10 @@ abstract class BaseLibraryTab<T> extends StatefulWidget {
   /// Used to navigate focus back to the tab bar.
   final VoidCallback? onBack;
 
+  /// Called when the user presses UP from the content's first row, or the
+  /// content has nothing to focus. Falls back to [onBack] when unset.
+  final VoidCallback? onNavigateToChrome;
+
   const BaseLibraryTab({
     super.key,
     required this.library,
@@ -60,6 +64,7 @@ abstract class BaseLibraryTab<T> extends StatefulWidget {
     this.isActive = false,
     this.suppressAutoFocus = false,
     this.onBack,
+    this.onNavigateToChrome,
   });
 }
 
@@ -476,8 +481,12 @@ abstract class BaseLibraryTabState<T, W extends BaseLibraryTab<T>> extends State
   /// Fallback for empty/error states, where content has no focusable child.
   @protected
   void focusEmptyState() {
-    widget.onBack?.call();
+    navigateToChrome?.call();
   }
+
+  /// UP from the first row (and empty states) goes to the tab chips.
+  @protected
+  VoidCallback? get navigateToChrome => widget.onNavigateToChrome ?? widget.onBack;
 
   /// Focus the first item in the tab. Subclasses should override this.
   // ignore: no-empty-block - default no-op, subclasses override to focus their first item

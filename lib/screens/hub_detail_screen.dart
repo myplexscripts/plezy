@@ -38,6 +38,7 @@ import '../theme/plezzant/plezzant_tokens.dart';
 import '../utils/layout_constants.dart';
 import '../widgets/detail_back_button.dart';
 import '../widgets/list_detail_header.dart';
+import '../utils/tv_card_style.dart';
 
 /// Screen to display full content of a recommendation hub
 class HubDetailScreen extends StatefulWidget {
@@ -557,11 +558,12 @@ class _HubDetailScreenState extends State<HubDetailScreen>
                         SettingsService.episodePosterMode,
                         SettingsService.libraryDensity,
                         SettingsService.tvFullCardLayout,
+                        SettingsService.tvCardStyle,
                       ],
                       builder: (context) {
                         final svc = SettingsService.instance;
                         final viewMode = svc.read(SettingsService.viewMode);
-                        final episodePosterMode = svc.read(SettingsService.episodePosterMode);
+                        final episodePosterMode = tvEpisodePosterMode(svc.read(SettingsService.episodePosterMode));
                         final libraryDensity = svc.read(SettingsService.libraryDensity);
                         final fullCardLayout = PlatformDetector.isTV() && svc.read(SettingsService.tvFullCardLayout);
 
@@ -574,8 +576,19 @@ class _HubDetailScreenState extends State<HubDetailScreen>
 
                         final isEpisodeOnlyHub = hasEpisodes && !hasNonEpisodes;
 
+                        // Card Style: 16:9 cells for video hubs on a TV.
+
+                        final landscapeCards =
+                            !(_filteredItems.isNotEmpty &&
+                                _filteredItems.every(
+                                  (item) => item.cardShape(episodePosterMode) == CardShape.square,
+                                )) &&
+                            tvLandscapeCards();
+
                         final useWideLayout =
-                            episodePosterMode == EpisodePosterMode.episodeThumbnail && (isEpisodeOnlyHub || isMixedHub);
+                            landscapeCards ||
+                            (episodePosterMode == EpisodePosterMode.episodeThumbnail &&
+                                (isEpisodeOnlyHub || isMixedHub));
 
                         final isSquareHub =
                             _filteredItems.isNotEmpty &&
@@ -617,6 +630,7 @@ class _HubDetailScreenState extends State<HubDetailScreen>
                                   ? _handleRemoveFromContinueWatching
                                   : null,
                               isInContinueWatching: widget.isInContinueWatching,
+                              cardShapeOverride: tvCardShapeFor(item, landscape: landscapeCards),
                               usesContinueWatchingAction: widget.usesContinueWatchingAction,
                               onNavigateUp: position.isFirstRow ? navigateToAppBar : null,
                               onNavigateDown:

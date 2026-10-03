@@ -30,8 +30,6 @@ import 'base_library_tab.dart';
 /// Recommended tab for library screen
 /// Shows library-specific hubs and recommendations, including dedicated Continue Watching
 class LibraryRecommendedTab extends BaseLibraryTab<MediaHub> {
-  final VoidCallback? onNavigateToChrome;
-
   const LibraryRecommendedTab({
     super.key,
     required super.library,
@@ -39,7 +37,7 @@ class LibraryRecommendedTab extends BaseLibraryTab<MediaHub> {
     super.isActive,
     super.suppressAutoFocus,
     super.onBack,
-    this.onNavigateToChrome,
+    super.onNavigateToChrome,
   });
 
   @override
@@ -313,7 +311,7 @@ class _LibraryRecommendedTabState extends BaseLibraryTabState<MediaHub, LibraryR
                 onRemoveFromContinueWatching: isContinueWatching ? _refreshContinueWatching : null,
                 onVerticalNavigation: (isUp) => _handleVerticalNavigation(hubKeys, index, isUp),
                 onBack: widget.onBack,
-                onNavigateUp: index == 0 ? widget.onBack : null,
+                onNavigateUp: index == 0 ? navigateToChrome : null,
                 onNavigateToSidebar: _navigateToSidebar,
               );
             },
@@ -347,7 +345,7 @@ class _LibraryRecommendedTabState extends BaseLibraryTabState<MediaHub, LibraryR
                 onRemoveFromContinueWatching: _refreshContinueWatching,
                 isContinueWatchingHub: _isContinueWatchingHub,
                 usesContinueWatchingAction: _usesContinueWatchingAction,
-                onNavigateUp: widget.onNavigateToChrome ?? widget.onBack,
+                onNavigateUp: navigateToChrome,
                 onNavigateToSidebar: _navigateToSidebar,
                 onBack: widget.onBack,
                 tallPosterScale: TvBrowseRailLayout.compactTallPosterScale,

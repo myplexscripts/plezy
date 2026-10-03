@@ -38,6 +38,7 @@ import 'media_context_menu.dart';
 import 'optimized_media_image.dart';
 import 'rasterized_gradient.dart';
 import 'settings_builder.dart';
+import '../utils/tv_card_style.dart';
 
 const _inactiveArtworkDimAlpha = 0.3;
 
@@ -1154,6 +1155,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
         SettingsService.episodePosterMode,
         SettingsService.tvFullCardLayout,
         SettingsService.gridSpacing,
+        SettingsService.tvCardStyle,
       ],
       builder: (context) => LayoutBuilder(
         builder: (context, constraints) {
@@ -1168,7 +1170,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
           final availableWidth = (width - horizontalInset).clamp(1.0, double.infinity).toDouble();
           final railViewportWidth = (availableWidth + interactionExpansion).clamp(1.0, double.infinity).toDouble();
           final density = svc.read(SettingsService.libraryDensity);
-          final episodePosterMode = svc.read(SettingsService.episodePosterMode);
+          final episodePosterMode = tvEpisodePosterMode(svc.read(SettingsService.episodePosterMode));
           final fullCardLayout = svc.read(SettingsService.tvFullCardLayout);
           final gridSpacing = svc.read(SettingsService.gridSpacing);
           final modes = [for (final hub in widget.hubs) widget.episodePosterModeForHub?.call(hub) ?? episodePosterMode];

@@ -41,6 +41,7 @@ import 'media_context_menu.dart';
 import 'media_card_list_layout.dart';
 import 'backend_badge.dart';
 import 'optimized_media_image.dart';
+import '../utils/tv_card_style.dart';
 
 const _failedPosterUrlCacheLimit = 512;
 final _failedPosterUrls = <String>{};
@@ -433,6 +434,7 @@ class MediaCardState extends State<MediaCard> with ContextMenuTapMixin<MediaCard
         SettingsService.viewMode,
         SettingsService.libraryDensity,
         SettingsService.episodePosterMode,
+        SettingsService.tvCardStyle,
         SettingsService.showEpisodeNumberOnCards,
         SettingsService.hideSpoilers,
         SettingsService.showUnwatchedCount,
@@ -754,7 +756,8 @@ class _MediaCardList extends StatelessWidget {
     if (cardShapeOverride case final shape?) return shape;
     if (item is! MediaItem) return CardShape.poster;
     final EpisodePosterMode mode =
-        episodePosterModeOverride ?? SettingsService.instance.read(SettingsService.episodePosterMode);
+        episodePosterModeOverride ??
+        tvEpisodePosterMode(SettingsService.instance.read(SettingsService.episodePosterMode));
     return (item as MediaItem).cardShape(mode);
   }
 
@@ -1088,7 +1091,8 @@ Widget _buildPosterImage(
     );
   } else if (item is MediaItem) {
     final EpisodePosterMode episodePosterMode =
-        episodePosterModeOverride ?? SettingsService.instance.read(SettingsService.episodePosterMode);
+        episodePosterModeOverride ??
+        tvEpisodePosterMode(SettingsService.instance.read(SettingsService.episodePosterMode));
     final hideSpoilers = SettingsService.instance.read(SettingsService.hideSpoilers);
     final shouldBlur =
         hideSpoilers && item.shouldHideSpoiler && episodePosterMode == EpisodePosterMode.episodeThumbnail;

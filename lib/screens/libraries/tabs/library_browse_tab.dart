@@ -64,6 +64,7 @@ import '../../../utils/deletion_notifier.dart';
 import '../../../utils/global_key_utils.dart';
 import '../../../utils/watch_state_notifier.dart';
 import '../../../utils/platform_detector.dart';
+import '../../../utils/tv_card_style.dart';
 import '../../../i18n/strings.g.dart';
 import '../../main_screen.dart';
 import 'base_library_tab.dart';
@@ -91,6 +92,7 @@ class LibraryBrowseTab extends BaseLibraryTab<MediaItem> {
     super.isActive,
     super.suppressAutoFocus,
     super.onBack,
+    super.onNavigateToChrome,
     this.onResetScroll,
     this.onFiltersActiveChanged,
   });
@@ -1473,7 +1475,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
   /// Navigate focus from grid up to the chips bar, or the tab bar on mobile.
   void _navigateToChips() {
     if (_usesMobileBrowseOptions) {
-      widget.onBack?.call();
+      navigateToChrome?.call();
       return;
     }
     _groupingChipFocusNode.requestFocus();
@@ -1987,7 +1989,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
             label: _getGroupingLabel(_selectedGrouping),
             onPressed: _showGroupingBottomSheet,
             onNavigateDown: _navigateToGrid,
-            onNavigateUp: widget.onBack,
+            onNavigateUp: navigateToChrome,
             onNavigateLeft: _navigateToSidebar,
             onNavigateRight: groupingNavigateRight,
             onBack: widget.onBack,
@@ -2004,7 +2006,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
                   : t.libraries.filtersWithCount(count: _selectedFilters.length),
               onPressed: _showFiltersBottomSheet,
               onNavigateDown: _navigateToGrid,
-              onNavigateUp: widget.onBack,
+              onNavigateUp: navigateToChrome,
               onNavigateLeft: () => _groupingChipFocusNode.requestFocus(),
               onNavigateRight: _isSortChipVisible ? () => _sortChipFocusNode.requestFocus() : null,
               onBack: widget.onBack,
@@ -2019,7 +2021,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
               label: _selectedSort?.title ?? t.libraries.sort,
               onPressed: _showSortBottomSheet,
               onNavigateDown: _navigateToGrid,
-              onNavigateUp: widget.onBack,
+              onNavigateUp: navigateToChrome,
               onNavigateLeft: _isFiltersChipVisible
                   ? () => _filtersChipFocusNode.requestFocus()
                   : () => _groupingChipFocusNode.requestFocus(),
@@ -2093,6 +2095,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
           SettingsService.libraryDensity,
           SettingsService.episodePosterMode,
           SettingsService.tvFullCardLayout,
+          SettingsService.tvCardStyle,
         ],
         builder: (context) => _buildItemsSliver(context),
       ),
@@ -2159,7 +2162,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
     final svc = SettingsService.instance;
     final viewMode = svc.read(SettingsService.viewMode);
     final libraryDensity = svc.read(SettingsService.libraryDensity);
-    final episodePosterMode = svc.read(SettingsService.episodePosterMode);
+    final episodePosterMode = tvEpisodePosterMode(svc.read(SettingsService.episodePosterMode));
     final fullCardLayout = PlatformDetector.isTV() && svc.read(SettingsService.tvFullCardLayout);
     final itemCount = totalSize;
     final isPhone = _isPhone(context);
@@ -2167,7 +2170,8 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
     _effectiveTopPadding = topPadding;
     final rightPadding = _shouldShowAlphaJumpBar && !isPhone ? _alphaJumpBarWidth : 8.0;
 
-    final useWideRatio = _selectedGrouping == 'episodes' && episodePosterMode == EpisodePosterMode.episodeThumbnail;
+    final episodeThumbnails =
+        _selectedGrouping == 'episodes' && episodePosterMode == EpisodePosterMode.episodeThumbnail;
     // Music groupings are homogeneous, so the whole grid shares the square
     // cell shape (artists render circular inside the square cell).
     final isMusicGrouping =
@@ -2179,11 +2183,16 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
     // would letterbox every card (#2036).
     // Photo libraries likewise: photos and albums are landscape.
     final isClipLibrary = widget.library.kind == MediaKind.clip || widget.library.kind == MediaKind.photo;
-    final browseShape = isMusicGrouping
+    final naturalShape = isMusicGrouping
         ? CardShape.square
         : isClipLibrary
         ? CardShape.wide
         : null;
+    // Card Style: movies, shows and episodes take 16:9 cells on a TV unless
+    // the user picked posters.
+    _landscapeCards = naturalShape == null && tvLandscapeCards();
+    final browseShape = naturalShape ?? (_landscapeCards ? CardShape.wide : null);
+    final useWideRatio = episodeThumbnails || _landscapeCards;
     // Full-bleed TV cards intentionally hide captions. Music artwork alone
     // is not a reliable identity, so artist/album/track grids always keep the
     // standard captioned card while preserving their circular/square artwork.
@@ -2343,8 +2352,12 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
       onFocusChange: (hasFocus) => trackGridItemFocus(index, hasFocus),
       onListRefresh: _loadItems,
       fullBleedImage: fullBleedImage,
+      cardShapeOverride: tvCardShapeFor(item, landscape: _landscapeCards),
     );
   }
+
+  /// Card Style for the current grid, set while it builds.
+  bool _landscapeCards = false;
 
   FocusNode _cardFocusNode(int index) =>
       focusNodeForIndex(index, firstItemFocusNode, prefix: 'browse_grid_item', itemIdentity: loadedItems[index]?.id);

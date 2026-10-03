@@ -16,6 +16,7 @@ import '../widgets/skeleton_media_card.dart';
 import '../widgets/system_bottom_inset.dart';
 import '../utils/layout_constants.dart';
 import '../theme/plezzant/plezzant_tokens.dart';
+import '../utils/tv_card_style.dart';
 
 /// Mixin that provides common focus navigation functionality for detail screens.
 /// Handles app bar focus, back navigation, scroll-to-top, and grid item focus management.
@@ -217,13 +218,22 @@ mixin FocusableDetailScreenMixin<T extends StatefulWidget> on State<T>, GridFocu
     int indexOffset = 0,
   }) {
     return SettingsBuilder(
-      prefs: const [SettingsService.viewMode, SettingsService.libraryDensity, SettingsService.tvFullCardLayout],
+      prefs: const [
+        SettingsService.viewMode,
+        SettingsService.libraryDensity,
+        SettingsService.tvFullCardLayout,
+        SettingsService.tvCardStyle,
+      ],
       builder: (context) {
         final svc = SettingsService.instance;
         final viewMode = svc.read(SettingsService.viewMode);
         final libraryDensity = svc.read(SettingsService.libraryDensity);
         final fullCardLayout = PlatformDetector.isTV() && svc.read(SettingsService.tvFullCardLayout);
-        final useFullCardLayout = fullCardLayout && shape != CardShape.square;
+        // Card Style applies when the screen doesn't pin a shape (music,
+        // photos).
+        final landscapeCards = shape == null && tvLandscapeCards();
+        final gridShape = shape ?? (landscapeCards ? CardShape.wide : null);
+        final useFullCardLayout = fullCardLayout && gridShape != CardShape.square;
 
         Widget buildTile(MediaCardSliverPosition position) {
           final index = position.index;
@@ -244,7 +254,7 @@ mixin FocusableDetailScreenMixin<T extends StatefulWidget> on State<T>, GridFocu
             collectionId: collectionId,
             onListRefresh: onListRefresh,
             fullBleedImage: useFullCardLayout && position.isGrid,
-            cardShapeOverride: shape,
+            cardShapeOverride: shape ?? tvCardShapeFor(item, landscape: landscapeCards),
             // The first section's first row reaches the app bar; later
             // sections fall through to traversal, which enters the previous
             // section's grid.
@@ -267,7 +277,8 @@ mixin FocusableDetailScreenMixin<T extends StatefulWidget> on State<T>, GridFocu
                 )
               : const EdgeInsets.all(8),
           fullBleedImage: useFullCardLayout,
-          shape: shape,
+          shape: gridShape,
+          useWideAspectRatio: gridShape == CardShape.wide,
           itemBuilder: (context, position) => buildTile(position),
         );
       },
