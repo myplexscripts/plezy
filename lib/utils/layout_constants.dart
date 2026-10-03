@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 import 'platform_detector.dart';
 
 /// Layout and sizing constants used throughout the application
@@ -76,7 +77,7 @@ class TvLayoutConstants {
   static const double compactHeroLogoWidth = 420;
   static const double compactHeroLogoHeight = 112;
 
-  static double scaleForHeight(double height) => (height / 1080).clamp(0.85, 1.35).toDouble();
+  static double scaleForHeight(double height) => PlezzantTv.scaleForHeight(height);
 
   static double scaleForSize(Size size) => scaleForHeight(size.height);
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -110,8 +111,10 @@ class TvSpotlightBackground extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black.withValues(alpha: 0.20), Colors.transparent, bgColor.withValues(alpha: 0.72)],
-                stops: const [0.0, 0.46, 1.0],
+                // Light top edge for the floating chrome; the bottom fade only
+                // carries the shelf labels.
+                colors: [Colors.black.withValues(alpha: 0.14), Colors.transparent, bgColor.withValues(alpha: 0.72)],
+                stops: const [0.0, 0.5, 1.0],
               ),
             ),
             if (media != null && showInfo)
@@ -119,7 +122,8 @@ class TvSpotlightBackground extends StatelessWidget {
                 duration: DevicePerformance.reducedDuration(PlezzantMotion.navigation),
                 curve: PlezzantMotion.standard,
                 left: contentLeft ?? TvLayoutConstants.horizontalInset,
-                right: MediaQuery.sizeOf(context).width * 0.43,
+                // tvOS keeps hero copy to a readable measure.
+                right: _heroRightInset(context, contentLeft ?? TvLayoutConstants.horizontalInset),
                 top: contentTop,
                 bottom: contentBottom,
                 // The info block still cross-fades via AnimatedSwitcher, but its
@@ -207,8 +211,10 @@ class TvSpotlightBackground extends StatelessWidget {
       gradient: LinearGradient(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [bgColor.withValues(alpha: 0.62), bgColor.withValues(alpha: 0.12), Colors.transparent],
-        stops: const [0.0, 0.46, 1.0],
+        // A local readability field behind the copy, not a global wash: the
+        // artwork stays bright across the right half of the screen.
+        colors: [bgColor.withValues(alpha: 0.55), bgColor.withValues(alpha: 0.10), Colors.transparent],
+        stops: const [0.0, 0.42, 0.62],
       ),
     );
   }
@@ -412,7 +418,13 @@ class TvSpotlightBackground extends StatelessWidget {
     );
   }
 
-  double _sectionGap(double scale) => (compact ? 10 : 16) * scale;
+  double _heroRightInset(BuildContext context, double left) {
+    final width = MediaQuery.sizeOf(context).width;
+    final textWidth = PlezzantTv.heroTextWidth * _scale(context);
+    return math.max(width * 0.3, width - left - textWidth);
+  }
+
+  double _sectionGap(double scale) => (compact ? 12 : 18) * scale;
 
   double _logoWidth(double scale) =>
       (compact ? TvLayoutConstants.compactHeroLogoWidth : TvLayoutConstants.heroLogoWidth) * scale;
@@ -422,9 +434,9 @@ class TvSpotlightBackground extends StatelessWidget {
 
   double _titleFontSize(double scale) => (compact ? 44 : 54) * scale;
 
-  double _metadataFontSize(double scale) => (compact ? 16 : 18) * scale;
+  double _metadataFontSize(double scale) => (compact ? 21 : 23) * scale;
 
-  double _summaryFontSize(double scale) => (compact ? 18 : 20) * scale;
+  double _summaryFontSize(double scale) => (compact ? 22 : 24) * scale;
 }
 
 /// The white "Play" / "Go to Show" pill of the Apple TV hero.
@@ -440,24 +452,24 @@ class _ActionPill extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10 * scale),
+        borderRadius: BorderRadius.circular(14 * scale),
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 16 * scale)],
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 26 * scale, vertical: 11 * scale),
+        padding: EdgeInsets.symmetric(horizontal: 34 * scale, vertical: 15 * scale),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              AppIcon(icon!, fill: 1, size: 18 * scale, color: Colors.black),
-              SizedBox(width: 8 * scale),
+              AppIcon(icon!, fill: 1, size: 24 * scale, color: Colors.black),
+              SizedBox(width: 10 * scale),
             ],
             Text(
               label,
               maxLines: 1,
               style: PlezzantType.labelLarge.copyWith(
                 color: Colors.black,
-                fontSize: 17 * scale,
+                fontSize: 23 * scale,
                 fontWeight: FontWeight.w700,
               ),
             ),

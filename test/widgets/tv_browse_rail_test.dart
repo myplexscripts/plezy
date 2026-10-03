@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plezy/theme/plezzant/plezzant_tokens.dart';
 import 'package:plezy/focus/focus_theme.dart';
 import 'package:plezy/focus/dpad_navigator.dart';
 import 'package:plezy/focus/input_mode_tracker.dart';
@@ -258,7 +259,7 @@ void main() {
       expect(full.height, lessThan(detailed.height));
       expect(full.useWideLayout, isTrue);
       expect(detailed.itemGap, 0);
-      expect(full.itemGap, closeTo(12 * 0.85, 0.001));
+      expect(full.itemGap, closeTo(PlezzantTv.homeCardGap * 0.85, 0.001));
       expect(full.posterHeight, closeTo(full.posterWidth * 9 / 16, 0.001));
     });
 
@@ -311,7 +312,8 @@ void main() {
         episodePosterMode: EpisodePosterMode.seriesPoster,
         gridSpacing: GridSpacing.spacious,
       );
-      expect(spaciousEstimate, lessThan(tightEstimate));
+      // Home shelves keep a fixed card range, so spacing can only add room.
+      expect(spaciousEstimate, lessThanOrEqualTo(tightEstimate));
     });
 
     test('compact wide poster scale makes clips match compact episode thumbnails', () {

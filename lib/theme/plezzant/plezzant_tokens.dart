@@ -1,5 +1,4 @@
-import 'package:flutter/animation.dart';
-import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 
 /// Spacing scale (logical pixels). Layouts compose from these steps instead of
 /// literal numbers so rhythm stays consistent across screens.
@@ -23,12 +22,34 @@ abstract final class PlezzantSpace {
 /// content follows the safe frame, and TV widgets scale these values instead
 /// of inventing local gutters.
 abstract final class PlezzantTv {
+  /// Height of the reference canvas every TV token is expressed in.
+  static const double referenceHeight = 1080;
+
+  /// Reference units → logical pixels. A Google TV lays a 1080p panel out at
+  /// 960x540 logical pixels, so the factor there is 0.5 and an 80 unit inset
+  /// lands on 80 physical pixels, exactly where tvOS puts it. There is
+  /// deliberately no comfort floor: clamping it up is what made the TV UI
+  /// render oversized and cramped on real hardware.
+  static double scaleForHeight(double height) => (height / referenceHeight).clamp(0.4, 2.0).toDouble();
+
+  static double scaleOf(BuildContext context) => scaleForHeight(MediaQuery.sizeOf(context).height);
+
   static const double safeX = 80;
   static const double safeY = 60;
 
   static const double sidebarInset = 32;
   static const double sidebarWidth = 336;
-  static const double sidebarCollapsedWidth = safeX;
+
+  /// Left edge of the TV content column. Screens add their own inset on top
+  /// (the browse rail adds [safeX] minus this), landing shelf titles on [safeX].
+  static const double sidebarCollapsedWidth = 56;
+
+  /// The "‹ Home" section pill floating over non-home content.
+  static const double sectionPillTop = 44;
+  static const double sectionPillLeft = 56;
+
+  /// Content on non-home tabs starts below the pill.
+  static const double sectionPillBand = 116;
   static const double sidebarHorizontalPadding = 20;
   static const double navRowHeight = 58;
   static const double navPanelRadius = 30;

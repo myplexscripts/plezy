@@ -113,6 +113,7 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Ambience and glass intensity settings | 🆕 | Settings → Appearance |
 | Focus system (scale, luminance, tinted halo) | 🎨 | Thinner neutral edge, palette-tinted glow |
 | Reduced-performance tier (weak TVs) | ✅ | Animations and blur drop out |
+| tvOS layout system | 🆕 | 1920×1080 reference canvas scaled to the device: 80 × 60 safe frame, couch-distance type roles and focus depth (scale, lift, glow, shadow). Reduce Motion is honoured separately from the effects tier |
 | Apple TV style navigation | 🆕 | Section pill (‹ Home) in the top-left corner; a floating glass sidebar with profile and clock that opens on LEFT; the focused item is a white pill |
 | Apple TV style home | 🆕 | Full-bleed hero showing genre, rating badge and synopsis, with a white action pill (Play / Resume / Go to Show); landscape Up Next rows |
 | Apple TV style details | 🆕 | Logo-led hero with a white "Play S1E1" pill and glass secondary actions |

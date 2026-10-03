@@ -15,6 +15,7 @@ import '../utils/debouncer.dart';
 import '../utils/layout_constants.dart';
 import '../theme/plezzant/plezzant_tokens.dart';
 import '../utils/formatters.dart';
+import 'tv_reference_scale.dart';
 import 'tv_browse_rail.dart';
 import 'tv_spotlight_background.dart';
 
@@ -129,16 +130,17 @@ class TvSpotlightScaffold extends StatelessWidget {
             tallPosterScale: TvBrowseRailLayout.compactTallPosterScale,
             forceWideLayout: forceWideRailLayout,
           );
-    final spotlightTop = (PlezzantTv.safeY * scale).clamp(48.0, 76.0).toDouble();
+    final spotlightTop = PlezzantTv.safeY * scale;
     final minimumSpotlightBottom = railHeight + (8 * scale);
-    final baseSpotlightBottom = (size.height * 0.48).clamp(160.0, 820.0).toDouble();
+    final baseSpotlightBottom = size.height * 0.48;
     final desiredSpotlightBottom = minimumSpotlightBottom > baseSpotlightBottom
         ? minimumSpotlightBottom
         : baseSpotlightBottom;
-    final maxSpotlightBottom =
-        (size.height - spotlightTop - (PlezzantTv.safeY * scale)).clamp(0.0, double.infinity).toDouble();
+    final maxSpotlightBottom = (size.height - spotlightTop - (PlezzantTv.safeY * scale))
+        .clamp(0.0, double.infinity)
+        .toDouble();
     final spotlightBottom = desiredSpotlightBottom > maxSpotlightBottom ? maxSpotlightBottom : desiredSpotlightBottom;
-    final spotlightLeft = (PlezzantTv.safeX * scale).clamp(56.0, 96.0).toDouble();
+    final spotlightLeft = PlezzantTv.safeX * scale;
 
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -328,7 +330,8 @@ class TvToolbarOverlay extends StatelessWidget {
     final fullBleedWidth = MainScreenFocusScope.fullBleedWidthOf(context);
     return SideNavigationBleedBuilder(
       targetBleed: MainScreenFocusScope.sideNavigationBleedOf(context),
-      child: ExcludeFocusTraversal(child: child),
+      // Authored in reference units like the rest of the TV chrome.
+      child: ExcludeFocusTraversal(child: TvReferenceScale(child: child)),
       builder: (context, animatedBleed, child) =>
           Positioned(top: 0, left: -animatedBleed, width: fullBleedWidth, child: child!),
     );

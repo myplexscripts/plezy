@@ -21,6 +21,7 @@ import '../theme/plezzant/plezzant_tokens.dart';
 import '../services/tvos_system_navigation_service.dart';
 import '../services/update_service.dart';
 import '../utils/app_logger.dart';
+import '../widgets/tv_reference_scale.dart';
 import '../widgets/auth_error_banner.dart';
 import '../widgets/app_icon.dart';
 import '../theme/plezzant/plezzant_glass.dart';
@@ -1934,7 +1935,6 @@ class _MainScreenState extends State<MainScreen>
 
   /// Get navigation tabs filtered by offline mode
   /// Height of the band the TV section pill sits in above non-home content.
-  static const double _tvSectionPillBand = 76;
 
   NavigationTab? get _currentNavigationTab {
     for (final tab in _getVisibleTabs(_isOffline)) {
@@ -2087,7 +2087,8 @@ class _MainScreenState extends State<MainScreen>
         pref: SettingsService.alwaysKeepSidebarOpen,
         builder: (context, alwaysExpanded, _) {
           final tvOverlayNavigation = PlatformDetector.isTV();
-          final tvNavigationLeftInset = tvOverlayNavigation ? PlezzantTv.sidebarInset : 0.0;
+          final tvScale = PlezzantTv.scaleOf(context);
+          final tvNavigationLeftInset = tvOverlayNavigation ? PlezzantTv.sidebarInset * tvScale : 0.0;
           final targetContentOffset = _sideNavigationWidth(context, alwaysExpanded: alwaysExpanded);
           final tvFloatingRail = tvOverlayNavigation && !alwaysExpanded;
 
@@ -2106,7 +2107,9 @@ class _MainScreenState extends State<MainScreen>
               : SideNavigationRailState.collapsedWidthForContext(context);
           // Home's hero runs full-bleed under the section pill; other tabs
           // start their content below it.
-          final contentTop = tvFloatingRail && _currentTab != NavigationTabId.discover ? _tvSectionPillBand : 0.0;
+          final contentTop = tvFloatingRail && _currentTab != NavigationTabId.discover
+              ? PlezzantTv.sectionPillBand * tvScale
+              : 0.0;
 
           return OverlaySheetHost(
             onOpenChanged: _handleOverlaySheetOpenChanged,
@@ -2196,46 +2199,52 @@ class _MainScreenState extends State<MainScreen>
                           ),
                           if (tvFloatingRail)
                             Positioned(
-                              top: PlezzantTv.sidebarInset,
-                              left: PlezzantTv.sidebarInset,
+                              top: PlezzantTv.sectionPillTop * tvScale,
+                              left: PlezzantTv.sectionPillLeft * tvScale,
                               child: IgnorePointer(
                                 child: AnimatedOpacity(
                                   opacity: _isSidebarFocused ? 0.0 : 1.0,
                                   duration: SideNavigationRailState.expandDuration,
                                   curve: SideNavigationRailState.expandCurve,
-                                  child: _TvSectionPill(icon: _currentSectionIcon(), label: _currentSectionLabel()),
+                                  child: TvReferenceScale(
+                                    child: _TvSectionPill(icon: _currentSectionIcon(), label: _currentSectionLabel()),
+                                  ),
                                 ),
                               ),
                             ),
                           Positioned(
-                            top: tvOverlayNavigation ? PlezzantTv.sidebarInset : 0,
-                            bottom: tvOverlayNavigation ? PlezzantTv.sidebarInset : 0,
+                            top: tvOverlayNavigation ? PlezzantTv.sidebarInset * tvScale : 0,
+                            bottom: tvOverlayNavigation ? PlezzantTv.sidebarInset * tvScale : 0,
                             left: tvOverlayNavigation ? tvNavigationLeftInset : 0,
-                            child: FocusScope(
-                              node: _sidebarFocusScope,
-                              child: SideNavigationRail(
-                                key: _sideNavKey,
-                                selectedTab: _currentTab,
-                                selectedLibraryKey: _selectedLibraryGlobalKey,
-                                isOfflineMode: _isOffline,
-                                isSidebarFocused: _isSidebarFocused,
-                                alwaysExpanded: alwaysExpanded,
-                                isReconnecting: _isReconnecting,
-                                onDestinationSelected: (tab) {
-                                  final restorePreviousFocus = tab == _currentTab;
-                                  _selectTab(tab);
-                                  _focusContent(restorePreviousFocus: restorePreviousFocus);
-                                },
-                                onLibrarySelected: (key) {
-                                  _selectLibrary(key);
-                                  _focusContent(restorePreviousFocus: false);
-                                },
-                                onNavigateToContent: _focusContent,
-                                onInteractionExpandedChanged: (expanded) {
-                                  if (_isSidebarInteractionExpanded == expanded) return;
-                                  setState(() => _isSidebarInteractionExpanded = expanded);
-                                },
-                                onReconnect: _triggerReconnect,
+                            // The rail is authored in reference units; on TV
+                            // it is laid out on the reference canvas.
+                            child: TvReferenceScale(
+                              child: FocusScope(
+                                node: _sidebarFocusScope,
+                                child: SideNavigationRail(
+                                  key: _sideNavKey,
+                                  selectedTab: _currentTab,
+                                  selectedLibraryKey: _selectedLibraryGlobalKey,
+                                  isOfflineMode: _isOffline,
+                                  isSidebarFocused: _isSidebarFocused,
+                                  alwaysExpanded: alwaysExpanded,
+                                  isReconnecting: _isReconnecting,
+                                  onDestinationSelected: (tab) {
+                                    final restorePreviousFocus = tab == _currentTab;
+                                    _selectTab(tab);
+                                    _focusContent(restorePreviousFocus: restorePreviousFocus);
+                                  },
+                                  onLibrarySelected: (key) {
+                                    _selectLibrary(key);
+                                    _focusContent(restorePreviousFocus: false);
+                                  },
+                                  onNavigateToContent: _focusContent,
+                                  onInteractionExpandedChanged: (expanded) {
+                                    if (_isSidebarInteractionExpanded == expanded) return;
+                                    setState(() => _isSidebarInteractionExpanded = expanded);
+                                  },
+                                  onReconnect: _triggerReconnect,
+                                ),
                               ),
                             ),
                           ),
@@ -2383,23 +2392,20 @@ class _TvSectionPill extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AppIcon(LucideIcons.chevronLeft, fill: 1, size: 18, color: Colors.white.withValues(alpha: 0.55)),
-        const SizedBox(width: 6),
+        AppIcon(LucideIcons.chevronLeft, fill: 1, size: 22, color: Colors.white.withValues(alpha: 0.55)),
+        const SizedBox(width: 8),
         PlezzantGlass(
           style: PlezzantGlassStyle.chrome,
           borderRadius: const BorderRadius.all(Radius.circular(PlezzantRadius.pill)),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AppIcon(icon, fill: 1, size: 18, color: Colors.white),
-              const SizedBox(width: 10),
+              AppIcon(icon, fill: 1, size: 22, color: Colors.white),
+              const SizedBox(width: 12),
               Text(
                 label,
-                style: PlezzantTvType.navigationSecondary.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: PlezzantTvType.navigation.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ],
           ),

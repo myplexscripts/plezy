@@ -147,11 +147,7 @@ Widget _rail() {
                 ),
                 child: Row(
                   children: [
-                    AppIcon(
-                      item.icon,
-                      size: 22,
-                      color: item.selected ? Colors.black : PlezzantNeutrals.textSecondary,
-                    ),
+                    AppIcon(item.icon, size: 22, color: item.selected ? Colors.black : PlezzantNeutrals.textSecondary),
                     const SizedBox(width: 14),
                     Text(
                       item.label,
@@ -283,10 +279,7 @@ Widget _poster(int i, {bool focused = false, double? progress}) {
         decoration: focused
             ? BoxDecoration(
                 borderRadius: PlezzantRadius.cardAll,
-                border: Border.all(
-                  color: FocusTheme.getFocusBorderColor(context),
-                  width: FocusTheme.focusBorderWidth,
-                ),
+                border: Border.all(color: FocusTheme.getFocusBorderColor(context), width: FocusTheme.focusBorderWidth),
                 boxShadow: FocusTheme.focusGlowShadows(glow),
               )
             : null,
@@ -358,10 +351,7 @@ void main() {
                 builder: (context) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Continue Watching',
-                      style: PlezzantTvType.shelfTitle.copyWith(color: Colors.white),
-                    ),
+                    Text('Continue Watching', style: PlezzantTvType.shelfTitle.copyWith(color: Colors.white)),
                     const SizedBox(height: 20),
                     SizedBox(
                       height: 205,

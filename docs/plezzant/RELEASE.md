@@ -20,6 +20,7 @@ an uninstall first.
 
 | Version | Build | Highlights |
 |---|---|---|
+| 1.2.0 | 152 | tvOS layout system: correct TV scaling (Google TV renders at 960×540 logical), safe frame, TV type roles, larger sidebar, focus depth, full-screen profile picker, Reduce Motion |
 | 1.1.0 | 151 | Apple TV style redesign: navigation pill, floating sidebar, hero, details, profile picker, search grid, tvOS settings. Build-time service overrides |
 | 1.0.0 | 150 | First Plezzant release: design system, Plex gap fixes, signed universal APK |
 

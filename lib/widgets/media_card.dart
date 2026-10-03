@@ -29,6 +29,7 @@ import 'settings_builder.dart';
 import 'watched_indicator.dart';
 import '../utils/content_utils.dart';
 import '../utils/media_image_helper.dart';
+import '../theme/plezzant/plezzant_typography.dart';
 import '../utils/platform_detector.dart';
 import '../utils/provider_extensions.dart';
 import '../utils/formatters.dart';
@@ -676,7 +677,7 @@ class MediaCardState extends State<MediaCard> with ContextMenuTapMixin<MediaCard
               if (widget.onTap == null && item is MediaItem && !_impliesShowTitle(item) && _hasClickableTitle(item))
                 _ClickableText(
                   text: item.displayTitle,
-                  style: const TextStyle(fontWeight: .w600, fontSize: 14, height: 1.1),
+                  style: _MediaCardHelpers.titleStyle(context),
                   onTap: () => _navigateToFocusedDetail(context, item, isOffline: widget.isOffline),
                 )
               else
@@ -689,7 +690,7 @@ class MediaCardState extends State<MediaCard> with ContextMenuTapMixin<MediaCard
                     },
                     maxLines: 1,
                     overflow: .ellipsis,
-                    style: const TextStyle(fontWeight: .w600, fontSize: 14, height: 1.1),
+                    style: _MediaCardHelpers.titleStyle(context),
                   ),
                 ),
               if (item is MediaPlaylist)
@@ -1191,6 +1192,15 @@ Widget _buildPosterImage(
 }
 
 class _MediaCardHelpers {
+  /// Card title under the artwork; TV uses the couch-distance card roles.
+  static TextStyle titleStyle(BuildContext context) => PlatformDetector.isTV()
+      ? PlezzantTvType.of(context, PlezzantTvType.cardTitle).copyWith(color: tokens(context).text, height: 1.15)
+      : const TextStyle(fontWeight: .w600, fontSize: 14, height: 1.1);
+
+  static TextStyle? subtitleStyle(BuildContext context) => PlatformDetector.isTV()
+      ? PlezzantTvType.of(context, PlezzantTvType.cardSubtitle).copyWith(color: tokens(context).textMuted, height: 1.15)
+      : Theme.of(context).textTheme.bodySmall?.copyWith(color: tokens(context).textMuted, fontSize: 14, height: 1.1);
+
   static Widget buildPlaylistMeta(BuildContext context, MediaPlaylist playlist) {
     if (playlist.leafCount != null && playlist.leafCount! > 0) {
       return ExcludeSemantics(
@@ -1198,9 +1208,7 @@ class _MediaCardHelpers {
           t.playlists.itemCount(count: playlist.leafCount!),
           maxLines: 1,
           overflow: .ellipsis,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: tokens(context).textMuted, fontSize: 14, height: 1.1),
+          style: subtitleStyle(context),
         ),
       );
     }
@@ -1216,9 +1224,7 @@ class _MediaCardHelpers {
     bool showTitleImplied = false,
     CatalogItem? catalogItem,
   }) {
-    final subtitleStyle = Theme.of(
-      context,
-    ).textTheme.bodySmall?.copyWith(color: tokens(context).textMuted, fontSize: 14, height: 1.1);
+    final subtitleStyle = _MediaCardHelpers.subtitleStyle(context);
 
     if (catalogItem != null) {
       final metadata = _buildMediaMetadataLine(mi, catalogItem: catalogItem, compact: true);

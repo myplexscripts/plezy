@@ -151,13 +151,45 @@ blur on weak TVs.
 | `plezzant_color_matcher.dart` | sRGB → CIELAB, **CIEDE2000**, nearest-palette matching, neutral detection |
 | `artwork_color_extractor.dart` | Tiny-decode dominant-colour extraction, memoised; always routed through the matcher |
 | `plezzant_ambience.dart` | App-wide contextual palette colour, debounced to the item focus settles on |
-| `plezzant_typography.dart` | The single Manrope type scale; nothing below 14 px |
-| `plezzant_tokens.dart` | Spacing, radii, motion, glass materials |
+| `plezzant_typography.dart` | The shared Manrope type scale (14 px floor) plus `PlezzantTvType`, the couch-distance TV roles |
+| `plezzant_tokens.dart` | Spacing, radii, motion, glass materials, and `PlezzantTv` (TV safe frame and geometry) |
 | `plezzant_glass.dart` | Glass surfaces with a performance-aware blur fallback |
 | `lib/widgets/app_icon.dart` | Central icon wrapper (Lucide) |
 
 `MonoTokens` / `monoTheme` remain the theme entry point (many widgets read them);
 they are now populated from the Plezzant tokens.
+
+### TV reference canvas
+
+TV layout follows Apple's tvOS guidance (Human Interface Guidelines: Designing for
+tvOS, Layout, Focus and selection, Materials). Every TV token (`PlezzantTv`,
+`PlezzantTvType`) is expressed on a **1920×1080 reference canvas**:
+
+* The 80 × 60 safe frame, the 336-unit floating sidebar, 23-unit navigation text,
+  24-unit card titles and 16:9 shelves of 300–340 units.
+* `PlezzantTv.scaleOf(context)` converts reference units to logical pixels
+  (`height / 1080`). A Google TV lays a 1080p panel out at **960×540** logical
+  pixels, so the factor there is 0.5 and an 80-unit inset lands on 80 physical
+  pixels, the same place tvOS puts it. There is no comfort floor; clamping
+  the factor up made the TV UI render oversized and cramped on real hardware.
+* `TvReferenceScale` (`lib/widgets/tv_reference_scale.dart`) lays TV chrome out
+  on the reference canvas and paints it scaled to the device. Inside it,
+  `MediaQuery` reports the reference size, so `PlezzantTv.scaleOf` returns 1.0
+  there. Helpers such as `SideNavigationRailState.expandedWidthForContext`
+  therefore give reference units to the rail and device pixels to the shell.
+  The sidebar, the section pill, the home toolbar and the details back chip
+  are laid out this way.
+* Screens built from ordinary Material widgets (settings, search, library
+  grids) stay in Android TV's native dp, where 14 dp equals 28 reference
+  units. They take the safe frame through `TvReadableSliver` and the TV
+  content column.
+* Glass stays on functional layers only (sidebar, section pill, menus,
+  sheets, player controls). Blur drops out on the reduced-effects tier, and
+  `DevicePerformance.reducedDuration` also honours the system "remove
+  animations" setting, independently of the effects tier.
+
+To review the TV UI on a desktop, run it at 960×540 logical pixels (for example,
+a 1920×1080 output at scale 2). A 1920×1080 logical window hides scale problems.
 
 ---
 

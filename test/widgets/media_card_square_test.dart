@@ -114,7 +114,10 @@ void main() {
     expect(wide!.crossAxisSpacing, GridLayoutConstants.crossAxisSpacing);
     expect(wide!.mainAxisSpacing, GridLayoutConstants.crossAxisSpacing);
     // Full-bleed TV gutters are unchanged.
-    expect(fullBleed!.crossAxisSpacing, GridLayoutConstants.fullCardGridSpacingForScale(0.85));
+    expect(
+      fullBleed!.crossAxisSpacing,
+      GridLayoutConstants.fullCardGridSpacingForScale(TvLayoutConstants.scaleForSize(const Size(800, 600))),
+    );
     expect(fullBleed!.mainAxisSpacing, fullBleed!.crossAxisSpacing);
   });
 

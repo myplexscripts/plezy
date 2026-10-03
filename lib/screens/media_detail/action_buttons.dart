@@ -15,8 +15,8 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
     final playIcon = _getPlayButtonIcon(metadata);
     final playActionLabel = playIcon == LucideIcons.stepForward ? t.common.resume : t.common.play;
     final playSemanticsLabel = playButtonLabel.isEmpty ? playActionLabel : '$playActionLabel $playButtonLabel';
-    final playIconSize = isTv ? 22 * tvScale : 20.0;
-    final playTextStyle = TextStyle(fontSize: isTv ? 17 * tvScale : 16, fontWeight: .w700);
+    final playIconSize = isTv ? 26 * tvScale : 20.0;
+    final playTextStyle = TextStyle(fontSize: isTv ? 23 * tvScale : 16, fontWeight: .w700);
     final playButtonIcon = AppIcon(playIcon, fill: 1, size: playIconSize);
 
     // Split "Play Version" segment (#1881): a visible second Play segment
@@ -158,7 +158,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
         : () =>
               unawaited(navigateToVideoPlayer(context, metadata: primaryTrailer, isLaunchCurrent: () => _canUseDetail));
 
-    final gap = isTv ? 8.0 * tvScale : 12.0;
+    final gap = isTv ? 14.0 * tvScale : 12.0;
 
     Widget playButton(FocusableActionBuildState state) {
       return Semantics(
@@ -172,7 +172,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
             onPressed: onPlayPressed,
             style: actionButtonStyle(
               showFocus: state.showFocus,
-              padding: .symmetric(horizontal: isTv ? 28 * tvScale : 16, vertical: isTv ? 9 * tvScale : 0),
+              padding: .symmetric(horizontal: isTv ? 34 * tvScale : 16, vertical: isTv ? 12 * tvScale : 0),
               shape: playShape,
             ),
             // TV always names the action, like Apple TV's "Play" / "Resume".
@@ -181,7 +181,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
                     mainAxisSize: .min,
                     children: [
                       playButtonIcon,
-                      SizedBox(width: 8 * tvScale),
+                      SizedBox(width: 10 * tvScale),
                       Text(
                         playButtonLabel.isEmpty ? playActionLabel : '$playActionLabel $playButtonLabel',
                         style: playTextStyle,
@@ -243,7 +243,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
         onPressed: onPressed,
         icon: icon,
         tooltip: tooltip,
-        iconSize: isTv ? 21 * tvScale : 20,
+        iconSize: isTv ? 26 * tvScale : 20,
         style: actionButtonStyle(foregroundColor: foregroundColor, showFocus: state.showFocus),
       );
     }
@@ -538,7 +538,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
       onPressed: () => unawaited(_handleWatchedTogglePressed(metadata)),
       icon: AppIcon(metadata.isWatched ? LucideIcons.listChecks : LucideIcons.check, fill: 1),
       tooltip: metadata.isWatched ? t.tooltips.markAsUnwatched : t.tooltips.markAsWatched,
-      iconSize: PlatformDetector.isTV() ? 21 * tvScale : 20,
+      iconSize: PlatformDetector.isTV() ? 26 * tvScale : 20,
       style: actionButtonStyle(showFocus: showFocus),
     );
   }
@@ -567,7 +567,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
             }
           },
           icon: const AppIcon(LucideIcons.ellipsisVertical, fill: 1),
-          iconSize: PlatformDetector.isTV() ? 21 * tvScale : 20,
+          iconSize: PlatformDetector.isTV() ? 26 * tvScale : 20,
           style: actionButtonStyle(showFocus: showFocus),
         ),
       ),
@@ -716,7 +716,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
   }) {
     return Consumer<DownloadProvider>(
       builder: (context, downloadProvider, _) {
-        final iconSize = PlatformDetector.isTV() ? 21.0 * tvScale : 20.0;
+        final iconSize = PlatformDetector.isTV() ? 26.0 * tvScale : 20.0;
         final globalKey = metadata.globalKey;
         final ruleKey = _syncRuleKeyForMetadata(context, downloadProvider, metadata);
         final progress = downloadProvider.getProgress(globalKey);

@@ -108,7 +108,15 @@ void main() {
     final titleText = tester.widget<Text>(find.text(title));
     final baseFontSize = 56 * TvLayoutConstants.scaleForSize(const Size(800, 480));
     expect(titleText.style?.fontSize, isNotNull);
-    expect(titleText.style!.fontSize!, lessThan(baseFontSize));
+    // TV metrics scale with the screen, so the logo box keeps its proportions
+    // and the title only shrinks when its box is shorter than two lines; it
+    // must never grow past the base size or spill out of its box.
+    expect(titleText.style!.fontSize!, lessThanOrEqualTo(baseFontSize));
+    final titleBox = tester.renderObject<RenderBox>(find.text(title));
+    final logoBox = tester.renderObject<RenderBox>(
+      find.ancestor(of: find.text(title), matching: find.byType(LayoutBuilder)).first,
+    );
+    expect(titleBox.size.height, lessThanOrEqualTo(logoBox.size.height + 0.5));
   });
 
   testWidgets('TV detail exposes hero information as one semantic node', (tester) async {
@@ -522,8 +530,13 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
 
+    // Season 1 is the active hub; the Specials header above it may peek into
+    // view, but only in the dimmed inactive style.
     expect(find.text('Season 1'), findsOneWidget);
-    expect(find.text('Specials'), findsNothing);
+    expect(tester.widget<Text>(find.text('Season 1')).style!.color!.a, 1.0);
+    for (final element in find.text('Specials').evaluate()) {
+      expect((element.widget as Text).style!.color!.a, lessThan(1.0));
+    }
     expect(_playLabel('S1E1'), findsOneWidget);
   });
 

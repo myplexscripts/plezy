@@ -86,7 +86,12 @@ class DevicePerformance {
   }
 
   /// [full] on the full tier, [Duration.zero] on the reduced tier.
-  static Duration reducedDuration(Duration full) => isReduced ? Duration.zero : full;
+  /// The system "remove animations" / reduce-motion preference. Independent
+  /// of [isReduced]: a fast device can ask for less motion and keep its blur,
+  /// a weak box can keep ordinary motion while dropping effects.
+  static bool get reduceMotion => PlatformDispatcher.instance.accessibilityFeatures.disableAnimations;
+
+  static Duration reducedDuration(Duration full) => isReduced || reduceMotion ? Duration.zero : full;
 
   /// ~2.5 GiB: below what 3 GB Shield-class devices report (~2.8 GiB) so they
   /// keep the full display budget, above the 2.2 GiB reduced-tier threshold.

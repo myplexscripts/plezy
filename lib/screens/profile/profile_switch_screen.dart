@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -87,12 +88,16 @@ class _ProfileSwitchScreenState extends State<ProfileSwitchScreen> with MountedS
       child: Stack(
         children: [
           if (PlatformDetector.isTV() && widget.requireSelection && profiles.isNotEmpty)
-            _TvWhoIsWatching(
-              profiles: profiles,
-              avatarUrlFor: activeProvider.avatarUrlFor,
-              focusNodeFor: _profileFocusNode,
-              onSelect: _switching ? null : _switchTo,
-              onAdd: _switching ? null : _addLocalProfile,
+            // Fill the screen: as a loose Stack child the picker would shrink
+            // to its avatar row.
+            Positioned.fill(
+              child: _TvWhoIsWatching(
+                profiles: profiles,
+                avatarUrlFor: activeProvider.avatarUrlFor,
+                focusNodeFor: _profileFocusNode,
+                onSelect: _switching ? null : _switchTo,
+                onAdd: _switching ? null : _addLocalProfile,
+              ),
             )
           else
             FocusedScrollScaffold(
@@ -634,7 +639,7 @@ class _TvWhoIsWatching extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scale = TvLayoutConstants.scaleOf(context);
-    final avatarSize = 132.0 * scale;
+    final avatarSize = 176.0 * scale;
     return Scaffold(
       body: DecoratedBox(
         decoration: const BoxDecoration(
@@ -647,57 +652,64 @@ class _TvWhoIsWatching extends StatelessWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               t.profiles.whoIsWatching,
               textAlign: TextAlign.center,
-              style: PlezzantType.headlineMedium.copyWith(
+              style: PlezzantTvType.of(context, PlezzantTvType.screenTitle).copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
                 shadows: const [Shadow(color: Color(0x55000000), blurRadius: 16)],
               ),
             ),
-            SizedBox(height: 24 * scale),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 64 * scale, vertical: 48 * scale),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final (index, profile) in profiles.indexed)
-                    _TvProfileTile(
-                      focusNode: focusNodeFor(profile),
-                      autofocus: index == 0,
-                      size: avatarSize,
-                      label: profile.displayName,
-                      onSelect: onSelect == null ? null : () => onSelect!(profile),
-                      builder: (_) =>
-                          ProfileAvatar(profile: profile, size: avatarSize, avatarUrl: avatarUrlFor(profile.id)),
-                    ),
-                  _TvProfileTile(
-                    size: avatarSize,
-                    label: t.profiles.addProfileShort,
-                    onSelect: onAdd,
-                    builder: (focused) => AnimatedContainer(
-                      duration: const Duration(milliseconds: 160),
-                      width: avatarSize,
-                      height: avatarSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: focused ? Colors.white : Colors.white.withValues(alpha: 0.18),
-                      ),
-                      child: Center(
-                        child: AppIcon(
-                          LucideIcons.plus,
-                          fill: 1,
-                          size: avatarSize * 0.32,
-                          color: focused ? Colors.black : Colors.white,
+            SizedBox(height: 48 * scale),
+            LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: 64 * scale, vertical: 48 * scale),
+                // Centred while the row fits; scrolls once there are many profiles.
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: math.max(0, constraints.maxWidth - 128 * scale)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final (index, profile) in profiles.indexed)
+                        _TvProfileTile(
+                          focusNode: focusNodeFor(profile),
+                          autofocus: index == 0,
+                          size: avatarSize,
+                          label: profile.displayName,
+                          onSelect: onSelect == null ? null : () => onSelect!(profile),
+                          builder: (_) =>
+                              ProfileAvatar(profile: profile, size: avatarSize, avatarUrl: avatarUrlFor(profile.id)),
+                        ),
+                      _TvProfileTile(
+                        size: avatarSize,
+                        label: t.profiles.addProfileShort,
+                        onSelect: onAdd,
+                        builder: (focused) => AnimatedContainer(
+                          duration: const Duration(milliseconds: 160),
+                          width: avatarSize,
+                          height: avatarSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: focused ? Colors.white : Colors.white.withValues(alpha: 0.18),
+                          ),
+                          child: Center(
+                            child: AppIcon(
+                              LucideIcons.plus,
+                              fill: 1,
+                              size: avatarSize * 0.32,
+                              color: focused ? Colors.black : Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],
@@ -784,7 +796,7 @@ class _TvProfileTileState extends State<_TvProfileTile> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
-                      style: PlezzantType.titleSmall.copyWith(
+                      style: PlezzantTvType.of(context, PlezzantTvType.cardTitle).copyWith(
                         color: Colors.white.withValues(alpha: focused ? 1 : 0.78),
                         fontWeight: focused ? FontWeight.w700 : FontWeight.w600,
                         shadows: const [Shadow(color: Color(0x66000000), blurRadius: 8)],

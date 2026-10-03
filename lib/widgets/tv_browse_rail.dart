@@ -81,18 +81,18 @@ class TvBrowseRailLayout {
 
   static double scaleForSize(Size size) => TvLayoutConstants.scaleForSize(size);
 
-  static double horizontalInsetForScale(double scale) =>
-      (PlezzantTv.safeX * scale).clamp(56.0, 96.0).toDouble();
+  /// The rail sits in the TV content column, which already starts
+  /// [PlezzantTv.sidebarCollapsedWidth] in; the rest of the safe inset puts
+  /// shelf titles on the safe line and doubles as left focus-overflow room.
+  static double horizontalInsetForScale(double scale) => (PlezzantTv.safeX - PlezzantTv.sidebarCollapsedWidth) * scale;
 
   static double railTopPaddingForScale(double scale) => 16 * scale;
 
   static double railBottomPaddingForScale(double scale) => 20 * scale;
 
-  static double railInteractionExpansionForScale(double scale) =>
-      (PlezzantTv.focusOverflow * scale).clamp(12.0, 22.0).toDouble();
+  static double railInteractionExpansionForScale(double scale) => PlezzantTv.focusOverflow * scale;
 
-  static double fullCardItemGapForScale(double scale) =>
-      (PlezzantTv.homeCardGap * scale).clamp(18.0, 28.0).toDouble();
+  static double fullCardItemGapForScale(double scale) => PlezzantTv.homeCardGap * scale;
 
   static double hubStripHeightForScale(double scale) => PlezzantTv.shelfTitleHeight * scale;
 
@@ -146,7 +146,7 @@ class TvBrowseRailLayout {
     // grids; every other rail follows the user's grid-spacing setting, scaled
     // with the rest of the rail metrics (#2226).
     final itemGap = forceWideLayout
-        ? (PlezzantTv.homeCardGap * scale).clamp(18.0, 28.0).toDouble()
+        ? PlezzantTv.homeCardGap * scale
         : fullCardLayout
         ? fullCardItemGapForScale(scale)
         : gridSpacing.gridGap * scale;
@@ -179,7 +179,9 @@ class TvBrowseRailLayout {
     final posterHeight = (isPersonHub || isSquareHub)
         ? posterWidth
         : (useWideLayout ? posterWidth * 9 / 16 : posterWidth * 1.5);
-    final labelHeight = fullCardLayout ? 0.0 : ((isPersonHub ? 64 : useWideLayout ? 56 : 52) * scale);
+    // Two lines of the TV card roles (24 + 22 at 1.15) plus the card's own
+    // padding; see `_MediaCardHelpers.titleStyle` in media_card.dart.
+    final labelHeight = fullCardLayout ? 0.0 : ((isPersonHub ? 72 : 64) * scale);
     final containerHeight = (posterHeight + labelHeight).ceilToDouble();
     final height = containerHeight + (focusExtra * 2) + (8 * scale);
 
@@ -1807,7 +1809,12 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                         item.displayTitle,
                         maxLines: 1,
                         overflow: .ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 14 * scale, height: 1.1, fontWeight: .w800),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: PlezzantTvType.cardTitle.fontSize! * scale,
+                          height: 1.1,
+                          fontWeight: .w800,
+                        ),
                       ),
                       if (characterName != null && characterName.isNotEmpty) ...[
                         SizedBox(height: 2 * scale),
@@ -1817,7 +1824,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                           overflow: .ellipsis,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.82),
-                            fontSize: 14 * scale,
+                            fontSize: PlezzantTvType.cardSubtitle.fontSize! * scale,
                             height: 1.1,
                             fontWeight: .w600,
                           ),
@@ -1864,7 +1871,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
               overflow: .ellipsis,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: tokens(context).text,
-                fontSize: 14 * scale,
+                fontSize: PlezzantTvType.cardTitle.fontSize! * scale,
                 height: 1.1,
                 fontWeight: .w700,
               ),
@@ -1877,7 +1884,7 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                 overflow: .ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: tokens(context).textMuted,
-                  fontSize: 14 * scale,
+                  fontSize: PlezzantTvType.cardSubtitle.fontSize! * scale,
                   height: 1.1,
                 ),
               ),
@@ -2040,17 +2047,17 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                 child: Column(
                   mainAxisSize: .min,
                   children: [
-                    AppIcon(icon!, fill: 1, size: (26 * scale).clamp(22, 32).toDouble(), color: foreground),
-                    SizedBox(height: (6 * scale).clamp(4, 9).toDouble()),
+                    AppIcon(icon!, fill: 1, size: 26 * scale, color: foreground),
+                    SizedBox(height: 6 * scale),
                     Padding(
-                      padding: .symmetric(horizontal: (10 * scale).clamp(8, 14).toDouble()),
+                      padding: .symmetric(horizontal: 10 * scale),
                       child: Text(
                         label!,
                         maxLines: 1,
                         overflow: .ellipsis,
                         style: TextStyle(
                           color: foreground,
-                          fontSize: (13 * scale).clamp(12, 16).toDouble(),
+                          fontSize: 13 * scale,
                           fontWeight: .w800,
                           letterSpacing: 0.1,
                         ),

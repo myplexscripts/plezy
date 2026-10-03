@@ -13,6 +13,8 @@ import 'package:plezy/widgets/app_icon.dart';
 import 'package:plezy/widgets/background_download_warning_banner.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
+import '../widgets/tv_reference_scale.dart';
 import '../widgets/collapsible_text.dart';
 import '../widgets/rating_bottom_sheet.dart';
 
@@ -130,8 +132,8 @@ const double _heroBottomInset = 16;
 
 const double _tvDetailTallPosterScale = 0.72;
 const double _tvDetailEpisodeThumbnailScale = 0.72;
-const double _tvDetailActionSize = 46;
-const double _tvDetailActionRailGap = 4;
+const double _tvDetailActionSize = 58;
+const double _tvDetailActionRailGap = 20;
 const String _tvDetailSeasonsErrorHubId = 'detail_seasons_error';
 const String _tvDetailSeasonHubIdPrefix = 'detail_season_';
 const String _tvDetailExtrasHubId = 'detail_extras';
@@ -3661,8 +3663,9 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
     final foregroundBottom = (railHeight - railTopPadding) + (_tvDetailActionRailGap * detailScale);
     // Same left margin as the main TV tabs (Apple TV style), so moving from
     // Home into a title keeps the text column where the eye already is.
-    const tvContentMargin = SideNavigationRailState.tvCollapsedWidth;
-    final spotlightLeft = (24 * detailScale).clamp(18.0, 40.0).toDouble() + tvContentMargin;
+    final tvContentMargin = SideNavigationRailState.collapsedWidthForContext(context);
+    // Same safe line as Home, so the text column stays where the eye is.
+    final spotlightLeft = PlezzantTv.safeX * detailScale;
 
     final revealContent = Stack(
       fit: StackFit.expand,
@@ -3703,17 +3706,21 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
             ),
           ),
         ),
+        // Reference-canvas chrome in the section pill's slot, so it stays a
+        // small chip instead of a phone-sized button.
         Positioned(
-          top: 0,
-          left: 0,
-          child: DesktopAppBarHelper.buildAdjustedLeading(
-            AppBarBackButton(
-              style: BackButtonStyle.circular,
-              onPressed: () => Navigator.pop(context, _watchStateChanged),
-              focusNode: _backButtonFocusNode,
-            ),
-            context: context,
-          )!,
+          top: (PlezzantTv.sectionPillTop - 12) * detailScale,
+          left: (PlezzantTv.sectionPillLeft - 12) * detailScale,
+          child: TvReferenceScale(
+            child: DesktopAppBarHelper.buildAdjustedLeading(
+              AppBarBackButton(
+                style: BackButtonStyle.circular,
+                onPressed: () => Navigator.pop(context, _watchStateChanged),
+                focusNode: _backButtonFocusNode,
+              ),
+              context: context,
+            )!,
+          ),
         ),
         if (detailHubs.isNotEmpty)
           Positioned(
@@ -3799,12 +3806,12 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
         final desiredLogoHeight = 220 * scale;
         final minLogoHeight = 60 * scale;
         final desiredLogoWidth = 790 * scale;
-        final episodeTitleLineHeight = 30 * scale;
+        final episodeTitleLineHeight = 34 * scale;
         final episodeTitleGap = 4 * scale;
-        final metadataLineHeight = 22 * scale;
+        final metadataLineHeight = 30 * scale;
         final logoMetadataGap = 14 * scale;
         final summaryGap = 10 * scale;
-        final summaryFontSize = availableHeight < 260 * scale ? 16.2 * scale : 18 * scale;
+        final summaryFontSize = availableHeight < 260 * scale ? 22 * scale : 24 * scale;
         final summaryLineHeight = summaryFontSize * 1.35;
         final actionHeight = _tvDetailActionSize * scale;
         final actionGap = 16 * scale;
@@ -3925,7 +3932,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
                                             overflow: .ellipsis,
                                             style: TextStyle(
                                               color: foregroundColor,
-                                              fontSize: 24 * scale,
+                                              fontSize: 28 * scale,
                                               fontWeight: .w700,
                                               height: 1.2,
                                             ),
@@ -4117,7 +4124,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
   Widget _buildTvDetailMetadataLine(BuildContext context, MediaItem metadata, double scale) {
     final textStyle = TextStyle(
       color: _tvDetailForegroundColor(context),
-      fontSize: 18 * scale,
+      fontSize: 23 * scale,
       fontWeight: .w700,
       letterSpacing: 0.1,
     );

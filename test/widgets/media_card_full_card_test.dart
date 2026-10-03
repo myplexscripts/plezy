@@ -80,7 +80,10 @@ void main() {
 
     expect(delegate.crossAxisSpacing, greaterThan(0));
     expect(delegate.mainAxisSpacing, delegate.crossAxisSpacing);
-    expect(delegate.crossAxisSpacing, GridLayoutConstants.fullCardGridSpacingForScale(0.85));
+    expect(
+      delegate.crossAxisSpacing,
+      GridLayoutConstants.fullCardGridSpacingForScale(TvLayoutConstants.scaleForSize(const Size(800, 600))),
+    );
   });
 
   testWidgets('full bleed grid media cards hide text when constrained by a grid cell', (tester) async {

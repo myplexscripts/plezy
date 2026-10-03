@@ -1,4 +1,5 @@
 import 'dart:ui' show PointerDeviceKind;
+import 'package:plezy/widgets/tv_reference_scale.dart';
 import 'package:plezy/media/ids.dart';
 
 import 'package:flutter/material.dart';
@@ -131,13 +132,23 @@ Future<void> _pumpBasicRail(
         child: MaterialApp(
           theme: ThemeData(extensions: const [testMonoTokens]),
           home: Scaffold(
-            body: height == null ? rail : SizedBox(height: height, child: rail),
+            // Like the shell: TV lays the rail out on the reference canvas.
+            body: TvReferenceScale(
+              child: height == null ? rail : SizedBox(height: height, child: rail),
+            ),
           ),
         ),
       ),
     ),
   );
   await tester.pumpAndSettle();
+}
+
+/// TV rail metrics are 1920x1080 reference units; a 1080p view maps them 1:1.
+void _useTvReferenceView(WidgetTester tester) {
+  tester.view.physicalSize = const Size(1920, 1080);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
 }
 
 void main() {
@@ -157,6 +168,7 @@ void main() {
   });
 
   testWidgets('closed TV rail is slim and keeps primary icons centered', (tester) async {
+    _useTvReferenceView(tester);
     TvDetectionService.debugSetAppleTVOverride(true);
     addTearDown(() => TvDetectionService.debugSetAppleTVOverride(null));
     await SettingsService.getInstance();
@@ -258,6 +270,7 @@ void main() {
   });
 
   testWidgets('expanded TV rail opens as a floating glass panel', (tester) async {
+    _useTvReferenceView(tester);
     TvDetectionService.debugSetAppleTVOverride(true);
     addTearDown(() => TvDetectionService.debugSetAppleTVOverride(null));
     await SettingsService.getInstance();

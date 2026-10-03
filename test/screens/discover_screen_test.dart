@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:drift/native.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:plezy/theme/plezzant/plezzant_tokens.dart';
 import 'package:plezy/media/ids.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -176,9 +177,10 @@ void main() {
     expect(find.byType(TvBrowseRail), findsOneWidget);
 
     final scale = TvLayoutConstants.scaleForSize(const Size(1280, 720));
-    final spotlightLeft = (24 * scale).clamp(18.0, 40.0).toDouble();
+    // The shell offset already clears the safe line, so the hero copy sits a
+    // spacing step past it.
     final spotlightBackground = tester.widget<TvSpotlightBackground>(find.byType(TvSpotlightBackground));
-    expect(spotlightBackground.contentLeft, closeTo(spotlightLeft + currentForegroundLeft, 0.001));
+    expect(spotlightBackground.contentLeft, closeTo(currentForegroundLeft + PlezzantSpace.lg * scale, 0.001));
 
     final railHeight = TvBrowseRailLayout.estimateHeight(
       size: const Size(foregroundWidth, 720),

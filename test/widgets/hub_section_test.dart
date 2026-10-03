@@ -314,7 +314,7 @@ void main() {
       availableWidth: 960,
       density: LibraryDensity.defaultValue,
       useWideLayout: true,
-      scale: TvLayoutConstants.scaleForSize(const Size(960, 540)),
+      scale: TvLayoutConstants.scaleForSize(tester.view.physicalSize / tester.view.devicePixelRatio),
       horizontalPadding: TvLayoutConstants.shelfHorizontalInset * 2,
       itemGap: spacing.gridGap,
     );
@@ -323,7 +323,8 @@ void main() {
     // The shelf fits its cards around the grid-spacing gutter too (#2226).
     await SettingsService.instance.write(SettingsService.gridSpacing, GridSpacing.spacious);
     await tester.pump();
-    expect(expectedFor(GridSpacing.spacious), lessThan(expectedFor(GridSpacing.tight)));
+    // The 16:9 shelf range is fixed, so wider gutters never widen cards.
+    expect(expectedFor(GridSpacing.spacious), lessThanOrEqualTo(expectedFor(GridSpacing.tight)));
     expect(tester.widget<MediaCard>(find.byType(MediaCard)).width, expectedFor(GridSpacing.spacious));
   });
 

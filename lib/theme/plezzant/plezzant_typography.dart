@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'plezzant_tokens.dart';
+
 /// The one Plezzant type scale. Every text style in the app derives from
 /// these roles through `Theme.of(context).textTheme`; screens must not invent
 /// sizes. Nothing renders below [minimumSize] logical pixels.
@@ -157,13 +159,25 @@ abstract final class PlezzantType {
   static double atLeastMinimum(double size) => size < minimumSize ? minimumSize : size;
 }
 
-
 /// Television-only type roles for couch-distance legibility.
 ///
 /// The shared Material text theme remains compact for desktop and mobile.
 /// Large-screen surfaces opt into these roles explicitly.
 abstract final class PlezzantTvType {
   static const String family = PlezzantType.family;
+
+  /// Converts a reference-canvas role to device pixels (see
+  /// [PlezzantTv.scaleOf]); a no-op inside a `TvReferenceScale`.
+  static TextStyle of(BuildContext context, TextStyle role) =>
+      role.copyWith(fontSize: role.fontSize! * PlezzantTv.scaleOf(context));
+
+  /// Secondary line under a card title.
+  static const TextStyle cardSubtitle = TextStyle(
+    fontFamily: family,
+    fontSize: 22,
+    fontWeight: FontWeight.w500,
+    height: 1.2,
+  );
 
   static const TextStyle hero = TextStyle(
     fontFamily: family,
@@ -220,12 +234,7 @@ abstract final class PlezzantTvType {
     height: 1.2,
   );
 
-  static const TextStyle body = TextStyle(
-    fontFamily: family,
-    fontSize: 24,
-    fontWeight: FontWeight.w400,
-    height: 1.35,
-  );
+  static const TextStyle body = TextStyle(fontFamily: family, fontSize: 24, fontWeight: FontWeight.w400, height: 1.35);
 
   static const TextStyle metadata = TextStyle(
     fontFamily: family,

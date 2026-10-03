@@ -67,6 +67,7 @@ import '../providers/companion_remote_provider.dart';
 import '../widgets/companion_remote/remote_session_dialog.dart';
 import 'companion_remote/mobile_remote_screen.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
+import 'package:plezy/theme/plezzant/plezzant_typography.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -773,147 +774,153 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   Widget _buildOverlaidAppBar() {
     final colorScheme = Theme.of(context).colorScheme;
     final foregroundColor = colorScheme.onSurface;
+    final isTV = PlatformDetector.isTV();
     return ToolbarScrim(
-      child: Row(
-        children: [
-          if (!PlatformDetector.isTV())
-            Text(
-              t.discover.title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: foregroundColor, fontWeight: .bold),
-            ),
-          const Spacer(),
-          // TV only: a fullscreen leanback app hides the system clock, while a
-          // phone status bar and a desktop menu bar already show one.
-          if (PlatformDetector.isTV()) ...[
-            SystemClock(
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: foregroundColor, fontWeight: .w500),
-            ),
-            const SizedBox(width: 12),
-          ],
-          Consumer2<WatchTogetherProvider, CompanionRemoteProvider>(
-            builder: (context, watchTogether, companionRemote, _) {
-              final isDesktop = PlatformDetector.shouldActAsRemoteHost(context);
+      // On TV the bar is laid out on the reference canvas (TvToolbarOverlay);
+      // this lines it up with the section pill and the right safe edge.
+      child: Padding(
+        padding: EdgeInsets.only(top: isTV ? 28 : 0, right: isTV ? 48 : 0),
+        child: Row(
+          children: [
+            if (!PlatformDetector.isTV())
+              Text(
+                t.discover.title,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: foregroundColor, fontWeight: .bold),
+              ),
+            const Spacer(),
+            // TV only: a fullscreen leanback app hides the system clock, while a
+            // phone status bar and a desktop menu bar already show one.
+            if (PlatformDetector.isTV()) ...[
+              SystemClock(
+                style: PlezzantTvType.navigation.copyWith(color: foregroundColor, fontWeight: .w600),
+              ),
+              const SizedBox(width: 12),
+            ],
+            Consumer2<WatchTogetherProvider, CompanionRemoteProvider>(
+              builder: (context, watchTogether, companionRemote, _) {
+                final isDesktop = PlatformDetector.shouldActAsRemoteHost(context);
 
-              return FocusableActionBar(
-                key: _actionBarKey,
-                onNavigateLeft: _navigateToSidebar,
-                onNavigateDown: _focusContentFromAppBar,
-                actions: [
-                  FocusableAction(
-                    icon: LucideIcons.rotateCw,
-                    iconColor: foregroundColor,
-                    onPressed: () async {
-                      final outcome = await _discover.refreshNow();
-                      if (!context.mounted) return;
-                      switch (outcome) {
-                        case DiscoverRefreshOutcome.failed:
-                          showErrorSnackBar(context, t.errors.unableToLoad(context: t.discover.title));
-                        case DiscoverRefreshOutcome.degraded:
-                          appLogger.w('Discover refresh completed with partial server failures');
-                        case DiscoverRefreshOutcome.cancelled:
-                        case DiscoverRefreshOutcome.refreshed:
-                          break;
-                      }
-                    },
-                  ),
-                  // Watch Together
-                  FocusableAction(
-                    onPressed: () =>
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const WatchTogetherScreen())),
-                    child: Stack(
-                      children: [
-                        IconButton(
-                          icon: AppIcon(
-                            LucideIcons.users,
-                            fill: watchTogether.isInSession ? 1 : 0,
-                            color: watchTogether.isInSession ? colorScheme.primary : foregroundColor,
-                          ),
-                          onPressed: () =>
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => const WatchTogetherScreen())),
-                          tooltip: t.watchTogether.title,
-                        ),
-                        if (watchTogether.isInSession && watchTogether.participantCount > 1)
-                          Positioned(
-                            top: 6,
-                            right: 6,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                              decoration: BoxDecoration(
-                                color: colorScheme.primary,
-                                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                              ),
-                              child: Text(
-                                '${watchTogether.participantCount}',
-                                style: TextStyle(color: colorScheme.onPrimary, fontSize: 12, fontWeight: .bold),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  // Companion Remote
-                  FocusableAction(
-                    onPressed: () {
-                      if (isDesktop) {
-                        RemoteSessionDialog.show(context);
-                      } else {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const MobileRemoteScreen()));
-                      }
-                    },
-                    child: Stack(
-                      children: [
-                        IconButton(
-                          icon: AppIcon(
-                            LucideIcons.smartphone,
-                            fill: companionRemote.isConnected ? 1 : 0,
-                            color: companionRemote.isConnected ? colorScheme.primary : foregroundColor,
-                          ),
-                          onPressed: () {
-                            if (isDesktop) {
-                              RemoteSessionDialog.show(context);
-                            } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const MobileRemoteScreen()),
-                              );
-                            }
-                          },
-                          tooltip: t.companionRemote.title,
-                        ),
-                        if (companionRemote.isConnected)
-                          Positioned(
-                            top: 6,
-                            right: 6,
-                            child: Container(
-                              width: 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: PlezzantColors.success,
-                                shape: BoxShape.circle,
-                                border: Border.fromBorderSide(BorderSide(color: foregroundColor, width: 1)),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  // Server Tasks — Plex-only (`/activities` API has no
-                  // Jellyfin equivalent), hide the button entirely on
-                  // Jellyfin-only profiles so the chrome doesn't show
-                  // a permanently empty popover.
-                  if (PlatformDetector.isDesktop(context) &&
-                      context.select<MultiServerProvider, bool>((p) => p.hasOnlinePlexServers))
+                return FocusableActionBar(
+                  key: _actionBarKey,
+                  onNavigateLeft: _navigateToSidebar,
+                  onNavigateDown: _focusContentFromAppBar,
+                  actions: [
                     FocusableAction(
-                      onPressed: () => _serverActivitiesButtonKey.currentState?.togglePanel(),
-                      child: ServerActivitiesButton(key: _serverActivitiesButtonKey),
+                      icon: LucideIcons.rotateCw,
+                      iconColor: foregroundColor,
+                      onPressed: () async {
+                        final outcome = await _discover.refreshNow();
+                        if (!context.mounted) return;
+                        switch (outcome) {
+                          case DiscoverRefreshOutcome.failed:
+                            showErrorSnackBar(context, t.errors.unableToLoad(context: t.discover.title));
+                          case DiscoverRefreshOutcome.degraded:
+                            appLogger.w('Discover refresh completed with partial server failures');
+                          case DiscoverRefreshOutcome.cancelled:
+                          case DiscoverRefreshOutcome.refreshed:
+                            break;
+                        }
+                      },
                     ),
-                  // User menu — profiles + sign out
-                  _buildUserMenuAction(context),
-                ],
-              );
-            },
-          ),
-        ],
+                    // Watch Together
+                    FocusableAction(
+                      onPressed: () =>
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => const WatchTogetherScreen())),
+                      child: Stack(
+                        children: [
+                          IconButton(
+                            icon: AppIcon(
+                              LucideIcons.users,
+                              fill: watchTogether.isInSession ? 1 : 0,
+                              color: watchTogether.isInSession ? colorScheme.primary : foregroundColor,
+                            ),
+                            onPressed: () =>
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => const WatchTogetherScreen())),
+                            tooltip: t.watchTogether.title,
+                          ),
+                          if (watchTogether.isInSession && watchTogether.participantCount > 1)
+                            Positioned(
+                              top: 6,
+                              right: 6,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primary,
+                                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                ),
+                                child: Text(
+                                  '${watchTogether.participantCount}',
+                                  style: TextStyle(color: colorScheme.onPrimary, fontSize: 12, fontWeight: .bold),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    // Companion Remote
+                    FocusableAction(
+                      onPressed: () {
+                        if (isDesktop) {
+                          RemoteSessionDialog.show(context);
+                        } else {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MobileRemoteScreen()));
+                        }
+                      },
+                      child: Stack(
+                        children: [
+                          IconButton(
+                            icon: AppIcon(
+                              LucideIcons.smartphone,
+                              fill: companionRemote.isConnected ? 1 : 0,
+                              color: companionRemote.isConnected ? colorScheme.primary : foregroundColor,
+                            ),
+                            onPressed: () {
+                              if (isDesktop) {
+                                RemoteSessionDialog.show(context);
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const MobileRemoteScreen()),
+                                );
+                              }
+                            },
+                            tooltip: t.companionRemote.title,
+                          ),
+                          if (companionRemote.isConnected)
+                            Positioned(
+                              top: 6,
+                              right: 6,
+                              child: Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: PlezzantColors.success,
+                                  shape: BoxShape.circle,
+                                  border: Border.fromBorderSide(BorderSide(color: foregroundColor, width: 1)),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    // Server Tasks — Plex-only (`/activities` API has no
+                    // Jellyfin equivalent), hide the button entirely on
+                    // Jellyfin-only profiles so the chrome doesn't show
+                    // a permanently empty popover.
+                    if (PlatformDetector.isDesktop(context) &&
+                        context.select<MultiServerProvider, bool>((p) => p.hasOnlinePlexServers))
+                      FocusableAction(
+                        onPressed: () => _serverActivitiesButtonKey.currentState?.togglePanel(),
+                        child: ServerActivitiesButton(key: _serverActivitiesButtonKey),
+                      ),
+                    // User menu — profiles + sign out
+                    _buildUserMenuAction(context),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
