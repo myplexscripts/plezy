@@ -114,6 +114,7 @@ import '../widgets/tv_spotlight_background.dart';
 import '../providers/account_preferences_controller.dart';
 import '../services/playback_track_preview.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
+import '../services/trailer_resolver.dart';
 
 part 'media_detail/action_buttons.dart';
 part 'media_detail/playback_tracks_status.dart';
@@ -4825,36 +4826,9 @@ class _MediaDetailScreenState extends State<MediaDetailScreen>
 
   /// Get the primary trailer from the extras list.
   MediaItem? _getPrimaryTrailer() {
-    if (_extras == null || _extras!.isEmpty) return null;
-
-    // If there's a trailerKey (Plex `primaryExtraKey`), try to find that specific trailer
-    final metadata = _fullMetadata ?? _metadata;
-    if (metadata case PlexMediaItem(:final trailerKey?)) {
-      // Extract rating key from trailerKey (e.g., "/library/metadata/52601" -> "52601")
-      final primaryKey = trailerKey.split('/').last;
-      try {
-        return _extras!.firstWhere((extra) => extra.id == primaryKey);
-      } catch (_) {
-        // Primary key not found, fall through to find any trailer
-      }
-    }
-
-    try {
-      return _extras!.firstWhere(_isTrailerExtra);
-    } catch (_) {
-      // No trailer found, return null (button won't appear)
-      return null;
-    }
-  }
-
-  bool _isTrailerExtra(MediaItem extra) {
-    if (extra case PlexMediaItem(:final subtype?)) {
-      return subtype.toLowerCase() == 'trailer';
-    }
-    final raw = extra.raw;
-    final extraType = raw?['ExtraType'] as String?;
-    final type = raw?['Type'] as String?;
-    return extraType?.toLowerCase() == 'trailer' || type?.toLowerCase() == 'trailer';
+    final extras = _extras;
+    if (extras == null) return null;
+    return pickTrailer(_fullMetadata ?? _metadata, extras);
   }
 
   /// Build the cast section with locked focus pattern for D-pad navigation

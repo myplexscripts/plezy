@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:plezy/widgets/app_icon.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

@@ -1,3 +1,9 @@
+import '../utils/video_player_navigation.dart';
+import '../services/trailer_preview_service.dart';
+import '../services/music/music_playback_service.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -144,8 +150,16 @@ class TvSpotlightScaffold extends StatelessWidget {
     final spotlightBottom = desiredSpotlightBottom > maxSpotlightBottom ? maxSpotlightBottom : desiredSpotlightBottom;
     final spotlightLeft = PlezzantTv.safeX * scale;
 
-    return Material(
-      color: Theme.of(context).scaffoldBackgroundColor,
+    final material = ListenableBuilder(
+      listenable: TrailerPreviewService.instance,
+      // A previewing trailer plays on the native surface beneath the UI, so
+      // this surface clears while it shows; the hero scrims stay on top.
+      builder: (context, child) => Material(
+        color: TrailerPreviewService.instance.isShowing
+            ? Colors.transparent
+            : Theme.of(context).scaffoldBackgroundColor,
+        child: child,
+      ),
       child: SizedBox.expand(
         child: Stack(
           fit: StackFit.expand,
@@ -185,6 +199,27 @@ class TvSpotlightScaffold extends StatelessWidget {
         ),
       ),
     );
+    return Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
+      onKeyEvent: (_, event) => _handlePreviewKey(context, event),
+      child: material,
+    );
+  }
+
+  /// Play/Pause while a trailer previews opens it full-screen with sound.
+  static KeyEventResult _handlePreviewKey(BuildContext context, KeyEvent event) {
+    final key = event.logicalKey;
+    final isPlayKey = key == LogicalKeyboardKey.mediaPlayPause || key == LogicalKeyboardKey.mediaPlay;
+    if (!isPlayKey || !TrailerPreviewService.instance.isShowing) return KeyEventResult.ignored;
+    if (event is KeyDownEvent) {
+      unawaited(() async {
+        final trailer = await TrailerPreviewService.instance.takeTrailerForPlayback();
+        if (trailer == null || !context.mounted) return;
+        await navigateToVideoPlayer(context, metadata: trailer, resolveWatchState: false);
+      }());
+    }
+    return KeyEventResult.handled;
   }
 }
 
@@ -218,6 +253,8 @@ class _CatalogSpotlightBackgroundState extends State<_CatalogSpotlightBackground
   MediaItem? _renderItem;
   Color? _accentColor;
 
+  bool _previewActive = false;
+
   @override
   void initState() {
     super.initState();
@@ -225,13 +262,64 @@ class _CatalogSpotlightBackgroundState extends State<_CatalogSpotlightBackground
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Previews run only while this hero is on screen: the current route and,
+    // in the main screen's tab stack, the visible tab.
+    final active = TickerMode.valuesOf(context).enabled && (ModalRoute.of(context)?.isCurrent ?? true);
+    if (active == _previewActive) return;
+    _previewActive = active;
+    if (active) {
+      _focusPreview();
+    } else {
+      _stopOwnPreview();
+    }
+  }
+
+  @override
   void didUpdateWidget(_CatalogSpotlightBackground oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!identical(widget.item, oldWidget.item)) {
       _rehydrateCatalogItem();
+      _focusPreview();
     } else if (widget.targetWidthPx != oldWidget.targetWidthPx) {
       _projectArtwork();
     }
+  }
+
+  @override
+  void dispose() {
+    _stopOwnPreview();
+    super.dispose();
+  }
+
+  /// Preview calls notify listeners, so they run after the frame that
+  /// triggered them (they are reached from build-phase callbacks).
+  void _focusPreview() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _applyPreviewFocus();
+    });
+  }
+
+  /// The hero that last drove the preview; only it may stop it.
+  static Object? _previewOwner;
+
+  void _applyPreviewFocus() {
+    if (!_previewActive) return;
+    _previewOwner = this;
+    final item = widget.item;
+    // Catalog (Discover) entries have no server extras to preview.
+    final previewable = item != null && item.catalogItem == null ? item : null;
+    final musicPlaying = Provider.of<MusicPlaybackService?>(context, listen: false)?.currentTrack != null;
+    TrailerPreviewService.instance.focus(previewable, widget.client, otherAudioActive: musicPlaying);
+  }
+
+  void _stopOwnPreview() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!identical(_previewOwner, this)) return;
+      _previewOwner = null;
+      unawaited(TrailerPreviewService.instance.stop());
+    });
   }
 
   void _rehydrateCatalogItem() {

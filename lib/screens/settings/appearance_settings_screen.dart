@@ -84,6 +84,13 @@ class AppearanceSettingsScreen extends StatelessWidget {
               ),
             if (PlatformDetector.isTV())
               SettingSwitchTile(
+                pref: SettingsService.trailerPreviews,
+                icon: LucideIcons.squarePlay,
+                title: t.settings.trailerPreviews,
+                subtitle: t.settings.trailerPreviewsDescription,
+              ),
+            if (PlatformDetector.isTV())
+              SettingSwitchTile(
                 pref: SettingsService.tvCornerSpotlightBackdrop,
                 icon: LucideIcons.pictureInPicture2,
                 title: t.settings.tvCornerSpotlightBackdrop,

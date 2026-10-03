@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../i18n/strings.g.dart';
 import '../media/media_item.dart';
@@ -26,6 +27,9 @@ import 'media_ambience.dart';
 import 'media_rating_badge.dart';
 import 'optimized_media_image.dart' show ClearLogoImage, blurArtwork;
 import 'rasterized_gradient.dart';
+import '../services/trailer_preview_service.dart';
+import '../mpv/video.dart';
+import '../theme/plezzant/plezzant_glass.dart';
 
 class TvSpotlightBackground extends StatelessWidget {
   final MediaItem? item;
@@ -99,11 +103,37 @@ class TvSpotlightBackground extends StatelessWidget {
           height: size.height,
           fallbackColor: media == null ? bgColor : Theme.of(context).colorScheme.surfaceContainerHighest,
         );
+        final artwork = RepaintBoundary(
+          child: cornerBackdrop ? _buildCornerBackdrop(backdropSize, backdrop) : blurArtwork(backdrop),
+        );
         return Stack(
           fit: StackFit.expand,
           children: [
-            RepaintBoundary(
-              child: cornerBackdrop ? _buildCornerBackdrop(backdropSize, backdrop) : blurArtwork(backdrop),
+            // A previewing trailer replaces the artwork: its surface sits under
+            // the scrims, and the artwork fades away once a frame is up.
+            ListenableBuilder(
+              listenable: TrailerPreviewService.instance,
+              builder: (context, child) {
+                final preview = TrailerPreviewService.instance;
+                final player = preview.player;
+                // The surface mounts once playback is live, so the position it
+                // reports reaches an initialized native player.
+                final showing = preview.isShowingFor(media);
+                final previewing = showing && player != null;
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (previewing) Video(player: player, backgroundColor: Colors.transparent),
+                    AnimatedOpacity(
+                      opacity: showing ? 0 : 1,
+                      duration: DevicePerformance.reducedDuration(const Duration(milliseconds: 900)),
+                      curve: PlezzantMotion.standard,
+                      child: child,
+                    ),
+                  ],
+                );
+              },
+              child: artwork,
             ),
             _buildHorizontalScrim(bgColor),
             const PlezzantAmbientGlow(),
@@ -260,7 +290,29 @@ class TvSpotlightBackground extends StatelessWidget {
         ],
         if (actionLabel != null) ...[
           SizedBox(height: _sectionGap(scale) * 1.4),
-          _ActionPill(label: actionLabel!, icon: actionIcon, scale: scale),
+          ListenableBuilder(
+            listenable: TrailerPreviewService.instance,
+            builder: (context, _) {
+              final previewing = TrailerPreviewService.instance.isShowingFor(media);
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _ActionPill(label: actionLabel!, icon: actionIcon, scale: scale),
+                  // While its trailer previews: what the remote's Play/Pause
+                  // key does.
+                  AnimatedSwitcher(
+                    duration: DevicePerformance.reducedDuration(PlezzantMotion.reveal),
+                    child: previewing
+                        ? Padding(
+                            padding: EdgeInsets.only(left: 16 * scale),
+                            child: _PreviewHint(scale: scale),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ],
     );
@@ -442,6 +494,41 @@ class TvSpotlightBackground extends StatelessWidget {
 }
 
 /// The white "Play" / "Go to Show" pill of the Apple TV hero.
+/// Glass hint beside the action pill while a trailer previews: Play/Pause
+/// watches it with sound.
+class _PreviewHint extends StatelessWidget {
+  const _PreviewHint({required this.scale});
+
+  final double scale;
+
+  @override
+  Widget build(BuildContext context) {
+    return PlezzantGlass(
+      style: PlezzantGlassStyle.overlay,
+      borderRadius: BorderRadius.circular(14 * scale),
+      padding: EdgeInsets.symmetric(horizontal: 22 * scale, vertical: 13 * scale),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppIcon(LucideIcons.squarePlay, size: 24 * scale, color: Colors.white),
+          SizedBox(width: 10 * scale),
+          Text(
+            t.common.watchTrailer,
+            maxLines: 1,
+            style: PlezzantType.labelLarge.copyWith(
+              color: Colors.white,
+              fontSize: 21 * scale,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(width: 12 * scale),
+          AppIcon(LucideIcons.circlePlay, size: 20 * scale, color: Colors.white70),
+        ],
+      ),
+    );
+  }
+}
+
 class _ActionPill extends StatelessWidget {
   final String label;
   final IconData? icon;

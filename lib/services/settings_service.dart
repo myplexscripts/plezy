@@ -633,6 +633,10 @@ class SettingsService extends BaseSharedPreferencesService {
   /// servers with trailers enabled). 0 turns them off.
   static const cinemaTrailerCount = IntPref('cinema_trailer_count', defaultValue: 0);
 
+  /// TV: a title's trailer plays silently behind the Home hero once its card
+  /// has been focused for a moment.
+  static const trailerPreviews = BoolPref('trailer_previews', defaultValue: true);
+
   /// Seconds each photo stays up in a slideshow.
   static const photoSlideshowSeconds = IntPref('photo_slideshow_seconds', defaultValue: 6);
 
@@ -1361,6 +1365,7 @@ class SettingsService extends BaseSharedPreferencesService {
     autoHidePerformanceOverlay,
     playThemeMusic,
     cinemaTrailerCount,
+    trailerPreviews,
     photoSlideshowSeconds,
     showFrameTimingOverlay,
     enableDiscordRPC,

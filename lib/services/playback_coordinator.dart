@@ -27,11 +27,31 @@ class PlaybackCoordinator {
 
   Future<void> _stopTheme() async {
     final stop = _stopThemeMusic;
+    if (stop != null) {
+      try {
+        await stop();
+      } catch (e, st) {
+        appLogger.w('PlaybackCoordinator: theme music teardown failed', error: e, stackTrace: st);
+      }
+    }
+    await _stopPreview();
+  }
+
+  Future<void> Function()? _stopTrailerPreview;
+
+  /// Muted trailer previews on Home own a video core; they are torn down
+  /// before any real playback (video or music) builds its own.
+  void registerTrailerPreview({required Future<void> Function() stop}) {
+    _stopTrailerPreview = stop;
+  }
+
+  Future<void> _stopPreview() async {
+    final stop = _stopTrailerPreview;
     if (stop == null) return;
     try {
       await stop();
     } catch (e, st) {
-      appLogger.w('PlaybackCoordinator: theme music teardown failed', error: e, stackTrace: st);
+      appLogger.w('PlaybackCoordinator: trailer preview teardown failed', error: e, stackTrace: st);
     }
   }
 

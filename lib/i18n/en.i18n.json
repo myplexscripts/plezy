@@ -97,7 +97,8 @@
       "clip": "Clip",
       "photo": "Photo",
       "folder": "Folder"
-    }
+    },
+    "watchTrailer": "Watch Trailer"
   },
   "screens": {
     "licenses": "Licenses",
@@ -440,7 +441,9 @@
     "glassFull": "Full",
     "tvCardStyle": "Card Style",
     "tvCardStyleLandscape": "Landscape 16:9",
-    "tvCardStylePoster": "Posters 2:3"
+    "tvCardStylePoster": "Posters 2:3",
+    "trailerPreviews": "Trailer Previews",
+    "trailerPreviewsDescription": "Play a title’s trailer silently behind the Home hero after it has been selected for a moment"
   },
   "search": {
     "hint": "Search movies, shows, music...",

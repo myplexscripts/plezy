@@ -324,6 +324,9 @@ class Translations$common$en {
 	String get letterKeys => 'ABC';
 
 	late final Translations$common$mediaKind$en mediaKind = Translations$common$mediaKind$en.internal(_root);
+
+	/// en: 'Watch Trailer'
+	String get watchTrailer => 'Watch Trailer';
 }
 
 // Path: screens
@@ -1356,6 +1359,12 @@ class Translations$settings$en {
 
 	/// en: 'Posters 2:3'
 	String get tvCardStylePoster => 'Posters 2:3';
+
+	/// en: 'Trailer Previews'
+	String get trailerPreviews => 'Trailer Previews';
+
+	/// en: 'Play a title’s trailer silently behind the Home hero after it has been selected for a moment'
+	String get trailerPreviewsDescription => 'Play a title’s trailer silently behind the Home hero after it has been selected for a moment';
 }
 
 // Path: search
@@ -7284,6 +7293,7 @@ extension on Translations {
 			'common.mediaKind.clip' => 'Clip',
 			'common.mediaKind.photo' => 'Photo',
 			'common.mediaKind.folder' => 'Folder',
+			'common.watchTrailer' => 'Watch Trailer',
 			'screens.licenses' => 'Licenses',
 			'screens.switchProfile' => 'Switch Profile',
 			'screens.subtitleStyling' => 'Subtitle Styling',
@@ -7618,6 +7628,8 @@ extension on Translations {
 			'settings.tvCardStyle' => 'Card Style',
 			'settings.tvCardStyleLandscape' => 'Landscape 16:9',
 			'settings.tvCardStylePoster' => 'Posters 2:3',
+			'settings.trailerPreviews' => 'Trailer Previews',
+			'settings.trailerPreviewsDescription' => 'Play a title’s trailer silently behind the Home hero after it has been selected for a moment',
 			'search.hint' => 'Search movies, shows, music...',
 			'search.tryDifferentTerm' => 'Try a different search term',
 			'search.searchYourMedia' => 'Search your media',
@@ -7703,11 +7715,11 @@ extension on Translations {
 			'fileInfo.dynamicRange' => 'Dynamic Range',
 			'fileInfo.dolbyVision' => 'Dolby Vision',
 			'fileInfo.dolbyVisionLevel' => 'Dolby Vision Level',
+			_ => null,
+		} ?? switch (path) {
 			'fileInfo.dolbyVisionVersion' => 'Dolby Vision Version',
 			'fileInfo.dolbyVisionLayers' => 'Dolby Vision Layers',
 			'fileInfo.baseLayerCompatibility' => 'Base Layer Compatibility',
-			_ => null,
-		} ?? switch (path) {
 			'fileInfo.avcBitstream' => 'AVC Bitstream',
 			'fileInfo.nalLengthSize' => 'NAL Length Size',
 			'fileInfo.scalingMatrix' => 'Custom Scaling Matrix',
@@ -8217,11 +8229,11 @@ extension on Translations {
 			'libraries.scanLibrary' => 'Scan Library',
 			'libraries.analyze' => 'Analyze',
 			'libraries.analyzeLibrary' => 'Analyze Library',
+			_ => null,
+		} ?? switch (path) {
 			'libraries.refreshMetadata' => 'Refresh Metadata',
 			'libraries.emptyTrash' => 'Empty Trash',
 			'libraries.emptyingTrash' => ({required Object title}) => 'Emptying trash for "${title}"...',
-			_ => null,
-		} ?? switch (path) {
 			'libraries.trashEmptied' => ({required Object title}) => 'Trash emptied for "${title}"',
 			'libraries.failedToEmptyTrash' => ({required Object error}) => 'Failed to empty trash: ${error}',
 			'libraries.analyzing' => ({required Object title}) => 'Analyzing "${title}"...',
@@ -8731,11 +8743,11 @@ extension on Translations {
 			'watchTogether.participantResumed' => ({required Object name}) => '${name} resumed',
 			'watchTogether.participantSeeked' => ({required Object name}) => '${name} changed the playback position',
 			'watchTogether.participantChangedSpeed' => ({required Object name, required Object speed}) => '${name} set the speed to ${speed}',
+			_ => null,
+		} ?? switch (path) {
 			'watchTogether.participantBuffering' => ({required Object name}) => '${name} is buffering',
 			'watchTogether.participantNeedsUpdate' => ({required Object name}) => '${name} is on an older app version — sync unavailable',
 			'watchTogether.resumingWithout' => ({required Object name}) => 'Resuming without ${name}',
-			_ => null,
-		} ?? switch (path) {
 			'watchTogether.waitingForParticipants' => 'Waiting for others to load...',
 			'watchTogether.waitingForName' => ({required Object name}) => 'Waiting for ${name}...',
 			'watchTogether.recentRooms' => 'Recent Rooms',
@@ -9245,11 +9257,11 @@ extension on Translations {
 			'addServer.connectToMediaBrowserCardSubtitle' => 'Enter your server URL, username, and password.',
 			'addServer.connectToMediaBrowserCardSubtitleScoped' => ({required Object product, required Object name}) => 'Sign in to your ${product} server. Binds to ${name}.',
 			'addServer.borrowFromAnotherProfile' => 'Borrow from another profile',
+			_ => null,
+		} ?? switch (path) {
 			'addServer.borrowFromAnotherProfileSubtitle' => 'Reuse another profile\'s connection. PIN-protected profiles require a PIN.',
 			'addServer.invalidCredentials' => 'Invalid username or password',
 			'addServer.authResponseNotJson' => 'The authentication response was not valid JSON',
-			_ => null,
-		} ?? switch (path) {
 			'addServer.authResponseIncomplete' => 'The sign-in response from the server was incomplete',
 			'addServer.quickConnectRejected' => 'Quick Connect was rejected by the server',
 			'addServer.quickConnectNotJson' => 'The Quick Connect response was not valid JSON',

@@ -82,6 +82,7 @@ import 'video_player_screen.dart';
 import 'profile/profile_teardown.dart';
 import '../services/system_shelf_service.dart';
 import '../watch_together/watch_together.dart';
+import '../services/trailer_preview_service.dart';
 
 /// Provides access to the main screen's focus control.
 // MainScreenFocusScope and SideNavigationBleedBuilder live in
@@ -2175,7 +2176,18 @@ class _MainScreenState extends State<MainScreen>
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          Positioned.fill(child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor)),
+                          Positioned.fill(
+                            // Clear while a Home trailer previews on the native
+                            // surface beneath the UI.
+                            child: ListenableBuilder(
+                              listenable: TrailerPreviewService.instance,
+                              builder: (context, _) => ColoredBox(
+                                color: TrailerPreviewService.instance.isShowing
+                                    ? Colors.transparent
+                                    : Theme.of(context).scaffoldBackgroundColor,
+                              ),
+                            ),
+                          ),
                           Positioned(
                             top: contentTop,
                             bottom: 0,
