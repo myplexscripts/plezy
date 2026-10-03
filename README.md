@@ -18,6 +18,14 @@ A cinematic, calm, TV-first client for **Plex Media Server**, designed for
 * Playback that prefers **Direct Play**, falls back to Direct Stream or Transcode only
   when needed, and shows which one it chose in the player's performance overlay
 
+## Preview
+
+![Plezzant TV home preview](docs/plezzant/renders/home-showcase.svg)
+
+The preview is a design-reference render of the current TV composition: full-bleed
+artwork, floating glass navigation, the shared TV safe frame, large-screen type,
+cinematic 16:9 shelves, and focus depth.
+
 ## Documentation
 
 | Document | What's in it |

@@ -23,6 +23,7 @@ import 'package:plezy/theme/plezzant/plezzant_ambient_glow.dart';
 import 'package:plezy/theme/plezzant/plezzant_glass.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 import 'package:plezy/theme/plezzant/plezzant_tokens.dart';
+import 'package:plezy/theme/plezzant/plezzant_typography.dart';
 import 'package:plezy/widgets/app_icon.dart';
 import 'package:plezy/widgets/media_progress_bar.dart';
 
@@ -89,30 +90,59 @@ class _RailItem {
 
 Widget _rail() {
   const items = [
+    _RailItem(LucideIcons.search, 'Search'),
     _RailItem(LucideIcons.house, 'Home', selected: true),
     _RailItem(LucideIcons.libraryBig, 'Libraries'),
     _RailItem(LucideIcons.radioTower, 'Live TV'),
-    _RailItem(LucideIcons.search, 'Search'),
-    _RailItem(LucideIcons.download, 'Downloads'),
+    _RailItem(LucideIcons.music, 'Music'),
     _RailItem(LucideIcons.settings, 'Settings'),
   ];
-  return PlezzantGlass(
-    style: PlezzantGlassStyle.chrome,
-    borderRadius: const BorderRadius.horizontal(right: Radius.circular(32)),
-    padding: const EdgeInsets.fromLTRB(18, 48, 18, 24),
-    child: SizedBox(
-      width: 236,
+  return SizedBox(
+    width: PlezzantTv.sidebarWidth,
+    child: PlezzantGlass(
+      style: PlezzantGlassStyle.panel,
+      borderRadius: BorderRadius.circular(PlezzantTv.navPanelRadius),
+      padding: const EdgeInsets.all(PlezzantTv.sidebarHorizontalPadding),
       child: Builder(
         builder: (context) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFE8DED4)),
+                  alignment: Alignment.center,
+                  child: const AppIcon(LucideIcons.user, size: 19, color: Color(0xFF332A28)),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'David',
+                    style: PlezzantTvType.navigationSecondary.copyWith(
+                      color: PlezzantNeutrals.text,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Text(
+                  '11:01',
+                  style: PlezzantTvType.navigationSecondary.copyWith(
+                    color: PlezzantNeutrals.textSecondary,
+                    fontSize: 17,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
             for (final item in items)
               Container(
-                height: 52,
+                height: PlezzantTv.navRowHeight,
                 margin: const EdgeInsets.only(bottom: 6),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 18),
                 decoration: BoxDecoration(
-                  color: item.selected ? Colors.white.withValues(alpha: 0.14) : null,
+                  color: item.selected ? Colors.white : null,
                   borderRadius: BorderRadius.circular(PlezzantRadius.pill),
                 ),
                 child: Row(
@@ -120,16 +150,35 @@ Widget _rail() {
                     AppIcon(
                       item.icon,
                       size: 22,
-                      color: item.selected ? PlezzantNeutrals.text : PlezzantNeutrals.textSecondary,
+                      color: item.selected ? Colors.black : PlezzantNeutrals.textSecondary,
                     ),
                     const SizedBox(width: 14),
                     Text(
                       item.label,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: item.selected ? PlezzantNeutrals.text : PlezzantNeutrals.textSecondary,
+                      style: (item.selected ? PlezzantTvType.navigationSelected : PlezzantTvType.navigation).copyWith(
+                        color: item.selected ? Colors.black : PlezzantNeutrals.text,
                       ),
                     ),
                   ],
+                ),
+              ),
+            const SizedBox(height: 22),
+            Text(
+              'LIBRARIES',
+              style: PlezzantTvType.navigationSecondary.copyWith(
+                color: PlezzantNeutrals.textSecondary.withValues(alpha: 0.72),
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.7,
+              ),
+            ),
+            const SizedBox(height: 12),
+            for (final label in const ['Movies', 'TV Shows', 'Music'])
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                child: Text(
+                  label,
+                  style: PlezzantTvType.navigationSecondary.copyWith(color: PlezzantNeutrals.textSecondary),
                 ),
               ),
           ],
@@ -144,7 +193,6 @@ Widget _rail() {
 Widget _hero(String title, String summary) => Builder(
   builder: (context) {
     final bg = Theme.of(context).scaffoldBackgroundColor;
-    final text = Theme.of(context).textTheme;
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -152,8 +200,8 @@ Widget _hero(String title, String summary) => Builder(
         DecoratedBox(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [bg.withValues(alpha: 0.86), bg.withValues(alpha: 0.32), Colors.transparent],
-              stops: const [0.0, 0.56, 1.0],
+              colors: [bg.withValues(alpha: 0.62), bg.withValues(alpha: 0.12), Colors.transparent],
+              stops: const [0.0, 0.46, 1.0],
             ),
           ),
         ),
@@ -163,29 +211,43 @@ Widget _hero(String title, String summary) => Builder(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.black.withValues(alpha: 0.45), Colors.transparent, bg.withValues(alpha: 0.96)],
-              stops: const [0.0, 0.38, 1.0],
+              colors: [Colors.black.withValues(alpha: 0.20), Colors.transparent, bg.withValues(alpha: 0.72)],
+              stops: const [0.0, 0.46, 1.0],
             ),
           ),
         ),
         Positioned(
-          left: 330,
-          width: 760,
-          bottom: 450,
+          left: PlezzantTv.sidebarInset + PlezzantTv.sidebarWidth + PlezzantSpace.lg,
+          width: PlezzantTv.heroTextWidth,
+          bottom: 500,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: text.displayLarge),
+              Text(title, style: PlezzantTvType.hero.copyWith(color: Colors.white)),
               const SizedBox(height: 16),
               Text(
                 'Movie  ·  8.1  ·  PG-13  ·  2h 8m  ·  2025',
-                style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: PlezzantTvType.metadata.copyWith(color: Colors.white.withValues(alpha: 0.88)),
               ),
               const SizedBox(height: 16),
               Text(
                 summary,
-                maxLines: 4,
-                style: text.bodyLarge?.copyWith(fontSize: 20, color: Colors.white.withValues(alpha: 0.78)),
+                maxLines: 3,
+                style: PlezzantTvType.body.copyWith(color: Colors.white.withValues(alpha: 0.82)),
+              ),
+              const SizedBox(height: 22),
+              Container(
+                height: 58,
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(29)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const AppIcon(LucideIcons.play, size: 22, color: Colors.black),
+                    const SizedBox(width: 10),
+                    Text('Play', style: PlezzantTvType.navigationSelected.copyWith(color: Colors.black)),
+                  ],
+                ),
               ),
             ],
           ),
@@ -203,7 +265,7 @@ Widget _poster(int i, {bool focused = false, double? progress}) {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            _art('poster$i'),
+            _art('poster$i', fit: BoxFit.cover),
             if (progress != null)
               Positioned(
                 left: 0,
@@ -215,23 +277,24 @@ Widget _poster(int i, {bool focused = false, double? progress}) {
         ),
       );
       final glow = FocusTheme.getFocusGlowColor(context);
-      return Transform.scale(
-        scale: focused ? PlezzantFocus.cardScale : 1,
-        child: Container(
-          width: 200,
-          height: 300,
-          decoration: focused
-              ? BoxDecoration(
-                  borderRadius: PlezzantRadius.cardAll,
-                  border: Border.all(
-                    color: FocusTheme.getFocusBorderColor(context),
-                    width: FocusTheme.focusBorderWidth,
-                  ),
-                  boxShadow: FocusTheme.focusGlowShadows(glow),
-                )
-              : null,
-          child: card,
-        ),
+      final content = Container(
+        width: 308,
+        height: 173,
+        decoration: focused
+            ? BoxDecoration(
+                borderRadius: PlezzantRadius.cardAll,
+                border: Border.all(
+                  color: FocusTheme.getFocusBorderColor(context),
+                  width: FocusTheme.focusBorderWidth,
+                ),
+                boxShadow: FocusTheme.focusGlowShadows(glow),
+              )
+            : null,
+        child: card,
+      );
+      return Transform.translate(
+        offset: focused ? const Offset(0, -6) : Offset.zero,
+        child: Transform.scale(scale: focused ? PlezzantFocus.cardScale : 1, child: content),
       );
     },
   );
@@ -281,24 +344,33 @@ void main() {
           fit: StackFit.expand,
           children: [
             _hero(item.title!, item.summary!),
-            Positioned(left: 0, top: 0, bottom: 0, child: _rail()),
             Positioned(
-              left: 330,
-              right: 0,
-              bottom: 56,
+              left: PlezzantTv.sidebarInset,
+              top: PlezzantTv.sidebarInset,
+              bottom: PlezzantTv.sidebarInset,
+              child: _rail(),
+            ),
+            Positioned(
+              left: PlezzantTv.sidebarInset + PlezzantTv.sidebarWidth + PlezzantSpace.lg,
+              right: PlezzantTv.safeX,
+              bottom: PlezzantTv.safeY,
               child: Builder(
                 builder: (context) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Continue Watching', style: Theme.of(context).textTheme.titleLarge),
-                    const SizedBox(height: 18),
+                    Text(
+                      'Continue Watching',
+                      style: PlezzantTvType.shelfTitle.copyWith(color: Colors.white),
+                    ),
+                    const SizedBox(height: 20),
                     SizedBox(
-                      height: 320,
+                      height: 205,
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          for (var i = 0; i < 7; i++) ...[
+                          for (var i = 0; i < 5; i++) ...[
                             _poster(i, focused: i == 1, progress: i < 4 ? 0.2 + i * 0.18 : null),
-                            const SizedBox(width: 22),
+                            const SizedBox(width: PlezzantTv.homeCardGap),
                           ],
                         ],
                       ),
