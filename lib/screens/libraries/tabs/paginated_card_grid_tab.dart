@@ -36,6 +36,9 @@ abstract class PaginatedCardGridTabState<T extends Object, W extends BaseLibrary
         SkeletonUpgradeScheduler<W> {
   static const double _focusDecorationPadding = 3.0;
 
+  /// TV: room for the focused first row's scale and lift under the tab bar.
+  static const double _tvFocusDecorationPadding = 14.0;
+
   /// Reuses card widgets across delegate swaps so tab-level setStates
   /// (pagination, refreshes) don't rebuild every realized card inside layout.
   final SliverChildMemo<T> _cardMemo = SliverChildMemo<T>();
@@ -128,7 +131,7 @@ abstract class PaginatedCardGridTabState<T extends Object, W extends BaseLibrary
     if (PlatformDetector.isTV()) {
       return GridLayoutConstants.tvGridInsets(
         PlezzantTv.scaleOf(context),
-      ).copyWith(top: base.top + _focusDecorationPadding, bottom: base.bottom);
+      ).copyWith(top: base.top + _tvFocusDecorationPadding, bottom: base.bottom);
     }
     return base.copyWith(top: base.top + _focusDecorationPadding);
   }

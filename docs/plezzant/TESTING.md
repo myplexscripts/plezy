@@ -379,6 +379,16 @@ Tick each item as you check it. Note anything odd, with the time it happened.
 - [ ] Glass surfaces (navigation rail, menus, player panels) look translucent but readable
 - [ ] Performance: moving around feels quick, with no stutter
 
+### New in 1.5.0
+
+- [ ] From deep inside a library grid, one press of **Back** opens the menu, already on that library
+- [ ] The menu lists every library straight away (no "Libraries" fold) and has no "Hidden" section
+- [ ] Settings → Manage Libraries → a hidden library's ⋮ menu → *Open Library* opens it
+- [ ] Settings → Appearance → *Card Style*: switch between *Landscape 16:9* and *Posters 2:3* — Home rows and library grids follow
+- [ ] On Home, rest on a movie that has a trailer for ~4 seconds: the trailer plays silently behind the title and a *Watch Trailer* hint appears; press **Play/Pause** to watch it with sound; move away and the picture comes back
+- [ ] Settings → Appearance → *Hide Spoilers* on: unwatched episodes are blurred but each says which episode it is (e.g. "S1 E3")
+- [ ] Landscape library grids show four cards across with even gaps
+
 ### New in 1.4.0
 
 - [ ] Theme music: open a show or movie with a theme (Plex) — it fades in quietly, and stops when you press Play or go back

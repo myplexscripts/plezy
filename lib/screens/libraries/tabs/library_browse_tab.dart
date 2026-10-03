@@ -2106,6 +2106,7 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
   // is purely focus-decoration clearance on desktop. Phone has no D-pad
   // focus ring so no extra clearance is needed.
   static const double _gridTopPadding = 6.0;
+  static const double _tvGridTopPadding = 14.0;
   static const double _gridTopPaddingPhone = 0.0;
 
   /// Width of the alpha jump bar widget
@@ -2166,7 +2167,12 @@ class _LibraryBrowseTabState extends BaseLibraryTabState<MediaItem, LibraryBrows
     final fullCardLayout = PlatformDetector.isTV() && svc.read(SettingsService.tvFullCardLayout);
     final itemCount = totalSize;
     final isPhone = _isPhone(context);
-    final topPadding = isPhone ? _gridTopPaddingPhone : _gridTopPadding;
+    // TV: room for the focused first row's scale and lift under the chips.
+    final topPadding = isPhone
+        ? _gridTopPaddingPhone
+        : PlatformDetector.isTV()
+        ? _tvGridTopPadding
+        : _gridTopPadding;
     _effectiveTopPadding = topPadding;
     final rightPadding = _shouldShowAlphaJumpBar && !isPhone ? _alphaJumpBarWidth : 8.0;
 

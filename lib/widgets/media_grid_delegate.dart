@@ -5,6 +5,7 @@ import '../media/media_item.dart' show CardShape;
 import '../services/settings_service.dart';
 import '../utils/grid_size_calculator.dart';
 import '../utils/layout_constants.dart';
+import '../theme/plezzant/plezzant_tokens.dart';
 import '../utils/platform_detector.dart';
 
 /// Shared grid metric helpers for media item grids — spacing, aspect ratio,
@@ -35,7 +36,9 @@ class MediaGridDelegate {
     // For wide aspect ratio (16:9), increase max extent so items are larger
     // and there are fewer per row (roughly 1.8x wider to maintain similar visual area)
     if (_resolveShape(shape, useWideAspectRatio) == CardShape.wide) {
-      maxCrossAxisExtent *= 1.8;
+      // TV landscape grids pack four across at the default density, like the
+      // Apple TV app; elsewhere wide cells keep the 1.8x episode widening.
+      maxCrossAxisExtent *= PlatformDetector.isTV() ? 1.35 : 1.8;
     }
     return maxCrossAxisExtent;
   }
@@ -80,7 +83,16 @@ class MediaGridDelegate {
   }) {
     if (PlatformDetector.isAutomotive()) return GridLayoutConstants.crossAxisSpacing;
     if (fullBleedImage) return GridLayoutConstants.fullCardGridSpacingForScale(TvLayoutConstants.scaleOf(context));
-    final base = _resolveShape(shape, useWideAspectRatio) == CardShape.square
+    final resolved = _resolveShape(shape, useWideAspectRatio);
+    // TV landscape grids keep the Home rows' gutter, so a row and its grid
+    // read as the same set of cards.
+    if (resolved == CardShape.wide && PlatformDetector.isTV()) {
+      return math.max(
+        PlezzantTv.homeCardGap * TvLayoutConstants.scaleOf(context),
+        SettingsService.instance.read(SettingsService.gridSpacing).gridGap,
+      );
+    }
+    final base = resolved == CardShape.square
         ? GridLayoutConstants.squareGridSpacing
         : GridLayoutConstants.crossAxisSpacing;
     return math.max(base, SettingsService.instance.read(SettingsService.gridSpacing).gridGap);

@@ -132,6 +132,10 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | TV search | 🆕 | Poster grid with kind chips (All / Movies / TV Shows / Episodes) |
 | TV settings | 🆕 | tvOS-style large centred titles over a centred list |
 | Consistent list pages | 🆕 | Collections, playlists, photo albums, person pages and "View all" share one header (artwork, title, metadata, actions) and back chip; their grids sit on the safe frame |
+| One-press navigation | 🆕 | BACK opens the menu from any library or Downloads tab; the menu opens on the current section; libraries are always listed (no fold); hidden libraries are managed and opened from Settings → Manage Libraries only |
+| Card Style | 🆕 | Settings → Appearance → *Card Style*: Landscape 16:9 (default) or Posters 2:3 across Home, library grids, collection/playlist pages, View all and Search |
+| Trailer previews | 🆕 🖥 | Dwell on a movie or show on Home and its trailer plays silently behind the hero; Play/Pause watches it with sound. Needs a trailer on the server (Plex extras, Jellyfin local trailers). Settings → Appearance → *Trailer Previews* |
+| Spoiler-safe labels | 🆕 | With *Hide Spoilers*, unwatched episode stills are veiled and labelled "S1 E3", so blurred rows stay navigable |
 | Consistent grids and menus | 🆕 | Library grids, app-bar actions and the folder view sit on the safe frame; playlists are square everywhere; cast portraits are round; popup menus open at their button on every TV density; single-choice lists use a trailing check |
 | Screensaver | 🆕 | Android TV screen saver "Plezzant": library backdrops cross-fading with their titles (Settings → System → Screen saver on the TV) |
 
