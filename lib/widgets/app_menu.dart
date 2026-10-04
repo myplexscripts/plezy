@@ -15,6 +15,8 @@ import '../utils/focus_utils.dart';
 import 'app_icon.dart';
 import 'clickable_cursor.dart';
 import 'overlay_sheet.dart';
+import 'tv_reference_scale.dart';
+import '../utils/platform_detector.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 typedef AppMenuEntryBuilder<T> = List<AppMenuEntry<T>> Function(BuildContext context);
@@ -594,12 +596,19 @@ class _AppMenuPopupState<T> extends State<_AppMenuPopup<T>> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
     const edgePadding = 8.0;
+    // TV: the menu renders through [TvComfortScale] so its rows match the
+    // app's type scale; sizes below are in the menu's own units, placement
+    // in screen units.
+    final f = PlatformDetector.isTV() ? TvComfortScale.factor : 1.0;
     final desiredWidth = math.max(_minMenuWidth, _estimateMenuWidth(context));
-    final menuWidth = desiredWidth.clamp(_minMenuWidth, math.max(_minMenuWidth, screenSize.width - edgePadding * 2));
+    final menuWidth = desiredWidth.clamp(
+      _minMenuWidth,
+      math.max(_minMenuWidth, (screenSize.width - edgePadding * 2) / f),
+    );
     final estimatedHeight = _estimateMenuHeight(widget.entries);
-    final availableHeight = math.max(0.0, screenSize.height - edgePadding * 2);
+    final availableHeight = math.max(0.0, screenSize.height - edgePadding * 2) / f;
     final menuHeight = estimatedHeight.clamp(0.0, availableHeight).toDouble();
-    final (:left, :top) = _resolvePosition(screenSize, menuWidth.toDouble(), menuHeight, edgePadding);
+    final (:left, :top) = _resolvePosition(screenSize, menuWidth.toDouble() * f, menuHeight * f, edgePadding);
 
     return FocusScope(
       autofocus: false,
@@ -622,11 +631,13 @@ class _AppMenuPopupState<T> extends State<_AppMenuPopup<T>> {
               Positioned(
                 left: left,
                 top: top,
-                child: _AppMenuSurface<T>(
-                  width: menuWidth.toDouble(),
-                  maxHeight: menuHeight,
-                  entries: widget.entries,
-                  focusFirstItem: widget.focusFirstItem,
+                child: TvComfortScale(
+                  child: _AppMenuSurface<T>(
+                    width: menuWidth.toDouble(),
+                    maxHeight: menuHeight,
+                    entries: widget.entries,
+                    focusFirstItem: widget.focusFirstItem,
+                  ),
                 ),
               ),
             ],

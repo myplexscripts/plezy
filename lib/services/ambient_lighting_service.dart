@@ -7,6 +7,7 @@ import 'package:path/path.dart' as path;
 
 import '../mpv/player/player.dart';
 import '../utils/app_logger.dart';
+import '../utils/feature_set.dart';
 
 /// Generates and manages an ambient lighting GLSL shader that fills letterbox/pillarbox
 /// bars with a blurred, dimmed version of the video edges.
@@ -34,7 +35,7 @@ class AmbientLightingService {
   AmbientLightingService(this._player);
 
   bool get isEnabled => _enabled;
-  bool get isSupported => _player.playerType == 'mpv' && !Platform.isIOS;
+  bool get isSupported => _player.playerType == 'mpv' && !Platform.isIOS && FeatureSet.advanced;
 
   /// Enable ambient lighting effect.
   ///

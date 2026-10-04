@@ -201,7 +201,7 @@ void main() {
     await expectLater(find.byKey(_goldenKey), matchesGoldenFile('goldens/tv_sidebar_open.png'));
   });
 
-  testWidgets('home hero copy sits on the safe frame with the white action pill', (tester) async {
+  testWidgets('home hero copy sits on the safe frame with the glass action pill', (tester) async {
     await _useTvCanvas(tester);
     final item = testMediaItem(
       id: 'movie_1',

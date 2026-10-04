@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../services/device_performance.dart';
 import '../theme/mono_tokens.dart';
 import '../theme/plezzant/plezzant_ambience.dart';
 import '../theme/plezzant/plezzant_palette.dart';
@@ -35,9 +34,9 @@ class FocusTheme {
   }
 
   static Duration getAnimationDuration(BuildContext context) {
-    if (DevicePerformance.isReduced || MediaQuery.disableAnimationsOf(context)) {
-      return Duration.zero;
-    }
+    // Focus motion stays on every tier: it is how the viewer sees where they
+    // are. Only the system's reduce-motion preference removes it.
+    if (MediaQuery.disableAnimationsOf(context)) return Duration.zero;
     return PlezzantMotion.focus;
   }
 

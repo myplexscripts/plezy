@@ -16,13 +16,17 @@ class PlezzantGlassStyle {
   /// Backdrop blur sigma. Zero skips the BackdropFilter entirely.
   final double blur;
 
-  /// Neutral fill over the backdrop.
+  /// White lift over the backdrop: what makes glass read as glass.
   final double fillAlpha;
 
   /// Palette tint mixed over the fill, from the current ambience.
   final double tintAlpha;
 
-  /// Opaque fallback alpha when blur is unavailable.
+  /// Dark base under the lift while the backdrop is blurred.
+  final double baseAlpha;
+
+  /// Dark base when blur is unavailable: more opaque, so nothing sharp
+  /// behind it competes with the content.
   final double solidAlpha;
 
   /// Soft elevation shadow behind floating glass.
@@ -35,49 +39,54 @@ class PlezzantGlassStyle {
     required this.blur,
     required this.fillAlpha,
     required this.tintAlpha,
+    required this.baseAlpha,
     required this.solidAlpha,
     this.shadowAlpha = 0.20,
     this.specularAlpha = 0.30,
   });
 
-  /// Navigation rails and top bars. Kept clear so artwork remains present.
+  /// Navigation chips and top bars. Clear, bright glass over artwork.
   static const chrome = PlezzantGlassStyle(
-    blur: 22,
-    fillAlpha: 0.055,
-    tintAlpha: 0.035,
-    solidAlpha: 0.90,
-    shadowAlpha: 0.16,
-    specularAlpha: 0.28,
+    blur: 24,
+    fillAlpha: 0.14,
+    tintAlpha: 0.04,
+    baseAlpha: 0.16,
+    solidAlpha: 0.62,
+    shadowAlpha: 0.18,
+    specularAlpha: 0.55,
   );
 
   /// Player controls and compact floating panels over video.
   static const overlay = PlezzantGlassStyle(
-    blur: 26,
-    fillAlpha: 0.075,
-    tintAlpha: 0.045,
-    solidAlpha: 0.88,
+    blur: 30,
+    fillAlpha: 0.11,
+    tintAlpha: 0.04,
+    baseAlpha: 0.30,
+    solidAlpha: 0.84,
     shadowAlpha: 0.24,
-    specularAlpha: 0.34,
+    specularAlpha: 0.45,
   );
 
-  /// Menus, dialogs and sheets that need stronger separation.
+  /// Menus, dialogs, sheets and the open sidebar: content must win.
   static const panel = PlezzantGlassStyle(
-    blur: 28,
-    fillAlpha: 0.105,
+    blur: 40,
+    fillAlpha: 0.08,
     tintAlpha: 0.04,
+    baseAlpha: 0.56,
     solidAlpha: 0.95,
-    shadowAlpha: 0.28,
-    specularAlpha: 0.38,
+    shadowAlpha: 0.30,
+    specularAlpha: 0.40,
   );
 
   /// Very clear glass for small controls floating directly over artwork.
   static const clear = PlezzantGlassStyle(
     blur: 20,
-    fillAlpha: 0.035,
-    tintAlpha: 0.025,
-    solidAlpha: 0.84,
+    fillAlpha: 0.12,
+    tintAlpha: 0.03,
+    baseAlpha: 0.10,
+    solidAlpha: 0.56,
     shadowAlpha: 0.18,
-    specularAlpha: 0.42,
+    specularAlpha: 0.58,
   );
 }
 
@@ -124,6 +133,15 @@ class PlezzantGlass extends StatelessWidget {
     );
   }
 
+  /// Lifts the blurred backdrop's saturation and brightness a touch, the
+  /// "vibrancy" that separates real glass from a dark translucent slab.
+  static const ColorFilter _vibrancy = ColorFilter.matrix(<double>[
+    1.28, -0.24, -0.04, 0, 6, //
+    -0.08, 1.12, -0.04, 0, 6, //
+    -0.08, -0.24, 1.32, 0, 6, //
+    0, 0, 0, 1, 0, //
+  ]);
+
   Widget _build(BuildContext context, GlassIntensity intensity) {
     final dark = Theme.of(context).brightness == Brightness.dark;
     final base = dark ? PlezzantNeutrals.surface : PlezzantNeutrals.lightSurface;
@@ -133,54 +151,53 @@ class PlezzantGlass extends StatelessWidget {
       valueListenable: PlezzantAmbience.instance,
       builder: (context, match, _) {
         final tint = (match?.hue ?? PlezzantPalette.brand).darker;
-        final Widget surface;
+        final full = intensity == GlassIntensity.full;
+        final blur = intensity == GlassIntensity.off
+            ? 0.0
+            : math.min(full ? style.blur : style.blur * 0.8, DevicePerformance.maxGlassBlur);
+        final blurred = blur > 0;
 
-        switch (intensity) {
-          case GlassIntensity.off:
-            surface = DecoratedBox(
-              decoration: BoxDecoration(
-                color: Color.alphaBlend(
-                  tint.withValues(alpha: style.tintAlpha * 0.55),
-                  base.withValues(alpha: style.solidAlpha),
-                ),
-                borderRadius: borderRadius,
+        // Without blur the base carries the separation; the white lift, sheen
+        // and specular edge keep the same glass character either way.
+        final fill = Color.alphaBlend(
+          tint.withValues(alpha: style.tintAlpha),
+          Color.alphaBlend(
+            lift.withValues(alpha: style.fillAlpha),
+            base.withValues(alpha: blurred ? style.baseAlpha : style.solidAlpha),
+          ),
+        );
+        Widget surface = DecoratedBox(
+          decoration: BoxDecoration(color: fill),
+          child: DecoratedBox(
+            // Top sheen: light falling on the upper half of the pane.
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.white.withValues(alpha: dark ? 0.10 : 0.18),
+                  Colors.white.withValues(alpha: 0.0),
+                  Colors.black.withValues(alpha: dark ? 0.06 : 0.0),
+                ],
+                stops: const [0.0, 0.55, 1.0],
               ),
-              child: _padded(child),
-            );
-
-          case GlassIntensity.subtle:
-          case GlassIntensity.full:
-            final full = intensity == GlassIntensity.full;
-            final blur = math.min(full ? style.blur : style.blur * 0.72, DevicePerformance.maxGlassBlur);
-            final glassFill = Color.alphaBlend(
-              tint.withValues(alpha: style.tintAlpha * (full ? 1.15 : 1.0)),
-              Color.alphaBlend(lift.withValues(alpha: style.fillAlpha), base.withValues(alpha: full ? 0.30 : 0.44)),
-            );
-
-            final highlight = Color.alphaBlend(Colors.white.withValues(alpha: dark ? 0.08 : 0.16), glassFill);
-            final lowerTint = Color.alphaBlend(tint.withValues(alpha: style.tintAlpha * 0.48), glassFill);
-
-            surface = ClipRRect(
-              borderRadius: borderRadius,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: const Alignment(-0.8, -1.0),
-                      end: const Alignment(0.8, 1.0),
-                      colors: [highlight, glassFill, lowerTint],
-                      stops: const [0.0, 0.48, 1.0],
-                    ),
-                  ),
-                  child: _padded(child),
-                ),
-              ),
-            );
+            ),
+            child: _padded(child),
+          ),
+        );
+        if (blurred) {
+          surface = BackdropFilter(
+            filter: ImageFilter.compose(
+              outer: _vibrancy,
+              inner: ImageFilter.blur(sigmaX: blur, sigmaY: blur, tileMode: TileMode.mirror),
+            ),
+            child: surface,
+          );
         }
+        surface = ClipRRect(borderRadius: borderRadius, child: surface);
 
         Widget layered = surface;
-        if (intensity != GlassIntensity.off && style.shadowAlpha > 0) {
+        if (style.shadowAlpha > 0) {
           layered = DecoratedBox(
             decoration: BoxDecoration(
               borderRadius: borderRadius,
@@ -223,16 +240,17 @@ class _SpecularEdgePainter extends CustomPainter {
     final rrect = borderRadius.toRRect(rect).deflate(0.5);
     final paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
+      ..strokeWidth = 1.2
       ..shader = LinearGradient(
-        begin: const Alignment(-0.7, -1.0),
-        end: const Alignment(0.7, 1.0),
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
         colors: [
           Colors.white.withValues(alpha: alpha),
-          Colors.white.withValues(alpha: alpha * 0.45),
-          (dark ? Colors.white : Colors.black).withValues(alpha: alpha * 0.12),
+          Colors.white.withValues(alpha: alpha * 0.30),
+          Colors.white.withValues(alpha: alpha * 0.16),
+          (dark ? Colors.white : Colors.black).withValues(alpha: alpha * 0.38),
         ],
-        stops: const [0.0, 0.42, 1.0],
+        stops: const [0.0, 0.38, 0.7, 1.0],
       ).createShader(rect);
     canvas.drawRRect(rrect, paint);
   }

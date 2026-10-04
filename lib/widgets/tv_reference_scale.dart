@@ -140,3 +140,40 @@ class _RenderReferenceScaleBox extends RenderProxyBox {
     transform.multiply(_transform);
   }
 }
+
+/// Lays list-style TV screens (settings, forms, menus) out on a slightly
+/// larger logical canvas so their phone-unit rows, controls and type land at
+/// the same physical size as the reference-canvas chrome on Home and the
+/// detail pages. Values authored in [PlezzantTv] units through
+/// [PlezzantTv.scaleOf] keep their size, because the reported [MediaQuery]
+/// size grows by the same factor.
+///
+/// A pass-through off TV.
+class TvComfortScale extends StatelessWidget {
+  final Widget child;
+
+  const TvComfortScale({super.key, required this.child});
+
+  /// Phone-unit content renders at this fraction of its 540-canvas size: a
+  /// 17pt list title lands near the 26px reference body role.
+  static const double factor = 0.76;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!PlatformDetector.isTV()) return child;
+    final media = MediaQuery.of(context);
+    return _ReferenceScaleBox(
+      scale: factor,
+      child: MediaQuery(
+        data: media.copyWith(
+          size: media.size / factor,
+          devicePixelRatio: media.devicePixelRatio * factor,
+          padding: media.padding / factor,
+          viewPadding: media.viewPadding / factor,
+          viewInsets: media.viewInsets / factor,
+        ),
+        child: child,
+      ),
+    );
+  }
+}

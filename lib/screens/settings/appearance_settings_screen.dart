@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import '../../utils/feature_set.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -35,10 +36,10 @@ class AppearanceSettingsScreen extends StatelessWidget {
           title: t.settings.display,
           children: [
             _themeSelector(),
-            _ambienceSelector(),
-            _glassSelector(),
+            if (FeatureSet.advanced) _ambienceSelector(),
+            if (FeatureSet.advanced) _glassSelector(),
             if (PlatformDetector.isAutomotive()) _displayScaleSelector(),
-            if (Platform.isAndroid) _visualEffectsSelector(context),
+            if (Platform.isAndroid && FeatureSet.advanced) _visualEffectsSelector(context),
           ],
         ),
 
@@ -47,15 +48,16 @@ class AppearanceSettingsScreen extends StatelessWidget {
           children: [
             _viewModeSelector(),
             _densitySelector(),
-            _gridSpacingSelector(),
+            if (FeatureSet.advanced) _gridSpacingSelector(),
             if (PlatformDetector.isTV()) _tvCardStyleSelector(),
-            _episodePosterModeSelector(),
-            SettingSwitchTile(
-              pref: SettingsService.showEpisodeNumberOnCards,
-              icon: LucideIcons.hash,
-              title: t.settings.showEpisodeNumberOnCards,
-              subtitle: t.settings.showEpisodeNumberOnCardsDescription,
-            ),
+            if (FeatureSet.advanced) _episodePosterModeSelector(),
+            if (FeatureSet.advanced)
+              SettingSwitchTile(
+                pref: SettingsService.showEpisodeNumberOnCards,
+                icon: LucideIcons.hash,
+                title: t.settings.showEpisodeNumberOnCards,
+                subtitle: t.settings.showEpisodeNumberOnCardsDescription,
+              ),
             if (!PlatformDetector.isTV())
               SettingSwitchTile(
                 pref: SettingsService.showSeasonPostersOnTabs,
@@ -77,61 +79,41 @@ class AppearanceSettingsScreen extends StatelessWidget {
             ),
             if (PlatformDetector.isTV())
               SettingSwitchTile(
-                pref: SettingsService.tvFullCardLayout,
-                icon: LucideIcons.image,
-                title: t.settings.tvFullCardLayout,
-                subtitle: t.settings.tvFullCardLayoutDescription,
-              ),
-            if (PlatformDetector.isTV())
-              SettingSwitchTile(
                 pref: SettingsService.trailerPreviews,
                 icon: LucideIcons.squarePlay,
                 title: t.settings.trailerPreviews,
                 subtitle: t.settings.trailerPreviewsDescription,
               ),
-            if (PlatformDetector.isTV())
-              SettingSwitchTile(
-                pref: SettingsService.tvCornerSpotlightBackdrop,
-                icon: LucideIcons.pictureInPicture2,
-                title: t.settings.tvCornerSpotlightBackdrop,
-                subtitle: t.settings.tvCornerSpotlightBackdropDescription,
-              ),
-            if (PlatformDetector.isTV())
-              SettingSwitchTile(
-                pref: SettingsService.focusGlow,
-                icon: LucideIcons.lightbulb,
-                title: t.settings.focusGlow,
-                subtitle: t.settings.focusGlowDescription,
-              ),
           ],
         ),
 
-        SettingsGroup(
-          title: t.settings.homeScreen,
-          children: [
-            if (!PlatformDetector.isTV())
+        if (FeatureSet.advanced)
+          SettingsGroup(
+            title: t.settings.homeScreen,
+            children: [
+              if (!PlatformDetector.isTV())
+                SettingSwitchTile(
+                  pref: SettingsService.showHeroSection,
+                  icon: LucideIcons.squarePlay,
+                  title: t.settings.showHeroSection,
+                  subtitle: t.settings.showHeroSectionDescription,
+                ),
+              _continueWatchingActionSelector(),
+              _episodeActionSelector(),
               SettingSwitchTile(
-                pref: SettingsService.showHeroSection,
-                icon: LucideIcons.squarePlay,
-                title: t.settings.showHeroSection,
-                subtitle: t.settings.showHeroSectionDescription,
+                pref: SettingsService.useGlobalHubs,
+                icon: LucideIcons.house,
+                title: t.settings.useGlobalHubs,
+                subtitle: t.settings.useGlobalHubsDescription,
               ),
-            _continueWatchingActionSelector(),
-            _episodeActionSelector(),
-            SettingSwitchTile(
-              pref: SettingsService.useGlobalHubs,
-              icon: LucideIcons.house,
-              title: t.settings.useGlobalHubs,
-              subtitle: t.settings.useGlobalHubsDescription,
-            ),
-            SettingSwitchTile(
-              pref: SettingsService.showServerNameOnHubs,
-              icon: LucideIcons.server,
-              title: t.settings.showServerNameOnHubs,
-              subtitle: t.settings.showServerNameOnHubsDescription,
-            ),
-          ],
-        ),
+              SettingSwitchTile(
+                pref: SettingsService.showServerNameOnHubs,
+                icon: LucideIcons.server,
+                title: t.settings.showServerNameOnHubs,
+                subtitle: t.settings.showServerNameOnHubsDescription,
+              ),
+            ],
+          ),
 
         SettingsGroup(
           title: t.settings.navigation,
@@ -143,14 +125,14 @@ class AppearanceSettingsScreen extends StatelessWidget {
                 title: t.settings.showExploreTab,
                 subtitle: t.settings.showExploreTabDescription,
               ),
-            if (PlatformDetector.shouldUseSideNavigation(context))
+            if (PlatformDetector.shouldUseSideNavigation(context) && FeatureSet.advanced)
               SettingSwitchTile(
                 pref: SettingsService.alwaysKeepSidebarOpen,
                 icon: LucideIcons.panelLeft,
                 title: t.settings.alwaysKeepSidebarOpen,
                 subtitle: t.settings.alwaysKeepSidebarOpenDescription,
               ),
-            if (PlatformDetector.shouldUseSideNavigation(context))
+            if (PlatformDetector.shouldUseSideNavigation(context) && FeatureSet.advanced)
               SettingSwitchTile(
                 pref: SettingsService.groupLibrariesByServer,
                 icon: LucideIcons.server,

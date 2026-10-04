@@ -142,6 +142,9 @@ class _FocusableTabChipState extends State<FocusableTabChip> with FocusableChipS
       widget.label,
       style: Theme.of(context).textTheme.labelLarge?.copyWith(
         color: foregroundColor,
+        // TV: the same size as card titles and the section chip (26px on the
+        // reference canvas), not a phone label blown up to 34px.
+        fontSize: PlatformDetector.isTV() ? 13 : null,
         fontWeight: widget.isSelected ? FontWeight.w700 : (isHighlighted ? FontWeight.w600 : FontWeight.w500),
       ),
     );
@@ -154,7 +157,11 @@ class _FocusableTabChipState extends State<FocusableTabChip> with FocusableChipS
       onTap: widget.onSelect,
       semanticLabel: widget.label,
       selected: widget.isSelected,
-      padding: hasImage ? const EdgeInsets.all(8) : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: hasImage
+          ? const EdgeInsets.all(8)
+          : PlatformDetector.isTV()
+          ? const EdgeInsets.symmetric(horizontal: 14, vertical: 6)
+          : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       backgroundColor: backgroundColor,
       borderRadius: hasImage ? 12 : 20,
       child: hasImage

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'tv_reference_scale.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -752,53 +753,59 @@ class _OverlaySheetHostState extends State<OverlaySheetHost> with SingleTickerPr
         canRequestFocus: false,
         skipTraversal: true,
         onKeyEvent: _handleKeyEvent,
-        child: CustomSingleChildLayout(
-          delegate: _OverlaySheetLayoutDelegate(
-            alignment: _alignment,
-            horizontalAnchor: _sheetHorizontalAnchor,
-            edgePadding: isDesktop ? _OverlaySheetLayoutDelegate.desktopEdgePadding : 0,
-          ),
-          child: AnimatedBuilder(
-            animation: _slideCurve,
-            builder: (context, child) {
-              final dy = slideDirection * slideDistance * (1 - _slideCurve.value);
-              return Transform.translate(offset: Offset(0, dy), child: child);
-            },
-            child: Transform.translate(
-              offset: Offset(0, _dragOffset.clamp(0, double.infinity)),
-              child: SafeArea(
-                left: true,
-                right: true,
-                top: false,
-                bottom: false,
-                minimum: isTV ? EdgeInsets.only(top: isTop ? 32 : 0, bottom: isTop ? 0 : 32) : EdgeInsets.zero,
-                child: _glassBackedSheet(
-                  explicitColor: _explicitBackgroundColor != null,
-                  borderRadius: borderRadius,
-                  child: Material(
-                    key: _sheetKey,
-                    // Sheets float over content (often video), so they sit on a
-                    // Plezzant glass panel unless the caller pinned a colour.
-                    color: _explicitBackgroundColor ?? Colors.transparent,
+        // TV: sheets lay out through [TvComfortScale] so their rows share the
+        // app's type scale instead of reading a size up from everything else.
+        child: TvComfortScale(
+          child: CustomSingleChildLayout(
+            delegate: _OverlaySheetLayoutDelegate(
+              alignment: _alignment,
+              horizontalAnchor: _sheetHorizontalAnchor == null || !isTV
+                  ? _sheetHorizontalAnchor
+                  : _sheetHorizontalAnchor! / TvComfortScale.factor,
+              edgePadding: isDesktop ? _OverlaySheetLayoutDelegate.desktopEdgePadding : 0,
+            ),
+            child: AnimatedBuilder(
+              animation: _slideCurve,
+              builder: (context, child) {
+                final dy = slideDirection * slideDistance * (1 - _slideCurve.value);
+                return Transform.translate(offset: Offset(0, dy), child: child);
+              },
+              child: Transform.translate(
+                offset: Offset(0, _dragOffset.clamp(0, double.infinity)),
+                child: SafeArea(
+                  left: true,
+                  right: true,
+                  top: false,
+                  bottom: false,
+                  minimum: isTV ? EdgeInsets.only(top: isTop ? 32 : 0, bottom: isTop ? 0 : 32) : EdgeInsets.zero,
+                  child: _glassBackedSheet(
+                    explicitColor: _explicitBackgroundColor != null,
                     borderRadius: borderRadius,
-                    clipBehavior: Clip.antiAlias,
-                    child: SafeArea(
-                      top: isTop,
-                      bottom: !isTop,
-                      left: false,
-                      right: false,
-                      // Content is sized by the sheet body, so pushing a nested
-                      // page or resolving async content changes the sheet's
-                      // height. Ease the box between those heights instead of
-                      // snapping. The child is laid out at its final size and
-                      // pinned to the anchored edge throughout, so it is revealed
-                      // rather than stretched.
-                      child: AnimatedSize(
-                        key: ValueKey(_sheetSession),
-                        duration: const Duration(milliseconds: 180),
-                        curve: Curves.easeOutCubic,
-                        alignment: isTop ? Alignment.topCenter : Alignment.bottomCenter,
-                        child: ConstrainedBox(constraints: effectiveConstraints, child: sheetContent),
+                    child: Material(
+                      key: _sheetKey,
+                      // Sheets float over content (often video), so they sit on a
+                      // Plezzant glass panel unless the caller pinned a colour.
+                      color: _explicitBackgroundColor ?? Colors.transparent,
+                      borderRadius: borderRadius,
+                      clipBehavior: Clip.antiAlias,
+                      child: SafeArea(
+                        top: isTop,
+                        bottom: !isTop,
+                        left: false,
+                        right: false,
+                        // Content is sized by the sheet body, so pushing a nested
+                        // page or resolving async content changes the sheet's
+                        // height. Ease the box between those heights instead of
+                        // snapping. The child is laid out at its final size and
+                        // pinned to the anchored edge throughout, so it is revealed
+                        // rather than stretched.
+                        child: AnimatedSize(
+                          key: ValueKey(_sheetSession),
+                          duration: const Duration(milliseconds: 180),
+                          curve: Curves.easeOutCubic,
+                          alignment: isTop ? Alignment.topCenter : Alignment.bottomCenter,
+                          child: ConstrainedBox(constraints: effectiveConstraints, child: sheetContent),
+                        ),
                       ),
                     ),
                   ),

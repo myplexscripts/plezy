@@ -2,6 +2,7 @@ import '../test_helpers/paged_fakes.dart';
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:plezy/utils/feature_set.dart';
 import 'package:plezy/services/playback_launch_observer.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,11 @@ import '../test_helpers/profile_stack.dart';
 import '../test_helpers/stub_music_playback_service.dart';
 
 void main() {
+  // Several helpers pose as Apple TV (no downloads); the admin actions
+  // under test are a power-user menu, which TVs otherwise hide.
+  setUp(() => FeatureSet.debugAdvancedOverride = true);
+  tearDown(() => FeatureSet.debugAdvancedOverride = null);
+
   testWidgets('cancelled media menu restores its live captured item', (tester) async {
     final destination = FocusNode();
     addTearDown(destination.dispose);

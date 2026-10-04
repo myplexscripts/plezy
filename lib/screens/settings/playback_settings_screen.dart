@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../../utils/feature_set.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -52,18 +53,19 @@ class PlaybackSettingsScreen extends StatelessWidget {
         return SettingsPage(
           title: Text(t.settings.videoPlayback),
           children: [
-            SettingsGroup(
-              title: t.settings.player,
-              children: [
-                if (Platform.isAndroid) _playerBackendSelector(),
-                if (PlatformDetector.supportsExternalPlayers()) _externalPlayerTile(),
-                if (!exoActive) _mpvConfigTile(),
-                _hardwareDecodingTile(),
-                if (exoActive) _playbackBufferTile(),
-                if (exoActive) _tunneledPlaybackTile(),
-                if (PlatformDetector.supportsPictureInPicture()) _autoPipTile(),
-              ],
-            ),
+            if (FeatureSet.advanced)
+              SettingsGroup(
+                title: t.settings.player,
+                children: [
+                  if (Platform.isAndroid) _playerBackendSelector(),
+                  if (PlatformDetector.supportsExternalPlayers()) _externalPlayerTile(),
+                  if (!exoActive) _mpvConfigTile(),
+                  _hardwareDecodingTile(),
+                  if (exoActive) _playbackBufferTile(),
+                  if (exoActive) _tunneledPlaybackTile(),
+                  if (PlatformDetector.supportsPictureInPicture()) _autoPipTile(),
+                ],
+              ),
 
             SettingsGroup(
               title: t.settings.videoAndDisplay,
@@ -72,11 +74,11 @@ class PlaybackSettingsScreen extends StatelessWidget {
                 if (Platform.isAndroid && PlatformDetector.isTV()) _matchContentResolutionTile(),
                 if (Platform.isWindows) _matchRefreshRateTile(),
                 if (Platform.isWindows) _matchDynamicRangeTile(),
-                if (showDisplaySwitchDelay) _displaySwitchDelayTile(),
-                if (Platform.isAndroid) _dvConversionModeTile(),
+                if (showDisplaySwitchDelay && FeatureSet.advanced) _displaySwitchDelayTile(),
+                if (Platform.isAndroid && FeatureSet.advanced) _dvConversionModeTile(),
                 // mpv-only (#2149): ExoPlayer has no filter chain, so the
                 // tile disappears while the ExoPlayer backend is active.
-                if (!exoActive) _deinterlaceTile(),
+                if (!exoActive && FeatureSet.advanced) _deinterlaceTile(),
                 // TODO: "Extend video into display cutout" toggle (#1769)
                 // goes here, Android-only.
               ],
@@ -86,10 +88,10 @@ class PlaybackSettingsScreen extends StatelessWidget {
               title: t.settings.audio,
               children: [
                 if (PlatformDetector.supportsAudioPassthrough()) _audioPassthroughTile(),
-                _audioDownmixTile(),
-                if (downmixOn) _downmixCenterBoostTile(),
-                if (downmixOn) _downmixNormalizeTile(),
-                _maxVolumeTile(),
+                if (FeatureSet.advanced) _audioDownmixTile(),
+                if (downmixOn && FeatureSet.advanced) _downmixCenterBoostTile(),
+                if (downmixOn && FeatureSet.advanced) _downmixNormalizeTile(),
+                if (FeatureSet.advanced) _maxVolumeTile(),
               ],
             ),
 
@@ -101,8 +103,8 @@ class PlaybackSettingsScreen extends StatelessWidget {
                 // never report a cellular-only connection.
                 if (isMobile) _cellularQualityTile(),
                 _remoteQualityTile(),
-                _directPlayCoveredQualityTile(),
-                _musicQualityTile(),
+                if (FeatureSet.advanced) _directPlayCoveredQualityTile(),
+                if (FeatureSet.advanced) _musicQualityTile(),
               ],
             ),
 
@@ -122,7 +124,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
             _autoPlayAndSkipGroup(),
             _behaviorGroup(context, isMobile),
             if (isMobile) _gesturesGroup(),
-            _rememberPlayerChangesGroup(),
+            if (FeatureSet.advanced) _rememberPlayerChangesGroup(),
             const SizedBox(height: 24),
           ],
         );
@@ -149,22 +151,24 @@ class PlaybackSettingsScreen extends StatelessWidget {
         labelText: t.settings.secondsLabel,
         suffixText: t.settings.secondsShort,
       ),
-      SettingNumberTile(
-        pref: SettingsService.rewindOnResume,
-        icon: LucideIcons.rotateCcw,
-        title: t.settings.rewindOnResume,
-        subtitleBuilder: (v) => t.settings.secondsUnit(seconds: v.toString()),
-        labelText: t.settings.secondsLabel,
-        suffixText: t.settings.secondsShort,
-      ),
-      SettingNumberTile(
-        pref: SettingsService.sleepTimerDuration,
-        icon: LucideIcons.moonStar,
-        title: t.settings.defaultSleepTimer,
-        subtitleBuilder: (v) => t.settings.minutesUnit(minutes: v.toString()),
-        labelText: t.settings.minutesLabel,
-        suffixText: t.settings.minutesShort,
-      ),
+      if (FeatureSet.advanced)
+        SettingNumberTile(
+          pref: SettingsService.rewindOnResume,
+          icon: LucideIcons.rotateCcw,
+          title: t.settings.rewindOnResume,
+          subtitleBuilder: (v) => t.settings.secondsUnit(seconds: v.toString()),
+          labelText: t.settings.secondsLabel,
+          suffixText: t.settings.secondsShort,
+        ),
+      if (FeatureSet.advanced)
+        SettingNumberTile(
+          pref: SettingsService.sleepTimerDuration,
+          icon: LucideIcons.moonStar,
+          title: t.settings.defaultSleepTimer,
+          subtitleBuilder: (v) => t.settings.minutesUnit(minutes: v.toString()),
+          labelText: t.settings.minutesLabel,
+          suffixText: t.settings.minutesShort,
+        ),
     ],
   );
 
@@ -238,32 +242,38 @@ class PlaybackSettingsScreen extends StatelessWidget {
         title: t.settings.rememberTrackSelections,
         subtitle: t.settings.rememberTrackSelectionsDescription,
       ),
-      SettingSwitchTile(
-        pref: SettingsService.followServerTrackSelections,
-        icon: LucideIcons.server,
-        title: t.settings.followServerTrackSelections,
-        subtitle: t.settings.followServerTrackSelectionsDescription,
-      ),
-      SettingSwitchTile(
-        pref: SettingsService.resumeMusicOnLaunch,
-        icon: LucideIcons.history,
-        title: t.settings.resumeMusicOnLaunch,
-        subtitle: t.settings.resumeMusicOnLaunchDescription,
-      ),
-      SettingSwitchTile(
-        pref: SettingsService.showChapterMarkersOnTimeline,
-        icon: LucideIcons.bookmark,
-        title: t.settings.showChapterMarkersOnTimeline,
-        subtitle: t.settings.showChapterMarkersOnTimelineDescription,
-      ),
-      SettingSelectionTile<SpecialsOrdering>(
-        pref: SettingsService.specialsOrdering,
-        icon: LucideIcons.arrowDown01,
-        title: t.settings.specialsOrdering,
-        subtitleBuilder: (mode) => '${_specialsOrderingLabel(mode)} · ${t.settings.specialsOrderingDescription}',
-        options: SpecialsOrdering.values.map((m) => DialogOption(value: m, title: _specialsOrderingLabel(m))).toList(),
-      ),
-      if (!isMobile)
+      if (FeatureSet.advanced)
+        SettingSwitchTile(
+          pref: SettingsService.followServerTrackSelections,
+          icon: LucideIcons.server,
+          title: t.settings.followServerTrackSelections,
+          subtitle: t.settings.followServerTrackSelectionsDescription,
+        ),
+      if (FeatureSet.advanced)
+        SettingSwitchTile(
+          pref: SettingsService.resumeMusicOnLaunch,
+          icon: LucideIcons.history,
+          title: t.settings.resumeMusicOnLaunch,
+          subtitle: t.settings.resumeMusicOnLaunchDescription,
+        ),
+      if (FeatureSet.advanced)
+        SettingSwitchTile(
+          pref: SettingsService.showChapterMarkersOnTimeline,
+          icon: LucideIcons.bookmark,
+          title: t.settings.showChapterMarkersOnTimeline,
+          subtitle: t.settings.showChapterMarkersOnTimelineDescription,
+        ),
+      if (FeatureSet.advanced)
+        SettingSelectionTile<SpecialsOrdering>(
+          pref: SettingsService.specialsOrdering,
+          icon: LucideIcons.arrowDown01,
+          title: t.settings.specialsOrdering,
+          subtitleBuilder: (mode) => '${_specialsOrderingLabel(mode)} · ${t.settings.specialsOrderingDescription}',
+          options: SpecialsOrdering.values
+              .map((m) => DialogOption(value: m, title: _specialsOrderingLabel(m)))
+              .toList(),
+        ),
+      if (!isMobile && FeatureSet.advanced)
         SettingSwitchTile(
           pref: SettingsService.clickVideoTogglesPlayback,
           icon: LucideIcons.circlePlay,
@@ -322,41 +332,46 @@ class PlaybackSettingsScreen extends StatelessWidget {
         subtitleBuilder: (mode) => '${_skipMarkerModeLabel(mode)} · ${_skipCreditsModeDescription(mode)}',
         options: SkipMarkerMode.values.map((m) => DialogOption(value: m, title: _skipMarkerModeLabel(m))).toList(),
       ),
-      SettingSelectionTile<SkipMarkerMode>(
-        pref: SettingsService.skipCommercialsMode,
-        icon: LucideIcons.tv,
-        title: t.settings.skipCommercialsMode,
-        subtitleBuilder: (mode) => '${_skipMarkerModeLabel(mode)} · ${_skipCommercialsModeDescription(mode)}',
-        options: SkipMarkerMode.values.map((m) => DialogOption(value: m, title: _skipMarkerModeLabel(m))).toList(),
-      ),
-      SettingSwitchTile(
-        pref: SettingsService.forceSkipMarkerFallback,
-        icon: LucideIcons.slidersHorizontal,
-        title: t.settings.forceSkipMarkerFallback,
-        subtitle: t.settings.forceSkipMarkerFallbackDescription,
-      ),
-      SettingNumberTile(
-        pref: SettingsService.autoSkipDelay,
-        icon: LucideIcons.timer,
-        title: t.settings.autoSkipDelay,
-        subtitleBuilder: (v) => t.settings.autoSkipDelayDescription(seconds: v.toString()),
-        labelText: t.settings.secondsLabel,
-        suffixText: t.settings.secondsShort,
-      ),
-      SettingRegexTile(
-        pref: SettingsService.introPattern,
-        icon: LucideIcons.caseSensitive,
-        title: t.settings.introPattern,
-        subtitle: t.settings.introPatternDescription,
-        defaultValue: SettingsService.defaultIntroPattern,
-      ),
-      SettingRegexTile(
-        pref: SettingsService.creditsPattern,
-        icon: LucideIcons.caseSensitive,
-        title: t.settings.creditsPattern,
-        subtitle: t.settings.creditsPatternDescription,
-        defaultValue: SettingsService.defaultCreditsPattern,
-      ),
+      if (FeatureSet.advanced)
+        SettingSelectionTile<SkipMarkerMode>(
+          pref: SettingsService.skipCommercialsMode,
+          icon: LucideIcons.tv,
+          title: t.settings.skipCommercialsMode,
+          subtitleBuilder: (mode) => '${_skipMarkerModeLabel(mode)} · ${_skipCommercialsModeDescription(mode)}',
+          options: SkipMarkerMode.values.map((m) => DialogOption(value: m, title: _skipMarkerModeLabel(m))).toList(),
+        ),
+      if (FeatureSet.advanced)
+        SettingSwitchTile(
+          pref: SettingsService.forceSkipMarkerFallback,
+          icon: LucideIcons.slidersHorizontal,
+          title: t.settings.forceSkipMarkerFallback,
+          subtitle: t.settings.forceSkipMarkerFallbackDescription,
+        ),
+      if (FeatureSet.advanced)
+        SettingNumberTile(
+          pref: SettingsService.autoSkipDelay,
+          icon: LucideIcons.timer,
+          title: t.settings.autoSkipDelay,
+          subtitleBuilder: (v) => t.settings.autoSkipDelayDescription(seconds: v.toString()),
+          labelText: t.settings.secondsLabel,
+          suffixText: t.settings.secondsShort,
+        ),
+      if (FeatureSet.advanced)
+        SettingRegexTile(
+          pref: SettingsService.introPattern,
+          icon: LucideIcons.caseSensitive,
+          title: t.settings.introPattern,
+          subtitle: t.settings.introPatternDescription,
+          defaultValue: SettingsService.defaultIntroPattern,
+        ),
+      if (FeatureSet.advanced)
+        SettingRegexTile(
+          pref: SettingsService.creditsPattern,
+          icon: LucideIcons.caseSensitive,
+          title: t.settings.creditsPattern,
+          subtitle: t.settings.creditsPatternDescription,
+          defaultValue: SettingsService.defaultCreditsPattern,
+        ),
     ],
   );
 

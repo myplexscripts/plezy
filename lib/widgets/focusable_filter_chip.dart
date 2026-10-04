@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../utils/platform_detector.dart';
 import 'package:plezy/widgets/app_icon.dart';
 
 import '../focus/focusable_chip_mixin.dart';
@@ -92,9 +94,15 @@ class _FocusableFilterChipState extends State<FocusableFilterChip> with Focusabl
       child: Row(
         mainAxisSize: .min,
         children: [
-          AppIcon(icon, fill: 1, size: 16, color: foregroundColor),
+          AppIcon(icon, fill: 1, size: PlatformDetector.isTV() ? 13 : 16, color: foregroundColor),
           const SizedBox(width: 6),
-          Text(widget.label, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: foregroundColor)),
+          Text(
+            widget.label,
+            // TV: one step under the tab chips, like a secondary control.
+            style: Theme.of(
+              context,
+            ).textTheme.labelMedium?.copyWith(color: foregroundColor, fontSize: PlatformDetector.isTV() ? 12 : null),
+          ),
         ],
       ),
     );

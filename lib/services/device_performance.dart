@@ -108,9 +108,11 @@ class DevicePerformance {
   /// a weak box can keep ordinary motion while dropping effects.
   static bool get reduceMotion => PlatformDispatcher.instance.accessibilityFeatures.disableAnimations;
 
-  /// [full] on the full tier, [Duration.zero] on the reduced tier or when
-  /// the system asks for less motion.
-  static Duration reducedDuration(Duration full) => isReduced || reduceMotion ? Duration.zero : full;
+  /// [full] unless the system asks for less motion. Low-end hardware keeps
+  /// its transitions: fades, slides and scale are cheap compositor work, and
+  /// a UI that snaps between states feels broken rather than fast. That
+  /// tier drops blur and video previews instead.
+  static Duration reducedDuration(Duration full) => reduceMotion ? Duration.zero : full;
 
   /// ~2.5 GiB: below what 3 GB Shield-class devices report (~2.8 GiB) so they
   /// keep the full display budget, above the 2.2 GiB reduced-tier threshold.

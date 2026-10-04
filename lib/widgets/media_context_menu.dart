@@ -36,6 +36,7 @@ import '../utils/app_logger.dart';
 import '../utils/library_refresh_notifier.dart';
 import '../utils/media_navigation_helper.dart';
 import '../utils/music_navigation.dart';
+import '../utils/feature_set.dart';
 import '../utils/platform_detector.dart';
 import '../utils/snackbar_helper.dart';
 import '../utils/dialogs.dart';
@@ -506,14 +507,16 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       }
 
       // Edit Metadata — admin-only and backend-capability gated.
-      if (canEditMetadata) {
+      // TV keeps the everyday menu: library-admin tools (edit, match, file
+      // info, external players, delete) and new downloads stay off it.
+      if (canEditMetadata && FeatureSet.advanced) {
         menuActions.add(
           _MenuAction(value: 'edit_metadata', icon: LucideIcons.pencil, label: t.metadataEdit.editMetadata),
         );
       }
 
       // Match / Unmatch — Plex-only (MediaBrowser servers don't expose match agents).
-      if (isPlex && isAdmin && (mediaKind == MediaKind.movie || mediaKind == MediaKind.show)) {
+      if (isPlex && isAdmin && FeatureSet.advanced && (mediaKind == MediaKind.movie || mediaKind == MediaKind.show)) {
         final isUnmatched = _isUnmatched(mediaItem);
         menuActions.add(
           _MenuAction(
@@ -588,11 +591,12 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       // to them — a show/season/album/artist entry would only ever produce the
       // "not available" snackbar. Hidden when the item has no backend marker
       // so we don't fan out to an arbitrary client.
-      if (itemBackend != null && mediaKind != null && mediaKind.hasFileInfo) {
+      if (itemBackend != null && mediaKind != null && mediaKind.hasFileInfo && FeatureSet.advanced) {
         menuActions.add(_MenuAction(value: 'fileinfo', icon: LucideIcons.fileText, label: t.mediaMenu.fileInfo));
       }
 
       if (PlatformDetector.supportsExternalPlayers() &&
+          FeatureSet.advanced &&
           (mediaKind == MediaKind.episode || mediaKind == MediaKind.movie)) {
         menuActions.add(
           _MenuAction(
@@ -615,13 +619,19 @@ class MediaContextMenuState extends State<MediaContextMenu> {
               mediaKind == MediaKind.album ||
               mediaKind == MediaKind.track)) {
         final downloadProvider = Provider.of<DownloadProvider>(context, listen: false);
-        menuActions.addAll(
-          _syncDownloadMenuActions(
-            hasSyncRule: downloadProvider.hasSyncRule(_itemSyncRuleKey(context)),
-            hasAnyDownload: downloadProvider.getProgress(mediaItem.globalKey) != null,
-            downloadValue: 'download',
-          ),
-        );
+        final hasSyncRule = downloadProvider.hasSyncRule(_itemSyncRuleKey(context));
+        final hasAnyDownload = downloadProvider.getProgress(mediaItem.globalKey) != null;
+        // TV: only manage downloads that already exist; starting one is off
+        // the everyday menu.
+        if (FeatureSet.advanced || hasSyncRule || hasAnyDownload) {
+          menuActions.addAll(
+            _syncDownloadMenuActions(
+              hasSyncRule: hasSyncRule,
+              hasAnyDownload: hasAnyDownload,
+              downloadValue: 'download',
+            ),
+          );
+        }
       }
 
       if (showWatchlistEntry) {
@@ -655,7 +665,7 @@ class MediaContextMenuState extends State<MediaContextMenu> {
       // an episode, a season and a whole show is what let #1781 happen: the
       // reporter hit the show-level entry believing it acted on the episode
       // he had highlighted.
-      if (canDeleteFromServer) {
+      if (canDeleteFromServer && FeatureSet.advanced) {
         menuActions.add(
           _MenuAction(
             value: 'delete_media',

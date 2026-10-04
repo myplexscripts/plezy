@@ -116,8 +116,8 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Fixed palette (26 × 3) | 🆕 | `PlezzantPalette`; semantic `PlezzantColors` |
 | Perceptual palette matching (CIELAB + CIEDE2000) | 🆕 | `PlezzantColorMatcher`, unit-tested against published reference pairs |
 | Artwork ambience | 🆕 | Spotlight focus or the playing title → palette ambience → ambient glow, focus halo, player timeline |
-| Glass surfaces | 🆕 🟡 | `PlezzantGlass` with a performance-aware solid fallback. Applied to the floating TV navigation panel, overlay sheets (player menus, pickers) and the TV player control bar. Alert dialogs and context menus still use solid surfaces |
-| Ambience and glass intensity settings | 🆕 | Settings → Appearance |
+| Glass surfaces | 🆕 | `PlezzantGlass`: backdrop blur with vibrancy, white lift, top sheen and a specular edge; without blur (low-end tier, high contrast) the same pane on a denser base. Floating TV navigation, section chip, hero pills, overlay sheets, context menus and the TV player control bar |
+| Ambience and glass intensity settings | 🆕 | Settings → Appearance (phones, tablets, desktop; TVs use the defaults) |
 | Focus system (scale, luminance, tinted halo) | 🎨 | Thinner neutral edge, palette-tinted glow |
 | Reduced-performance tier (weak TVs) | ✅ | Animations and blur drop out |
 | Consistent TV scale on every box | 🆕 | Android TV renders through a 540-tall canvas whatever density the device reports |
@@ -125,6 +125,8 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Frame timing graph | 🆕 | Settings → Advanced; checks UI speed on the TV itself |
 | TV visual regression tests | 🆕 | Golden images at 960×540 (sidebar, hero, profile picker, settings) run in CI |
 | tvOS layout system | 🆕 | 1920×1080 reference canvas scaled to the device: 80 × 60 safe frame, couch-distance type roles and focus depth (scale, lift, glow, shadow). Reduce Motion is honoured separately from the effects tier |
+| UltraBlur backgrounds | ✅ | Home hero and movie/show pages sit on Plex's UltraBlur: the server's `/services/ultrablur/colors` corners painted as a soft four-corner field with grain, cross-fading between titles; non-Plex servers use corner samples of the backdrop. The backdrop occupies the top-right corner and dissolves into it |
+| Everyday feature set on TV | 🆕 | TVs show the settings a viewer reaches for; shaders, ambient lighting, decoder/backend, mpv config, buffers, overlays, debug, admin menu actions and new downloads stay at their defaults (phones, tablets and desktop keep everything) |
 | Apple TV style navigation | 🆕 | Section pill (‹ Home) in the top-left corner; a floating glass sidebar with profile and clock that opens on LEFT; the focused item is a white pill |
 | Apple TV style home | 🆕 | Full-bleed hero showing genre, rating badge and synopsis, with a white action pill (Play / Resume / Go to Show); landscape Up Next rows |
 | Apple TV style details | 🆕 | Logo-led hero with a white "Play S1E1" pill and glass secondary actions |

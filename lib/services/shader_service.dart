@@ -3,6 +3,7 @@ import 'dart:io';
 import '../models/shader_preset.dart';
 import '../mpv/player/player.dart';
 import '../utils/app_logger.dart';
+import '../utils/feature_set.dart';
 import 'ambient_lighting_service.dart';
 import 'shader_asset_loader.dart';
 
@@ -22,7 +23,9 @@ class ShaderService {
 
   ShaderPreset get currentPreset => _currentPreset;
 
-  static bool get isPlatformSupported => !Platform.isIOS;
+  /// Shaders are a power-user tool: not offered on iOS or on the TV's
+  /// everyday feature set (a preset saved earlier stops applying there).
+  static bool get isPlatformSupported => !Platform.isIOS && FeatureSet.advanced;
 
   /// Check if the player is MPV (shaders are MPV-only)
   bool get isSupported => _player.playerType == 'mpv' && isPlatformSupported;

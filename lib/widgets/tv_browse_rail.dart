@@ -2015,10 +2015,10 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
   }) {
     final theme = Theme.of(context);
     final duration = FocusTheme.getAnimationDuration(context);
-    final foreground = isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.78);
-    final background = isFocused
-        ? theme.colorScheme.primary.withValues(alpha: 0.2)
-        : theme.colorScheme.surfaceContainerHighest.withValues(alpha: spinner ? 0.18 : 0.42);
+    // A light glass pane (not a grey slab) so the slot reads as part of the
+    // row of artwork; focus follows the cards' white ring and lift.
+    final foreground = isFocused ? Colors.white : Colors.white.withValues(alpha: 0.82);
+    final background = Colors.white.withValues(alpha: isFocused ? 0.16 : (spinner ? 0.04 : 0.07));
 
     return AnimatedScale(
       scale: isFocused ? FocusTheme.focusScale : 1.0,
@@ -2033,8 +2033,8 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
           color: background,
           borderRadius: BorderRadius.circular(tokens(context).radiusSm),
           border: Border.all(
-            color: isFocused ? theme.colorScheme.primary : Colors.transparent,
-            width: FocusTheme.focusBorderWidth,
+            color: isFocused ? theme.colorScheme.primary : Colors.white.withValues(alpha: 0.12),
+            width: isFocused ? FocusTheme.focusBorderWidth : 1,
           ),
           boxShadow: isFocused
               ? [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.2), blurRadius: 18, spreadRadius: 1)]
@@ -2052,19 +2052,18 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
                 child: Column(
                   mainAxisSize: .min,
                   children: [
-                    AppIcon(icon!, fill: 1, size: 26 * scale, color: foreground),
-                    SizedBox(height: 6 * scale),
+                    AppIcon(icon!, fill: 1, size: 34 * scale, color: foreground),
+                    SizedBox(height: 10 * scale),
                     Padding(
                       padding: .symmetric(horizontal: 10 * scale),
                       child: Text(
                         label!,
                         maxLines: 1,
                         overflow: .ellipsis,
-                        style: TextStyle(
+                        style: PlezzantType.labelLarge.copyWith(
                           color: foreground,
-                          fontSize: 13 * scale,
-                          fontWeight: .w800,
-                          letterSpacing: 0.1,
+                          fontSize: 20 * scale,
+                          fontWeight: .w700,
                         ),
                       ),
                     ),

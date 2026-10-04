@@ -20,6 +20,7 @@ an uninstall first.
 
 | Version | Build | Highlights |
 |---|---|---|
+| 1.6.0 | 156 | Plex UltraBlur behind Home and detail pages (server colours, corner-sampled fallback), backdrop in the top-right corner; real glass (blur, vibrancy, sheen, specular edge) and glass action pills; bigger hero logos; settings, sheets, menus and library chips on the Home type scale; everyday feature set on TV (shaders, decoder/backend, buffers, overlays, admin menu actions and new downloads hidden); low-end TVs keep their animations and get trailer previews |
 | 1.5.0 | 155 | One-press menu (BACK), current section focused, libraries always listed, hidden libraries out of the menu (Open Library in Manage Libraries); Card Style (Landscape 16:9 / Posters 2:3); trailer previews on the Home hero with Watch Trailer; spoiler veils label each hidden episode; four-across landscape grids with the Home gutter |
 | 1.4.0 | 154 | Plex parity: theme music, cinema trailers, photo libraries and viewer, voice search, artwork screensaver. Consistency pass: shared list-page header and back chip, safe-frame grids, round cast, square playlists, check-mark pickers, menus anchored on every TV density |
 | 1.3.0 | 153 | Same TV layout on every box, balanced effects tier, high-contrast solid glass, frame timing graph, TV golden tests in CI, Manrope in hero metadata |

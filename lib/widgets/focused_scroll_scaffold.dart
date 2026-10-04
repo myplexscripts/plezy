@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'tv_reference_scale.dart';
 import '../focus/input_mode_tracker.dart';
 import '../focus/key_event_utils.dart';
 import 'desktop_app_bar.dart';
@@ -107,37 +108,40 @@ class _FocusedScrollScaffoldState extends State<FocusedScrollScaffold> {
         node: _scopeNode,
         child: IosStatusBarTapScrollToTop(
           child: Scaffold(
-            body: CustomScrollView(
-              slivers: [
-                // TV pages without app-bar actions take the tvOS shape: a
-                // large centred title over a centred column; the remote's back
-                // key replaces the back arrow.
-                if (tvLayout) ...[
-                  TvPageTitleSliver(title: widget.title),
-                  for (final sliver in widget.slivers) TvReadableSliver(sliver: sliver),
-                ] else ...[
-                  if (!widget.focusableAppBarActions || !_appBarFocusEnabled)
-                    ExcludeFocus(
-                      child: CustomAppBar(
+            // TV: phone-unit rows at the same physical scale as Home.
+            body: TvComfortScale(
+              child: CustomScrollView(
+                slivers: [
+                  // TV pages without app-bar actions take the tvOS shape: a
+                  // large centred title over a centred column; the remote's back
+                  // key replaces the back arrow.
+                  if (tvLayout) ...[
+                    TvPageTitleSliver(title: widget.title),
+                    for (final sliver in widget.slivers) TvReadableSliver(sliver: sliver),
+                  ] else ...[
+                    if (!widget.focusableAppBarActions || !_appBarFocusEnabled)
+                      ExcludeFocus(
+                        child: CustomAppBar(
+                          title: widget.title,
+                          pinned: widget.pinned,
+                          actions: widget.actions,
+                          automaticallyImplyLeading: widget.automaticallyImplyLeading,
+                        ),
+                      )
+                    else
+                      CustomAppBar(
                         title: widget.title,
                         pinned: widget.pinned,
                         actions: widget.actions,
                         automaticallyImplyLeading: widget.automaticallyImplyLeading,
                       ),
-                    )
-                  else
-                    CustomAppBar(
-                      title: widget.title,
-                      pinned: widget.pinned,
-                      actions: widget.actions,
-                      automaticallyImplyLeading: widget.automaticallyImplyLeading,
-                    ),
-                  ...widget.slivers,
+                    ...widget.slivers,
+                  ],
+                  // Keeps the last row scrollable clear of the Android
+                  // navigation bar / iOS home indicator; zero-height elsewhere.
+                  const SliverSystemBottomInset(),
                 ],
-                // Keeps the last row scrollable clear of the Android
-                // navigation bar / iOS home indicator; zero-height elsewhere.
-                const SliverSystemBottomInset(),
-              ],
+              ),
             ),
           ),
         ),

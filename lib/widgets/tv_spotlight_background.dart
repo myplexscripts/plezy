@@ -13,16 +13,14 @@ import '../utils/content_utils.dart';
 import '../utils/formatters.dart';
 import '../utils/layout_constants.dart';
 import '../utils/media_image_helper.dart';
-import '../services/settings_service.dart';
 import '../utils/tone_mapped_logo_image.dart';
-import '../theme/plezzant/plezzant_ambient_glow.dart';
+import '../theme/plezzant/ultra_blur.dart';
 import '../theme/plezzant/plezzant_tokens.dart';
 import 'cycling_media_backdrop.dart';
 import 'fitting_title_text.dart';
 import 'app_icon.dart';
 import '../theme/plezzant/plezzant_typography.dart';
 import 'fitted_metadata_line.dart';
-import 'settings_builder.dart';
 import 'media_ambience.dart';
 import 'media_rating_badge.dart';
 import 'optimized_media_image.dart' show ClearLogoImage, blurArtwork;
@@ -73,140 +71,151 @@ class TvSpotlightBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = item;
-    final bgColor = Theme.of(context).scaffoldBackgroundColor;
-
     // The gradients never differ between spotlight items, so only the artwork
     // cross-fades by image paint alpha. Keeping the gradients outside the
     // rotating layer avoids full-screen saveLayers on low-end TVs.
     final size = MediaQuery.sizeOf(context);
-    final containerAspect = size.width / size.height;
-    // Palette ambience follows the item the viewer settles on.
-    if (allowNetwork) requestAmbienceForItem(media, client);
+    // Palette ambience (focus tints) and the UltraBlur both follow the item
+    // the viewer settles on.
+    if (allowNetwork) {
+      requestAmbienceForItem(media, client);
+      UltraBlurAmbience.instance.request(media, client);
+    }
     final fallbackPaths = media == null
         ? const <String>[]
-        : <String>[...media.heroArtCandidates(containerAspectRatio: containerAspect), ?media.thumbPath];
-    return SettingValueBuilder<bool>(
-      pref: SettingsService.tvCornerSpotlightBackdrop,
-      builder: (context, cornerBackdrop, _) {
-        final backdropSize = cornerBackdrop ? Size(size.width * 0.68, size.height * 0.72) : size;
-        final backdrop = CyclingMediaBackdrop(
-          mediaKey: media?.globalKey,
-          imagePaths: media?.heroRotationPaths(containerAspectRatio: containerAspect) ?? const [],
-          fallbackImagePaths: fallbackPaths,
-          client: client,
-          localArtworkPathResolver: localArtworkPathResolver == null ? null : (path) => localArtworkPathResolver!(path),
-          allowNetwork: allowNetwork,
-          // Always request at full-screen size: the corner box only crops the
-          // layout. A mode-dependent size would change the transcode URL and
-          // cold-start every cached backdrop when the setting is toggled.
-          width: size.width,
-          height: size.height,
-          fallbackColor: media == null ? bgColor : Theme.of(context).colorScheme.surfaceContainerHighest,
-        );
-        final artwork = RepaintBoundary(
-          child: cornerBackdrop ? _buildCornerBackdrop(backdropSize, backdrop) : blurArtwork(backdrop),
-        );
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            // A previewing trailer replaces the artwork: its surface sits under
-            // the scrims, and the artwork fades away once a frame is up.
-            ListenableBuilder(
-              listenable: TrailerPreviewService.instance,
-              builder: (context, child) {
-                final preview = TrailerPreviewService.instance;
-                final player = preview.player;
-                // The surface mounts once playback is live, so the position it
-                // reports reaches an initialized native player.
-                final showing = preview.isShowingFor(media);
-                final previewing = showing && player != null;
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    if (previewing) Video(player: player, backgroundColor: Colors.transparent),
-                    AnimatedOpacity(
-                      opacity: showing ? 0 : 1,
-                      duration: DevicePerformance.reducedDuration(const Duration(milliseconds: 900)),
-                      curve: PlezzantMotion.standard,
-                      child: child,
-                    ),
-                  ],
+        : <String>[...media.heroArtCandidates(containerAspectRatio: 16 / 9), ?media.thumbPath];
+    // Plex layout: the backdrop sits in the top-right corner and dissolves
+    // into the UltraBlur, so the copy reads on calm colour, never on art.
+    final artWidth = size.width * _artWidthFraction;
+    final artHeight = math.min(artWidth * 9 / 16, size.height * 0.84);
+    final backdrop = CyclingMediaBackdrop(
+      mediaKey: media?.globalKey,
+      imagePaths: media?.heroRotationPaths(containerAspectRatio: 16 / 9) ?? const [],
+      fallbackImagePaths: fallbackPaths,
+      client: client,
+      localArtworkPathResolver: localArtworkPathResolver == null ? null : (path) => localArtworkPathResolver!(path),
+      allowNetwork: allowNetwork,
+      width: artWidth,
+      height: artHeight,
+      fallbackColor: Colors.transparent,
+    );
+    final background = RepaintBoundary(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [const UltraBlurBackground(), _buildCornerBackdrop(Size(artWidth, artHeight), blurArtwork(backdrop))],
+      ),
+    );
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // A previewing trailer replaces the background: its surface sits under
+        // the scrims, and the UltraBlur and art fade away once a frame is up.
+        ListenableBuilder(
+          listenable: TrailerPreviewService.instance,
+          builder: (context, child) {
+            final preview = TrailerPreviewService.instance;
+            final player = preview.player;
+            // The surface mounts once playback is live, so the position it
+            // reports reaches an initialized native player.
+            final showing = preview.isShowingFor(media);
+            final previewing = showing && player != null;
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                if (previewing) Video(player: player, backgroundColor: Colors.transparent),
+                AnimatedOpacity(
+                  opacity: showing ? 0 : 1,
+                  duration: DevicePerformance.reducedDuration(const Duration(milliseconds: 900)),
+                  curve: PlezzantMotion.standard,
+                  child: child,
+                ),
+              ],
+            );
+          },
+          child: background,
+        ),
+        // Soft readability behind the copy and a light top edge for the
+        // floating chrome; the UltraBlur itself stays clean.
+        RasterizedGradient(
+          gradient: LinearGradient(
+            colors: [Colors.black.withValues(alpha: 0.26), Colors.black.withValues(alpha: 0.08), Colors.transparent],
+            stops: const [0.0, 0.38, 0.6],
+          ),
+        ),
+        RasterizedGradient(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black.withValues(alpha: 0.16),
+              Colors.transparent,
+              Colors.transparent,
+              Colors.black.withValues(alpha: 0.22),
+            ],
+            stops: const [0.0, 0.22, 0.62, 1.0],
+          ),
+        ),
+        if (media != null && showInfo)
+          AnimatedPositioned(
+            duration: DevicePerformance.reducedDuration(PlezzantMotion.navigation),
+            curve: PlezzantMotion.standard,
+            left: contentLeft ?? TvLayoutConstants.horizontalInset,
+            // tvOS keeps hero copy to a readable measure.
+            right: _heroRightInset(context, contentLeft ?? TvLayoutConstants.horizontalInset),
+            top: contentTop,
+            bottom: contentBottom,
+            // The info block still cross-fades via AnimatedSwitcher, but its
+            // saveLayers are bounded to the text region, not the screen.
+            child: AnimatedSwitcher(
+              duration: DevicePerformance.reducedDuration(PlezzantMotion.hero),
+              reverseDuration: DevicePerformance.reducedDuration(PlezzantMotion.revealOut),
+              switchInCurve: PlezzantMotion.standard,
+              switchOutCurve: PlezzantMotion.exit,
+              transitionBuilder: (child, animation) {
+                final curved = CurvedAnimation(
+                  parent: animation,
+                  curve: PlezzantMotion.standard,
+                  reverseCurve: PlezzantMotion.exit,
+                );
+                return FadeTransition(
+                  opacity: curved,
+                  child: SlideTransition(
+                    position: Tween<Offset>(begin: const Offset(0, 0.018), end: Offset.zero).animate(curved),
+                    child: child,
+                  ),
                 );
               },
-              child: artwork,
-            ),
-            _buildHorizontalScrim(bgColor),
-            const PlezzantAmbientGlow(),
-            RasterizedGradient(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                // Light top edge for the floating chrome; the bottom fade only
-                // carries the shelf labels.
-                colors: [Colors.black.withValues(alpha: 0.14), Colors.transparent, bgColor.withValues(alpha: 0.72)],
-                stops: const [0.0, 0.5, 1.0],
-              ),
-            ),
-            if (media != null && showInfo)
-              AnimatedPositioned(
-                duration: DevicePerformance.reducedDuration(PlezzantMotion.navigation),
-                curve: PlezzantMotion.standard,
-                left: contentLeft ?? TvLayoutConstants.horizontalInset,
-                // tvOS keeps hero copy to a readable measure.
-                right: _heroRightInset(context, contentLeft ?? TvLayoutConstants.horizontalInset),
-                top: contentTop,
-                bottom: contentBottom,
-                // The info block still cross-fades via AnimatedSwitcher, but its
-                // saveLayers are bounded to the text region, not the screen.
-                child: AnimatedSwitcher(
-                  duration: DevicePerformance.reducedDuration(PlezzantMotion.hero),
-                  reverseDuration: DevicePerformance.reducedDuration(PlezzantMotion.revealOut),
-                  switchInCurve: PlezzantMotion.standard,
-                  switchOutCurve: PlezzantMotion.exit,
-                  transitionBuilder: (child, animation) {
-                    final curved = CurvedAnimation(
-                      parent: animation,
-                      curve: PlezzantMotion.standard,
-                      reverseCurve: PlezzantMotion.exit,
-                    );
-                    return FadeTransition(
-                      opacity: curved,
-                      child: SlideTransition(
-                        position: Tween<Offset>(begin: const Offset(0, 0.018), end: Offset.zero).animate(curved),
-                        child: child,
+              // Expand instead of the default loose centered Stack so the
+              // info keeps filling the region and bottom-left aligning.
+              layoutBuilder: (currentChild, previousChildren) =>
+                  Stack(fit: StackFit.expand, children: [...previousChildren, ?currentChild]),
+              child: KeyedSubtree(
+                key: ValueKey(media.globalKey),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    if (!constraints.hasBoundedHeight || constraints.maxHeight <= 0 || constraints.maxWidth <= 0) {
+                      return Align(alignment: .bottomLeft, child: _buildInfo(context, media));
+                    }
+
+                    return Align(
+                      alignment: .bottomLeft,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: .bottomLeft,
+                        child: SizedBox(width: constraints.maxWidth, child: _buildInfo(context, media)),
                       ),
                     );
                   },
-                  // Expand instead of the default loose centered Stack so the
-                  // info keeps filling the region and bottom-left aligning.
-                  layoutBuilder: (currentChild, previousChildren) =>
-                      Stack(fit: StackFit.expand, children: [...previousChildren, ?currentChild]),
-                  child: KeyedSubtree(
-                    key: ValueKey(media.globalKey),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        if (!constraints.hasBoundedHeight || constraints.maxHeight <= 0 || constraints.maxWidth <= 0) {
-                          return Align(alignment: .bottomLeft, child: _buildInfo(context, media));
-                        }
-
-                        return Align(
-                          alignment: .bottomLeft,
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: .bottomLeft,
-                            child: SizedBox(width: constraints.maxWidth, child: _buildInfo(context, media)),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
                 ),
               ),
-          ],
-        );
-      },
+            ),
+          ),
+      ],
     );
   }
+
+  /// Width of the corner backdrop on the reference layout (Plex: ~3/4).
+  static const double _artWidthFraction = 0.74;
 
   /// Corner spotlight: artwork pinned to the top-right corner, left and
   /// bottom edges feathered into the scaffold background so the info block
@@ -219,32 +228,19 @@ class TvSpotlightBackground extends StatelessWidget {
         height: backdropSize.height,
         child: ShaderMask(
           shaderCallback: (rect) =>
-              const LinearGradient(colors: [Colors.transparent, Colors.white], stops: [0.0, 0.35]).createShader(rect),
+              const LinearGradient(colors: [Colors.transparent, Colors.white], stops: [0.0, 0.42]).createShader(rect),
           blendMode: BlendMode.dstIn,
           child: ShaderMask(
             shaderCallback: (rect) => const LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [Colors.white, Colors.white, Colors.transparent],
-              stops: [0.0, 0.55, 1.0],
+              stops: [0.0, 0.5, 1.0],
             ).createShader(rect),
             blendMode: BlendMode.dstIn,
             child: backdrop,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHorizontalScrim(Color bgColor) {
-    return RasterizedGradient(
-      gradient: LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-        // A local readability field behind the copy, not a global wash: the
-        // artwork stays bright across the right half of the screen.
-        colors: [bgColor.withValues(alpha: 0.55), bgColor.withValues(alpha: 0.10), Colors.transparent],
-        stops: const [0.0, 0.42, 0.62],
       ),
     );
   }
@@ -357,7 +353,7 @@ class TvSpotlightBackground extends StatelessWidget {
                 : ToneMappedLogoImage(bounded, target: logoToneTarget, remapMixed: false),
             fit: BoxFit.contain,
             filterQuality: MediaImageHelper.artworkFilterQuality(context, ImageType.heroLogo),
-            alignment: .centerLeft,
+            alignment: .bottomLeft,
             errorBuilder: (context, error, stackTrace) => _buildTitle(context, title),
           ),
           sigma: 10,
@@ -373,6 +369,8 @@ class TvSpotlightBackground extends StatelessWidget {
       height: logoHeight,
       fadeInDuration: DevicePerformance.reducedDuration(const Duration(milliseconds: 200)),
       logoToneTarget: logoToneTarget,
+      // Wide logos sit on the metadata line, not mid-box.
+      alignment: Alignment.bottomLeft,
       fallbackBuilder: (context) => _buildTitle(context, title),
     );
   }
@@ -382,6 +380,7 @@ class TvSpotlightBackground extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return FittingTitleText(
       title,
+      alignment: Alignment.bottomLeft,
       style: Theme.of(context).textTheme.displaySmall?.copyWith(
         color: colorScheme.onSurface,
         fontSize: _titleFontSize(scale),
@@ -486,14 +485,13 @@ class TvSpotlightBackground extends StatelessWidget {
   double _logoHeight(double scale) =>
       (compact ? TvLayoutConstants.compactHeroLogoHeight : TvLayoutConstants.heroLogoHeight) * scale;
 
-  double _titleFontSize(double scale) => (compact ? 44 : 54) * scale;
+  double _titleFontSize(double scale) => (compact ? 56 : 76) * scale;
 
   double _metadataFontSize(double scale) => (compact ? 21 : 23) * scale;
 
   double _summaryFontSize(double scale) => (compact ? 22 : 24) * scale;
 }
 
-/// The white "Play" / "Go to Show" pill of the Apple TV hero.
 /// Glass hint beside the action pill while a trailer previews: Play/Pause
 /// watches it with sound.
 class _PreviewHint extends StatelessWidget {
@@ -504,9 +502,9 @@ class _PreviewHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlezzantGlass(
-      style: PlezzantGlassStyle.overlay,
-      borderRadius: BorderRadius.circular(14 * scale),
-      padding: EdgeInsets.symmetric(horizontal: 22 * scale, vertical: 13 * scale),
+      style: PlezzantGlassStyle.chrome,
+      borderRadius: BorderRadius.circular(PlezzantRadius.pill),
+      padding: EdgeInsets.symmetric(horizontal: 24 * scale, vertical: 14 * scale),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -529,6 +527,7 @@ class _PreviewHint extends StatelessWidget {
   }
 }
 
+/// The hero's "Play" / "Go to Show" label: what OK does on the focused card.
 class _ActionPill extends StatelessWidget {
   final String label;
   final IconData? icon;
@@ -538,32 +537,30 @@ class _ActionPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14 * scale),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 16 * scale)],
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 34 * scale, vertical: 15 * scale),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              AppIcon(icon!, fill: 1, size: 24 * scale, color: Colors.black),
-              SizedBox(width: 10 * scale),
-            ],
-            Text(
-              label,
-              maxLines: 1,
-              style: PlezzantType.labelLarge.copyWith(
-                color: Colors.black,
-                fontSize: 23 * scale,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+    // Same glass as the detail page's resting action buttons, so Home and a
+    // title's page share one button language (a big white slab blooms on TV
+    // panels and washes its label out).
+    return PlezzantGlass(
+      style: PlezzantGlassStyle.chrome,
+      borderRadius: BorderRadius.circular(PlezzantRadius.pill),
+      padding: EdgeInsets.symmetric(horizontal: 30 * scale, vertical: 14 * scale),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            AppIcon(icon!, fill: 1, size: 24 * scale, color: Colors.white),
+            SizedBox(width: 10 * scale),
           ],
-        ),
+          Text(
+            label,
+            maxLines: 1,
+            style: PlezzantType.labelLarge.copyWith(
+              color: Colors.white,
+              fontSize: 23 * scale,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import '../../utils/feature_set.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -64,6 +65,7 @@ import 'services_settings_screen.dart';
 import 'settings_utils.dart';
 import 'tracker_service_info.dart';
 import '../../widgets/loading_indicator_box.dart';
+import '../../widgets/tv_reference_scale.dart';
 import 'package:plezy/theme/plezzant/plezzant_palette.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -191,62 +193,64 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
     return Scaffold(
       body: Focus(
         onKeyEvent: _handleKeyEvent,
-        child: CustomScrollView(
-          primary: false,
-          slivers: [
-            // On TV the section pill above the content already names the page.
-            if (PlatformDetector.isTV())
-              const SliverToBoxAdapter(child: SizedBox(height: 8))
-            else
-              ExcludeFocus(child: CustomAppBar(title: Text(t.settings.title), pinned: true)),
-            TvReadableSliver(
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  const SizedBox(height: 8),
-                  SettingsGroup(
-                    children: [
-                      if (DonationService.isEnabled) _buildDonateTile(),
-                      _buildGeneralTile(),
-                      _buildAppearanceTile(),
-                      _buildPlaybackTile(),
-                      if (hasLibraries) _buildManageLibrariesTile(sheetContext),
-                      _buildServicesTile(),
-                    ],
-                  ),
+        child: TvComfortScale(
+          child: CustomScrollView(
+            primary: false,
+            slivers: [
+              // On TV the section pill above the content already names the page.
+              if (PlatformDetector.isTV())
+                const SliverToBoxAdapter(child: SizedBox(height: 8))
+              else
+                ExcludeFocus(child: CustomAppBar(title: Text(t.settings.title), pinned: true)),
+              TvReadableSliver(
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const SizedBox(height: 8),
+                    SettingsGroup(
+                      children: [
+                        if (DonationService.isEnabled) _buildDonateTile(),
+                        _buildGeneralTile(),
+                        _buildAppearanceTile(),
+                        _buildPlaybackTile(),
+                        if (hasLibraries) _buildManageLibrariesTile(sheetContext),
+                        _buildServicesTile(),
+                      ],
+                    ),
 
-                  _buildConnectionsSection(sheetContext),
+                    _buildConnectionsSection(sheetContext),
 
-                  if (!PlatformDetector.isAppleTV()) _buildDownloadsSection(),
+                    if (!PlatformDetector.isAppleTV() && FeatureSet.advanced) _buildDownloadsSection(),
 
-                  if (_keyboardShortcutsSupported || PlatformDetector.shouldActAsRemoteHost(sheetContext))
-                    _buildControlsSection(sheetContext),
+                    if (_keyboardShortcutsSupported || PlatformDetector.shouldActAsRemoteHost(sheetContext))
+                      _buildControlsSection(sheetContext),
 
-                  _buildAdvancedSection(),
+                    _buildAdvancedSection(),
 
-                  if (UpdateService.isUpdateCheckAvailable) ...[_buildUpdateSection()],
+                    if (UpdateService.isUpdateCheckAvailable) ...[_buildUpdateSection()],
 
-                  // Hidden on Android TV / tvOS (no document picker); desktop in
-                  // force-TV mode keeps it — FilePickerService works there.
-                  if (!PlatformDetector.isTV() || PlatformDetector.isDesktopOS()) _buildBackupSection(),
+                    // Hidden on Android TV / tvOS (no document picker); desktop in
+                    // force-TV mode keeps it — FilePickerService works there.
+                    if (!PlatformDetector.isTV() || PlatformDetector.isDesktopOS()) _buildBackupSection(),
 
-                  const SizedBox(height: 24),
-                  SettingsGroup(
-                    children: [
-                      SettingNavigationTile(
-                        focusNode: _focusTracker.get(_kAbout),
-                        icon: LucideIcons.info,
-                        title: t.settings.about,
-                        subtitle: t.settings.aboutDescription,
-                        destinationBuilder: (context) => const AboutScreen(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                ]),
+                    const SizedBox(height: 24),
+                    SettingsGroup(
+                      children: [
+                        SettingNavigationTile(
+                          focusNode: _focusTracker.get(_kAbout),
+                          icon: LucideIcons.info,
+                          title: t.settings.about,
+                          subtitle: t.settings.aboutDescription,
+                          destinationBuilder: (context) => const AboutScreen(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                  ]),
+                ),
               ),
-            ),
-            const SliverSystemBottomInset(),
-          ],
+              const SliverSystemBottomInset(),
+            ],
+          ),
         ),
       ),
     );
@@ -495,7 +499,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
   /// are.
   Widget _buildControlsSection(BuildContext context) {
     final children = <Widget>[
-      if (_keyboardService != null) ...[
+      if (_keyboardService != null && FeatureSet.advanced) ...[
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kVideoPlayerControls),
           icon: LucideIcons.keyboard,
@@ -535,48 +539,54 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
     return SettingsGroup(
       title: t.settings.advanced,
       children: [
-        SettingNavigationTile(
-          focusNode: _focusTracker.get(_kWatchTogetherRelay),
-          icon: LucideIcons.server,
-          title: t.settings.watchTogetherRelay,
-          subtitle: t.settings.watchTogetherRelayDescription,
-          onTap: () => _showRelayUrlDialog(),
-        ),
-        SettingSwitchTile(
-          focusNode: _focusTracker.get(_kCrashReporting),
-          pref: settings.SettingsService.crashReporting,
-          icon: LucideIcons.activity,
-          title: t.settings.crashReporting,
-          subtitle: t.settings.crashReportingDescription,
-        ),
-        SettingSwitchTile(
-          focusNode: _focusTracker.get(_kDebugLogging),
-          pref: settings.SettingsService.enableDebugLogging,
-          icon: LucideIcons.bug,
-          title: t.settings.debugLogging,
-          subtitle: t.settings.debugLoggingDescription,
-        ),
-        SettingSwitchTile(
-          focusNode: _focusTracker.get(_kAutoHidePerformanceOverlay),
-          pref: settings.SettingsService.autoHidePerformanceOverlay,
-          icon: LucideIcons.gauge,
-          title: t.settings.autoHidePerformanceOverlay,
-          subtitle: t.settings.autoHidePerformanceOverlayDescription,
-        ),
-        SettingSwitchTile(
-          focusNode: _focusTracker.get(_kFrameTimingOverlay),
-          pref: settings.SettingsService.showFrameTimingOverlay,
-          icon: LucideIcons.activity,
-          title: t.settings.frameTimingOverlay,
-          subtitle: t.settings.frameTimingOverlayDescription,
-        ),
-        SettingNavigationTile(
-          focusNode: _focusTracker.get(_kViewLogs),
-          icon: LucideIcons.newspaper,
-          title: t.settings.viewLogs,
-          subtitle: t.settings.viewLogsDescription,
-          destinationBuilder: (context) => const LogsScreen(),
-        ),
+        if (FeatureSet.advanced)
+          SettingNavigationTile(
+            focusNode: _focusTracker.get(_kWatchTogetherRelay),
+            icon: LucideIcons.server,
+            title: t.settings.watchTogetherRelay,
+            subtitle: t.settings.watchTogetherRelayDescription,
+            onTap: () => _showRelayUrlDialog(),
+          ),
+        if (FeatureSet.advanced)
+          SettingSwitchTile(
+            focusNode: _focusTracker.get(_kCrashReporting),
+            pref: settings.SettingsService.crashReporting,
+            icon: LucideIcons.activity,
+            title: t.settings.crashReporting,
+            subtitle: t.settings.crashReportingDescription,
+          ),
+        if (FeatureSet.advanced)
+          SettingSwitchTile(
+            focusNode: _focusTracker.get(_kDebugLogging),
+            pref: settings.SettingsService.enableDebugLogging,
+            icon: LucideIcons.bug,
+            title: t.settings.debugLogging,
+            subtitle: t.settings.debugLoggingDescription,
+          ),
+        if (FeatureSet.advanced)
+          SettingSwitchTile(
+            focusNode: _focusTracker.get(_kAutoHidePerformanceOverlay),
+            pref: settings.SettingsService.autoHidePerformanceOverlay,
+            icon: LucideIcons.gauge,
+            title: t.settings.autoHidePerformanceOverlay,
+            subtitle: t.settings.autoHidePerformanceOverlayDescription,
+          ),
+        if (FeatureSet.advanced)
+          SettingSwitchTile(
+            focusNode: _focusTracker.get(_kFrameTimingOverlay),
+            pref: settings.SettingsService.showFrameTimingOverlay,
+            icon: LucideIcons.activity,
+            title: t.settings.frameTimingOverlay,
+            subtitle: t.settings.frameTimingOverlayDescription,
+          ),
+        if (FeatureSet.advanced)
+          SettingNavigationTile(
+            focusNode: _focusTracker.get(_kViewLogs),
+            icon: LucideIcons.newspaper,
+            title: t.settings.viewLogs,
+            subtitle: t.settings.viewLogsDescription,
+            destinationBuilder: (context) => const LogsScreen(),
+          ),
         SettingNavigationTile(
           focusNode: _focusTracker.get(_kClearImageCache),
           icon: LucideIcons.brushCleaning,

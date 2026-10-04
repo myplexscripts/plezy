@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import '../../../utils/feature_set.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -767,7 +768,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
           onTap: () => _openSyncBar(isSubtitle: true),
         ),
 
-        if (_supportsHdrControl)
+        if (_supportsHdrControl && FeatureSet.advanced)
           _SettingsToggleItem(
             pref: SettingsService.enableHDR,
             icon: LucideIcons.sunMedium,
@@ -778,7 +779,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         // Only meaningful where the plane can actually carry HDR, and only the
         // Linux plane lets us pick the curve: elsewhere the platform decides who
         // tone-maps.
-        if (_supportsHdrControl && PlayerNative.usesLinuxVideoPlane)
+        if (_supportsHdrControl && PlayerNative.usesLinuxVideoPlane && FeatureSet.advanced)
           _SettingsMenuItem(
             icon: LucideIcons.contrast,
             title: t.videoSettings.hdrToneMapping,
@@ -821,26 +822,28 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
         // "not Dolby" when the system reports notApplicable.
         if (PlatformDetector.isAppleTV()) _AudioRenderingModeItem(player: widget.player),
 
-        _SettingsToggleItem(
-          pref: SettingsService.audioNormalization,
-          icon: LucideIcons.audioLines,
-          title: t.videoSettings.audioNormalization,
-          onAfterWrite: widget.player.setAudioNormalization,
-        ),
-
-        _SettingsToggleItem(
-          pref: SettingsService.audioDownmix,
-          icon: LucideIcons.headphones,
-          title: t.videoSettings.audioDownmix,
-          onAfterWrite: (enabled) => widget.player.setAudioDownmix(
-            enabled: enabled,
-            centerBoostDb: SettingsService.instance.read(SettingsService.downmixCenterBoost),
-            normalize: SettingsService.instance.read(SettingsService.audioDownmixNormalize),
+        if (FeatureSet.advanced)
+          _SettingsToggleItem(
+            pref: SettingsService.audioNormalization,
+            icon: LucideIcons.audioLines,
+            title: t.videoSettings.audioNormalization,
+            onAfterWrite: widget.player.setAudioNormalization,
           ),
-        ),
+
+        if (FeatureSet.advanced)
+          _SettingsToggleItem(
+            pref: SettingsService.audioDownmix,
+            icon: LucideIcons.headphones,
+            title: t.videoSettings.audioDownmix,
+            onAfterWrite: (enabled) => widget.player.setAudioDownmix(
+              enabled: enabled,
+              centerBoostDb: SettingsService.instance.read(SettingsService.downmixCenterBoost),
+              normalize: SettingsService.instance.read(SettingsService.audioDownmixNormalize),
+            ),
+          ),
 
         // Shader Preset (MPV only)
-        if (_state.shaderService != null && _state.shaderService!.isSupported)
+        if (_state.shaderService != null && _state.shaderService!.isSupported && FeatureSet.advanced)
           _SettingsMenuItem(
             icon: LucideIcons.wandSparkles,
             title: t.shaders.title,
@@ -850,7 +853,7 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
           ),
 
         // Ambient Lighting (MPV only)
-        if (_state.onToggleAmbientLighting != null)
+        if (_state.onToggleAmbientLighting != null && FeatureSet.advanced)
           FocusableListTile(
             leading: AppIcon(
               LucideIcons.blend,
@@ -873,13 +876,14 @@ class _VideoSettingsSheetState extends State<VideoSettingsSheet> {
           ),
 
         // Performance Overlay Toggle
-        _SettingsToggleItem(
-          pref: SettingsService.showPerformanceOverlay,
-          icon: LucideIcons.chartColumn,
-          title: t.videoSettings.performanceOverlay,
-        ),
+        if (FeatureSet.advanced)
+          _SettingsToggleItem(
+            pref: SettingsService.showPerformanceOverlay,
+            icon: LucideIcons.chartColumn,
+            title: t.videoSettings.performanceOverlay,
+          ),
 
-        if (_showDebugDvConversionMode)
+        if (_showDebugDvConversionMode && FeatureSet.advanced)
           _SettingsMenuItem(
             icon: LucideIcons.sunMedium,
             title: t.settings.dvConversionMode,

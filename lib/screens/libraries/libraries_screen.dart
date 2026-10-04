@@ -20,6 +20,7 @@ import '../../services/settings_service.dart';
 import '../../widgets/settings_builder.dart';
 import '../../utils/app_logger.dart';
 import '../../navigation/main_screen_scope.dart';
+import '../../utils/feature_set.dart';
 import '../../utils/platform_detector.dart';
 import '../../utils/content_utils.dart';
 import '../../widgets/app_menu.dart';
@@ -767,7 +768,8 @@ class _LibrariesScreenState extends State<LibrariesScreen>
     });
 
     List<FocusableAction> appBarActions() => [
-      if (allLibraries.isNotEmpty)
+      // TV: library management lives in Settings → Manage Libraries.
+      if (allLibraries.isNotEmpty && FeatureSet.advanced)
         FocusableAction(
           icon: LucideIcons.pencil,
           tooltip: t.libraries.manageLibraries,

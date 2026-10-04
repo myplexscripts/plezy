@@ -873,7 +873,6 @@ class SettingsService extends BaseSharedPreferencesService {
     defaultValue: GridSpacing.tight,
   );
   static const automotiveUiScale = _AutomotiveUiScalePref();
-  static const tvCornerSpotlightBackdrop = BoolPref('tv_corner_spotlight_backdrop');
 
   /// Plezzant: artwork-driven palette ambience behind heroes, focus and progress.
   static const ambienceIntensity = EnumPref<AmbienceIntensity>(
@@ -1429,7 +1428,6 @@ class SettingsService extends BaseSharedPreferencesService {
     libraryDensity,
     gridSpacing,
     automotiveUiScale,
-    tvCornerSpotlightBackdrop,
     ambienceIntensity,
     glassIntensity,
     episodePosterMode,

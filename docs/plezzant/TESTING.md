@@ -379,6 +379,16 @@ Tick each item as you check it. Note anything odd, with the time it happened.
 - [ ] Glass surfaces (navigation rail, menus, player panels) look translucent but readable
 - [ ] Performance: moving around feels quick, with no stutter
 
+### New in 1.6.0
+
+- [ ] Home and every movie/show page sit on a soft UltraBlur in the artwork's colours; the backdrop fills the top-right corner and melts into it, and the colours glide as you move between titles
+- [ ] The top-left *Home* chip, the hero's *Play / Go to …* pill and the *Watch Trailer* hint look like frosted glass with a bright top edge
+- [ ] Title logos on Home are large and sit right on the details line
+- [ ] Settings, its pickers, long-press menus, the player's ⚙ menu and the library tabs use the same text size as Home — nothing reads a size up
+- [ ] Settings shows only everyday options: no Player / backend / mpv / buffer group, no shaders, no debug overlays or logs; long-press menus have no Edit, File Info, External Player, Download or Delete
+- [ ] Movie and show pages have no Download button
+- [ ] On an entry-level Google TV (2 GB), focus still animates smoothly, the sidebar slides, and trailer previews play
+
 ### New in 1.5.0
 
 - [ ] From deep inside a library grid, one press of **Back** opens the menu, already on that library

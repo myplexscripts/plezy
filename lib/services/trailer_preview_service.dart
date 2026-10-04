@@ -9,7 +9,6 @@ import '../mpv/models.dart';
 import '../mpv/player/player.dart';
 import '../utils/app_logger.dart';
 import '../utils/platform_detector.dart';
-import 'device_performance.dart';
 import 'playback_coordinator.dart';
 import 'settings_service.dart';
 import 'trailer_resolver.dart';
@@ -57,7 +56,6 @@ class TrailerPreviewService extends ChangeNotifier {
   bool _eligible(MediaItem item) {
     if (!PlatformDetector.isTV()) return false;
     if (!(SettingsService.instanceOrNull?.read(SettingsService.trailerPreviews) ?? false)) return false;
-    if (DevicePerformance.isReduced) return false;
     if (item.kind != MediaKind.movie && item.kind != MediaKind.show) return false;
     return !PlaybackCoordinator.instance.hasVideoSession;
   }

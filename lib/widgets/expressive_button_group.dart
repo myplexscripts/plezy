@@ -163,7 +163,7 @@ class _ExpressiveButtonGroupState<T> extends State<ExpressiveButtonGroup<T>> {
             curve: MonoMotion.standard,
             style: theme.textTheme.labelLarge!.copyWith(
               color: foreground,
-              fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
             ),
             child: segment.label!,
           );
