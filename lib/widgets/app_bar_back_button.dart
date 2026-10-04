@@ -4,6 +4,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/focusable_wrapper.dart';
 import '../i18n/strings.g.dart';
+import '../theme/plezzant/plezzant_glass.dart';
+import '../utils/platform_detector.dart';
 import 'app_icon.dart';
 
 /// Defines the visual style of the back button
@@ -160,6 +162,19 @@ class _AppBarBackButtonState extends State<AppBarBackButton> with TickerProvider
               builder: (context, child) {
                 final currentColor = Color.lerp(baseColor, hoverColor, _backgroundAnimation.value);
 
+                // TV detail pages: the same frosted glass as the section chip.
+                if (widget.style == BackButtonStyle.circular && PlatformDetector.isTV()) {
+                  return Container(
+                    margin: const EdgeInsets.all(8),
+                    width: 52,
+                    height: 52,
+                    child: PlezzantGlass(
+                      style: PlezzantGlassStyle.chrome,
+                      borderRadius: BorderRadius.circular(26),
+                      child: Center(child: AppIcon(LucideIcons.arrowLeft, fill: 1, color: effectiveColor, size: 24)),
+                    ),
+                  );
+                }
                 return Container(
                   margin: const EdgeInsets.all(8),
                   width: 40,

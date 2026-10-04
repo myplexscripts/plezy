@@ -131,7 +131,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
     final tonalBg = colorScheme.secondaryContainer;
     // TV (Apple TV style): idle actions are translucent discs over the
     // backdrop; focus turns them solid white.
-    final idleBg = isTv ? Colors.white.withValues(alpha: 0.16) : tonalBg;
+    final idleBg = isTv ? Colors.white.withValues(alpha: 0.18) : tonalBg;
     final tonalFg = isTv ? Colors.white : colorScheme.onSecondaryContainer;
     final noOverlay = WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.focused)) return Colors.transparent;
@@ -164,6 +164,12 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
         visualDensity: VisualDensity.compact,
         overlayColor: noOverlay,
         backgroundColor: WidgetStatePropertyAll(showFocus ? focusBg : idleBg),
+        // TV: the glass pills' catch-light edge.
+        side: isTv
+            ? WidgetStatePropertyAll(
+                showFocus ? BorderSide.none : BorderSide(color: Colors.white.withValues(alpha: 0.34), width: 1.2),
+              )
+            : null,
         foregroundColor: WidgetStatePropertyAll(showFocus ? focusFg : foregroundColor ?? tonalFg),
         shape: shape != null ? WidgetStatePropertyAll(shape) : null,
       );

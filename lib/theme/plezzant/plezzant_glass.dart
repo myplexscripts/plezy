@@ -60,7 +60,7 @@ class PlezzantGlassStyle {
   static const overlay = PlezzantGlassStyle(
     blur: 30,
     fillAlpha: 0.11,
-    tintAlpha: 0.04,
+    tintAlpha: 0.0,
     baseAlpha: 0.30,
     solidAlpha: 0.84,
     shadowAlpha: 0.24,

@@ -41,14 +41,17 @@ class TrailerResolver {
   final Map<String, Future<MediaItem?>> _cache = {};
 
   Future<MediaItem?> trailerFor(MediaItem item, MediaServerClient client) {
-    if (item.kind != MediaKind.movie && item.kind != MediaKind.show) return Future.value();
-    final key = item.globalKey;
+    // An episode previews its series' trailer (Continue Watching rows).
+    final seriesId = item.kind == MediaKind.episode ? item.grandparentId : null;
+    if (item.kind != MediaKind.movie && item.kind != MediaKind.show && seriesId == null) return Future.value();
+    final extrasId = seriesId ?? item.id;
+    final key = seriesId == null ? item.globalKey : '${item.serverId}:$seriesId';
     final cached = _cache.remove(key);
     if (cached != null) {
       _cache[key] = cached;
       return cached;
     }
-    final future = client.fetchExtras(item.id).then<MediaItem?>((extras) => pickTrailer(item, extras)).catchError((
+    final future = client.fetchExtras(extrasId).then<MediaItem?>((extras) => pickTrailer(item, extras)).catchError((
       Object e,
     ) {
       appLogger.d('Trailer lookup failed for ${item.displayTitle}', error: e);

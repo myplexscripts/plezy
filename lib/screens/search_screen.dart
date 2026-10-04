@@ -461,7 +461,9 @@ class _SearchScreenState extends State<SearchScreen>
   Widget _buildTvResultsGrid(List<MediaItem> visible) {
     // Card Style: 16:9 cells when every result is a movie, show or episode.
     final landscapeCards =
-        tvLandscapeCards() && visible.isNotEmpty && visible.every((i) => tvCardShapeFor(i, landscape: true) != null);
+        visible.isNotEmpty &&
+        (visible.every((i) => i.kind == MediaKind.episode) ||
+            (tvLandscapeCards() && visible.every((i) => tvCardShapeFor(i, landscape: true) != null)));
     return MediaCardSliverLayout(
       viewMode: ViewMode.grid,
       itemCount: visible.length,

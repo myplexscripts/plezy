@@ -22,7 +22,7 @@ void main() {
 
   test('landscape is the TV default and reshapes only video items', () {
     expect(tvLandscapeCards(), isTrue);
-    for (final kind in [MediaKind.movie, MediaKind.show, MediaKind.season, MediaKind.episode]) {
+    for (final kind in [MediaKind.movie, MediaKind.show, MediaKind.season]) {
       expect(tvCardShapeFor(item(kind), landscape: true), CardShape.wide);
       expect(tvCardShapeFor(item(kind), landscape: false), isNull);
     }
@@ -31,11 +31,14 @@ void main() {
     }
   });
 
-  test('posters show episodes as posters, keeping a season/series choice', () async {
+  test('episodes are always 16:9, in every style', () async {
+    expect(tvCardShapeFor(item(MediaKind.episode), landscape: true), CardShape.wide);
+    expect(tvCardShapeFor(item(MediaKind.episode), landscape: false), CardShape.wide);
     await SettingsService.instance.write(SettingsService.tvCardStyle, TvCardStyle.poster);
     expect(tvLandscapeCards(), isFalse);
-    expect(tvEpisodePosterMode(EpisodePosterMode.episodeThumbnail), EpisodePosterMode.seriesPoster);
-    expect(tvEpisodePosterMode(EpisodePosterMode.seasonPoster), EpisodePosterMode.seasonPoster);
+    for (final mode in EpisodePosterMode.values) {
+      expect(tvEpisodePosterMode(mode), EpisodePosterMode.episodeThumbnail);
+    }
   });
 
   test('off TV the setting does nothing', () {

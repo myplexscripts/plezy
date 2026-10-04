@@ -10,8 +10,6 @@ import '../../media/media_item.dart';
 import '../../media/media_kind.dart';
 import '../../media/media_server_client.dart';
 import '../../services/device_performance.dart';
-import '../../services/plex_client.dart';
-import '../../utils/app_logger.dart';
 import '../../utils/media_image_helper.dart';
 import 'plezzant_tokens.dart';
 
@@ -27,20 +25,6 @@ class UltraBlurColors {
 
   /// Calm default before any artwork resolves: the Plezzant night.
   static const fallback = UltraBlurColors(Color(0xFF1C1B2E), Color(0xFF26233D), Color(0xFF121220), Color(0xFF1A1830));
-
-  /// Parses the server's hex corners (`topLeft, topRight, bottomLeft,
-  /// bottomRight`), or null if any is malformed.
-  static UltraBlurColors? fromHex(List<String> hex) {
-    if (hex.length != 4) return null;
-    final parsed = <Color>[];
-    for (final h in hex) {
-      final clean = h.replaceFirst('#', '');
-      final value = int.tryParse(clean, radix: 16);
-      if (value == null || clean.length != 6) return null;
-      parsed.add(Color(0xFF000000 | value));
-    }
-    return UltraBlurColors(parsed[0], parsed[1], parsed[2], parsed[3]).readable();
-  }
 
   List<Color> get corners => [topLeft, topRight, bottomLeft, bottomRight];
 
@@ -71,9 +55,8 @@ class UltraBlurColors {
   int get hashCode => Object.hash(topLeft, topRight, bottomLeft, bottomRight);
 }
 
-/// Resolves UltraBlur colours for titles: the server's own
-/// `/services/ultrablur/colors` on Plex (exactly what Plex's apps paint), and
-/// corner samples of the backdrop elsewhere. Results are memoised per art.
+/// Resolves the blur colours for titles by sampling their backdrop's edges
+/// (see [UltraBlurResolver.fromEdges]). Results are memoised per art.
 class UltraBlurResolver {
   UltraBlurResolver._();
 
@@ -112,51 +95,44 @@ class UltraBlurResolver {
         });
   }
 
+  /// Samples the backdrop's left side, bottom-left corner and bottom edge:
+  /// the edges the blur has to melt into.
   Future<UltraBlurColors?> _resolve(MediaServerClient client, String path) async {
-    if (client is PlexClient && path.startsWith('/')) {
-      try {
-        final hex = await client.getUltraBlurColors(path);
-        final colors = hex == null ? null : UltraBlurColors.fromHex(hex);
-        if (colors != null) return colors;
-      } catch (e) {
-        appLogger.d('UltraBlur colours unavailable for $path', error: e);
-      }
-    }
-    return _sample(client, path);
-  }
-
-  /// Corner averages of a tiny transcode of the backdrop.
-  Future<UltraBlurColors?> _sample(MediaServerClient client, String path) async {
-    final url = client.thumbnailUrl(path, width: 64, height: 36);
+    final url = client.thumbnailUrl(path, width: 96, height: 54);
     if (url.isEmpty) return null;
-    final provider = MediaImageHelper.serverArtworkProvider(imageUrl: url, memWidth: 32, memHeight: 18);
-    final image = await _decode(ResizeImage(provider, width: 32, height: 18, policy: ResizeImagePolicy.exact));
+    final provider = MediaImageHelper.serverArtworkProvider(imageUrl: url, memWidth: 48, memHeight: 27);
+    final image = await _decode(ResizeImage(provider, width: 48, height: 27, policy: ResizeImagePolicy.exact));
     if (image == null) return null;
     final (pixels, width, height) = image;
-    return cornersOf(pixels, width, height)?.readable();
+    return fromEdges(pixels, width, height)?.readable();
   }
 
-  /// Averages each quadrant of RGBA [pixels], weighting toward its corner.
+  /// The blur field for RGBA [pixels]: the left side colours the top and
+  /// left, the bottom-left corner the lower left, the bottom edge the lower
+  /// right — so the field is continuous with the artwork's own edges.
   @visibleForTesting
-  static UltraBlurColors? cornersOf(Uint8List pixels, int width, int height) {
-    if (width < 2 || height < 2 || pixels.length < width * height * 4) return null;
-    Color corner(double cx, double cy) {
-      var r = 0.0, g = 0.0, b = 0.0, w = 0.0;
+  static UltraBlurColors? fromEdges(Uint8List pixels, int width, int height) {
+    if (width < 4 || height < 4 || pixels.length < width * height * 4) return null;
+    Color average(bool Function(double x, double y) inside) {
+      var r = 0.0, g = 0.0, b = 0.0, n = 0.0;
       for (var y = 0; y < height; y++) {
         for (var x = 0; x < width; x++) {
-          final dx = x / (width - 1) - cx, dy = y / (height - 1) - cy;
-          final weight = math.exp(-(dx * dx + dy * dy) / 0.18);
+          if (!inside(x / (width - 1), y / (height - 1))) continue;
           final i = (y * width + x) * 4;
-          r += pixels[i] * weight;
-          g += pixels[i + 1] * weight;
-          b += pixels[i + 2] * weight;
-          w += weight;
+          r += pixels[i];
+          g += pixels[i + 1];
+          b += pixels[i + 2];
+          n++;
         }
       }
-      return Color.fromARGB(255, (r / w).round(), (g / w).round(), (b / w).round());
+      if (n == 0) return const Color(0xFF000000);
+      return Color.fromARGB(255, (r / n).round(), (g / n).round(), (b / n).round());
     }
 
-    return UltraBlurColors(corner(0, 0), corner(1, 0), corner(0, 1), corner(1, 1));
+    final left = average((x, y) => x <= 0.14);
+    final bottomLeft = average((x, y) => x <= 0.28 && y >= 0.72);
+    final bottom = average((x, y) => y >= 0.86);
+    return UltraBlurColors(left, left, bottomLeft, bottom);
   }
 
   static Future<(Uint8List, int, int)?> _decode(ImageProvider provider) {

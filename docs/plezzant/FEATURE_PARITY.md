@@ -125,7 +125,7 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Frame timing graph | 🆕 | Settings → Advanced; checks UI speed on the TV itself |
 | TV visual regression tests | 🆕 | Golden images at 960×540 (sidebar, hero, profile picker, settings) run in CI |
 | tvOS layout system | 🆕 | 1920×1080 reference canvas scaled to the device: 80 × 60 safe frame, couch-distance type roles and focus depth (scale, lift, glow, shadow). Reduce Motion is honoured separately from the effects tier |
-| UltraBlur backgrounds | ✅ | Home hero and movie/show pages sit on Plex's UltraBlur: the server's `/services/ultrablur/colors` corners painted as a soft four-corner field with grain, cross-fading between titles; non-Plex servers use corner samples of the backdrop. The backdrop occupies the top-right corner and dissolves into it |
+| Ambient blur backgrounds | 🆕 | Home hero and movie/show pages sit on a soft blurred field built from the backdrop's left side, bottom-left corner and bottom edge (sampled per title, cross-fading, with grain). The backdrop always occupies the top-right corner and dissolves into it |
 | Everyday feature set on TV | 🆕 | TVs show the settings a viewer reaches for; shaders, ambient lighting, decoder/backend, mpv config, buffers, overlays, debug, admin menu actions and new downloads stay at their defaults (phones, tablets and desktop keep everything) |
 | Apple TV style navigation | 🆕 | Section pill (‹ Home) in the top-left corner; a floating glass sidebar with profile and clock that opens on LEFT; the focused item is a white pill |
 | Apple TV style home | 🆕 | Full-bleed hero showing genre, rating badge and synopsis, with a white action pill (Play / Resume / Go to Show); landscape Up Next rows |

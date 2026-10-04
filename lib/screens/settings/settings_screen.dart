@@ -190,6 +190,11 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
   }
 
   Widget _buildContent(BuildContext sheetContext, {required bool hasLibraries}) {
+    // TV: Trakt, MyAnimeList and Seerr only show once one is connected.
+    final showServices =
+        !PlatformDetector.isTV() ||
+        sheetContext.watch<SeerrAccountProvider>().isConnected ||
+        TrackerServiceInfo.all.any((info) => info.isConnected(sheetContext));
     return Scaffold(
       body: Focus(
         onKeyEvent: _handleKeyEvent,
@@ -213,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> with FocusableTab, Moun
                         _buildAppearanceTile(),
                         _buildPlaybackTile(),
                         if (hasLibraries) _buildManageLibrariesTile(sheetContext),
-                        _buildServicesTile(),
+                        if (showServices) _buildServicesTile(),
                       ],
                     ),
 

@@ -379,6 +379,15 @@ Tick each item as you check it. Note anything odd, with the time it happened.
 - [ ] Glass surfaces (navigation rail, menus, player panels) look translucent but readable
 - [ ] Performance: moving around feels quick, with no stutter
 
+### New in 1.7.0
+
+- [ ] Home and detail pages: the blur matches the backdrop's left edge and bottom; the backdrop always sits top-right
+- [ ] Rest on a movie/show **and** on a Continue Watching episode for ~4 s: the trailer plays silently (episodes show their series' trailer); Play/Pause opens it with sound
+- [ ] With Card Style = Posters, every episode (Continue Watching, playlists, collections, search, season rows) is still a 16:9 still
+- [ ] The clock appears once (top right), not also in the menu
+- [ ] The menu shows Downloads only when something is downloaded; Settings shows Services only once Trakt/MAL/Seerr is connected
+- [ ] The detail page's back button, Play and round buttons share the Home chip's glass look; a cast member without a photo shows a soft frosted tile
+
 ### New in 1.6.0
 
 - [ ] Home and every movie/show page sit on a soft UltraBlur in the artwork's colours; the backdrop fills the top-right corner and melts into it, and the colours glide as you move between titles

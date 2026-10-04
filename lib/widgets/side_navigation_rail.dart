@@ -17,6 +17,7 @@ import '../media/media_library.dart';
 import '../mixins/mounted_set_state_mixin.dart';
 import '../navigation/navigation_tabs.dart';
 import '../providers/catalog_sources_provider.dart';
+import '../providers/download_provider.dart';
 import '../providers/hidden_libraries_provider.dart';
 import '../providers/libraries_provider.dart';
 import '../services/device_performance.dart';
@@ -590,7 +591,14 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
   /// focus-expanded — displaces content instead and stays transparent on TV.
   bool get _isFloatingPanel => _interactionExpanded && !widget.alwaysExpanded;
 
-  bool get _showDownloads => !PlatformDetector.isAppleTV();
+  /// TV lists Downloads only while there is something to open (or the server
+  /// is unreachable, when it is the way in).
+  bool get _showDownloads {
+    if (PlatformDetector.isAppleTV()) return false;
+    if (!PlatformDetector.isTV() || widget.isOfflineMode) return true;
+    final provider = context.read<DownloadProvider?>();
+    return provider != null && (provider.downloads.isNotEmpty || provider.metadata.isNotEmpty);
+  }
 
   /// macOS has the system green button; mobile/TV have no OS fullscreen toggle.
   bool get _showFullscreenToggle => Platform.isWindows || Platform.isLinux;
@@ -973,6 +981,8 @@ class SideNavigationRailState extends State<SideNavigationRail> with MountedSetS
     // way back into the now-playing screen there; desktop already has the
     // mini-player for that.
     final musicService = context.watch<MusicPlaybackService?>();
+    // Rebuild when downloads appear or vanish (TV lists Downloads only then).
+    if (PlatformDetector.isTV()) context.watch<DownloadProvider?>();
     final nowPlayingTrack = widget.isOfflineMode || !PlatformDetector.isTV() ? null : musicService?.currentTrack;
 
     // Listen to fullscreen + the groupLibrariesByServer / showExploreTab
@@ -1722,11 +1732,8 @@ class _TvPanelHeader extends StatelessWidget {
           ),
         ] else
           const Spacer(),
-        SystemClock(
-          style: (PlatformDetector.isTV() ? PlezzantTvType.navigationSecondary : PlezzantType.labelMedium).copyWith(
-            color: t.textMuted,
-          ),
-        ),
+        // TV: the header's top-right clock is the only one.
+        if (!PlatformDetector.isTV()) SystemClock(style: PlezzantType.labelMedium.copyWith(color: t.textMuted)),
       ],
     );
   }

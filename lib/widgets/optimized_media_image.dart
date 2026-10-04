@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import '../utils/platform_detector.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:plezy/widgets/app_icon.dart';
 
@@ -397,7 +398,19 @@ class OptimizedMediaImage extends StatelessWidget {
       (tint) => Container(
         width: fillParent ? null : width,
         height: fillParent ? null : height,
-        color: tint == null ? baseSurfaceColor : Color.alphaBlend(tint, baseSurfaceColor),
+        color: PlatformDetector.isTV()
+            ? null
+            : (tint == null ? baseSurfaceColor : Color.alphaBlend(tint, baseSurfaceColor)),
+        // TV: a soft frosted pane over the background, not a black slab.
+        decoration: PlatformDetector.isTV()
+            ? BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.white.withValues(alpha: 0.16), Colors.white.withValues(alpha: 0.06)],
+                ),
+              )
+            : null,
         child: icon == null
             ? null
             : Center(

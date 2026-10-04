@@ -56,7 +56,7 @@ class TrailerPreviewService extends ChangeNotifier {
   bool _eligible(MediaItem item) {
     if (!PlatformDetector.isTV()) return false;
     if (!(SettingsService.instanceOrNull?.read(SettingsService.trailerPreviews) ?? false)) return false;
-    if (item.kind != MediaKind.movie && item.kind != MediaKind.show) return false;
+    if (item.kind != MediaKind.movie && item.kind != MediaKind.show && item.kind != MediaKind.episode) return false;
     return !PlaybackCoordinator.instance.hasVideoSession;
   }
 
@@ -74,12 +74,13 @@ class TrailerPreviewService extends ChangeNotifier {
   Future<void> _start(MediaItem item, MediaServerClient client, int generation) async {
     _timer = null;
     final trailer = await TrailerResolver.instance.trailerFor(item, client);
+    if (trailer == null) appLogger.d('No trailer to preview for ${item.displayTitle}');
     if (trailer == null || generation != _generation) return;
     String? url;
     try {
       url = await client.resolveExternalPlaybackUrl(trailer);
     } catch (e) {
-      appLogger.d('Trailer preview URL unavailable', error: e);
+      appLogger.w('Trailer preview URL unavailable for ${item.displayTitle}', error: e);
     }
     if (url == null || generation != _generation || !_eligible(item)) return;
 
@@ -118,10 +119,11 @@ class TrailerPreviewService extends ChangeNotifier {
         )
         ..add(
           player.streams.fileLoadFailed.listen((_) {
+            appLogger.w('Trailer preview failed to load for ${item.displayTitle}');
             if (generation == _generation) unawaited(stop());
           }),
         );
-      await player.open(Media(url), play: true);
+      await player.open(Media(url, headers: client.streamHeaders), play: true);
     } catch (e) {
       appLogger.d('Trailer preview failed', error: e);
       if (generation == _generation) await stop();

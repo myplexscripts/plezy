@@ -6,6 +6,7 @@ import '../i18n/strings.g.dart';
 import '../media/media_item.dart';
 import '../mixins/grid_focus_node_mixin.dart';
 import '../services/settings_service.dart';
+import '../media/media_kind.dart';
 import '../utils/platform_detector.dart';
 import '../widgets/ios_status_bar_tap_scroll_to_top.dart';
 import '../widgets/settings_builder.dart';
@@ -231,7 +232,18 @@ mixin FocusableDetailScreenMixin<T extends StatefulWidget> on State<T>, GridFocu
         final fullCardLayout = PlatformDetector.isTV() && svc.read(SettingsService.tvFullCardLayout);
         // Card Style applies when the screen doesn't pin a shape (music,
         // photos).
-        final landscapeCards = shape == null && tvLandscapeCards();
+        // Episodes are always 16:9: a grid of nothing but episodes goes wide
+        // in every style.
+        var loaded = 0;
+        var allEpisodes = true;
+        for (var i = 0; i < totalItems && allEpisodes; i++) {
+          final it = itemAt(i);
+          if (it == null) continue;
+          loaded++;
+          allEpisodes = it.kind == MediaKind.episode;
+        }
+        final episodesOnly = PlatformDetector.isTV() && loaded > 0 && allEpisodes;
+        final landscapeCards = shape == null && (tvLandscapeCards() || episodesOnly);
         final gridShape = shape ?? (landscapeCards ? CardShape.wide : null);
         final useFullCardLayout = fullCardLayout && gridShape != CardShape.square;
 

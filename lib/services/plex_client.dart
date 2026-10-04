@@ -1042,23 +1042,6 @@ class PlexClient
   @override
   Future<bool> isHealthy() async => (await checkHealth()) == HealthStatus.online;
 
-  /// The server's UltraBlur corner colours for [imagePath] (the art Plex's
-  /// own apps paint behind heroes), as `[topLeft, topRight, bottomLeft,
-  /// bottomRight]` hex strings; null when the server has none.
-  Future<List<String>?> getUltraBlurColors(String imagePath) async {
-    final response = await _getWithFailover(
-      '/services/ultrablur/colors',
-      queryParameters: {'url': imagePath},
-      timeout: const Duration(seconds: 6),
-      allowEndpointFailover: false,
-    );
-    final colors = (_getMediaContainer(response)?['UltraBlurColors'] as List?)?.firstOrNull;
-    if (colors is! Map) return null;
-    final corners = [colors['topLeft'], colors['topRight'], colors['bottomLeft'], colors['bottomRight']];
-    if (corners.any((c) => c is! String || c.isEmpty)) return null;
-    return corners.cast<String>();
-  }
-
   /// Get running background tasks (thumbnail generation, credit detection, etc.)
   Future<List<PlexActivity>> getActivities({AbortController? abort}) async {
     try {
