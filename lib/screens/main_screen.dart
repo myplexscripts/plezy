@@ -22,10 +22,11 @@ import '../theme/plezzant/plezzant_tokens.dart';
 import '../services/tvos_system_navigation_service.dart';
 import '../services/update_service.dart';
 import '../utils/app_logger.dart';
+import '../widgets/trailer_chrome_fade.dart';
 import '../widgets/tv_reference_scale.dart';
 import '../widgets/auth_error_banner.dart';
 import '../widgets/app_icon.dart';
-import '../theme/plezzant/plezzant_glass.dart';
+import '../theme/plezzant/control_tint.dart';
 import '../theme/plezzant/plezzant_typography.dart';
 import '../utils/platform_detector.dart';
 import '../utils/snackbar_helper.dart';
@@ -2231,13 +2232,15 @@ class _MainScreenState extends State<MainScreen>
                             Positioned(
                               top: PlezzantTv.sectionPillTop * tvScale,
                               left: PlezzantTv.sectionPillLeft * tvScale,
-                              child: IgnorePointer(
-                                child: AnimatedOpacity(
-                                  opacity: _isSidebarFocused ? 0.0 : 1.0,
-                                  duration: SideNavigationRailState.expandDuration,
-                                  curve: SideNavigationRailState.expandCurve,
-                                  child: TvReferenceScale(
-                                    child: _TvSectionPill(icon: _currentSectionIcon(), label: _currentSectionLabel()),
+                              child: TrailerChromeFade(
+                                child: IgnorePointer(
+                                  child: AnimatedOpacity(
+                                    opacity: _isSidebarFocused ? 0.0 : 1.0,
+                                    duration: SideNavigationRailState.expandDuration,
+                                    curve: SideNavigationRailState.expandCurve,
+                                    child: TvReferenceScale(
+                                      child: _TvSectionPill(icon: _currentSectionIcon(), label: _currentSectionLabel()),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -2424,9 +2427,7 @@ class _TvSectionPill extends StatelessWidget {
       children: [
         AppIcon(LucideIcons.chevronLeft, fill: 1, size: 22, color: Colors.white.withValues(alpha: 0.55)),
         const SizedBox(width: 8),
-        PlezzantGlass(
-          style: PlezzantGlassStyle.chrome,
-          borderRadius: const BorderRadius.all(Radius.circular(PlezzantRadius.pill)),
+        TintedControl(
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
           child: Row(
             mainAxisSize: MainAxisSize.min,

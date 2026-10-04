@@ -22,6 +22,7 @@ import '../utils/media_image_helper.dart';
 import '../utils/content_utils.dart';
 import '../widgets/cycling_media_backdrop.dart';
 import '../widgets/optimized_media_image.dart' show ClearLogoImage, blurArtwork;
+import '../widgets/trailer_chrome_fade.dart';
 import '../widgets/toolbar_scrim.dart';
 import '../widgets/system_clock.dart';
 import '../providers/discover_provider.dart';
@@ -1145,7 +1146,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
               bottom: 0,
               child: _cachedTvBrowseRail(browseHubs, showServerName: showServerNameOnHubs || hubsSpanMultipleServers),
             ),
-          TvToolbarOverlay(child: _buildOverlaidAppBar()),
+          TvToolbarOverlay(child: TrailerChromeFade(child: _buildOverlaidAppBar())),
           if (_switchingProfile) const ProfileSwitchingOverlay(),
         ],
       ),

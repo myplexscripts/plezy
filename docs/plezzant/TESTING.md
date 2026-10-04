@@ -379,6 +379,16 @@ Tick each item as you check it. Note anything odd, with the time it happened.
 - [ ] Glass surfaces (navigation rail, menus, player panels) look translucent but readable
 - [ ] Performance: moving around feels quick, with no stutter
 
+### New in 1.8.0
+
+- [ ] Rest on a movie/show for ~4 s: its trailer plays **with sound**; after 3 s all the menus, text and cards fade away; any remote press brings them back (and they fade again when you stop pressing)
+- [ ] Settings → Appearance → *Trailer Sound* off: previews play silently
+- [ ] All text is Inter
+- [ ] The Home chip, hero buttons and detail buttons are flat colour pills in a hue that complements the lower-left of the screen; the focused one is a near-white wash of that hue
+- [ ] There is clearly more space between a shelf's title and its cards
+- [ ] The sidebar's *Watchlist* section shows only your watchlist: no Trending/Popular/Recommended rows and no search
+- [ ] An AVI file (or an old Xvid/WMV file) from Plex starts as a server stream and plays smoothly
+
 ### New in 1.7.0
 
 - [ ] Home and detail pages: the blur matches the backdrop's left edge and bottom; the backdrop always sits top-right

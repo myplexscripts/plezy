@@ -34,9 +34,9 @@ final String? _artDir = Platform.environment['PLEZZANT_SHOWCASE'];
 
 Future<void> _loadFonts() async {
   Future<ByteData> file(String path) async => ByteData.sublistView(await File(path).readAsBytes());
-  final manrope = FontLoader('Manrope');
+  final manrope = FontLoader('Inter');
   for (final w in [300, 400, 500, 600, 700, 800]) {
-    manrope.addFont(file('assets/fonts/Manrope-$w.ttf'));
+    manrope.addFont(file('assets/fonts/Inter-$w.ttf'));
   }
   await manrope.load();
   final pubCache = Platform.environment['PUB_CACHE'] ?? '${Platform.environment['HOME']}/.pub-cache';
@@ -552,7 +552,7 @@ void main() {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Plezzant', style: text.displayLarge),
-                  Text('Headline · Manrope 700', style: text.headlineMedium),
+                  Text('Headline · Inter 700', style: text.headlineMedium),
                   Text('Title large · shelf headers', style: text.titleLarge),
                   Text(
                     'Body large: a lighthouse keeper and a stranded cartographer chart the coast by memory.',

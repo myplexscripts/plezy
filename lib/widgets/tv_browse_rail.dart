@@ -1468,8 +1468,10 @@ class TvBrowseRailState extends State<TvBrowseRail> with TickerProviderStateMixi
     return SizedBox(
       height: TvBrowseRailLayout.hubStripHeightForScale(scale),
       child: ExcludeFocus(
+        // The title sits where it always did; the extra strip height is the
+        // breathing room above the cards.
         child: Align(
-          alignment: .centerLeft,
+          alignment: const Alignment(-1, -0.45),
           child: Row(
             children: [
               // Apple TV style: plain bold shelf titles, no leading glyph.

@@ -145,6 +145,9 @@ Future<void> _pumpMicrotasks() async {
 }
 
 void main() {
+  setUp(() => ExploreProvider.watchlistOnly = false);
+  tearDown(() => ExploreProvider.watchlistOnly = true);
+
   group('ExploreProvider', () {
     late _FakeSourcesProvider sources;
     late ExploreProvider explore;

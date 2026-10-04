@@ -1195,11 +1195,11 @@ class Translations$settings$en {
 	/// en: 'Startup Section'
 	String get startupSection => 'Startup Section';
 
-	/// en: 'Show Explore Tab'
-	String get showExploreTab => 'Show Explore Tab';
+	/// en: 'Show Watchlist Tab'
+	String get showExploreTab => 'Show Watchlist Tab';
 
-	/// en: 'Display the Explore tab with content from Plex Discover and connected trackers'
-	String get showExploreTabDescription => 'Display the Explore tab with content from Plex Discover and connected trackers';
+	/// en: 'Display your watchlist from Plex and connected trackers as its own section'
+	String get showExploreTabDescription => 'Display your watchlist from Plex and connected trackers as its own section';
 
 	/// en: 'Default to Favorite Channels'
 	String get liveTvDefaultFavorites => 'Default to Favorite Channels';
@@ -1363,8 +1363,14 @@ class Translations$settings$en {
 	/// en: 'Trailer Previews'
 	String get trailerPreviews => 'Trailer Previews';
 
-	/// en: 'Play a title’s trailer silently behind the Home hero after it has been selected for a moment'
-	String get trailerPreviewsDescription => 'Play a title’s trailer silently behind the Home hero after it has been selected for a moment';
+	/// en: 'Play a title’s trailer behind the Home screen after it has been selected for a moment; the menus fade away while it plays'
+	String get trailerPreviewsDescription => 'Play a title’s trailer behind the Home screen after it has been selected for a moment; the menus fade away while it plays';
+
+	/// en: 'Trailer Sound'
+	String get trailerPreviewSound => 'Trailer Sound';
+
+	/// en: 'Play trailer previews with sound'
+	String get trailerPreviewSoundDescription => 'Play trailer previews with sound';
 }
 
 // Path: search
@@ -3508,8 +3514,8 @@ class Translations$navigation$en {
 	/// en: 'Live TV'
 	String get liveTv => 'Live TV';
 
-	/// en: 'Explore'
-	String get explore => 'Explore';
+	/// en: 'Watchlist'
+	String get explore => 'Watchlist';
 }
 
 // Path: explore
@@ -3520,8 +3526,8 @@ class Translations$explore$en {
 
 	// Translations
 
-	/// en: 'Explore'
-	String get title => 'Explore';
+	/// en: 'Watchlist'
+	String get title => 'Watchlist';
 
 	/// en: 'Select source'
 	String get selectSource => 'Select source';
@@ -7573,8 +7579,8 @@ extension on Translations {
 			'settings.showNavBarLabels' => 'Show Navigation Bar Labels',
 			'settings.showNavBarLabelsDescription' => 'Display text labels under navigation bar icons',
 			'settings.startupSection' => 'Startup Section',
-			'settings.showExploreTab' => 'Show Explore Tab',
-			'settings.showExploreTabDescription' => 'Display the Explore tab with content from Plex Discover and connected trackers',
+			'settings.showExploreTab' => 'Show Watchlist Tab',
+			'settings.showExploreTabDescription' => 'Display your watchlist from Plex and connected trackers as its own section',
 			'settings.liveTvDefaultFavorites' => 'Default to Favorite Channels',
 			'settings.liveTvDefaultFavoritesDescription' => 'Show only favorite channels when opening Live TV',
 			'settings.general' => 'General',
@@ -7629,7 +7635,9 @@ extension on Translations {
 			'settings.tvCardStyleLandscape' => 'Landscape 16:9',
 			'settings.tvCardStylePoster' => 'Posters 2:3',
 			'settings.trailerPreviews' => 'Trailer Previews',
-			'settings.trailerPreviewsDescription' => 'Play a title’s trailer silently behind the Home hero after it has been selected for a moment',
+			'settings.trailerPreviewsDescription' => 'Play a title’s trailer behind the Home screen after it has been selected for a moment; the menus fade away while it plays',
+			'settings.trailerPreviewSound' => 'Trailer Sound',
+			'settings.trailerPreviewSoundDescription' => 'Play trailer previews with sound',
 			'search.hint' => 'Search movies, shows, music...',
 			'search.tryDifferentTerm' => 'Try a different search term',
 			'search.searchYourMedia' => 'Search your media',
@@ -7713,10 +7721,10 @@ extension on Translations {
 			'fileInfo.anamorphic' => 'Anamorphic',
 			'fileInfo.referenceFrames' => 'Reference Frames',
 			'fileInfo.dynamicRange' => 'Dynamic Range',
-			'fileInfo.dolbyVision' => 'Dolby Vision',
-			'fileInfo.dolbyVisionLevel' => 'Dolby Vision Level',
 			_ => null,
 		} ?? switch (path) {
+			'fileInfo.dolbyVision' => 'Dolby Vision',
+			'fileInfo.dolbyVisionLevel' => 'Dolby Vision Level',
 			'fileInfo.dolbyVisionVersion' => 'Dolby Vision Version',
 			'fileInfo.dolbyVisionLayers' => 'Dolby Vision Layers',
 			'fileInfo.baseLayerCompatibility' => 'Base Layer Compatibility',
@@ -8227,10 +8235,10 @@ extension on Translations {
 			'libraries.fallbackTitle' => 'Library',
 			'libraries.scanLibraryFiles' => 'Scan Library Files',
 			'libraries.scanLibrary' => 'Scan Library',
-			'libraries.analyze' => 'Analyze',
-			'libraries.analyzeLibrary' => 'Analyze Library',
 			_ => null,
 		} ?? switch (path) {
+			'libraries.analyze' => 'Analyze',
+			'libraries.analyzeLibrary' => 'Analyze Library',
 			'libraries.refreshMetadata' => 'Refresh Metadata',
 			'libraries.emptyTrash' => 'Empty Trash',
 			'libraries.emptyingTrash' => ({required Object title}) => 'Emptying trash for "${title}"...',
@@ -8361,8 +8369,8 @@ extension on Translations {
 			'navigation.libraries' => 'Libraries',
 			'navigation.downloads' => 'Downloads',
 			'navigation.liveTv' => 'Live TV',
-			'navigation.explore' => 'Explore',
-			'explore.title' => 'Explore',
+			'navigation.explore' => 'Watchlist',
+			'explore.title' => 'Watchlist',
 			'explore.selectSource' => 'Select source',
 			'explore.rows.watchlist' => 'Watchlist',
 			'explore.rows.recommendedMovies' => 'Recommended Movies',
@@ -8741,10 +8749,10 @@ extension on Translations {
 			'watchTogether.participantLeft' => ({required Object name}) => '${name} left',
 			'watchTogether.participantPaused' => ({required Object name}) => '${name} paused',
 			'watchTogether.participantResumed' => ({required Object name}) => '${name} resumed',
-			'watchTogether.participantSeeked' => ({required Object name}) => '${name} changed the playback position',
-			'watchTogether.participantChangedSpeed' => ({required Object name, required Object speed}) => '${name} set the speed to ${speed}',
 			_ => null,
 		} ?? switch (path) {
+			'watchTogether.participantSeeked' => ({required Object name}) => '${name} changed the playback position',
+			'watchTogether.participantChangedSpeed' => ({required Object name, required Object speed}) => '${name} set the speed to ${speed}',
 			'watchTogether.participantBuffering' => ({required Object name}) => '${name} is buffering',
 			'watchTogether.participantNeedsUpdate' => ({required Object name}) => '${name} is on an older app version — sync unavailable',
 			'watchTogether.resumingWithout' => ({required Object name}) => 'Resuming without ${name}',
@@ -9255,10 +9263,10 @@ extension on Translations {
 			'addServer.signInWithPlexCardSubtitleScoped' => 'Authorize a Plex account. Home users become profiles.',
 			'addServer.connectToMediaBrowserCard' => ({required Object product}) => 'Connect to ${product}',
 			'addServer.connectToMediaBrowserCardSubtitle' => 'Enter your server URL, username, and password.',
-			'addServer.connectToMediaBrowserCardSubtitleScoped' => ({required Object product, required Object name}) => 'Sign in to your ${product} server. Binds to ${name}.',
-			'addServer.borrowFromAnotherProfile' => 'Borrow from another profile',
 			_ => null,
 		} ?? switch (path) {
+			'addServer.connectToMediaBrowserCardSubtitleScoped' => ({required Object product, required Object name}) => 'Sign in to your ${product} server. Binds to ${name}.',
+			'addServer.borrowFromAnotherProfile' => 'Borrow from another profile',
 			'addServer.borrowFromAnotherProfileSubtitle' => 'Reuse another profile\'s connection. PIN-protected profiles require a PIN.',
 			'addServer.invalidCredentials' => 'Invalid username or password',
 			'addServer.authResponseNotJson' => 'The authentication response was not valid JSON',

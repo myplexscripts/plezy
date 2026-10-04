@@ -17,6 +17,7 @@ import '../utils/tone_mapped_logo_image.dart';
 import '../theme/plezzant/ultra_blur.dart';
 import '../theme/plezzant/plezzant_tokens.dart';
 import 'cycling_media_backdrop.dart';
+import 'trailer_chrome_fade.dart';
 import 'fitting_title_text.dart';
 import 'app_icon.dart';
 import '../theme/plezzant/plezzant_typography.dart';
@@ -27,7 +28,7 @@ import 'optimized_media_image.dart' show ClearLogoImage, blurArtwork;
 import 'rasterized_gradient.dart';
 import '../services/trailer_preview_service.dart';
 import '../mpv/video.dart';
-import '../theme/plezzant/plezzant_glass.dart';
+import '../theme/plezzant/control_tint.dart';
 
 class TvSpotlightBackground extends StatelessWidget {
   final MediaItem? item;
@@ -136,23 +137,27 @@ class TvSpotlightBackground extends StatelessWidget {
         ),
         // Soft readability behind the copy and a light top edge for the
         // floating chrome; the UltraBlur itself stays clean.
-        RasterizedGradient(
-          gradient: LinearGradient(
-            colors: [Colors.black.withValues(alpha: 0.26), Colors.black.withValues(alpha: 0.08), Colors.transparent],
-            stops: const [0.0, 0.38, 0.6],
+        TrailerChromeFade(
+          child: RasterizedGradient(
+            gradient: LinearGradient(
+              colors: [Colors.black.withValues(alpha: 0.26), Colors.black.withValues(alpha: 0.08), Colors.transparent],
+              stops: const [0.0, 0.38, 0.6],
+            ),
           ),
         ),
-        RasterizedGradient(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.black.withValues(alpha: 0.16),
-              Colors.transparent,
-              Colors.transparent,
-              Colors.black.withValues(alpha: 0.22),
-            ],
-            stops: const [0.0, 0.22, 0.62, 1.0],
+        TrailerChromeFade(
+          child: RasterizedGradient(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withValues(alpha: 0.16),
+                Colors.transparent,
+                Colors.transparent,
+                Colors.black.withValues(alpha: 0.22),
+              ],
+              stops: const [0.0, 0.22, 0.62, 1.0],
+            ),
           ),
         ),
         if (media != null && showInfo)
@@ -166,46 +171,48 @@ class TvSpotlightBackground extends StatelessWidget {
             bottom: contentBottom,
             // The info block still cross-fades via AnimatedSwitcher, but its
             // saveLayers are bounded to the text region, not the screen.
-            child: AnimatedSwitcher(
-              duration: DevicePerformance.reducedDuration(PlezzantMotion.hero),
-              reverseDuration: DevicePerformance.reducedDuration(PlezzantMotion.revealOut),
-              switchInCurve: PlezzantMotion.standard,
-              switchOutCurve: PlezzantMotion.exit,
-              transitionBuilder: (child, animation) {
-                final curved = CurvedAnimation(
-                  parent: animation,
-                  curve: PlezzantMotion.standard,
-                  reverseCurve: PlezzantMotion.exit,
-                );
-                return FadeTransition(
-                  opacity: curved,
-                  child: SlideTransition(
-                    position: Tween<Offset>(begin: const Offset(0, 0.018), end: Offset.zero).animate(curved),
-                    child: child,
-                  ),
-                );
-              },
-              // Expand instead of the default loose centered Stack so the
-              // info keeps filling the region and bottom-left aligning.
-              layoutBuilder: (currentChild, previousChildren) =>
-                  Stack(fit: StackFit.expand, children: [...previousChildren, ?currentChild]),
-              child: KeyedSubtree(
-                key: ValueKey(media.globalKey),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    if (!constraints.hasBoundedHeight || constraints.maxHeight <= 0 || constraints.maxWidth <= 0) {
-                      return Align(alignment: .bottomLeft, child: _buildInfo(context, media));
-                    }
+            child: TrailerChromeFade(
+              child: AnimatedSwitcher(
+                duration: DevicePerformance.reducedDuration(PlezzantMotion.hero),
+                reverseDuration: DevicePerformance.reducedDuration(PlezzantMotion.revealOut),
+                switchInCurve: PlezzantMotion.standard,
+                switchOutCurve: PlezzantMotion.exit,
+                transitionBuilder: (child, animation) {
+                  final curved = CurvedAnimation(
+                    parent: animation,
+                    curve: PlezzantMotion.standard,
+                    reverseCurve: PlezzantMotion.exit,
+                  );
+                  return FadeTransition(
+                    opacity: curved,
+                    child: SlideTransition(
+                      position: Tween<Offset>(begin: const Offset(0, 0.018), end: Offset.zero).animate(curved),
+                      child: child,
+                    ),
+                  );
+                },
+                // Expand instead of the default loose centered Stack so the
+                // info keeps filling the region and bottom-left aligning.
+                layoutBuilder: (currentChild, previousChildren) =>
+                    Stack(fit: StackFit.expand, children: [...previousChildren, ?currentChild]),
+                child: KeyedSubtree(
+                  key: ValueKey(media.globalKey),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (!constraints.hasBoundedHeight || constraints.maxHeight <= 0 || constraints.maxWidth <= 0) {
+                        return Align(alignment: .bottomLeft, child: _buildInfo(context, media));
+                      }
 
-                    return Align(
-                      alignment: .bottomLeft,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
+                      return Align(
                         alignment: .bottomLeft,
-                        child: SizedBox(width: constraints.maxWidth, child: _buildInfo(context, media)),
-                      ),
-                    );
-                  },
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: .bottomLeft,
+                          child: SizedBox(width: constraints.maxWidth, child: _buildInfo(context, media)),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -501,9 +508,7 @@ class _PreviewHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlezzantGlass(
-      style: PlezzantGlassStyle.chrome,
-      borderRadius: BorderRadius.circular(PlezzantRadius.pill),
+    return TintedControl(
       padding: EdgeInsets.symmetric(horizontal: 24 * scale, vertical: 14 * scale),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -540,9 +545,7 @@ class _ActionPill extends StatelessWidget {
     // Same glass as the detail page's resting action buttons, so Home and a
     // title's page share one button language (a big white slab blooms on TV
     // panels and washes its label out).
-    return PlezzantGlass(
-      style: PlezzantGlassStyle.chrome,
-      borderRadius: BorderRadius.circular(PlezzantRadius.pill),
+    return TintedControl(
       padding: EdgeInsets.symmetric(horizontal: 30 * scale, vertical: 14 * scale),
       child: Row(
         mainAxisSize: MainAxisSize.min,

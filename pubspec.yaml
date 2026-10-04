@@ -1,7 +1,7 @@
 name: plezy
 description: "Plezzant — a cinematic Plex client for Android TV"
 publish_to: "none"
-version: 1.7.0+157
+version: 1.8.0+158
 
 environment:
   # Dart floor stays 3.12: freezed 3.x emits `final` constructor parameters,
@@ -127,24 +127,24 @@ dependency_overrides:
 flutter:
   uses-material-design: true
   fonts:
-    - family: Manrope
+    - family: Inter
       fonts:
-        - asset: assets/fonts/Manrope-300.ttf
+        - asset: assets/fonts/Inter-300.ttf
           weight: 300
-        - asset: assets/fonts/Manrope-400.ttf
+        - asset: assets/fonts/Inter-400.ttf
           weight: 400
-        - asset: assets/fonts/Manrope-500.ttf
+        - asset: assets/fonts/Inter-500.ttf
           weight: 500
-        - asset: assets/fonts/Manrope-600.ttf
+        - asset: assets/fonts/Inter-600.ttf
           weight: 600
-        - asset: assets/fonts/Manrope-700.ttf
+        - asset: assets/fonts/Inter-700.ttf
           weight: 700
-        - asset: assets/fonts/Manrope-800.ttf
+        - asset: assets/fonts/Inter-800.ttf
           weight: 800
   assets:
     - assets/plezzant.png
     - assets/plezzant_mark.svg
-    - assets/fonts/OFL-Manrope.txt
+    - assets/fonts/OFL-Inter.txt
     - assets/plex_chevron.svg
     - assets/jellyfin_icon.svg
     - assets/emby_icon.svg

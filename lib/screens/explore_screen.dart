@@ -467,7 +467,8 @@ class ExploreScreenState extends State<ExploreScreen>
                     parentOwnsFocus: true,
                   ),
                 ),
-              if (active != null)
+              // No catalogue search: Plezzant is about the viewer's own content.
+              if (!ExploreProvider.watchlistOnly && active != null)
                 FocusableAction(
                   icon: LucideIcons.search,
                   iconColor: foregroundColor,

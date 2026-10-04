@@ -84,6 +84,13 @@ class AppearanceSettingsScreen extends StatelessWidget {
                 title: t.settings.trailerPreviews,
                 subtitle: t.settings.trailerPreviewsDescription,
               ),
+            if (PlatformDetector.isTV())
+              SettingSwitchTile(
+                pref: SettingsService.trailerPreviewSound,
+                icon: LucideIcons.volume2,
+                title: t.settings.trailerPreviewSound,
+                subtitle: t.settings.trailerPreviewSoundDescription,
+              ),
           ],
         ),
 

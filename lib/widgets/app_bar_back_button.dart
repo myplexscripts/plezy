@@ -4,7 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../focus/focusable_wrapper.dart';
 import '../i18n/strings.g.dart';
-import '../theme/plezzant/plezzant_glass.dart';
+import '../theme/plezzant/control_tint.dart';
 import '../utils/platform_detector.dart';
 import 'app_icon.dart';
 
@@ -168,9 +168,7 @@ class _AppBarBackButtonState extends State<AppBarBackButton> with TickerProvider
                     margin: const EdgeInsets.all(8),
                     width: 52,
                     height: 52,
-                    child: PlezzantGlass(
-                      style: PlezzantGlassStyle.chrome,
-                      borderRadius: BorderRadius.circular(26),
+                    child: TintedControl(
                       child: Center(child: AppIcon(LucideIcons.arrowLeft, fill: 1, color: effectiveColor, size: 24)),
                     ),
                   );

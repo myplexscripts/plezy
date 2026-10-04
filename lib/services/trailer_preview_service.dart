@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import '../media/media_item.dart';
 import '../media/media_kind.dart';
@@ -16,7 +17,7 @@ import 'trailer_resolver.dart';
 /// Netflix-style trailer previews for the TV Home hero.
 ///
 /// When a movie or show stays focused for [dwell], its trailer starts
-/// silently behind the hero (the hero artwork fades out once the first frame
+/// behind the hero (the hero artwork fades out once the first frame
 /// is up). Moving focus, leaving the screen or starting real playback stops
 /// it. While a preview shows, the Play/Pause key opens the trailer full-screen
 /// with sound (see [takeTrailerForPlayback]).
@@ -38,6 +39,8 @@ class TrailerPreviewService extends ChangeNotifier {
   MediaItem? _subject;
   MediaItem? _trailer;
   bool _showing = false;
+  bool _uiHidden = false;
+  Timer? _hideTimer;
   int _generation = 0;
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
@@ -46,6 +49,35 @@ class TrailerPreviewService extends ChangeNotifier {
 
   /// True once the preview has a frame on screen.
   bool get isShowing => _showing;
+
+  /// How long a preview plays before the interface fades away to show it,
+  /// and how long after the last remote press it fades away again.
+  static const Duration chromeHideDelay = Duration(seconds: 3);
+  static const Duration chromeIdleDelay = Duration(seconds: 4);
+
+  /// True while the interface has faded away to leave only the trailer.
+  bool get uiHidden => _uiHidden;
+
+  void _scheduleHide(Duration after) {
+    _hideTimer?.cancel();
+    _hideTimer = Timer(after, () {
+      if (!_showing || _uiHidden) return;
+      _uiHidden = true;
+      notifyListeners();
+    });
+  }
+
+  /// Any remote press brings the interface back (and it fades again once
+  /// the viewer goes idle).
+  bool _onKey(KeyEvent event) {
+    if (!_showing || event is! KeyDownEvent) return false;
+    if (_uiHidden) {
+      _uiHidden = false;
+      notifyListeners();
+    }
+    _scheduleHide(chromeIdleDelay);
+    return false;
+  }
 
   /// The title whose trailer is previewing (or about to).
   MediaItem? get subject => _subject;
@@ -93,7 +125,7 @@ class TrailerPreviewService extends ChangeNotifier {
     _trailer = trailer;
     notifyListeners();
     try {
-      await player.setVolume(0);
+      await player.setVolume(settings.read(SettingsService.trailerPreviewSound) ? 100 : 0);
       await player.setProperty('hwdec', settings.read(SettingsService.enableHardwareDecoding) ? 'auto' : 'no');
       if (generation != _generation) return;
       _subscriptions
@@ -101,6 +133,8 @@ class TrailerPreviewService extends ChangeNotifier {
           player.streams.playbackRestart.listen((_) {
             if (generation != _generation || _showing) return;
             _showing = true;
+            HardwareKeyboard.instance.addHandler(_onKey);
+            _scheduleHide(chromeHideDelay);
             notifyListeners();
             // Kick the video output once the surface is laid out (the player
             // screen does the same after layout changes).
@@ -140,7 +174,11 @@ class TrailerPreviewService extends ChangeNotifier {
     }
     _subscriptions.clear();
     final player = _player;
-    final wasVisible = _showing || player != null || _subject != null;
+    final wasVisible = _showing || _uiHidden || player != null || _subject != null;
+    _hideTimer?.cancel();
+    _hideTimer = null;
+    HardwareKeyboard.instance.removeHandler(_onKey);
+    _uiHidden = false;
     _player = null;
     _trailer = null;
     _subject = null;

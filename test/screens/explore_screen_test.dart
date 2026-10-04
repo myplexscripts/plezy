@@ -221,6 +221,9 @@ _FakeCatalogSource _fakeSource(_FakeCatalogSourcesProvider sources, CatalogSourc
     sources.sources.firstWhere((source) => source.id == id) as _FakeCatalogSource;
 
 void main() {
+  setUp(() => ExploreProvider.watchlistOnly = false);
+  tearDown(() => ExploreProvider.watchlistOnly = true);
+
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {

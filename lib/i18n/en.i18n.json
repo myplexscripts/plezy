@@ -387,8 +387,8 @@
     "showNavBarLabels": "Show Navigation Bar Labels",
     "showNavBarLabelsDescription": "Display text labels under navigation bar icons",
     "startupSection": "Startup Section",
-    "showExploreTab": "Show Explore Tab",
-    "showExploreTabDescription": "Display the Explore tab with content from Plex Discover and connected trackers",
+    "showExploreTab": "Show Watchlist Tab",
+    "showExploreTabDescription": "Display your watchlist from Plex and connected trackers as its own section",
     "liveTvDefaultFavorites": "Default to Favorite Channels",
     "liveTvDefaultFavoritesDescription": "Show only favorite channels when opening Live TV",
     "general": "General",
@@ -443,7 +443,9 @@
     "tvCardStyleLandscape": "Landscape 16:9",
     "tvCardStylePoster": "Posters 2:3",
     "trailerPreviews": "Trailer Previews",
-    "trailerPreviewsDescription": "Play a title’s trailer silently behind the Home hero after it has been selected for a moment"
+    "trailerPreviewsDescription": "Play a title’s trailer behind the Home screen after it has been selected for a moment; the menus fade away while it plays",
+    "trailerPreviewSound": "Trailer Sound",
+    "trailerPreviewSoundDescription": "Play trailer previews with sound"
   },
   "search": {
     "hint": "Search movies, shows, music...",
@@ -1263,10 +1265,10 @@
     "libraries": "Libraries",
     "downloads": "Downloads",
     "liveTv": "Live TV",
-    "explore": "Explore"
+    "explore": "Watchlist"
   },
   "explore": {
-    "title": "Explore",
+    "title": "Watchlist",
     "selectSource": "Select source",
     "rows": {
       "watchlist": "Watchlist",

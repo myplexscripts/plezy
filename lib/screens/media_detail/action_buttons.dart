@@ -126,12 +126,14 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
     // In keyboard/d-pad mode, focused buttons get a prominent style.
     // overlayColor is set to transparent to prevent the Material focus
     // overlay from dimming the background color we set.
-    final focusBg = colorScheme.inverseSurface;
-    final focusFg = colorScheme.onInverseSurface;
+    // TV: controls take the complement of the title's blur colour.
+    final tints = ControlTints.current;
+    final focusBg = isTv ? tints.focusFill : colorScheme.inverseSurface;
+    final focusFg = isTv ? tints.focusForeground : colorScheme.onInverseSurface;
     final tonalBg = colorScheme.secondaryContainer;
     // TV (Apple TV style): idle actions are translucent discs over the
     // backdrop; focus turns them solid white.
-    final idleBg = isTv ? Colors.white.withValues(alpha: 0.18) : tonalBg;
+    final idleBg = isTv ? tints.idleFill : tonalBg;
     final tonalFg = isTv ? Colors.white : colorScheme.onSecondaryContainer;
     final noOverlay = WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.focused)) return Colors.transparent;
@@ -166,9 +168,7 @@ extension _MediaDetailActionButtons on _MediaDetailScreenState {
         backgroundColor: WidgetStatePropertyAll(showFocus ? focusBg : idleBg),
         // TV: the glass pills' catch-light edge.
         side: isTv
-            ? WidgetStatePropertyAll(
-                showFocus ? BorderSide.none : BorderSide(color: Colors.white.withValues(alpha: 0.34), width: 1.2),
-              )
+            ? WidgetStatePropertyAll(showFocus ? BorderSide.none : BorderSide(color: tints.idleEdge, width: 1.2))
             : null,
         foregroundColor: WidgetStatePropertyAll(showFocus ? focusFg : foregroundColor ?? tonalFg),
         shape: shape != null ? WidgetStatePropertyAll(shape) : null,

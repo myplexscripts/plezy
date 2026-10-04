@@ -23,6 +23,7 @@ import '../theme/plezzant/plezzant_tokens.dart';
 import '../utils/formatters.dart';
 import 'tv_reference_scale.dart';
 import 'tv_browse_rail.dart';
+import 'trailer_chrome_fade.dart';
 import 'tv_spotlight_background.dart';
 
 class TvSpotlightController extends ValueNotifier<MediaItem?> {
@@ -194,7 +195,7 @@ class TvSpotlightScaffold extends StatelessWidget {
                 );
               },
             ),
-            foreground,
+            TrailerChromeFade(child: foreground),
           ],
         ),
       ),

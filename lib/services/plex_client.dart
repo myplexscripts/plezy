@@ -60,6 +60,7 @@ import '../models/transcode_quality_preset.dart';
 import '../utils/device_identity.dart';
 import '../utils/failover_http_client.dart';
 import '../utils/app_logger.dart';
+import '../utils/platform_detector.dart';
 import '../utils/media_server_retry.dart';
 import '../utils/media_server_timeouts.dart';
 import '../utils/active_client_scope.dart';
@@ -3702,7 +3703,9 @@ class PlexClient
       // (resolution/videoQuality) and is ignored for audio.
       final isTrack = options.metadata.kind == MediaKind.track;
       final audioPreset = options.audioQualityPreset ?? AudioQualityPreset.original;
-      final wantTranscode = isTrack ? !audioPreset.isOriginal : _presetNeedsTranscode(options.qualityPreset, data);
+      final wantTranscode = isTrack
+          ? !audioPreset.isOriginal
+          : _presetNeedsTranscode(options.qualityPreset, data) || _legacyFileNeedsServerHelp(data);
       if (wantTranscode && options.sessionIdentifier != null && options.transcodeSessionId != null) {
         if (isTrack) {
           final result = await buildMusicTranscodeStartPath(
@@ -3805,6 +3808,26 @@ class PlexClient
   /// on 1.43 with a 65 Mbps 4K source under a 10 Mbps cap), so asking its MDE
   /// to arbitrate would cap nothing at all. Plex Web decides it client-side
   /// too, folding the preset's bitrate into its own direct-play profile.
+  /// Legacy containers and codecs (AVI, MPEG-4 ASP/Xvid/DivX, WMV…) that a
+  /// TV's hardware decoders and ExoPlayer cannot play smoothly: they fall to
+  /// software decoding and judder. The official TV apps ask the server for an
+  /// H.264 stream instead; with the "original" preset the server only
+  /// re-encodes what it has to (and copies the rest).
+  bool _legacyFileNeedsServerHelp(PlexVideoPlaybackData data) {
+    if (!PlatformDetector.isTV()) return false;
+    final version = data.selectedMediaIndex < data.availableVersions.length
+        ? data.availableVersions[data.selectedMediaIndex]
+        : null;
+    if (version == null) return false;
+    final container = version.container?.toLowerCase();
+    final codec = version.videoCodec?.toLowerCase();
+    const legacyContainers = {'avi', 'wmv', 'asf', 'flv', 'mpg', 'mpeg', 'vob', 'divx'};
+    const legacyCodecs = {'mpeg4', 'msmpeg4', 'msmpeg4v2', 'msmpeg4v3', 'wmv1', 'wmv2', 'wmv3', 'vc1', 'mpeg1video'};
+    final legacy = legacyContainers.contains(container) || legacyCodecs.contains(codec);
+    if (legacy) appLogger.i('Legacy file ($container/$codec): asking the server for a TV-friendly stream');
+    return legacy;
+  }
+
   bool _presetNeedsTranscode(TranscodeQualityPreset preset, PlexVideoPlaybackData data) {
     if (preset.isOriginal) return false;
     final settings = SettingsService.instanceOrNull;

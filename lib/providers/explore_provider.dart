@@ -42,6 +42,11 @@ class ExploreRowHub {
 /// and to the source's watchlist changes so the Watchlist row stays current
 /// after mutations from anywhere in the app.
 class ExploreProvider extends ChangeNotifier with DisposableChangeNotifierMixin {
+  /// Plezzant is about the viewer's own content: only the watchlist loads (no
+  /// trending / popular / recommended catalogue rows or provider hubs).
+  /// Tests that exercise the catalogue rows turn this off.
+  static bool watchlistOnly = true;
+
   /// Rows reload when the tab is shown after this long.
   static const Duration staleAfter = Duration(minutes: 15);
   static const int rowLimit = 25;
@@ -101,21 +106,22 @@ class ExploreProvider extends ChangeNotifier with DisposableChangeNotifierMixin 
     if (_hubsCache != null && key == _hubsCacheKey) return _hubsCache!;
     final hubs = <ExploreRowHub>[
       for (final row in source.supportedRows)
-        if (_rows[row] case final CatalogPage page)
-          if (page.items.isNotEmpty)
-            ExploreRowHub.catalogRow(
-              row: row,
-              totalResults: page.totalResults,
-              hub: MediaHub(
-                id: 'explore:${source.id.name}:${row.name}',
-                identifier: 'explore.${row.name}',
-                title: rowTitle(row),
-                type: 'mixed',
-                items: [for (final item in page.items) item.toMediaItem()],
-                size: page.totalResults ?? page.items.length,
-                more: page.hasMore,
+        if (!watchlistOnly || row == CatalogRowId.watchlist)
+          if (_rows[row] case final CatalogPage page)
+            if (page.items.isNotEmpty)
+              ExploreRowHub.catalogRow(
+                row: row,
+                totalResults: page.totalResults,
+                hub: MediaHub(
+                  id: 'explore:${source.id.name}:${row.name}',
+                  identifier: 'explore.${row.name}',
+                  title: rowTitle(row),
+                  type: 'mixed',
+                  items: [for (final item in page.items) item.toMediaItem()],
+                  size: page.totalResults ?? page.items.length,
+                  more: page.hasMore,
+                ),
               ),
-            ),
       for (final providerHub in _providerHubs)
         if (_rendersProviderHub(providerHub) && providerHub.page.items.isNotEmpty)
           ExploreRowHub.providerHub(
@@ -142,7 +148,7 @@ class ExploreProvider extends ChangeNotifier with DisposableChangeNotifierMixin 
     // Plex's availabilityPlatforms entries are streaming services, not
     // titles. Until Explore has a platform-specific row, skipping the hub is
     // preferable to presenting service logos as movie posters.
-    return hub.style != CatalogHubStyle.availabilityPlatforms;
+    return !watchlistOnly && hub.style != CatalogHubStyle.availabilityPlatforms;
   }
 
   static String rowTitle(CatalogRowId row) => switch (row) {
@@ -202,17 +208,22 @@ class ExploreProvider extends ChangeNotifier with DisposableChangeNotifierMixin 
     final fetched = <CatalogRowId, CatalogPage>{};
     List<CatalogHub>? fetchedProviderHubs;
     Object? firstError;
-    final CatalogHubSource? hubSource = source is CatalogHubSource ? source as CatalogHubSource : null;
+    final CatalogHubSource? hubSource = !watchlistOnly && source is CatalogHubSource
+        ? source as CatalogHubSource
+        : null;
     await Future.wait<void>([
+      // Plezzant is about the viewer's own content: only the watchlist loads
+      // (no trending / popular / recommended catalogue rows or provider hubs).
       for (final row in source.supportedRows)
-        () async {
-          try {
-            fetched[row] = await source.fetchRow(row, limit: rowLimit);
-          } catch (e) {
-            appLogger.w('Explore: ${source.id.name} row ${row.name} failed', error: e);
-            firstError ??= e;
-          }
-        }(),
+        if (!watchlistOnly || row == CatalogRowId.watchlist)
+          () async {
+            try {
+              fetched[row] = await source.fetchRow(row, limit: rowLimit);
+            } catch (e) {
+              appLogger.w('Explore: ${source.id.name} row ${row.name} failed', error: e);
+              firstError ??= e;
+            }
+          }(),
       if (hubSource != null)
         () async {
           try {

@@ -1158,7 +1158,7 @@ FutureOr<SentryEvent?> _beforeSend(SentryEvent event, Hint _) {
 
 void _registerShaderLicenses() {
   LicenseRegistry.addLicense(() async* {
-    yield LicenseEntryWithLineBreaks(['Manrope'], await rootBundle.loadString('assets/fonts/OFL-Manrope.txt'));
+    yield LicenseEntryWithLineBreaks(['Inter'], await rootBundle.loadString('assets/fonts/OFL-Inter.txt'));
   });
   LicenseRegistry.addLicense(() async* {
     yield const LicenseEntryWithLineBreaks(

@@ -60,7 +60,7 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 | Related media | ✅ | |
 | Watched / unwatched toggles | ✅ | Optimistic `watch_state_store` |
 | Ratings and favourites | ✅ 🎨 | Colours moved onto the palette |
-| Explore / Discover catalogue (TMDB etc.) | ✅ | |
+| Explore / Discover catalogue (TMDB etc.) | 🚫 | Removed on purpose: Plezzant focuses on the viewer's own content. The tab is now just the Watchlist |
 | Watchlist | ✅ | Explore; needs plex.tv |
 | Plex free streaming (Movies & TV on Plex, free Live TV channels) | 🚫 | Needs Plex's ad-supported playback and licensing endpoints, which third-party clients can't use. Catalogue rows and the Watchlist do appear in Explore |
 
@@ -111,7 +111,7 @@ Plezzant, and what is still missing compared with a mature Plex TV client.
 
 | Capability | Status | Notes |
 |---|---|---|
-| Manrope everywhere | 🆕 | Bundled weights 300–800; one type scale (`PlezzantType`) with a 14 px floor |
+| Inter everywhere | 🆕 | Bundled weights 300–800; one type scale (`PlezzantType`) with a 14 px floor |
 | Lucide icons | 🆕 | All ~300 Material Symbols migrated; `material_symbols_icons` removed |
 | Fixed palette (26 × 3) | 🆕 | `PlezzantPalette`; semantic `PlezzantColors` |
 | Perceptual palette matching (CIELAB + CIEDE2000) | 🆕 | `PlezzantColorMatcher`, unit-tested against published reference pairs |

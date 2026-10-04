@@ -637,6 +637,9 @@ class SettingsService extends BaseSharedPreferencesService {
   /// has been focused for a moment.
   static const trailerPreviews = BoolPref('trailer_previews', defaultValue: true);
 
+  /// Whether a previewing trailer plays with its sound.
+  static const trailerPreviewSound = BoolPref('trailer_preview_sound', defaultValue: true);
+
   /// Seconds each photo stays up in a slideshow.
   static const photoSlideshowSeconds = IntPref('photo_slideshow_seconds', defaultValue: 6);
 
@@ -1365,6 +1368,7 @@ class SettingsService extends BaseSharedPreferencesService {
     playThemeMusic,
     cinemaTrailerCount,
     trailerPreviews,
+    trailerPreviewSound,
     photoSlideshowSeconds,
     showFrameTimingOverlay,
     enableDiscordRPC,

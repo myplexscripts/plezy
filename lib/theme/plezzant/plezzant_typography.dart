@@ -6,7 +6,7 @@ import 'plezzant_tokens.dart';
 /// these roles through `Theme.of(context).textTheme`; screens must not invent
 /// sizes. Nothing renders below [minimumSize] logical pixels.
 abstract final class PlezzantType {
-  static const String family = 'Manrope';
+  static const String family = 'Inter';
 
   /// Floor for any interface text (10-foot legibility).
   static const double minimumSize = 14;

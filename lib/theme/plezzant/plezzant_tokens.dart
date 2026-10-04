@@ -56,7 +56,7 @@ abstract final class PlezzantTv {
 
   static const double homeCardGap = 24;
   static const double focusOverflow = 18;
-  static const double shelfTitleHeight = 42;
+  static const double shelfTitleHeight = 64;
   static const double heroTextWidth = 720;
 }
 

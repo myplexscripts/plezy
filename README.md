@@ -11,7 +11,7 @@ A cinematic, calm, TV-first client for **Plex Media Server**, designed for
   (CIELAB, CIEDE2000) onto a fixed 26-hue palette
 * Restrained glass on floating surfaces (navigation, menus, player chrome), with an
   automatic solid fallback on weaker TVs
-* Manrope typography and Lucide iconography throughout
+* Inter typography and Lucide iconography throughout
 * Deep Plex support: PIN sign-in, Plex Home and protected profiles, multiple servers,
   local/remote/relay connections, collections, playlists, extras, versions and editions,
   chapters, intro and credits markers, Live TV and DVR
@@ -66,5 +66,5 @@ dart run scripts/checks/check_icon_consistency.dart
 
 Plezzant is free software under the [GNU GPL v3](LICENSE). It is a modified
 version of an existing GPL-3.0 media-server client ([upstream](https://github.com/edde746/plezy));
-the git history records all changes. Bundled fonts: Manrope (SIL OFL 1.1, see
-`assets/fonts/OFL-Manrope.txt`). Icons: Lucide (ISC).
+the git history records all changes. Bundled fonts: Inter (SIL OFL 1.1, see
+`assets/fonts/OFL-Inter.txt`). Icons: Lucide (ISC).

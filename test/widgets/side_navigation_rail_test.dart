@@ -375,20 +375,20 @@ void main() {
     expect(targetRect.bottom, lessThanOrEqualTo(railRect.bottom));
   });
 
-  testWidgets('Explore item follows the showExploreTab appearance setting', (tester) async {
+  testWidgets('Watchlist item follows the showExploreTab appearance setting', (tester) async {
     final catalogSources = _FakeCatalogSourcesProvider();
     addTearDown(catalogSources.dispose);
 
     await _pumpBasicRail(tester, alwaysExpanded: true, catalogSources: catalogSources);
-    expect(find.widgetWithText(NavigationRailItem, 'Explore'), findsOneWidget);
+    expect(find.widgetWithText(NavigationRailItem, 'Watchlist'), findsOneWidget);
 
     await SettingsService.instance.write(SettingsService.showExploreTab, false);
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(NavigationRailItem, 'Explore'), findsNothing);
+    expect(find.widgetWithText(NavigationRailItem, 'Watchlist'), findsNothing);
 
     await SettingsService.instance.write(SettingsService.showExploreTab, true);
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(NavigationRailItem, 'Explore'), findsOneWidget);
+    expect(find.widgetWithText(NavigationRailItem, 'Watchlist'), findsOneWidget);
   });
 
   testWidgets('collapsing the Libraries section survives a fresh rail', (tester) async {

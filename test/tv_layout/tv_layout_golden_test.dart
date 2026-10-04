@@ -49,9 +49,9 @@ final _fixedNow = DateTime(2026, 10, 3, 20, 30);
 
 Future<void> _loadFonts() async {
   Future<ByteData> file(String path) async => ByteData.sublistView(await File(path).readAsBytes());
-  final manrope = FontLoader('Manrope');
+  final manrope = FontLoader('Inter');
   for (final w in [300, 400, 500, 600, 700, 800]) {
-    manrope.addFont(file('assets/fonts/Manrope-$w.ttf'));
+    manrope.addFont(file('assets/fonts/Inter-$w.ttf'));
   }
   await manrope.load();
 
